@@ -1,8 +1,8 @@
 var passport        = require('passport'),
     LocalStrategy   = require('passport-local').Strategy,
-    userService     = require('./../admin/models/userModel'),
-    roleUserService = require('./../admin/models/roleUsersModel'),
-    logService      = require('./../admin/models/logModel'),
+    userService     = require('./../admin/services/UserService'),
+    roleUserService = require('./../admin/services/roleUserService'),
+    logService      = require('./../admin/services/logService'),
     crypto          = require('crypto');
 
 module.exports = function(passport) {
