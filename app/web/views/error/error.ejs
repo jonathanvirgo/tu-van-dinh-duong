@@ -1,0 +1,36 @@
+<html lang="en">
+<head>
+  <title>404 - PR IMS</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width initial-scale=1">
+  <link rel="shortcut icon" href="/public/content/images/favicon.ico"/>
+  <link rel="stylesheet" href="/public/content/css/style.min.css">
+</head>
+<body>
+  <div class="page page-reset page-404">
+    <div class="error404">
+      <div class="error404-body text-center">
+        <div class="mb-4 pb-3">
+          <img class="img-fluid w-100" src="/public/content/images/404.svg" alt="" />
+        </div>
+        <p class="fs-4 fw-bold text-body-2 mb-4">Rất tiếc, không tồn tại trang này.</p>
+        <% if (errors.length > 0){%>
+          <div class="row gy-32px">
+            <div class="alert-dismissable">
+              <div class="alert alert-danger">
+                <ul>
+                <% for (i = 0;i < errors.length;i++){%>
+                  <li><%=errors[i]%></li>
+                <%}%>
+                </ul>
+              </div>
+              </div>
+          </div>
+        <% } %>
+        <a class="btn btn-primary text-uppercase" href="/" role="button">Trở về trang chủ</a>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

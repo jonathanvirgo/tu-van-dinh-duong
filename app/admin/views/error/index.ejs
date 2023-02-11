@@ -1,0 +1,43 @@
+<html lang="en">
+  <head>
+    <title>Lỗi <%=short_message%></title>
+    <%- include('../shared/head') %>
+  </head>
+  <body class="sidebar-mini layout-fixed control-sidebar-slide-open">
+    <div class="wrapper">
+      <%- include('../shared/menu',{user: user}) %>
+      <div class="content-wrapper">
+        <div class="content-header clearfix">
+        	<h1 class="float-left">
+            <%=short_message%>
+        	<% if (return_url != ""){%>
+        	<small> 
+                <i class="fas fa-arrow-circle-left"></i> 
+                <a href="<%=return_url%>">Trở lại danh sách</a> 
+            </small>
+            </h1>
+            <%}%>
+        </div>
+        <section class="content">
+            <div class="container-fluid">
+              <div class="form-horizontal">
+                <div class="cards-group">
+                  <div class="card card-default alert alert-danger">
+                    <div class="card-body">
+                        <div class="alert-dismissable">
+				                  <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                          <%=short_message%>
+                          </br>
+				                  <%=full_message%>
+				                </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+        </section>
+      </div>
+      <%- include('../shared/footer') %>
+    </div>
+  </body>
+</html>

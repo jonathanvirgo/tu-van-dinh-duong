@@ -1,0 +1,30 @@
+<% if(!paginator.hasPrevPage) { %>
+  <button disabled class="btn btn-outline-primary paginate-btn-prev" type="button">
+    <svg class="iconsvg-chevron-right rotate-180">
+      <use xlink:href="/public/content/images/sprite.svg#chevron-right"></use>
+    </svg>
+  </button>
+<% } else { %>
+  <a class="btn btn-outline-primary paginate-btn-prev" href="<%=paginator.prevPage%>">
+    <svg class="iconsvg-chevron-right rotate-180">
+      <use xlink:href="/public/content/images/sprite.svg#chevron-right"></use>
+    </svg>
+  </a>
+<% } %>
+<div class="paginate-text">
+  <span class="fw-6"><%=(paginator.perPage * paginator.page) - (paginator.perPage -1)%>-<%=(paginator.perPage * paginator.page) > paginator.totalItem ? paginator.totalItem : (paginator.perPage * paginator.page)%></span>
+  <span class="text-icon">/ <%=paginator.totalItem%></span>
+</div>
+<% if(!paginator.hasNextPage) { %> 
+<button disabled class="btn btn-outline-primary paginate-btn-next" type="button">
+  <svg class="iconsvg-chevron-right">
+    <use xlink:href="/public/content/images/sprite.svg#chevron-right"></use>
+  </svg>
+</button>
+<% } else { %>
+<a class="btn btn-outline-primary paginate-btn-next" href="<%=paginator.nextPage%>">
+  <svg class="iconsvg-chevron-right">
+    <use xlink:href="/public/content/images/sprite.svg#chevron-right"></use>
+  </svg>
+</a>
+<% } %>

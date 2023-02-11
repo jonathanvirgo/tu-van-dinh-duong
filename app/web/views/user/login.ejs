@@ -1,43 +1,187 @@
-<!doctype html>
-<html lang="en">
-	<head>
-		<meta charset="utf-8">
-		<meta name="viewport" content="width=device-width, initial-scale=1">
-		<title>Express • TodoMVC</title>
-		<link rel="stylesheet" href="/css/base.css">
-		<link rel="stylesheet" href="/css/index.css">
-		<link rel="stylesheet" href="/css/login.css">
-	</head>
-	<body>
-		<section class="prompt">
-			<h3>todos</h3>
-			<h1>Sign in</h1>
-			<% if (hasMessages) { %>
-			<section class="messages">
-				<% messages.forEach(function(message) { %>
-				<p><%= message %></p>
-				<% }); %>
-			</section>
-			<% } %>
-			<form action="/login/password" method="post">
-				<section>
-					<label for="username">Username</label>
-					<input id="username" name="username" type="text" autocomplete="username" required autofocus>
-				</section>
-				<section>
-					<label for="current-password">Password</label>
-					<input id="current-password" name="password" type="password" autocomplete="current-password" required>
-				</section>
-				<input type="hidden" name="_csrf" value="<%= csrfToken %>">
-				<button type="submit">Sign in</button>
-			</form>
-			<hr>
-			<p class="help">Don't have an account? <a href="/signup">Sign up</a></p>
-		</section>
-		<footer class="info">
-			<p>Created by <a href="https://www.jaredhanson.me">Jared Hanson</a></p>
-			<p>Part of <a href="https://todomvc.com">TodoMVC</a></p>
-			<p>Authentication powered by <a href="https://www.passportjs.org">Passport</a></p>
-		</footer>
-	</body>
-</html>
+<!DOCTYPE html>
+<html class="no-js" lang="vi">
+<head>
+  <meta charset="utf-8">
+  <title>Đăng nhập - PR IMS</title>
+  <meta name="author" content="TUTA">
+  <meta name="description" content="PR IMS">
+  <meta name="keywords" content="PR IMS">
+  <meta name="viewport" content="width=device-width initial-scale=1">
+  <link rel="shortcut icon" href="/public/content/images/favicon.ico" type="image/x-icon">
+  <link type="text/css" rel="stylesheet" href="/public/content/css/style.min.css">
+  <link type="text/css" rel="stylesheet" href="/public/content/css/style.css">
+
+</head>
+<body class="body-login">
+  <div class="page page-dark page-login">
+    <div class="page-main">
+      <div class="login">
+        <a class="login-logo mx-auto">
+          <img class="img-fluid w-100" src="/public/content/images/logo-2.svg" alt="" />
+        </a>
+        <div id="login-content-page">
+          <div class="tab login-body login-tab">
+            <ul class="tab-nav nav mb-4">
+              <li class="nav-item">
+                <a class="nav-link active" aria-current="page" href="#tab-login" data-bs-toggle="tab" role="tab" aria-controls="tab" aria-selected="true">Đăng nhập</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="#tab-register" data-bs-toggle="tab" role="tab" aria-controls="tab" aria-selected="false">Đăng ký</a>
+              </li>
+            </ul>
+              <div class="tab-content">
+                <div class="tab-pane fade show active" id="tab-login">
+                  <form class="form-mde" id="login-form" novalidate class="form-login" action="/user/login" method="POST">
+                    <div class="mb-4">
+                      <div class="form-floating">
+                        <label class="form-control-user"></label>
+                        <input maxlength="65" class="form-control form-control-icon-start" id="login_username" name="login_username" type="text" placeholder="Tên đăng nhập" />
+                        <label for="form-login-name">Tên đăng nhập </label>
+                      </div>
+                      <span id="ercf_username" class="ver-middle form-text fst-italic text-danger mt-1"></span>
+                    </div>
+                    <div class="mb-4">
+                      <div class="form-floating">
+                        <label class="form-control-lock"></label>
+                        <input type="password" class="form-control form-control-icon-start" id="login_password" name="login_password" placeholder="Mật khẩu" autocomplete="off" />
+                        <button class="btn form-control-addon btn-link p-0 min-h-auto" type="button" onclick="login_showPassword()">
+                          <svg class="iconsvg-eye-off" id="show-password-1">
+                            <use xlink:href="/public/content/images/sprite.svg#eye"></use>
+                          </svg>
+                        </button>
+                        <label for="form-login-password">Mật khẩu </label>
+                      </div>
+                      <span id="ercf_password" class="ver-middle form-text fst-italic text-danger mt-1"></span>
+                    </div>
+  
+                    <button class="btn login-btn btn-primary w-100 text-uppercase mb-4" type="submit">Đăng nhập</button>
+                    <div class="text-end">
+                      <a class="link-primary" href="https://sso.admicro.vn/password/lost">Quên mật khẩu?</a>
+                    </div>
+                  </form>
+                </div>
+                <div class="tab-pane fade" id="tab-register">
+                  <form class="form-mde" id="signup-form" novalidate action="/user/signup" method="POST">
+                    <div class="row gy-4 mb-4">
+                      <div class="col-md-12">
+                        <div class="form-floating">
+                          <input class="form-control form-control-has-addon" type="text" id="username" name="username" placeholder="Tên đăng nhập" required />
+                          <img alt="Loading..." class="ajax_loading" id="imgajaxusername" src="/public/content/images/ajaxLoading.gif">
+                          <label>
+                            Tên đăng nhập <span class="text-danger">*</span>
+                          </label>
+                        </div>
+                        <div class="form-text fst-italic text-gray-4 mt-2">
+                        Tên đăng nhập chứa nhiều nhất 65 ký tự- ít nhất 4 ký tự. Đồng thời chỉ bao gồm các ký tự chữ cái, chữ số, ký tự "_" và phải bắt đầu bằng 1 ký tự chữ cái
+                        </div>
+                        <span id="imgchkuname" class="ver-middle form-text fst-italic text-danger mt-2"></span>
+                      </div>
+                      <div class="col-md-12 mt-2">
+                        <div class="form-floating form-control-has-addon">
+                          <input class="form-control form-control-has-addon" type="password" placeholder="Mật khẩu" id="password" name="password" required  autocomplete="off" />
+                          <img alt="Loading..." class="ajax_loading" id="imgajaxpassword" src="/public/content/images/ajaxLoading.gif">
+                          <button class="btn form-control-addon btn-link p-0 min-h-auto" type="button" onclick="signup_showPassword()">
+                            <svg class="iconsvg-eye" id="show-password-2">
+                              <use xlink:href="/public/content/images/sprite.svg#eye"></use>
+                            </svg>
+                          </button>
+                          <label>
+                            Mật khẩu <span class="text-danger">*</span>
+                          </label>
+                        </div>
+                        <div class="form-text fst-italic text-gray-4 mt-2">
+                        Mật khẩu phải có chữ hoa, chữ thường, chữ số và tối thiểu 9 ký tự
+                        </div>
+                        <span id="imgchkpassword" class="ver-middle form-text fst-italic text-danger mt-2"></span>
+                      </div>
+                      <div class="col-md-12 mt-2">
+                        <div class="form-floating form-control-has-addon">
+                          <input class="form-control form-control-has-addon" id="confirm_password" name="confirm_password" type="password" placeholder="Xác thực mật khẩu" required autocomplete="off" />
+                          <span id="imgchkcf_password" class="ver-middle form-text fst-italic text-danger mt-2"></span>
+                          <button class="btn form-control-addon btn-link p-0 min-h-auto" type="button" onclick="signup_showConfirmPassword()">
+                            <svg class="iconsvg-eye" id="show-password-3">
+                              <use xlink:href="/public/content/images/sprite.svg#eye"></use>
+                            </svg>
+                          </button>
+                          <label>Xác thực mật khẩu <span class="text-danger">*</span>
+                          </label>
+                        </div>
+                      </div>
+                      <div class="col-md-6">
+                        <div class="form-floating">
+                          <input class="form-control form-control-has-addon" id="full_name" name="full_name" type="text" placeholder="Họ tên" required />
+                          <span id="imgchkfull_name" class="ver-middle form-text fst-italic text-danger mt-2"></span>
+                          <label>
+                            Họ tên <span class="text-danger">*</span>
+                          </label>
+                        </div>
+                      </div>
+                      <div class="col-md-6">
+                        <div class="form-floating form-control-wrapper">
+                          <input class="form-control" id="email" name="email" type="text" placeholder="Email" required />
+                          <img alt="Loading..." class="ajax_loading" id="imgajaxemail" src="/public/content/images/ajaxLoading.gif">
+                          <span id="imgchkemail" class="ver-middle form-text fst-italic text-danger mt-2"></span>
+                          <label>
+                            Email <span class="text-danger">*</span>
+                          </label>
+                        </div>
+                      </div>
+                      <div class="col-md-6">
+                        <div class="form-floating">
+                          <input class="form-control form-control-has-addon" id="phone" name="phone" type="text" placeholder="Số điện thoại" required />
+                          <img alt="Loading..." class="ajax_loading" id="imgajaxphone" src="/public/content/images/ajaxLoading.gif">
+                          <span id="imgchkphone" class="ver-middle form-text fst-italic text-danger mt-2"></span>
+                          <label>
+                            Số điện thoại <span class="text-danger">*</span>
+                          </label>
+                        </div>
+                      </div>
+                      <div class="col-md-6">
+                        <div class="form-floating">
+                          <input class="form-control form-control-has-addon" placeholder="Địa chỉ" id="address" name="address" type="text" required />
+                          <span id="imgchkaddress" class="ver-middle form-text fst-italic text-danger mt-2"></span>
+                          <label>Địa chỉ </label>
+                        </div>
+                      </div>
+                      <div class="col-md-6">
+                        <div class="flatpickr form-floating">
+                          <input autocomplete="off" class="form-control" type="text" id="birthday" name="birthday" placeholder="Ngày sinh"/>
+                          <span id="imgchkbirthday" class="ver-middle form-text fst-italic text-danger mt-2"></span>
+                          <label class="form-label-floating">
+                            Ngày sinh <span class="text-danger">*</span>
+                          </label>
+                        </div>
+                      </div>
+                      <div class="col-md-6">
+                        <div id="form-floating-gender">
+                          <label class="col-md-auto fw-bold visually-hidden">Giới tính</label>
+                          <select class="form-select" name="gender" id="gender" data-plugin="select2" data-placeholder="Giới tính" data-minimum-results-for-search="Infinity">
+                            <option></option>
+                            <option value="1">Nam</option>
+                            <option value="0">Nữ</option>
+                          </select>
+                          <span id="imgchkgender" class="ver-middle form-text fst-italic text-danger mt-2"></span>
+                        </div>
+                      </div>
+                    </div>
+  
+                    <button class="btn login-btn btn-primary w-100 text-uppercase mb-4" onclick="signup()" type="button">
+                      Đăng ký
+                    </button>
+                  </form>
+                </div>
+              </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <%- include('../layout/footer', { footer_class: "footer-dark"}) %>
+    <script src="/public/content/js/vendor/jquery.min.js"></script>
+    <script src="/public/content/js/vendor/bootstrap.bundle.min.js"></script>
+    <script src="/public/content/js/vendor/flatpickr.min.js"></script>
+    <script src="/public/content/js/vendor/flatpickr.vn.js"></script>
+    <script src="/public/content/js/vendor/select2.full.min.js"></script>
+    <script src="/public/content/js/main.js"></script>
+    <script src="/public/content/js/login.js"></script>
+  </div>
+</body>

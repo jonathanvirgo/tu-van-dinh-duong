@@ -1,9 +1,22 @@
-const Sequelize = require('sequelize');
-const dotenv = require('dotenv');
+var mysql = require('mysql');
+var state = {
+    pool: null,
+    mode: null
+}
+exports.MODE_PRODUCTION = 'mode_production';
 
-dotenv.config();
+exports.connect = function(mode, done) {
+    state.pool = mysql.createPool({
+        host: 'localhost',
+        user: 'root',
+        password: '',
+        database: 'tuvandinhduong'
+    });
 
-module.exports =  new Sequelize(process.env.DATABASE_URL, 'root', null,{
-  host: 'localhost',
-  dialect: 'mysql'
-});
+    state.mode = mode;
+}
+
+exports.get = function() {
+    return state.pool;
+}
+

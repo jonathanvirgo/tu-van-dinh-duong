@@ -1,0 +1,84 @@
+﻿<html lang="en">
+<head>
+    <title>Sửa quyền</title>
+  <%- include('../shared/head') %>
+</head>
+<body class="sidebar-mini layout-fixed control-sidebar-slide-open">
+  <div class="wrapper">
+    <%- include('../shared/menu',{user: user}) %>
+    <div class="content-wrapper">
+        <% if (errors.length >0){%>
+        <div class="alert alert-danger alert-dismissable">
+          <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+          <ul>
+          <% for (i = 0;i < errors.length;i++){%>
+            <li><%=errors[i]%></li>
+          <%}%>
+          </ul>
+        </div>
+        <%}%>
+      <form action="/admin/role/edit/<%=role.role_id%>" id="role-form" method="post" novalidate="novalidate">
+        <div class="content-header clearfix">
+          <h1 class="float-left">Sửa quyền - <%= role.role_name %> 
+            <small> 
+              <i class="fas fa-arrow-circle-left"></i> 
+              <a href="/admin/role">Trở lại danh sách cài đặt</a> 
+            </small>
+          </h1>
+          <div class="float-right">
+            <button type="submit" name="save" class="btn btn-primary" value="save"> 
+              <i class="far fa-save"></i> Lưu 
+            </button>
+            <button type="submit" name="saveContinue" class="btn btn-primary" value="saveContinue"> 
+              <i class="far fa-save"></i> Lưu và tiếp tục sửa 
+            </button>
+            <span id="button-delete" class="btn btn-danger" data-toggle="modal" data-target="#button-delete-confirmation"> 
+              <i class="far fa-trash-alt"></i> Xoá 
+            </span>
+          </div>
+        </div>
+        <section class="content">
+          <div class="container-fluid">
+            <div class="form-horizontal">
+              <div class="cards-group">
+                <div class="card card-default">
+                  <div class="card-body">
+                    <%- include('../role/_createorupdate',{role:role}) %>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </form>
+      <div id="button-delete-confirmation" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="button-delete-confirmation-title">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h4 class="modal-title" id="button-delete-confirmation-title">Bạn chắc chắn?</h4>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">×</span>
+              </button>
+            </div>
+            <form action="/admin/role/delete/<%=role.role_id%>" method="post">
+              <div class="form-horizontal">
+                <div class="modal-body">Bạn có chắc chắn muốn xóa mục này không?</div>
+                <div class="modal-footer">
+                  <span class="btn btn-default" data-dismiss="modal">Thoát</span> 
+                  <button type="submit" class="btn btn-danger float-right"> Xoá </button>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+        <script>
+          $(document).ready(function() {
+            $("#button-delete").attr("data-toggle", "modal").attr("data-target", "#button-delete-confirmation")
+          })
+        </script>
+      </div>
+    </div>
+    <%- include('../shared/footer') %>
+  </div>
+</body>
+</html>

@@ -1,0 +1,316 @@
+<form action="/" method="get" id="dashboard_filter">
+<div class="statistic_body">
+  <div class="box-body">
+    <div class="dashboard_search">
+      <div class="row flex-grow-1">
+        <div class="col-md-auto">
+          <div id="website_filter">
+            <div id="website_select"></div>
+          </div>
+        </div>
+        <div class="col-md-auto">
+          <div id="status_filter">
+            <div id="status_select"></div>
+          </div>
+        </div>
+        <div class="col-md-auto">
+          <div class="statistic_search">
+            <div class="flatpickr flatpickr-range" data-options='{"mode":"range"}' data-plugin="flatpickr">
+              <% if (!filter.search.fromdate){%>
+              <input class="form-control" id="sfilter_date" type="text" placeholder="Thời gian" value="" data-input="data-input" aria-label="Thời gian" />
+              <%} else {%>
+              <input class="form-control" id="sfilter_date" type="text" placeholder="Thời gian" value="<%=filter.search.fromdate%> - <%=filter.search.todate%>" data-input="data-input" aria-label="Thời gian" />
+              <%}%>
+           </div>
+            <a onclick="statistic_search()" class="btn btn-danger sidebar-btn-booking">
+              <svg class="iconsvg-search">
+                <use xlink:href="/public/content/images/sprite.svg#search"></use>
+              </svg>
+              Thống kê
+            </a>
+          </div>
+        </div>
+    </div>
+    </div>
+    <div class="row">
+      <div class="col-xl-5">
+        <div class="box box-stat">
+          <h2 class="box-title">Thống kê số lượng bài đăng</h2>
+          <div class="row gy-10px gx-3 justify-content-center">
+            <div class="col-md-4 col-6">
+              <div class="stat">
+                <h6 class="stat-title">Gửi duyệt</h6>
+                <div class="stat-body">
+                  <svg class="iconsvg-arrow-right-circle stat-icon text-gui-duyet">
+                    <use xlink:href="/public/content/images/sprite.svg#arrow-right-circle"></use>
+                  </svg>
+                  <div class="stat-number">
+                    <a title="Gửi duyệt" href="/article?status_ids=5">
+                      <%=statsByStatus.post5%>
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4 col-6">
+              <div class="stat">
+                <h6 class="stat-title">Chờ duyệt</h6>
+                <div class="stat-body">
+                  <svg class="iconsvg-hourglass stat-icon text-cho-duyet">
+                    <use xlink:href="/public/content/images/sprite.svg#hourglass"></use>
+                  </svg>
+                  <div class="stat-number">
+                    <a title="Chờ duyệt" href="/article?status_ids=1">
+                      <%=statsByStatus.post1%>
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4 col-6">
+              <div class="stat">
+                <h6 class="stat-title">Đã duyệt</h6>
+                <div class="stat-body">
+                  <svg class="iconsvg-checkmark-circle stat-icon text-da-duyet">
+                    <use xlink:href="/public/content/images/sprite.svg#checkmark-circle"></use>
+                  </svg>
+                  <div class="stat-number">
+                    <a title="Đã duyệt" href="/article?status_ids=2">
+                      <%=statsByStatus.post2%>
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4 col-6">
+              <div class="stat">
+                <h6 class="stat-title">Gửi đăng</h6>
+                <div class="stat-body">
+                  <svg class="iconsvg-arrow-right-circle stat-icon text-gui-dang">
+                    <use xlink:href="/public/content/images/sprite.svg#arrow-right-circle"></use>
+                  </svg>
+                  <div class="stat-number">
+                    <a title="Gửi đăng" href="/article?status_ids=6">
+                      <%=statsByStatus.post6%>
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4 col-6">
+              <div class="stat">
+                <h6 class="stat-title">Chờ đăng</h6>
+                <div class="stat-body">
+                  <svg class="iconsvg-hourglass stat-icon text-cho-dang">
+                    <use xlink:href="/public/content/images/sprite.svg#hourglass"></use>
+                  </svg>
+                  <div class="stat-number">
+                    <a title="Chờ đăng" href="/article?status_ids=7">
+                      <%=statsByStatus.post7%>
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4 col-6">
+              <div class="stat">
+                <h6 class="stat-title">Xuất bản</h6>
+                <div class="stat-body">
+                  <svg class="iconsvg-upload stat-icon text-xuat-ban">
+                    <use xlink:href="/public/content/images/sprite.svg#upload"></use>
+                  </svg>
+                  <div class="stat-number">
+                    <a title="Xuất bản" href="/article?status_ids=4">
+                      <%=statsByStatus.post4%>
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4 col-6">
+              <div class="stat">
+                <h6 class="stat-title">Bài nháp</h6>
+                <div class="stat-body">
+                  <svg class="iconsvg-pencil stat-icon text-bai-nhap">
+                    <use xlink:href="/public/content/images/sprite.svg#pencil"></use>
+                  </svg>
+                  <div class="stat-number">
+                    <a title="Bài nháp" href="/article?status_ids=-2">
+                      <%=statsByStatus.post_2%>
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4 col-6">
+              <div class="stat">
+                <h6 class="stat-title">Đã hủy</h6>
+                <div class="stat-body">
+                  <svg class="iconsvg-x-mark-circle stat-icon text-da-huy">
+                    <use xlink:href="/public/content/images/sprite.svg#x-mark-circle"></use>
+                  </svg>
+                  <div class="stat-number">
+                    <a title="Đã hủy" href="/article?status_ids=-1">
+                      <%=statsByStatus.post_1%>
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4 col-6">
+              <div class="stat">
+                <h6 class="stat-title">Bị trả lại</h6>
+                <div class="stat-body">
+                  <svg class="iconsvg-login stat-icon text-tra-lai">
+                    <use xlink:href="/public/content/images/sprite.svg#login"></use>
+                  </svg>
+                  <div class="stat-number">
+                    <a title="Bị trả lại" href="/article?status_ids=3">
+                      <%=statsByStatus.post3%>
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-xl-7">
+        <div class="box h-100">
+          <h2 class="box-title">Biểu đồ pageview và số lượng bài</h2>
+          <div class="box-body box-chart-body">
+            <div class="box-chart text-center">
+              <div id="myChartByDate" class="chart--container"></div>
+              <script type="text/javascript">
+                var pageview        = <%- JSON.stringify(chartNews) %>;
+                let pageviewConfig  = {
+                  type: 'mixed',
+                  plot: {
+                    tooltip: {
+                      visible: false
+                    },
+                    aspect: 'spline',
+                    hoverState: {
+                      backgroundColor: '#F2564C'
+                    }
+                  },
+                  plotarea: {
+                    'margin-right': "10%",
+                  },
+                  legend: {
+                    layout: "1x5",
+                    x: "25%",
+                    y: "90%",
+                    borderColor: "transparent",
+                    marker: {
+                      borderRadius: 10,
+                      borderColor: "transparent"
+                    }
+                  },
+                  scaleX: {
+                    labels: pageview['label']
+                  },
+                  scaleY: {
+                    label: {
+                      text: 'Số lượng bài viết',
+                      fontSize: '13px',
+                      fontWeight: 'normal',
+                      color: '#818181'
+                    },
+                    maxValue: pageview['max_news'],
+                    minValue: 0,
+                    step: 10
+                  },
+                  scaleY2: {
+                    guide: {
+                      visible: false
+                    },
+                    label: {
+                      text: 'Số lượng Pageviews',
+                      fontSize: '13px',
+                      fontWeight: 'normal',
+                      color: '#818181',
+                      fontAngle: 270
+                    },
+                    maxValue: pageview['max_pageview'],
+                    minValue: 0,
+                    step: 10
+                  },
+                  crosshairX: {
+                    lineColor: '#424242',
+                    lineGapSize: '4px',
+                    lineStyle: 'dotted',
+                    scaleLabel: {
+                      backgroundColor: '#424242'
+                    }
+                  },
+                  series: [
+                    {
+                      type: 'bar',
+                      text: 'Số bài viết trong ngày',
+                      values: pageview['news'],
+                      lineColor: '#5BCD8F',
+                      backgroundColor: '#5BCD8F',
+                      scales: 'scale-x, scale-y'
+                    },
+                    {
+                      type: 'line',
+                      text: 'Pageview',
+                      values: pageview['pageview'],
+                      lineColor: '#F2564C',
+                      backgroundColor: '#F2564C',
+                      scales: 'scale-x, scale-y-2'
+                    }
+                  ]
+                };
+                
+                zingchart.render({
+                    id: 'myChartByDate',
+                    data: pageviewConfig,
+                    height: '100%',
+                    width: '100%',
+                });
+              </script>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</form>
+<script type="text/javascript">
+  VirtualSelect.init({
+    ele: '#website_select',
+    options: <%- JSON.stringify(websites) %>,
+    dropboxWrapper: '#website_filter',
+    placeholder: 'Website',
+    search: false,
+    multiple: true,
+    additionalClasses: 'vscomp-status website-status',
+    showDropboxAsPopup: false,
+    selectAllText: 'Chọn tất cả',
+    optionsSelectedText: 'Lựa chọn',
+    allOptionsSelectedText: 'Tất cả',
+    <% if(filter.search.site_ids != ''){%>
+    selectedValue: <%- JSON.stringify(filter.siteIds) %>
+    <%}%>
+  });
+
+  VirtualSelect.init({
+    ele: '#status_select',
+    options: <%- JSON.stringify(article_status.data) %>,
+    dropboxWrapper: '#status_filter',
+    placeholder: 'Trạng thái',
+    search: false,
+    multiple: true,
+    additionalClasses: 'vscomp-status website-status',
+    showDropboxAsPopup: false,
+    selectAllText: 'Chọn tất cả',
+    optionsSelectedText: 'Lựa chọn',
+    allOptionsSelectedText: 'Tất cả',
+    <% if(filter.search.status_ids != ''){%>
+    selectedValue: <%- JSON.stringify(filter.statusIds) %>
+    <%}%>
+  });
+</script>

@@ -1,0 +1,161 @@
+﻿<html lang="en">
+  <head>
+    <title>Chi tiết nhật ký</title>
+    <%- include('../shared/head') %>
+  </head>
+  <body class="sidebar-mini layout-fixed control-sidebar-slide-open">
+    <div class="wrapper">
+      <%- include('../shared/menu',{user: user}) %>
+      <div class="content-wrapper">
+        <% if (errors.length >0){%>
+        <div class="alert alert-danger alert-dismissable">
+          <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+          <ul>
+          <% for (i = 0;i < errors.length;i++){%>
+            <li><%=errors[i]%></li>
+          <%}%>
+          </ul>
+        </div>
+        <%}%>
+        <form action="/admin/log/view/<%=log.id%>" id="log-form" method="post" novalidate="novalidate">
+          <div class="content-header clearfix">
+            <h1 class="float-left">Chi tiết nhật ký # <%= log.id %> 
+              <small> 
+                <i class="fas fa-arrow-circle-left"></i> 
+                <a href="/admin/log">Trở lại danh sách nhật ký</a> 
+              </small>
+            </h1>
+            <div class="float-right">
+              <span id="button-delete" class="btn btn-danger" data-toggle="modal" data-target="#button-delete-confirmation"> 
+                <i class="far fa-trash-alt"></i> Xoá 
+              </span>
+            </div>
+          </div>
+          <section class="content">
+            <div class="container-fluid">
+              <div class="form-horizontal">
+                <div class="cards-group">
+                  <div class="card card-default">
+                    <div class="card-body">
+                      <div class="form-group row">
+                        <div class="col-md-3">
+                          <div class="label-wrapper">
+                            <label class="col-form-label">Tiêu đề</label>
+                          </div>
+                        </div>
+                        <div class="col-md-9">
+                          <div class="form-text-row">
+                            <%=log.short_message%>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="form-group row">
+                        <div class="col-md-3">
+                          <div class="label-wrapper">
+                            <label class="col-form-label">Người dùng</label>
+                          </div>
+                        </div>
+                        <div class="col-md-9">
+                          <div class="form-text-row">
+                            <%=log.log_user_name%>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="form-group row">
+                        <div class="col-md-3">
+                          <div class="label-wrapper">
+                            <label class="col-form-label">Nội dung</label>
+                          </div>
+                        </div>
+                        <div class="col-md-9">
+                          <div class="form-text-row">
+                            <%=log.full_message%>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="form-group row">
+                        <div class="col-md-3">
+                          <div class="label-wrapper">
+                            <label class="col-form-label">Địa chỉ IP</label>
+                          </div>
+                        </div>
+                        <div class="col-md-9">
+                          <div class="form-text-row">
+                            <%=log.last_ip%>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="form-group row">
+                        <div class="col-md-3">
+                          <div class="label-wrapper">
+                            <label class="col-form-label">URL</label>
+                          </div>
+                        </div>
+                        <div class="col-md-9">
+                          <div class="form-text-row">
+                            <%=log.page_url%>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="form-group row">
+                        <div class="col-md-3">
+                          <div class="label-wrapper">
+                            <label class="col-form-label">Liên kết URL</label>
+                          </div>
+                        </div>
+                        <div class="col-md-9">
+                          <div class="form-text-row">
+                            <%=log.referrer_url%>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="form-group row">
+                        <div class="col-md-3">
+                          <div class="label-wrapper">
+                            <label class="col-form-label">Ngày tạo</label>
+                          </div>
+                        </div>
+                        <div class="col-md-9">
+                          <div class="form-text-row">
+                            <%=moment(log.create_on).locale("vi-VN").format("L")%>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+        </form>
+        <div id="button-delete-confirmation" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="button-delete-confirmation-title">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h4 class="modal-title" id="button-delete-confirmation-title">Bạn chắc chắn?</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">×</span>
+                </button>
+              </div>
+              <form action="/admin/log/delete/<%=log.id%>" method="post">
+                <div class="form-horizontal">
+                  <div class="modal-body">Bạn có chắc chắn muốn xóa mục này không?</div>
+                  <div class="modal-footer">
+                    <span class="btn btn-default" data-dismiss="modal">Thoát</span> 
+                    <button type="submit" class="btn btn-danger float-right"> Xoá </button>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+          <script>
+            $(document).ready(function() {
+              $("#button-delete").attr("data-toggle", "modal").attr("data-target", "#button-delete-confirmation")
+            })
+          </script>
+        </div>
+      </div>
+      <%- include('../shared/footer') %>
+    </div>
+  </body>
+</html>

@@ -1,59 +1,20 @@
-var express  		= require('express'),
+﻿var express  		= require('express'),
     router   		= express.Router(),
     url             = require('url'),
     crypto          = require('crypto'),
     moment          = require('moment'),
-    passport        = require('passport');
+    passport        = require('passport'),
+    validator       = require("validator"),
+    webService      = require('./../models/webModel'),
+    adminService    = require('../../admin/models/adminModel'),
+    logService      = require('../../admin/models/logModel'),
+    userService     = require('../../admin/models/userModel'),
+    roleUserService = require('../../admin/models/roleUsersModel'),
+    settingService  = require('../../admin/models/settingModel'),
+    mailService     = require('./../service/sendMail');
 
 router.get('/login', function (req, res, next) {
-    var strMsg          = "",
-        str_error       = [],
-        arrPromise      = [],
-        pr_siteKey      = '',
-        enableCaptcha   = 0;
-    
-    arrPromise.push(new Promise(function (resolve, reject) {
-        settingService.getSettingBySystemName("siteKey", function (err, result, fields) {
-            if(err){
-                return logService.create(req, err).then(function(){
-                    str_error.push(err.sqlMessage);
-                    resolve();
-                });
-            }
-            if (result !== undefined) {
-                pr_siteKey = result[0].body.toString();
-            }
-            resolve();
-        });
-    }));
-    
-    arrPromise.push(new Promise(function (resolve, reject) {
-        settingService.getSettingBySystemName("enableCaptcha", function (err, result, fields) {
-            if(err){
-                return logService.create(req, err).then(function(){
-                    str_error.push(err.sqlMessage);
-                    resolve();
-                });
-            }
-            if (result !== undefined) {
-                enableCaptcha = parseInt(result[0].body);
-            }
-            resolve();
-        });
-    }));
-    
-    return new Promise(function (resolve, reject) {
-        Promise.all(arrPromise).then(function () {
-            if(str_error.length > 0){
-                strMsg = str_error.toString();
-            }
-            res.render('user/login.ejs', { 
-                siteKey: pr_siteKey,
-                message: strMsg,
-                enableCaptcha: enableCaptcha 
-            });
-        })
-    });
+    return res.render('user/login.ejs');
 })
 
 router.post('/login', function (req, res, next) {
@@ -92,21 +53,6 @@ router.post('/login', function (req, res, next) {
             resolve();
         });
     }));
-    
-    arrPromise.push(new Promise(function (resolve, reject) {
-        settingService.getSettingBySystemName("enableCaptcha", function (err, result, fields) {
-            if(err){
-                return logService.create(req, err).then(function(){
-                    str_error.push(err.sqlMessage);
-                    resolve();
-                });
-            }
-            if (result !== undefined) {
-                enableCaptcha = parseInt(result[0].body);
-            }
-            resolve();
-        });
-    }));
 
     return new Promise(function (resolve, reject) {
         Promise.all(arrPromise).then(function () {
@@ -128,26 +74,7 @@ router.post('/login', function (req, res, next) {
                 res.send(resultData);
                 return;
             }
-            if(enableCaptcha == 1){
-                var recaptcha = new reCAPTCHA({ 
-                    siteKey: pr_siteKey, 
-                    secretKey: pr_secretKey 
-                });
-                recaptcha.validateRequest(req, requestIp.getClientIp(req)).then(function () {
-                    webService.SSOLogin(req, username, password).then(function (jsonData) {
-                        PRBookingLogin(resultData, jsonData, req, res);
-                    });
-                }).catch(function (errorCodes) {
-                    resultData.message = "Mã bảo mật recaptcha không chính xác!";
-                    //resultData.message = recaptcha.translateErrors(errorCodes).toString();
-                    res.send(resultData);
-                    return;
-                });
-            } else {
-                webService.SSOLogin(req, username, password).then(function (jsonData) {
-                    PRBookingLogin(resultData, jsonData, req, res);
-                });
-            }
+            PRBookingLogin(resultData, {}, req, res);
         })
     });
 })
@@ -168,8 +95,7 @@ router.post('/signup', function (req, res, next) {
     var str_error       = [],
         arrPromise      = [],
         pr_siteKey      = '',
-        pr_secretKey    = '',
-        enableCaptcha   = 0;
+        pr_secretKey    = '';
     
     arrPromise.push(new Promise(function (resolve, reject) {
         settingService.getSettingBySystemName("siteKey", function (err, result, fields) {
@@ -200,21 +126,7 @@ router.post('/signup', function (req, res, next) {
             resolve();
         });
     }));
-    
-    arrPromise.push(new Promise(function (resolve, reject) {
-        settingService.getSettingBySystemName("enableCaptcha", function (err, result, fields) {
-            if(err){
-                return logService.create(req, err).then(function(){
-                    str_error.push(err.sqlMessage);
-                    resolve();
-                });
-            }
-            if (result !== undefined) {
-                enableCaptcha = parseInt(result[0].body);
-            }
-            resolve();
-        });
-    }));
+
 
     return new Promise(function (resolve, reject) {
         Promise.all(arrPromise).then(function () {
@@ -315,25 +227,40 @@ router.post('/signup', function (req, res, next) {
                 res.send(resultData);
                 return;
             }
-            if(enableCaptcha == 1){
-                var recaptcha = new reCAPTCHA({ 
-                    siteKey: pr_siteKey, 
-                    secretKey: pr_secretKey 
-                });
-                recaptcha.validateRequest(req, requestIp.getClientIp(req)).then(function () {
-                    SSO_CreateUser(resultData, list_error, parameter, req, res);
-                }).catch(function (errorCodes) {
-                    resultData.message = "Mã bảo mật recaptcha không chính xác!";
-                    //resultData.message = recaptcha.translateErrors(errorCodes).toString();
-                    res.send(resultData);
-                    return;
-                });
-            } else {
-                SSO_CreateUser(resultData, list_error, parameter, req, res);
-            }
+
+            SSO_CreateUser(resultData, list_error, parameter, req, res);
         })
     });
 })
+
+router.get('/activeaccount/:token', function (req, res) {
+    userService.getUserByActivePasswordToken(req.params.token, new Date(Date.now())).then(function (responseData) {
+        if(!responseData.success){
+            res.render('user/activeaccount.ejs', { 
+                message: responseData.message
+            });
+        } else {
+            var user = responseData.data[0];
+            if (!user) {
+                res.render('user/activeaccount.ejs', { 
+                    message: 'Mã kích hoạt tài khoản của bạn không hợp lệ hoặc đã hết hạn.'
+                });
+            } else {
+                var iusers = {
+                    activePasswordToken: undefined,
+                    resetPasswordExpires: undefined,
+                    active: 1,
+                    id: user.id
+                };
+                userService.activeaccount(iusers, function (err, reUser, fields) {
+                    res.render('user/activeaccount.ejs', { 
+                        message: 'Tài khoản của bạn đã được kích hoạt.'
+                    });
+                });
+            }
+        }
+    });
+});
 
 router.get('/checkuname', function(req, res) {
     var resultData = {
@@ -522,4 +449,121 @@ router.get('/profile', function(req, res) {
     }
 })
 
+function SSO_CreateUser(resultData, list_error, parameter, req, res) {
+    var str_error     = [],
+        userPromise   = [],
+        passwordData  = adminService.sha512(parameter.password, adminService.salt()),
+        pr_user       = {
+            user_id: 0,
+            name: parameter.username,
+            full_name: parameter.full_name,
+            password: passwordData.passwordHash,
+            email: parameter.email,
+            phone: parameter.phone,
+            gender: parameter.gender,
+            birthday: parameter.birthday.split("-").reverse().join("-"),
+            address: parameter.address,
+            activePasswordToken: "",
+            resetPasswordExpires: new Date(Date.now() + 3600000),
+            active: 1,
+        };
+
+    return new Promise(function (resolve, reject) {
+        Promise.all(userPromise).then(function () {
+            if(str_error.length > 0){
+                resultData.message = str_error.toString();
+                res.send(resultData);
+                return;
+            }
+            if(list_error.full_name.length > 0 || 
+               list_error.email.length > 0 || 
+               list_error.phone.length > 0 || 
+               list_error.birthday.length > 0 || 
+               list_error.gender.length > 0 || 
+               list_error.username.length > 0 || 
+               list_error.password.length > 0 || 
+               list_error.confirm_password.length > 0){
+                resultData.error = list_error;
+                res.send(resultData);
+                return;
+            }
+            pr_user.user_id = isNaN(parseInt(jsonUser.data.data)) ? 0 : parseInt(jsonUser.data.data);
+            userService.create(pr_user, function (err, reUser, fields) {
+                if (err) {
+                    logService.create(req, err).then(function(){
+                        resultData.message = err.sqlMessage;
+                        res.send(resultData);
+                    });
+                    return;
+                }
+                if (reUser.insertId !== undefined) {    
+                    roleUserService.create({user_id: reUser.insertId, role_id: 2}, function (err, rsRole, fields) {
+                        if (err) {
+                            logService.create(req, err).then(function(){
+                                resultData.message = err.sqlMessage;
+                                res.send(resultData);
+                            });
+                            return;
+                        }
+                        //var activeaccount = 'http://' + req.headers.host + '/user/activeaccount/' + pr_user.activePasswordToken;
+                        //mailService.mail_signup(parameter.email, activeaccount).then(function(responseData){
+                            resultData.status  = true;
+                            resultData.message = "Đăng ký thành công. Vui lòng kiểm tra email " + parameter.email + " để kích hoạt tài khoản theo hướng dẫn trước khi đăng nhập hệ thống!";
+                            res.send(resultData);
+                        //})
+                    })
+                } else {
+                    resultData.message = "Dữ liệu trả về không xác định!";
+                    res.send(resultData);
+                }
+            })
+        });
+    });
+}
+
+function PRBookingLogin(resultData, jsonData, req, res) {
+    var str_error = [],
+        user_data = jsonData.data,
+        errmsg    = user_data.errmsg;
+    
+    if(jsonData.status == 0){
+        str_error.push(jsonData.message);
+    }
+    if (errmsg !== "") {
+        str_error.push(errmsg);
+    }
+
+    if(str_error.length > 0){
+        resultData.message = str_error.toString();
+        res.send(resultData);
+        return;
+    }
+    var dataToken = webService.readyToken(user_data.data);
+    if (dataToken.uid > 0) {
+        var ctt = new Date(dataToken.ctt).getTime();
+        if (ctt != null) {
+            loginLocal(resultData, result[0], req, res);
+        }
+    }
+}
+
+function loginLocal(resultData, user, req, res){
+    req.logIn(user, function (err) {
+        if (!user || err) {
+            logService.create(req, err).then(function(){
+                resultData.message = err;
+                res.send(resultData);
+            });
+            return;
+        }
+        if(user.active == 0){
+            resultData.message = "Tài khoản của bạn chưa được kích hoạt!";
+            res.send(resultData);
+            return;
+        }
+        resultData.status  = true;
+        resultData.message = "Đăng nhập thành công!";
+        res.send(resultData);
+    });
+}
 module.exports = router;

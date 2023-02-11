@@ -1,0 +1,26 @@
+﻿<div class="form-group row">
+  <div class="col-md-3">
+    <div class="label-wrapper">
+      <label class="col-form-label">Tên hệ thống</label>
+    </div>
+  </div>
+  <div class="col-md-9">
+    <div class="input-group input-group-required">
+      <input class="form-control text-box single-line" id="systemname" name="systemname" type="text" value="<%=setting.systemname%>">
+      <div class="input-group-btn"><span class="required">*</span></div>
+    </div>
+  </div>
+</div>
+<div class="form-group row">
+  <div class="col-md-3">
+    <div class="label-wrapper">
+      <label class="col-form-label">Nội dung</label>
+    </div>
+  </div>
+  <div class="col-md-9">
+    <div class="input-group input-group-required">
+      <textarea cols="60" rows="6" class="form-control text-box single-line" id="body" name="body"><%=setting.body%></textarea>
+      <div class="input-group-btn"><span class="required">*</span></div>
+    </div>
+  </div>
+</div>

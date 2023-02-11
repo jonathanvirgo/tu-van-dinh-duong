@@ -1,0 +1,37 @@
+<html lang="en">
+   <head>
+      <%- include('../layout/head') %>
+      <title>Liên hệ</title>
+   </head>
+   <body>
+      <div class="page">
+         <%- include('../layout/header',{user: user}) %>
+         <%- include('../layout/sidebar') %>
+         <div class="page-main">
+            <div class="container">
+            <% if (errors.length > 0){%>
+               <div class="row gy-32px">
+                  <div class="alert-dismissable">
+                     <div class="alert alert-danger">
+                        <ul>
+                          <% for (i = 0;i < errors.length;i++){%>
+                           <li><%=errors[i]%></li>
+                          <%}%>
+                        </ul>
+                     </div>
+                  </div>
+               </div>
+            <% } else {%>
+              <h2 class="box-title">
+                Liên hệ
+              </h2>
+              <div class="box-body">
+                Thông tin liên hệ
+              </div>
+            <% } %>
+            </div>
+         </div>
+         <%- include('../layout/footer', { footer_class: ""}) %>
+      </div>
+   </body>
+</html>

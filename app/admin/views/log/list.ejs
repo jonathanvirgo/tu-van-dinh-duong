@@ -1,0 +1,360 @@
+<html lang="en">
+  <head>
+    <title>Danh sách nhật ký</title>
+    <%- include('../shared/head') %>
+  </head>
+  <body class="hold-transition sidebar-mini layout-fixed control-sidebar-slide-open">
+    <div class="wrapper">
+      <%- include('../shared/menu',{user: user}) %>
+      <div class="content-wrapper">
+        <form method="post" action="/admin/log">
+            <div class="content-header clearfix">
+              <h1 class="float-left">
+                Danh sách nhật ký
+              </h1>
+              <div class="float-right">
+                <button type="button" id="delete-selected" name="delete-selected" class="btn btn-danger"> 
+                    <i class="far fa-trash-alt"></i> Xóa các mục đã chọn 
+                </button>
+                <div id="delete-selected-action-confirmation" class="modal fade" tabindex=-1 role="dialog" aria-labelledby="delete-selected-action-confirmation-title">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h4 class="modal-title" id="delete-selected-action-confirmation-title">
+                                    Bạn chắc chắn?
+                                </h4>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">Bạn có chắc chắn muốn thực hiện hành động này không?</div>
+                            <div class="modal-footer">
+                                <button type="submit" id="delete-selected-action-confirmation-submit-button" class="btn btn-primary float-right"> Đồng ý </button> 
+                                <span class="btn btn-default float-right margin-r-5" data-dismiss="modal">
+                                    Thoát
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <script>
+                    $(document).ready(function() {
+                        $("#delete-selected").attr("data-toggle", "modal").attr("data-target", "#delete-selected-action-confirmation");
+                        $("#delete-selected-action-confirmation-submit-button").attr("name", $("#delete-selected").attr("name"));
+                        $("#delete-selected").attr("name", "");
+                        $("#delete-selected").attr("type") == "submit" && $("#delete-selected").attr("type", "button")
+                    })
+                    </script>
+                </div>
+                <button type="submit" id="clearall" name="clearall" class="btn btn-danger">
+                    <i class="far fa-trash-alt"></i> Xóa tất cả 
+                </button>
+                <div id="clearall-action-confirmation" class="modal fade" tabindex=-1 role="dialog" aria-labelledby="clearall-action-confirmation-title">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h4 class="modal-title" id="clearall-action-confirmation-title">Bạn có chắc chắn?</h4>
+                                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                            </div>
+                            <div class="modal-body">Bạn có chắc chắn muốn thực hiện hành động này không?</div>
+                            <div class="modal-footer">
+                                <button type="submit" id="clearall-action-confirmation-submit-button" class="btn btn-primary float-right"> Đồng ý </button> 
+                                <span class="btn btn-default float-right margin-r-5" data-dismiss="modal">Thoát</span>
+                            </div>
+                        </div>
+                    </div>
+                    <script>
+                    $(document).ready(function() {
+                        $("#clearall").attr("data-toggle", "modal").attr("data-target", "#clearall-action-confirmation");
+                        $("#clearall-action-confirmation-submit-button").attr("name", $("#clearall").attr("name"));
+                        $("#clearall").attr("name", "");
+                        $("#clearall").attr("type") == "submit" && $("#clearall").attr("type", "button")
+                    })
+                    </script>
+                </div>
+              </div>
+            </div>
+            <section class="content">
+              <div class="container-fluid">
+                <div class="form-horizontal">
+                  <div class="cards-group">
+                    <div class="card card-default card-search">
+                      <div class="card-body">
+                        <div class="row search-row opened">
+                          <div class="search-text">Tìm kiếm</div>
+                          <div class="icon-search">
+                            <i class="fas fa-search" aria-hidden="true"></i>
+                          </div>
+                          <div class="icon-collapse">
+                            <i class="far fa-angle-up" aria-hidden="true"></i>
+                          </div>
+                        </div>
+                        <div class="search-body">
+                            <div class="row">
+                                <div class="col-md-5">
+                                    <div class="form-group row">
+                                        <div class="col-md-4">
+                                            <div class="label-wrapper">
+                                                <label class="col-form-label">Nhật ký từ ngày</label>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-8">
+                                            <input id="created_on_from" name="created_on_from">
+                                            <script>
+                                                $(document).ready(function(){
+                                                    $("#created_on_from").kendoDatePicker();
+                                                })
+                                            </script>
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <div class="col-md-4">
+                                            <div class="label-wrapper">
+                                                <label class="col-form-label">Nhật ký đến ngày</label>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-8">
+                                            <input id="created_on_to" name="created_on_to">
+                                            <script>
+                                                $(document).ready(function(){
+                                                    $("#created_on_to").kendoDatePicker();
+                                                })
+                                            </script>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-7">
+                                    <div class="form-group row">
+                                        <div class="col-md-4">
+                                            <div class="label-wrapper">
+                                                <label class="col-form-label">Thông báo</label>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-8">
+                                            <input class="form-control text-box single-line" id="message" name="message" type="text">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="text-center col-12">
+                                    <button type="button" id="search-button" class="btn btn-primary btn-search"> 
+                                        <i class="fas fa-search"></i> Tìm kiếm 
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="card card-default">
+                      <div class="card-body">
+                        <table class="table table-bordered table-hover table-striped dataTable" width=100% id="log-grid">
+                        </table>
+                        <script type="text/javascript">
+                            $(document).ready(function() {
+                                var loading = $("#loading-page");
+                                $("#log-grid").DataTable({
+                                    processing: !0,
+                                    serverSide: !0,
+                                    ajax: {
+                                        url: "/admin/log/list",
+                                        type: "POST",
+                                        dataType: "json",
+                                        dataSrc: function(response){
+                                            return response.data;
+                                        },
+                                        beforeSend: function() {
+                                            clearMasterCheckbox("#log-grid");
+                                            loading.show();
+                                            window.setTimeout(function () {
+                                                loading.hide();
+                                            }, 500);
+                                        },
+                                        data: function(n){
+                                            if (!n) {
+                                                n = {};
+                                            }
+                                            n.created_on_from  = $("#created_on_from").val();
+                                            n.created_on_to    = $("#created_on_to").val();
+                                            n.message          = $("#message").val();
+                                            return n;
+                                        }
+                                    },
+                                    scrollX: !0,
+                                    info: !0,
+                                    paging: !0,
+                                    pagingType: "simple_numbers",
+                                    language: {
+                                        emptyTable: "Không có dữ liệu",
+                                        info: "_START_-_END_ of _TOTAL_ items",
+                                        infoEmpty: "Không có dữ liệu",
+                                        infoFiltered: "(filtered from _MAX_ total entries)",
+                                        thousands: ",",
+                                        lengthMenu: "Show _MENU_ items",
+                                        loadingRecords: "Đang tải dữ liệu...",
+                                        processing: "<i class='fa fa-refresh fa-spin'><\/i>",
+                                        search: "Tìm kiếm:",
+                                        zeroRecords: "Không có dữ liệu",
+                                        paginate: {
+                                            first: "<i class='k-icon k-i-seek-w'><\/i>",
+                                            last: "<i class='k-icon k-i-seek-e'><\/i>",
+                                            next: "<i class='k-icon k-i-arrow-e'><\/i>",
+                                            previous: "<i class='k-icon k-i-arrow-w'><\/i>"
+                                        },
+                                        aria: {
+                                            sortAscending: ": activate to sort column ascending",
+                                            sortDescending: ": activate to sort column descending"
+                                        }
+                                    },
+                                    pageLength: 15,
+                                    lengthMenu: [15, 20, 50, 100],
+                                    ordering: !1,
+                                    buttons: [{
+                                        name: "refresh",
+                                        text: '<i class="fas fa-sync-alt" style="padding-left: 5px"><\/i>',
+                                        action: function() {
+                                            updateTable("#log-grid", !1)
+                                        }
+                                    }],
+                                    dom: "<'row'<'col-md-12't>><'row margin-t-5'<'col-lg-5 col-xs-12'<'float-lg-left'p>><'col-lg-3 col-xs-12'<'text-center'l>><'col-lg-3 col-xs-12'<'float-lg-right text-center'i>><'col-lg-1 col-xs-12'<'float-lg-right text-center data-tables-refresh'B>>>",
+                                    columns: [{
+                                        title: '<input class="mastercheckbox" type="checkbox"/>',
+                                        width: "50",
+                                        visible: !0,
+                                        searchable: !1,
+                                        className: "text-center",
+                                        render: function(n, t, i) {
+                                            return n === !0 ? '<input name="checkbox_log" value="' + i.id + '" type="checkbox" class="checkboxGroups" checked="checked" />' : '<input name="checkbox_log" value="' + i.id + '" type="checkbox" class="checkboxGroups" />'
+                                        },
+                                        data: "id"
+                                    },{
+                                        title: "Tiêu đề",
+                                        width: "500",
+                                        visible: !0,
+                                        searchable: !1,
+                                        className: "text-left",
+                                        render: function(n) {
+                                            return escapeHtml(n)
+                                        },
+                                        data: "short_message"
+                                    }, {
+                                        title: "Người dùng",
+                                        width: "200",
+                                        visible: !0,
+                                        searchable: !1,
+                                        className: "text-left",
+                                        render: function(n) {
+                                            return escapeHtml(n)
+                                        },
+                                        data: "user_name"
+                                    }, {
+                                        title: "Ngày tạo",
+                                        width: "120",
+                                        visible: !0,
+                                        searchable: !1,
+                                        render: function(n) {
+                                            return n ? moment(n).locale("vi-VN").format("L") : null
+                                        },
+                                        data: "create_on"
+                                    }, {
+                                        title: "Chi tiết",
+                                        width: "100",
+                                        visible: !0,
+                                        searchable: !1,
+                                        className: "button-column",
+                                        render: function(n, t, i, r) {
+                                            return '<a class="btn btn-default" href="/admin/log/view/' + n + '"><i class="far fa-eye"><\/i> Chi tiết<\/a>'
+                                        },
+                                        data: "id"
+                                    }]
+                                });
+
+                                $("#search-button").click(function() {
+                                    $('#log-grid').DataTable().ajax.reload();
+                                    $('#log-grid .checkboxGroups').prop('checked', false).change();
+                                    selectedIds = [];
+                                    return false;
+                                });
+                                $('.mastercheckbox', $('#log-grid').parents('.dataTables_scroll').first()).first().click(function () {
+                                    $('#log-grid .checkboxGroups').prop('checked', $(this).is(':checked')).change();
+                                });
+                                
+                                $('#log-grid').on('change', 'input[type=checkbox][class!=mastercheckbox][class=checkboxGroups]', function (e) {
+                                    var $check  = $(this);
+                                    var checked = jQuery.inArray($check.val(), selectedIds);
+                                    if ($check.is(':checked') == true) {
+                                        if (checked == -1) {
+                                            selectedIds.push($check.val());
+                                        }
+                                    } else if (checked > -1) {
+                                        selectedIds = $.grep(selectedIds, function (item, index) {
+                                            return item != $check.val();
+                                        });
+                                    }
+                                    updateMasterCheckbox($('#log-grid').parents('.dataTables_scroll').first());
+                                });
+
+                                $("#log-grid").DataTable().columns.adjust();
+                                $(document).ready(function() {
+                                    //"delete selected" button
+                                    $("#delete-selected-action-confirmation-submit-button").bind("click", function () {
+                                        var postData = {
+                                            selectedIds: selectedIds.toString()
+                                        };
+                                        $.ajax({
+                                            cache: false,
+                                            type: "POST",
+                                            url: "/admin/log/delete_selected",
+                                            data: postData,
+                                            traditional: true,
+                                            error: function (jqXHR, textStatus, errorThrown) {
+                                                $('#deleteSelectedFailed-info').text(errorThrown);
+                                                $("#deleteSelectedFailed").click();
+                                            },
+                                            complete: function (jqXHR, textStatus) {
+                                                updateTable('#log-grid');
+                                            }
+                                        });
+                                        $('#delete-selected-action-confirmation').modal('toggle');
+                                        return false;
+                                    });
+                                });
+                            })
+                        </script>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </section>
+        </form>
+        <div id="deleteSelectedFailed-action-alert" class="modal fade" tabindex=-1 role="dialog" aria-labelledby="deleteSelectedFailed-action-alert-title">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title" id="deleteSelectedFailed-action-alert-title">Thông tin</h4>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden=true>&times;</span>
+                        </button>
+                    </div>
+                    <div class=modal-body>
+                        <div class="additional-text" id="deleteSelectedFailed-info"></div>
+                    </div>
+                    <div class="modal-footer">
+                        <span class="btn btn-primary float-right" data-dismiss="modal">OK</span>
+                    </div>
+                </div>
+            </div>
+            <div class="btn btn-default" id="deleteSelectedFailed" style=display:none></div>
+            <script>
+            $(document).ready(function() {
+                $("#deleteSelectedFailed").attr("data-toggle", "modal").attr("data-target", "#deleteSelectedFailed-action-alert")
+            })
+            </script>
+        </div>
+      </div>
+      <%- include('../shared/footer') %>
+    </div>
+  </body>
+</html>

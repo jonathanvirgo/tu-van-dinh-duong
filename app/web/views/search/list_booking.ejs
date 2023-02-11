@@ -1,0 +1,101 @@
+<% if (listBooking.length > 0){%>
+<div class="box">
+  <div class="box-header">
+    <h2 class="box-title">Danh sách booking <small class="text-icon fw-6">(<%=paginatorBooking.totalItem%>)</small>
+    </h2>
+    <div class="paginate fs-13px ms-auto d-none d-md-flex">
+      <%- include('../search/paginator_booking') %>
+    </div>
+  </div>
+  <div class="box-body box-table">
+    <div class="table-responsive-xl table-responsive-flush mb-4">
+      <div class="table-responsive-inner"></div>
+      <table class="table-1 table table-pe-x-3 mb-0 align-middle table-ds-booking">
+        <thead>
+          <tr>
+            <td>STT</td>
+            <td class="table-sort">
+              <span>Mã booking</span>
+            </td>
+            <td>
+              <span>Site<span class="text-gray-3 mx-1 fw-3">|</span>Chuyên mục<span class="text-gray-3 mx-1 fw-3">|</span>Loại bài</span>
+            </td>
+            <td class="table-sort">
+              <span>Giá booking</span>
+            </td>
+            <td class="table-sort">
+              <span>Tác giả</span>
+            </td>
+            <td class="table-sort">
+              <span>Thời gian</span>
+            </td>
+            <td class="table-sort w-1">
+              <span>Trạng thái</span>
+            </td>
+            <td class="table-sort w-1">Hành động</td>
+          </tr>
+        </thead>
+        <tbody>
+          <% for (i = 0;i < listBooking.length;i++){%>
+            <tr>
+            <td class="fw-6 text-body-2"><%=i + ((paginatorBooking.perPage * paginatorBooking.page) - (paginatorBooking.perPage -1))%></td>
+            <td>
+              <a target="_blank" alt="Chi tiết booking" href="/booking/detail/<%=listBooking[i].booking_id_pr%>">
+                <span class="text-primary fw-6 fs-13px">
+                  <%=listBooking[i].booking_id_pr%>
+                </span>
+              </a>
+            </td>
+            <td class="fs-13px">
+              <span class="text-gray-4"><%=listBooking[i].domain%></span>
+              <span class="text-gray-2 mx-1">|</span>
+              <span class="text-red"><%=listBooking[i].channel_name%></span>
+              <span class="text-gray-2 mx-1">|</span>
+              <span class="text-primary"><%=listBooking[i].fm_name%></span>
+            </td>
+            <td><%=listBooking[i].price%></td>
+            <td class="min-w-150px">
+              <div class="flex-center-y fs-13px">
+                <img class="img-fluid me-2" src="/public/content/images/user.svg" alt="" />
+                <%=listBooking[i].user_full_name%>
+              </div>
+            </td>
+            <td class="fs-13px">
+              <%=moment(listBooking[i].book_date).format("HH:mm:ss")%>
+              <br>
+              <small class="text-body-2"><%=moment(listBooking[i].book_date).format("DD/MM/YYYY")%></small>
+            </td>
+            <td>
+              <span class="badge badge-<%=webService.bookingStatusClass(listBooking[i].status).name%>">
+                <%=webService.bookingStatusClass(listBooking[i].status).value%>
+              </span>
+            </td>
+            <td>
+              <div class="flex-center-x gap-10px">
+                <% if(webService.authorizeCancelBooking(user, listBooking[i]).status) { %>
+                <button class="btn btn-action btn-action-cancel" title="Huỷ booking" type="button" onclick="confirmBoxBookingCancel(<%=listBooking[i].booking_id_pr%>)">
+                  <svg class="iconsvg-trash">
+                    <use xlink:href="/public/content/images/sprite.svg#trash"></use>
+                  </svg>
+                </button>
+                <% } %>
+                <% if(webService.authorizeEditBooking(user, listBooking[i]).status) { %>
+                <a class="btn btn-action btn-action-edit" target="_blank" alt="Sửa booking" target="_blank" href="/booking/edit/<%=listBooking[i].booking_id_pr%>">
+                  <svg class="iconsvg-edit-2">
+                    <use xlink:href="/public/content/images/sprite.svg#edit-2"></use>
+                  </svg>
+                </a>
+                <%}%>
+              </div>
+            </td>
+          </tr>
+          <%}%>
+        </tbody>
+      </table>
+    </div>
+    <div class="paginate fs-13px mx-auto">
+      <%- include('../search/paginator_booking') %>
+    </div>
+  </div>
+</div>
+<%}%>

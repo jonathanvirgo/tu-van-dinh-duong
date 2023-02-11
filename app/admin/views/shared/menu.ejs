@@ -1,0 +1,101 @@
+﻿<nav class="main-header navbar navbar-expand-md navbar-dark bg-dark">
+   <ul class="navbar-nav pl-2 pl-md-0">
+      <li class="nav-item">
+         <a class="nav-link" id="nopSideBarPusher" data-widget="pushmenu" href="#">
+            <i class="fa fa-bars"></i>
+         </a>
+   </ul>
+   <a href="/admin" class="brand-link navbar-dark">
+      <img src="/public/admin/images/logo.png" class="brand-image logo d-block d-md-none d-sm-block d-sm-none"> 
+   </a>
+   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation"> 
+      <span class=navbar-toggler-icon></span> 
+   </button>
+   <div class="collapse navbar-collapse" id="navbarText">
+      <ul class="navbar-nav ml-auto pl-2">
+         <% if (user){%>
+         <li class="nav-item"><a href="#" class="nav-link disabled"><%= user.name %></a></li>
+         <li class="nav-item"><a class="nav-link" href="/user/logout">Logout</a></li>
+         <%}%>
+         <li class="nav-item"><a class="nav-link" href="/">Public web</a></li>
+      </ul>
+   </div>
+</nav>
+<aside class="main-sidebar sidebar-dark-primary elevation-4">
+   <a href="/admin" class="brand-link navbar-dark logo-switch"> 
+      <img src="/public/admin/images/logo.png" class="brand-image-xl logo-xl"> 
+      <img src="/public/admin/images/logo-mini.png" class="brand-image-xs logo-xs"> 
+   </a>
+   <div class="sidebar">
+      <nav class="mt-2">
+         <ul id="admin-menu" class="nav nav-pills nav-sidebar flex-column nav-legacy" data-widget="treeview" role="menu">
+            <li class="nav-item">
+               <a href="/admin" class="nav-link active">
+                  <i class="nav-icon fas fa-desktop"></i>
+                  <p>Trang tổng quan</p>
+               </a>
+            </li>
+            <li class="nav-item">
+               <a href="/admin/role" class="nav-link">
+                  <i class="nav-icon fas fa-cubes"></i>
+                  <p>Quản lý quyền</p>
+               </a>
+            </li>
+            <li class="nav-item">
+               <a href="/admin/user" class="nav-link">
+                  <i class="nav-icon fas fa-user"></i>
+                  <p>Quản lý người dùng</p>
+               </a>
+            </li>
+            <li class="nav-item">
+               <a href="/admin/website" class="nav-link">
+                  <i class="nav-icon fas fa-shopping-cart"></i>
+                  <p>Quản lý website</p>
+               </a>
+            </li>
+            <li class="nav-item">
+               <a href="/admin/format" class="nav-link">
+                  <i class="nav-icon fas fa-shopping-cart"></i>
+                  <p>Quản lý Loại bài</p>
+               </a>
+            </li>
+            <li class="nav-item">
+               <a href="/admin/channel" class="nav-link">
+                  <i class="nav-icon fas fa-shopping-cart"></i>
+                  <p>Quản lý Chuyên mục</p>
+               </a>
+            </li>
+            <li class="nav-item">
+               <a href="/admin/booking" class="nav-link">
+                  <i class="nav-icon fas fa-shopping-cart"></i>
+                  <p>Quản lý booking</p>
+               </a>
+            </li>
+            <li class="nav-item">
+               <a href="/admin/article" class="nav-link">
+                  <i class="nav-icon fas fa-cubes"></i>
+                  <p>Quản lý bài viết</p>
+               </a>
+            </li>
+            <li class="nav-item">
+               <a href="/admin/log" class="nav-link">
+                  <i class="nav-icon fas fa-cube"></i>
+                  <p>Nhật ký hoạt động</p>
+               </a>
+            </li>
+            <li class="nav-item">
+               <a href="/admin/queued_email" class="nav-link">
+                  <i class="nav-icon fas fa-cube"></i>
+                  <p>Hàng đợi email</p>
+               </a>
+            </li>
+            <li class="nav-item">
+               <a href="/admin/setting" class="nav-link">
+                  <i class="nav-icon fas fa-cogs"></i>
+                  <p>Cài đặt</p>
+               </a>
+            </li>
+         </ul>
+      </nav>
+   </div>
+</aside>

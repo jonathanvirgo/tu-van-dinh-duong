@@ -1,0 +1,156 @@
+<div class="row gx-30px gy-5">
+  <div class="col-xl-6">
+    <div class="box">
+      <div class="box-header">
+        <h2 class="box-title">Danh sách bài đăng <small class="text-icon fw-6">(<%=countArticle%>)</small>
+        </h2>
+        <a class="box-more-link link-primary ms-auto" href="/article">
+          Xem đầy đủ
+          <svg class="iconsvg-arrow-right ms-1 flex-shrink-0">
+            <use xlink:href="/public/content/images/sprite.svg#arrow-right"></use>
+          </svg>
+        </a>
+      </div>
+      <div class="box-body box-table">
+        <div class="table-responsive-md table-responsive-flush">
+          <div class="table-responsive-inner">
+            <table class="table-1 table table-pe-x-3 mb-0 align-middle">
+              <thead>
+                <tr>
+                  <td>STT</td>
+                  <td>Mã bài viết</td>
+                  <td>Tiêu đề
+                    <br>Site<span class="text-gray-3 mx-1 fw-3">|</span>Chuyên mục<span class="text-gray-3 mx-1 fw-3">|</span>Loại bài
+                  </td>
+                  <td width="100px">Thời gian</td>
+                  <td class="w-1">Trạng thái</td>
+                </tr>
+              </thead>
+              <tbody>
+              <% if (listArticle.length > 0){%>
+                <% for (i = 0;i < listArticle.length;i++){%>
+                  <tr>
+                    <td class="fw-6 text-body-2"><%=(i+1)%></td>
+                    <td>
+                      <a target="_blank" href="/article/edit/<%=listArticle[i].book_id%>">
+                        <span class="text-primary fw-6 fs-13px">
+                          <%=listArticle[i].id_request%>
+                        </span>
+                      </a>
+                    </td>
+                    <td>
+                      <p class="fw-14px mb-1"><%=listArticle[i].title_send_request%></p>
+                      <div class="fs-13px">
+                        <span class="text-gray-4"><%=listArticle[i].domain%></span>
+                        <% if (listArticle[i].channel_name){%>
+                        <span class="text-gray-2 mx-1">|</span>
+                        <span class="text-red"><%=listArticle[i].channel_name%></span>
+                        <%}%>
+                        <% if (listArticle[i].fm_name){%>
+                        <span class="text-gray-2 mx-1">|</span>
+                        <span class="text-primary"><%=listArticle[i].fm_name%></span>
+                        <%}%>
+                      </div>
+                    </td>
+                    <td class="fs-13px"><%=moment(listArticle[i].created_at).format("HH:mm:ss")%>
+                      <br>
+                      <small class="text-body-2"><%=moment(listArticle[i].created_at).format("DD/MM/YYYY")%></small>
+                    </td>
+                    <td>
+                      <span class="badge badge-<%=webService.bookingStatusClass(listArticle[i].search_status).name%>">
+                        <%=webService.bookingStatusClass(listArticle[i].search_status).value%>
+                      </span>
+                    </td>
+                  </tr>
+                <%}%>
+              <%} else {%>
+                <tr>
+                  <td colspan="5" style="text-align: center;">
+                    <b>Không có dữ liệu!</b>
+                  </td>
+                </tr>
+              <% } %>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-xl-6">
+    <div class="box">
+      <div class="box-header">
+        <h2 class="box-title">Danh sách booking <small class="text-icon fw-6">(<%=countBooking%>)</small>
+        </h2>
+        <a class="box-more-link link-primary ms-auto" href="/booking">
+          Xem đầy đủ
+          <svg class="iconsvg-arrow-right ms-1 flex-shrink-0">
+            <use xlink:href="/public/content/images/sprite.svg#arrow-right"></use>
+          </svg>
+        </a>
+      </div>
+      <div class="box-body box-table">
+        <div class="table-responsive-md table-responsive-flush">
+          <div class="table-responsive-inner">
+            <table class="table-1 table table-pe-x-3 mb-0 align-middle">
+              <thead>
+                <tr>
+                  <td>STT</td>
+                  <td>Mã
+                    <br> booking
+                  </td>
+                  <td>Site<span class="text-gray-3 mx-1 fw-3">|</span>Chuyên mục
+                    <br>Loại bài
+                  </td>
+                  <td class="text-center">Giá</td>
+                  <td class="text-center" width="100px">Giờ lên site</td>
+                  <td class="w-1">Trạng thái</td>
+                </tr>
+              </thead>
+              <tbody>
+                <% if (listBooking.length > 0){%>
+                  <% for (i = 0;i < listBooking.length;i++){%>
+                    <tr>
+                      <td class="fw-6 text-body-2"><%=(i+1)%></td>
+                      <td>
+                        <a target="_blank" alt="Chi tiết booking" href="/booking/detail/<%=listBooking[i].booking_id_pr%>">
+                          <span class="text-primary fw-6 fs-13px">
+                            <%=listBooking[i].booking_id_pr%>
+                          </span>
+                        </a>
+                      </td>
+                      <td class="fs-13px">
+                        <span class="text-gray-4"><%=listBooking[i].domain%></span>
+                        <span class="text-gray-2 mx-1">|</span>
+                        <span class="text-red"><%=listBooking[i].channel_name%></span>
+                        <br>
+                        <span class="text-primary"><%=listBooking[i].fm_name%></span>
+                      </td>
+                      <td class="fs-13px"><%=listBooking[i].price%></td>
+                      <td class="fs-13px">
+                      <%=moment(listBooking[i].book_date).format("HH:mm:ss")%>
+                      <br>
+                      <small class="text-body-2"><%=moment(listBooking[i].book_date).format("DD/MM/YYYY")%></small>
+                      </td>
+                      <td>
+                        <span class="badge badge-<%=webService.bookingStatusClass(listBooking[i].status).name%>">
+                          <%=webService.bookingStatusClass(listBooking[i].status).value%>
+                        </span>
+                      </td>
+                    </tr>
+                  <%}%>
+                <%} else {%>
+                  <tr>
+                    <td colspan="6" style="text-align: center;">
+                      <b>Không có dữ liệu!</b>
+                    </td>
+                  </tr>
+                <% } %>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
