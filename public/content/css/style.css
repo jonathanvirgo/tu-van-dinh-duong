@@ -1,0 +1,190 @@
+#loading-page::before {
+    content: '';
+    display: block;
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    background: rgb(0 0 0 / 32%);
+    top: 0;
+    left: 0;
+    z-index: 10;
+}
+#loading-page{
+    height: 75px;
+    width: 300px;
+    position: fixed;
+    z-index: 9999;
+    top: 40%;
+    left: calc(50% - 150px);
+    font-size: 12pt;
+    display: none;
+    line-height: 75px;
+    text-align: center;
+    color: green;
+    font-weight: bold;
+}
+#loading-page img{
+    width: 75px;
+    height: 75px;
+    position: absolute;
+    text-align: center;
+    left: 110px;
+}
+
+.badge-giu-cho {
+  --bs-badge-color: #ccc;
+  color: #000
+}
+.badge-giu-cho,
+.select2-container--default
+  .select2-dropdown
+  .select2-results__option--highlighted[data-select2-id*="giu-cho"],
+.select2-container--default
+  .select2-dropdown
+  .select2-results__option--selected[data-select2-id*="giu-cho"] {
+  background-color: #ccc;
+}
+.box-chart-body{
+  padding: 15px;
+  margin: 0px;
+}
+.chart--container {
+    width: 100%;
+    min-height: 200px;
+    display: flex;
+    height: 340px;
+}
+
+.login .form-control-lock,
+.login .form-control-user {
+    width: 20px;
+    height: 20px;
+    margin: 5px;
+    float: left;
+}
+.form-control-google-recaptcha {
+    margin: 0 auto;
+    width: 300px;
+    margin-bottom: 15px;
+}
+#signup-form .form-control-addon{
+    top:24px;
+}
+#signup-form .ajax_loading{
+    position: absolute;
+    right: 0px;
+    top: 15px;
+    display: none;
+}
+#signup-form .error-border{
+    border-bottom: 1px solid red;
+}
+#signup-form .ver-middle,
+#login-form .ver-middle{
+    height: 12px;
+    line-height: 12px;
+    width: 100%;
+    float: left;
+    margin: 5px 0px;
+}
+#login-form .mb-4{
+    float: left;
+    width: 100%;
+}
+#signup-form input:-internal-autofill-selected{
+    background: #fff;
+}
+#signup-form .form-control {
+    text-indent: 10px;
+}
+.alert-dismissable ul{
+    padding: 0px;
+    margin: 0px;
+}
+.alert-dismissable ul li{
+    list-style: none;
+    padding: 10px 0px;
+}
+.booking-detail .box-btn{
+    height: 20px;
+}
+.header-filter .flatpickr{
+    width: auto;
+}
+#search_filter{
+    margin: 0px;
+    padding: 0px;
+}
+@media (min-width: 992px) {
+  .website-status .vscomp-option {
+    width: 50%;
+  }
+  .vscomp-ele-wrapper.website-status {
+    width: 9rem;
+  }
+}
+@media (max-width: 767.98px){
+    .dashboard_search .col-md-auto{
+        margin: 10px 0px;
+    }
+}
+.upload a{
+    color: #4a69d2;
+}
+#tab-history-yc-sua-huy a{
+    cursor: pointer;
+}
+.loading{
+    opacity: 0.5;
+    align-items: flex-start;
+    position: absolute;
+}
+.select2-search--dropdown.select2-search--hide{
+    display: block !important;
+}
+.body-login .select2-search--dropdown.select2-search--hide{
+    display: none !important;
+}
+#btn_status_filter{
+    width: 190px;
+}
+.fw-14px{
+    font-size: 14px;
+}
+#myChartByDate-license-text{
+    display: none;
+}
+.form-control:disabled{
+    background-color: #edf5ff;
+}
+.contact-support-dropdown-select2{
+    cursor: pointer;
+}
+
+.header-filter .search-body{
+    width: 480px;
+    margin: 0 auto;
+}
+.statistic_body{
+    float: left;
+    width: 100%;
+}
+.statistic_body .stat,
+.statistic_body .box-body .box-body{
+    box-shadow: 0 1px 3px -1px rgb(0 0 0 / 35%), 0 1px 6px rgb(0 0 0 / 8%);
+}
+.dashboard_search {
+    max-width: 750px;
+    margin: 0 auto;
+    margin-bottom: 30px;
+}
+.dashboard_search .statistic_search {
+    display: flex;
+    gap: 0.625rem;
+}
+.dashboard_search .flatpickr-range>.flatpickr-input {
+    min-width: 15rem;
+}
+.dashboard_search .box-btn {
+    min-width: auto;
+}
