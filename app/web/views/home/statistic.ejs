@@ -33,13 +33,13 @@
     </div>
     </div>
     <div class="row">
-      <div class="col-xl-5">
+      <div class="col-xl-4">
         <div class="box box-stat">
-          <h2 class="box-title">Thống kê số lượng bài đăng</h2>
+          <h2 class="box-title">Thống kê số lượng khám</h2>
           <div class="row gy-10px gx-3 justify-content-center">
-            <div class="col-md-4 col-6">
+            <div class="col-6">
               <div class="stat">
-                <h6 class="stat-title">Gửi duyệt</h6>
+                <h6 class="stat-title">Tiếp nhận</h6>
                 <div class="stat-body">
                   <svg class="iconsvg-arrow-right-circle stat-icon text-gui-duyet">
                     <use xlink:href="/public/content/images/sprite.svg#arrow-right-circle"></use>
@@ -52,9 +52,9 @@
                 </div>
               </div>
             </div>
-            <div class="col-md-4 col-6">
+            <div class="col-6">
               <div class="stat">
-                <h6 class="stat-title">Chờ duyệt</h6>
+                <h6 class="stat-title">Đang khám</h6>
                 <div class="stat-body">
                   <svg class="iconsvg-hourglass stat-icon text-cho-duyet">
                     <use xlink:href="/public/content/images/sprite.svg#hourglass"></use>
@@ -67,9 +67,9 @@
                 </div>
               </div>
             </div>
-            <div class="col-md-4 col-6">
+            <div class="col-6">
               <div class="stat">
-                <h6 class="stat-title">Đã duyệt</h6>
+                <h6 class="stat-title">Hoàn thành</h6>
                 <div class="stat-body">
                   <svg class="iconsvg-checkmark-circle stat-icon text-da-duyet">
                     <use xlink:href="/public/content/images/sprite.svg#checkmark-circle"></use>
@@ -82,67 +82,7 @@
                 </div>
               </div>
             </div>
-            <div class="col-md-4 col-6">
-              <div class="stat">
-                <h6 class="stat-title">Gửi đăng</h6>
-                <div class="stat-body">
-                  <svg class="iconsvg-arrow-right-circle stat-icon text-gui-dang">
-                    <use xlink:href="/public/content/images/sprite.svg#arrow-right-circle"></use>
-                  </svg>
-                  <div class="stat-number">
-                    <a title="Gửi đăng" href="/article?status_ids=6">
-                      <%=statsByStatus.post6%>
-                    </a>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="col-md-4 col-6">
-              <div class="stat">
-                <h6 class="stat-title">Chờ đăng</h6>
-                <div class="stat-body">
-                  <svg class="iconsvg-hourglass stat-icon text-cho-dang">
-                    <use xlink:href="/public/content/images/sprite.svg#hourglass"></use>
-                  </svg>
-                  <div class="stat-number">
-                    <a title="Chờ đăng" href="/article?status_ids=7">
-                      <%=statsByStatus.post7%>
-                    </a>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="col-md-4 col-6">
-              <div class="stat">
-                <h6 class="stat-title">Xuất bản</h6>
-                <div class="stat-body">
-                  <svg class="iconsvg-upload stat-icon text-xuat-ban">
-                    <use xlink:href="/public/content/images/sprite.svg#upload"></use>
-                  </svg>
-                  <div class="stat-number">
-                    <a title="Xuất bản" href="/article?status_ids=4">
-                      <%=statsByStatus.post4%>
-                    </a>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="col-md-4 col-6">
-              <div class="stat">
-                <h6 class="stat-title">Bài nháp</h6>
-                <div class="stat-body">
-                  <svg class="iconsvg-pencil stat-icon text-bai-nhap">
-                    <use xlink:href="/public/content/images/sprite.svg#pencil"></use>
-                  </svg>
-                  <div class="stat-number">
-                    <a title="Bài nháp" href="/article?status_ids=-2">
-                      <%=statsByStatus.post_2%>
-                    </a>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="col-md-4 col-6">
+            <div class="col-6">
               <div class="stat">
                 <h6 class="stat-title">Đã hủy</h6>
                 <div class="stat-body">
@@ -157,27 +97,12 @@
                 </div>
               </div>
             </div>
-            <div class="col-md-4 col-6">
-              <div class="stat">
-                <h6 class="stat-title">Bị trả lại</h6>
-                <div class="stat-body">
-                  <svg class="iconsvg-login stat-icon text-tra-lai">
-                    <use xlink:href="/public/content/images/sprite.svg#login"></use>
-                  </svg>
-                  <div class="stat-number">
-                    <a title="Bị trả lại" href="/article?status_ids=3">
-                      <%=statsByStatus.post3%>
-                    </a>
-                  </div>
-                </div>
-              </div>
-            </div>
           </div>
         </div>
       </div>
-      <div class="col-xl-7">
+      <div class="col-xl-8">
         <div class="box h-100">
-          <h2 class="box-title">Biểu đồ pageview và số lượng bài</h2>
+          <h2 class="box-title">Biểu đồ pageview và số lượng khám</h2>
           <div class="box-body box-chart-body">
             <div class="box-chart text-center">
               <div id="myChartByDate" class="chart--container"></div>
@@ -212,7 +137,7 @@
                   },
                   scaleY: {
                     label: {
-                      text: 'Số lượng bài viết',
+                      text: 'Số lượng khám',
                       fontSize: '13px',
                       fontWeight: 'normal',
                       color: '#818181'
@@ -247,19 +172,11 @@
                   series: [
                     {
                       type: 'bar',
-                      text: 'Số bài viết',
+                      text: 'Số lượng khám',
                       values: pageview['news'],
                       lineColor: '#5BCD8F',
                       backgroundColor: '#5BCD8F',
                       scales: 'scale-x, scale-y'
-                    },
-                    {
-                      type: 'line',
-                      text: 'Pageview',
-                      values: pageview['pageview'],
-                      lineColor: '#F2564C',
-                      backgroundColor: '#F2564C',
-                      scales: 'scale-x, scale-y-2'
                     }
                   ]
                 };
