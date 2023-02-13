@@ -13,6 +13,7 @@ var favicon          = require('serve-favicon');
 var home       = require('./app/web/controllers/homeController');
 var user       = require('./app/web/controllers/userController');
 var mail       = require('./app/web/controllers/sendMailController');
+var examine    = require('./app/web/controllers/examineController');
 
 //Admin
 var admin          = require('./app/admin/controllers/adminController');
@@ -63,7 +64,9 @@ app.use(cookieParser());
 //Web
 app.use('/', home);
 app.use('/user', user);
+app.use('/examine', examine);
 app.use('/mail', mail);
+
 
 //Admin
 app.use('/admin', admin);
