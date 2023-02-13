@@ -7,6 +7,7 @@ var passport        = require('passport'),
 
 module.exports = function(passport) {
     passport.serializeUser(function(user, done) {
+        console.log("serializeUser", user);
         done(null, user.id);
     });
 
@@ -73,6 +74,7 @@ module.exports = function(passport) {
             passReqToCallback: true
         }, function(req, username, password, done) {
         userService.getUser(username, saltHashPassword(password)).then(function(user) {
+            console.log("getUser", user);
             if (!user) {
                 return done(null, false);
             } else {  

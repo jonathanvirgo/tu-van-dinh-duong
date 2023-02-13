@@ -199,8 +199,8 @@
                   },
                   legend: {
                     layout: "1x5",
-                    x: "25%",
-                    y: "90%",
+                    x: "35%",
+                    y: "93%",
                     borderColor: "transparent",
                     marker: {
                       borderRadius: 10,
@@ -247,7 +247,7 @@
                   series: [
                     {
                       type: 'bar',
-                      text: 'Số bài viết trong ngày',
+                      text: 'Số bài viết',
                       values: pageview['news'],
                       lineColor: '#5BCD8F',
                       backgroundColor: '#5BCD8F',
@@ -280,23 +280,6 @@
 </div>
 </form>
 <script type="text/javascript">
-  VirtualSelect.init({
-    ele: '#website_select',
-    options: <%- JSON.stringify(websites) %>,
-    dropboxWrapper: '#website_filter',
-    placeholder: 'Website',
-    search: false,
-    multiple: true,
-    additionalClasses: 'vscomp-status website-status',
-    showDropboxAsPopup: false,
-    selectAllText: 'Chọn tất cả',
-    optionsSelectedText: 'Lựa chọn',
-    allOptionsSelectedText: 'Tất cả',
-    <% if(filter.search.site_ids != ''){%>
-    selectedValue: <%- JSON.stringify(filter.siteIds) %>
-    <%}%>
-  });
-
   VirtualSelect.init({
     ele: '#status_select',
     options: <%- JSON.stringify(article_status.data) %>,

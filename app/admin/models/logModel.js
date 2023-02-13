@@ -14,7 +14,7 @@ module.exports.create = function (req, message = '') {
             }
             var short_message = message.sqlMessage != undefined ? message.sqlMessage : message;
             var full_message  = message.sql != undefined ? message.sql : '';
-            var sql           = "INSERT INTO pr_log(user_id,short_message,full_message,page_url,referrer_url) VALUES (?,?,?,?,?)";
+            var sql           = "INSERT INTO log_err(user_id,short_message,full_message,page_url,referrer_url) VALUES (?,?,?,?,?)";
             var queryString   =  connection.query(sql, [
                     user_id,
                     short_message ? short_message : '',
@@ -41,7 +41,7 @@ module.exports.createFromParams = function (message, page_url) {
             }
             let short_message = message ? (message.sqlMessage != undefined ? message.sqlMessage : message) : '';
             let full_message  = message.sql != undefined ? message.sql : '';
-            let sql           = "INSERT INTO pr_log(short_message,full_message,page_url) VALUES (?,?,?)";
+            let sql           = "INSERT INTO log_err(short_message,full_message,page_url) VALUES (?,?,?)";
             connection.query(sql, [
                     short_message,
                     full_message,
@@ -61,7 +61,7 @@ module.exports.createFromParams = function (message, page_url) {
 module.exports.delete = function (id, callback) {
     db.get().getConnection(function (err, connection) {
         if (err) return callback(err);
-        var sql   = 'DELETE FROM pr_log WHERE id=?';
+        var sql   = 'DELETE FROM log_err WHERE id=?';
         var query = connection.query(sql, [id], function (err, results, fields) {
             connection.release();
             if (err) return callback(err);
@@ -73,7 +73,7 @@ module.exports.delete = function (id, callback) {
 module.exports.deleteByIds = function (ids, callback) {
     db.get().getConnection(function (err, connection) {
         if (err) return callback(err);
-        var sql   = 'DELETE FROM pr_log WHERE id in('+ ids +')';
+        var sql   = 'DELETE FROM log_err WHERE id in('+ ids +')';
         var query = connection.query(sql, function (err, results, fields) {
             connection.release();
             if (err) return callback(err);
@@ -85,7 +85,7 @@ module.exports.deleteByIds = function (ids, callback) {
 module.exports.deleteAll = function (callback) {
     db.get().getConnection(function (err, connection) {
         if (err) return callback(err);
-        var sql   = 'DELETE FROM pr_log';
+        var sql   = 'DELETE FROM log_err';
         var query = connection.query(sql, function (err, results, fields) {
             connection.release();
             if (err) return callback(err);
@@ -98,7 +98,7 @@ module.exports.countAllLog = function (parameter, callback) {
     db.get().getConnection(function (err, connection) {
         if (err) return callback(err);
         var paraSQL = [];
-        var sql     = 'SELECT COUNT(*) AS count FROM pr_log WHERE id > 0';
+        var sql     = 'SELECT COUNT(*) AS count FROM log_err WHERE id > 0';
         if (parameter.message != "") {
             sql += " AND (short_message LIKE ? || full_message LIKE ?)";
             paraSQL.push("%" + parameter.message + "%");
@@ -124,7 +124,7 @@ module.exports.getAllLog = function (parameter, callback) {
     db.get().getConnection(function (err, connection) {
         if (err) return callback(err);
         var paraSQL = [];
-        var sql     = 'SELECT pr_log.id,pr_log.short_message,pr_log.create_on,pr_user.full_name as user_name FROM pr_log INNER JOIN pr_user ON pr_log.user_id = pr_user.id WHERE pr_log.id > 0';
+        var sql     = 'SELECT log_err.id,log_err.short_message,log_err.create_on,user.full_name as user_name FROM log_err INNER JOIN user ON log_err.user_id = user.id WHERE log_err.id > 0';
         
         if (parameter.message != "") {
             sql += " AND (short_message LIKE ? or full_message LIKE ?)";
@@ -151,7 +151,7 @@ module.exports.getAllLog = function (parameter, callback) {
 module.exports.getLogById = function (id, callback) {
     db.get().getConnection(function (err, connection) {
         if (err) return callback(err);
-        var sql   = 'SELECT pr_log.*,pr_user.full_name as log_user_name FROM pr_log INNER JOIN pr_user ON pr_log.user_id = pr_user.id WHERE pr_log.id = ?';
+        var sql   = 'SELECT log_err.*,user.full_name as log_user_name FROM log_err INNER JOIN user ON log_err.user_id = user.id WHERE log_err.id = ?';
         var query = connection.query(sql, [id], function (err, results, fields) {
             connection.release();
             if (err) return callback(err);

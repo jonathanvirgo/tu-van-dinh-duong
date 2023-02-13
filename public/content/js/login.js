@@ -425,37 +425,40 @@ function signup() {
                     $("#footer").css("display","none");
                     $("#login-content-page").html(strMessage);
                 } else {
-                     if(result.error.full_name.length > 0){
-                        $("#imgchkfull_name").html(result.error.full_name.toString());
-                        $("#signup-form #full_name").addClass('error-border');
-                    }
-                    if(result.error.phone.length > 0){
-                        $("#imgchkphone").html(result.error.phone.toString());
-                        $("#signup-form #phone").addClass('error-border');
-                    }
-                    if(result.error.birthday.length > 0){
-                        $("#imgchkbirthday").html(result.error.birthday.toString());
-                        $("#signup-form #birthday").addClass('error-border');
-                    }
-                    if(result.error.gender.length > 0){
-                        $("#imgchkgender").html(result.error.gender.toString());
-                        $("#signup-form #gender").addClass('error-border');
-                    }
-                    if(result.error.email.length > 0){
-                        $("#imgchkemail").html(result.error.email.toString());
-                        $("#signup-form #email").addClass('error-border');
-                    }
-                    if(result.error.username.length > 0){
-                        $("#imgchkuname").html(result.error.username.toString());
-                        $("#signup-form #username").addClass('error-border');
-                    }
-                    if(result.error.password.length > 0){
-                        $("#imgchkpassword").html(result.error.password.toString());
-                        $("#signup-form #password").addClass('error-border');
-                    }
-                    if(result.error.confirm_password.length > 0){
-                        $("#imgchkcf_password").html(result.error.confirm_password.toString());
-                        $("#signup-form #confirm_password").addClass('error-border');
+                    console.log(result);
+                    if(result.error){
+                        if(result.error.full_name.length > 0){
+                            $("#imgchkfull_name").html(result.error.full_name.toString());
+                            $("#signup-form #full_name").addClass('error-border');
+                        }
+                        if(result.error.phone.length > 0){
+                            $("#imgchkphone").html(result.error.phone.toString());
+                            $("#signup-form #phone").addClass('error-border');
+                        }
+                        if(result.error.birthday.length > 0){
+                            $("#imgchkbirthday").html(result.error.birthday.toString());
+                            $("#signup-form #birthday").addClass('error-border');
+                        }
+                        if(result.error.gender.length > 0){
+                            $("#imgchkgender").html(result.error.gender.toString());
+                            $("#signup-form #gender").addClass('error-border');
+                        }
+                        if(result.error.email.length > 0){
+                            $("#imgchkemail").html(result.error.email.toString());
+                            $("#signup-form #email").addClass('error-border');
+                        }
+                        if(result.error.username.length > 0){
+                            $("#imgchkuname").html(result.error.username.toString());
+                            $("#signup-form #username").addClass('error-border');
+                        }
+                        if(result.error.password.length > 0){
+                            $("#imgchkpassword").html(result.error.password.toString());
+                            $("#signup-form #password").addClass('error-border');
+                        }
+                        if(result.error.confirm_password.length > 0){
+                            $("#imgchkcf_password").html(result.error.confirm_password.toString());
+                            $("#signup-form #confirm_password").addClass('error-border');
+                        }
                     }
                     if(result.message !== ""){
                         displayError(result.message.replace(/,/g, '</br>'));

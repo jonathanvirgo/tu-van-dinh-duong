@@ -10,26 +10,6 @@ var md5             = require('md5'),
     domain          = "pr-ims.admicro.vn";
 
 let webService = {
-    prServicesUrl: function(version = 0) {
-        var url = 'https://pr.admicro.vn/auth/PrNews';
-        if (version !== 0) {
-            url = 'https://pr.admicro.vn/auth/PrNews_V2';
-        }
-        return url;
-    },
-    prServicesKey: function() {
-        return "bc4337d2214996821bf977b9e6f5bf4d";
-    },
-    dtServicesDomain: function() {
-        return db.domain;
-    },
-    getDomainPRIMS: function() {
-        var domain_ims = "https://pr-ims.admicro.vn";
-        if(webService.dtServicesDomain() == "https://dev.dangtin.admicro.vn"){
-            domain_ims = "https://dev.pr-ims.admicro.vn";
-        }
-        return domain_ims;
-    },
     removeVietnameseTones: function(str) {
         try {
             str = str.replace(/à|á|ạ|ả|ã|â|ầ|ấ|ậ|ẩ|ẫ|ă|ằ|ắ|ặ|ẳ|ẵ/g, "a");
@@ -83,57 +63,6 @@ let webService = {
     addToLogService: function(message, page_url) {
         let message_err = message.message ? message.message : message;
         return logService.createFromParams(message_err, page_url)
-    },
-    sortChannelForTree: function(channels, type = 0) {
-        var map   = {},
-            node,
-            roots = [],
-            list  = [],
-            i;
-        for (i = 0; i < channels.length; i++) {
-            var row = {
-                'id': channels[i].pr_channel_id,
-                'parent_id': channels[i].parent_id,
-                'name': channels[i].name,
-                'children': []
-            };
-            if (type == 1) {
-                row.status          = channels[i].status;
-                row.pr_channel_id   = channels[i].pr_channel_id;
-                row.domain          = channels[i].domain;
-                row.site_id         = channels[i].site_id;
-                row.updated_at      = channels[i].updated_at;
-            }
-            list.push(row);
-            map[row.id] = i;
-        }
-        for (i = 0; i < list.length; i += 1) {
-            node = list[i];
-            if (node.parent_id !== 0 && typeof map[node.parent_id] !== "undefined") {
-                list[map[node.parent_id]].children.push(node);
-            } else {
-                roots.push(node);
-            }
-        }
-        return roots;
-    },
-    sortChannelForVirtualSelect: function(channels) {
-        var list = [];
-        if (channels && channels.length > 0) {
-            for (i = 0; i < channels.length; i++) {
-                list.push({
-                    label: channels[i].name,
-                    value: channels[i].id
-                });
-                for (j = 0; j < channels[i].children.length; j++) {
-                    list.push({
-                        label: channels[i].name + " - " + channels[i].children[j].name,
-                        value: channels[i].children[j].id
-                    });
-                }
-            }
-        }
-        return list;
     },
     getStringRandom: function(length) {
         try {
@@ -292,19 +221,6 @@ let webService = {
                 resolve(listData);
             })
         })
-    },
-    addLogApi(param, result, link) {
-        return new Promise(function(resolve, reject) {
-            db.get().getConnection(function(err, connection) {
-                if (err) reject(err);
-                let sql = 'INSERT INTO pr_log_api(param,result,link) VALUES (?,?,?)';
-                connection.query(sql, [param, result, link], function(error, results, fields) {
-                    connection.release();
-                    if (error) reject(error);
-                    resolve(results);
-                });
-            });
-        });
     },
     templateEmailNew: function(text_content, button) {
         var content_html = `
@@ -591,7 +507,225 @@ let webService = {
             if (obj.hasOwnProperty(key)) size++;
         }
         return size;
-    }
+    },
+    updateRecordTable: function(param, condition, table){
+        return new Promise((resolve, reject) => {
+            db.get().getConnection(function(err, connection) {
+                if (err) {
+                    resolve({
+                        success: false,
+                        message: err
+                    });
+                }
+                let sql = 'UPDATE '+ table + ' SET ';
+                let paramSql = [];
+                if(typeof(param) == 'object'){
+                    let j = 0;
+                    for(let i in param){
+                        if(j == 0){
+                            sql += i +' = ?';
+                            j = 1;
+                        }else{
+                            sql += ', ' + i +' = ?';
+                        }
+                        paramSql.push(param[i]);
+                    }
+                }else{
+                    sql += param;
+                }
+                
+                let l = 0;
+                for(let k in condition){
+                    if(l == 0){
+                        sql += ' WHERE ' + k + ' = ?';
+                        l = 1;
+                    }else{
+                        sql += ' AND ' + k + ' = ?';
+                    }
+                    paramSql.push(condition[k]); 
+                }
+                let query = connection.query(sql, paramSql, function(error, results, fields) {
+                    connection.release();
+                    if (error) {
+                        resolve({
+                            success: false,
+                            message: error
+                        });
+                    }
+                    resolve({
+                        success: true,
+                        message: "Successful",
+                        data: results
+                    });
+                });
+            });
+        });
+    },
+    addRecordTable: function(param, table){
+        return new Promise((resolve, reject) => {
+            db.get().getConnection(function(err, connection) {
+                if (err) {
+                    resolve({
+                        success: false,
+                        message: err
+                    });
+                }
+                let sql = 'INSERT INTO '+ table +'(';
+                let textVal = ') VALUES ('
+                let paramSql = [];
+                let j = 0;
+                for(var i in param){
+                    if(j == 0){
+                        sql += i ;
+                        textVal += '?';
+                        j = 1;
+                    }else{
+                        sql += ',' + i;
+                        textVal += ',?';
+                    }
+                    paramSql.push(param[i]);
+                }
+                
+                let query = connection.query((sql + textVal + ')'), paramSql, function(error, results, fields) {
+                    connection.release();
+                    if (error) {
+                        resolve({
+                            success: false,
+                            message: error
+                        });
+                    }
+                    resolve({
+                        success: true,
+                        message: "Successful",
+                        data: results
+                    });
+                });
+            });
+        })
+    },
+    deleteRecordTable: function(condition, table){
+        return new Promise((resolve, reject) => {
+            db.get().getConnection(function(err, connection) {
+                if (err) resolve({success: false, message: err});
+                let sql = 'DELETE FROM ' + table +' WHERE ';
+                let paramSql = [];
+                let j = 0;
+                for(var i in condition){
+                    if(j == 0){
+                        sql += i + ' = ?';
+                        j = 1;
+                    }else{
+                        sql += ' AND ' + i + ' = ?';
+                    }
+                    paramSql.push(condition[i]);
+                }
+                connection.query(sql, paramSql, function(error, results, fields) {
+                    connection.release();
+                    if (error) resolve({success: false, message: error});
+                    resolve({
+                        success: true,
+                        message: "Successful",
+                        data: results
+                    });
+                });
+            });
+        })
+    },
+    getListTable: function(sql, paramSql){
+        return new Promise((resolve, reject) => {
+            db.get().getConnection(function(err, connection) {
+                if (err) {
+                    resolve({
+                        success: false,
+                        message: err
+                    });
+                }
+                
+                let query = connection.query(sql, paramSql, function(error, results, fields) {
+                    connection.release();
+                    if (error) {
+                        resolve({
+                            success: false,
+                            message: error
+                        });
+                    }
+                    resolve({
+                        success: true,
+                        data: results,
+                        message: "Successful"
+                    });
+                });
+                console.log("query", query.sql);
+            });
+        });
+    },
+    getBookingStatusOption: function(type = 1) {
+        var result = {
+            value: [0,1,2,3,4,-1],
+            data: []
+        };
+
+        if (type != 1) {
+            result.value = [-2,5,1,2,6,7,3,4,-1];
+        }
+        for (var i = 0; i < result.value.length; i++) {
+            result.data.push({
+                label: '<span class="badge badge-'+webService.bookingStatusClass(result.value[i]).name+'">'+ webService.bookingStatusClass(result.value[i]).value +'</span>',
+                value: result.value[i]
+            });
+        }
+        return result;
+    },
+    bookingStatusClass: function(status) {
+        var color   = '',
+            result  = {
+                name: '',
+                color: '',
+                value: ''
+            }
+        if (status == -2) {
+            result.name  = 'bai-nhap';
+            result.color = '#AD9D85';
+            result.value = 'Nháp';
+        } else if (status == -1) {
+            result.name  = 'da-huy';
+            result.color = '#F2564C';
+            result.value = 'Đã hủy';
+        } else if (status == 0) {
+            result.name  = 'giu-cho';
+            result.color = '#999';
+            result.value = 'Giữ chỗ';
+        } else if (status == 1) {
+            result.name  = 'cho-duyet';
+            result.color = '#5BCD8F';
+            result.value = 'Chờ duyệt';
+        } else if (status == 2) {
+            result.name  = 'da-duyet';
+            result.color = '#60BFD4';
+            result.value = 'Đã duyệt';
+        } else if (status == 3) {
+            result.name  = 'tra-lai';
+            result.color = '#6D7DEE';
+            result.value = 'Bị trả lại';
+        } else if (status == 4) {
+            result.name  = 'xuat-ban';
+            result.color = '#B8D975';
+            result.value = 'Đã xuất bản';
+        } else if (status == 5) {
+            result.name  = 'gui-duyet';
+            result.color = '#F2C144';
+            result.value = 'Gửi duyệt';
+        } else if (status == 6) {
+            result.name  = 'gui-dang';
+            result.color = '#FFB36D';
+            result.value = 'Gửi đăng';
+        } else if (status == 7) {
+            result.name  = 'cho-dang';
+            result.color = '#4DB3AD';
+            result.value = 'Chờ đăng';
+        }
+        return result;
+    },
 }
 
 module.exports = webService;

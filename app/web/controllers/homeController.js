@@ -19,8 +19,8 @@ router.get('/', function(req, res) {
                 pageview     = [],
                 listArticle  = [],
                 listBooking  = [],
-                countArticle = 0,
                 countBooking = 0,
+                countArticle = 0,
                 chartNews    = {
                     datetime:[],
                     label: [],

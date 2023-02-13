@@ -1,9 +1,9 @@
 <div class="sidebar offcanvas-lg" id="sidebar" tabindex="-1">
   <button class="sidebar-close btn-close d-lg-none" type="button" data-bs-dismiss="offcanvas" data-bs-target="#sidebar" aria-label="Close"></button>
-  <a class="sidebar-logo" href="/">
-  <img class="sidebar-logo-full" src="/public/content/images/logo.svg" alt="">
-  <img class="sidebar-logo-compact" src="/public/content/images/logo-compact.svg" alt="">
-  </a>
+  <!-- <a class="sidebar-logo" href="/"> -->
+    <!-- <img class="sidebar-logo-full" src="/public/content/images/logo.svg" alt=""> -->
+    <!-- <img class="sidebar-logo-compact" src="/public/content/images/logo-compact.svg" alt=""> -->
+  <!-- </a> -->
   <ul class="nav sidebar-nav">
     <li class="nav-item">
       <a class="nav-link active" aria-current="page" href="/">
@@ -13,38 +13,13 @@
         <span class="nav-text">Dashboard</span>
       </a>
     </li>
-    <li class="nav-item-header">Booking</li>
-    <li class="nav-item">
-      <a class="nav-link" href="/booking">
-        <svg class="iconsvg-ds-booking nav-icon">
-          <use xlink:href="/public/content/images/sprite.svg#ds-booking"></use>
-        </svg>
-        <span class="nav-text">Danh sách booking</span>
-      </a>
-    </li>
-    <li class="nav-item-btn">
-      <a id="btn_sidebar_create_booking" class="btn btn-danger sidebar-btn-booking" href="/booking/create">
-        <svg class="iconsvg-plus-circle">
-          <use xlink:href="/public/content/images/sprite.svg#plus-circle"></use>
-        </svg>
-        <span class="nav-text">Tạo booking</span>
-      </a>
-    </li>
-    <li class="nav-item-header">Bài viết</li>
-    <li class="nav-item">
-      <a class="nav-link" href="/article">
-        <svg class="iconsvg-sort-arrow-down nav-icon">
-          <use xlink:href="/public/content/images/sprite.svg#sort-arrow-down"></use>
-        </svg>
-        <span class="nav-text">Danh sách bài đăng</span>
-      </a>
-    </li>
+    <li class="nav-item-header">KHÁM BỆNH</li>
     <li class="nav-item-btn">
       <a id="btn_sidebar_create_article" class="btn btn-primary sidebar-btn-post w-100" href="/article/create">
         <svg class="iconsvg-edit">
           <use xlink:href="/public/content/images/sprite.svg#edit"></use>
         </svg>
-        <span class="nav-text">Dựng & Gửi bài</span>
+        <span class="nav-text">Tiếp nhận khám</span>
       </a>
     </li>
     <% if (user){%>
@@ -54,7 +29,7 @@
           <svg class="iconsvg-edit">
             <use xlink:href="/public/content/images/sprite.svg#edit"></use>
           </svg>
-          <span class="nav-text">Quản trị</span>
+          <span class="nav-text">Admin</span>
         </a>
       </li>
       <%}%>
