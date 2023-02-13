@@ -460,9 +460,6 @@ function signup() {
                     if(result.message !== ""){
                         displayError(result.message.replace(/,/g, '</br>'));
                     }
-                    if (enableCaptcha == 1) {
-                        grecaptcha.reset(1);
-                    }
                 }
             },
             error: function(jqXHR, exception) {
@@ -523,9 +520,6 @@ $(document).ready(function () {
                             $("#ercf_password").html(result.message);
                         }
                     }
-	            	if (enableCaptcha == 1) {
-                        grecaptcha.reset(0);
-	                }
             	}
             },
             error: function(jqXHR, exception){
@@ -591,21 +585,6 @@ $('a[data-bs-toggle="tab"]').on('shown.bs.tab', function (e) {
     
     $("#signup-form #gender").change(function() {
         $("#form-floating-gender .select2-selection__placeholder").html('Giới tính <span class="text-danger">*</span>');
-    });
-    $("#signup-form #username").change(function() {
-        uname_change();
-    });
-    $("#signup-form #phone").change(function() {
-        phone_change();
-    });
-    $("#signup-form #email").change(function() {
-        email_change();
-    });
-    $("#signup-form #password").change(function() {
-        password_change();
-    });
-    $("#signup-form #birthday").change(function() {
-        birthday_change();
     });
 
     $("#signup-form #confirm_password").change(function() {
