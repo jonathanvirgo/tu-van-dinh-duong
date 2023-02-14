@@ -188,3 +188,6 @@
 .dashboard_search .box-btn {
     min-width: auto;
 }
+.form-label-large{
+    width: 7rem;
+}

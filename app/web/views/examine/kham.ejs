@@ -1,12 +1,13 @@
 <form id="kham_form" class="form-horizontal">
+    <h3 class="box-title-break">Thông tin chung</h3>
 	<div class="row g-2 align-items-center">
-        <div class="col-6 d-flex">
-            <label class="col-form-label col-md-auto fw-bocld" for="form-tieude">Họ và tên
+        <div class="col-12 col-md-6 d-flex">
+            <label class="col-form-label col-md-auto fw-bold mt-2" for="form-tieude">Họ và tên
                 <span class="text-danger">*</span>
             </label>
             <div class="col-form-body col-md">
                 <div class="form-control-has-addon">
-                    <input type="text" name="title" class="form-control form-control-title" id="art_title" placeholder="Nhập họ và tên">
+                    <input type="text" name="title" class="form-control form-control-title" id="art_title" placeholder="Họ và tên">
                     <button class="btn form-control-addon btn-link p-0 min-h-auto" type="button" onclick="clearInput('#art_title')">
                         <svg class="iconsvg-close">
                             <use xlink:href="/public/content/images/sprite.svg#close"></use>
@@ -15,59 +16,61 @@
                 </div>
             </div>
         </div>
-        <div class="col-3 d-flex">
-            <label class="col-form-label col-md-auto fw-bold" for="form-tieude">Giới tính
+        <div class="col-6 col-md-3 d-flex">
+            <label class="col-form-label col-md-auto fw-bold mt-2" for="form-tieude">Giới tính
                 <span class="text-danger">*</span>
             </label>
             <div class="col-form-body col-md">
                 <div class="form-control-has-addon">
-                    
+                    <select class="form-select" name="gender" id="gender" data-plugin="select2" data-placeholder="Giới tính" data-minimum-results-for-search="Infinity">
+                        <option></option>
+                        <option value="1">Nam</option>
+                        <option value="0">Nữ</option>
+                        <option value="0">Khác</option>
+                      </select>
                 </div>
             </div>
         </div>
-        <div class="col-3">
-            <div class="row">
-                <div class="col-6 d-flex">
-                    <label class="col-form-label col-md-auto fw-bold" for="form-tieude">Năm sinh
-                        <span class="text-danger">*</span>
-                    </label>
-                    <div class="col-form-body col-md">
-                        <div class="form-control-has-addon">
-                            <input type="text" name="title" class="form-control form-control-title" id="art_title" placeholder="Nhập tiêu đề bài viết">
-                            <button class="btn form-control-addon btn-link p-0 min-h-auto" type="button" onclick="clearInput('#art_title')">
-                                <svg class="iconsvg-close">
-                                    <use xlink:href="/public/content/images/sprite.svg#close"></use>
-                                </svg>
-                            </button>
-                        </div>
+        <div class="col-6 col-md-3 d-flex">
+            <div class="d-flex me-2">
+                <label class="col-form-label col-md-auto fw-bold mt-2 me-2" for="form-tieude">Năm sinh
+                    <span class="text-danger">*</span>
+                </label>
+                <div class="col-form-body col-md">
+                    <div class="form-control-has-addon">
+                        <input type="text" name="title" class="form-control form-control-title p-1" id="art_title" placeholder="Năm sinh">
+                        <button class="btn form-control-addon btn-link p-0 min-h-auto" type="button" onclick="clearInput('#art_title')">
+                            <svg class="iconsvg-close">
+                                <use xlink:href="/public/content/images/sprite.svg#close"></use>
+                            </svg>
+                        </button>
                     </div>
                 </div>
-                <div class="col-6 d-flex">
-                    <label class="col-form-label col-md-auto fw-bold" for="form-tieude">Tuổi
-                        <span class="text-danger">*</span>
-                    </label>
-                    <div class="col-form-body col-md">
-                        <div class="form-control-has-addon">
-                            <input type="text" name="title" class="form-control form-control-title" id="art_title" placeholder="Nhập tiêu đề bài viết">
-                            <button class="btn form-control-addon btn-link p-0 min-h-auto" type="button" onclick="clearInput('#art_title')">
-                                <svg class="iconsvg-close">
-                                    <use xlink:href="/public/content/images/sprite.svg#close"></use>
-                                </svg>
-                            </button>
-                        </div>
+            </div>
+            <div class="d-flex">
+                <label class="col-md-auto fw-bold mt-2 me-2" for="form-tieude">Tuổi
+                    <span class="text-danger">*</span>
+                </label>
+                <div class="col-form-body col-md">
+                    <div class="form-control-has-addon">
+                        <input type="text" name="title" class="form-control form-control-title p-1" id="art_title" placeholder="Tuổi">
+                        <button class="btn form-control-addon btn-link p-0 min-h-auto" type="button" onclick="clearInput('#art_title')">
+                            <svg class="iconsvg-close">
+                                <use xlink:href="/public/content/images/sprite.svg#close"></use>
+                            </svg>
+                        </button>
                     </div>
                 </div>
             </div>
         </div>
 	</div>
-
 	<div class="row g-2 align-items-center">
-	  <label class="col-form-label col-md-auto fw-bold" for="art_description">Mô tả
+	  <label class="col-form-label col-md-auto fw-bold" for="art_description">Địa chỉ
 		<!-- <span class="text-danger">*</span> -->
 	  </label>
 	  <div class="col-form-body col-md">
         <div class="form-control-has-addon">
-            <textarea class="form-control" id="art_description" placeholder="Nhập mô tả cho bài viết"></textarea>
+            <textarea class="form-control" id="art_description" placeholder="Nhập địa chỉ"></textarea>
             <button class="btn form-control-addon btn-link p-0 min-h-auto" type="button" onclick="clearInput('#art_description')">
                 <svg class="iconsvg-close">
                 <use xlink:href="/public/content/images/sprite.svg#close"></use>
@@ -76,4 +79,211 @@
         </div>
 	  </div>
 	</div>
+    <div class="row g-2 align-items-center">
+        <label class="col-form-label col-md-auto fw-bold" for="art_description">Chuẩn đoán
+          <!-- <span class="text-danger">*</span> -->
+        </label>
+        <div class="col-form-body col-md">
+          <div class="form-control-has-addon">
+              <textarea class="form-control" id="art_description" placeholder="Nhập địa chỉ"></textarea>
+              <button class="btn form-control-addon btn-link p-0 min-h-auto" type="button" onclick="clearInput('#art_description')">
+                  <svg class="iconsvg-close">
+                  <use xlink:href="/public/content/images/sprite.svg#close"></use>
+                  </svg>
+              </button>
+          </div>
+        </div>
+    </div>
+    <div class="row g-2 align-items-center">
+        <div class="col-6 col-md-3 d-flex">
+            <label class="col-form-label col-md-auto fw-bold mt-2" for="form-tieude">Cao (m)</label>
+            <div class="col-form-body col-md">
+                <div class="form-control-has-addon">
+                    <input type="text" name="title" class="form-control form-control-title" id="art_title" placeholder="Họ và tên">
+                    <button class="btn form-control-addon btn-link p-0 min-h-auto" type="button" onclick="clearInput('#art_title')">
+                        <svg class="iconsvg-close">
+                            <use xlink:href="/public/content/images/sprite.svg#close"></use>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-md-3 d-flex">
+            <label class="col-form-label col-md-auto fw-bold mt-2" for="form-tieude">CNTC (kg)</label>
+            <div class="col-form-body col-md">
+                <div class="form-control-has-addon">
+                    <input type="text" name="title" class="form-control form-control-title" id="art_title" placeholder="Họ và tên">
+                    <button class="btn form-control-addon btn-link p-0 min-h-auto" type="button" onclick="clearInput('#art_title')">
+                        <svg class="iconsvg-close">
+                            <use xlink:href="/public/content/images/sprite.svg#close"></use>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-md-3 d-flex">
+            <label class="col-form-label col-md-auto fw-bold mt-2" for="form-tieude">CNHT (kg)</label>
+            <div class="col-form-body col-md">
+                <div class="form-control-has-addon">
+                    <input type="text" name="title" class="form-control form-control-title" id="art_title" placeholder="Họ và tên">
+                    <button class="btn form-control-addon btn-link p-0 min-h-auto" type="button" onclick="clearInput('#art_title')">
+                        <svg class="iconsvg-close">
+                            <use xlink:href="/public/content/images/sprite.svg#close"></use>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-md-3 d-flex">
+            <label class="col-form-label col-md-auto fw-bold mt-2" for="form-tieude">BMI</label>
+            <div class="col-form-body col-md">
+                <div class="form-control-has-addon">
+                    <input type="text" name="title" class="form-control form-control-title" id="art_title" placeholder="Họ và tên">
+                    <button class="btn form-control-addon btn-link p-0 min-h-auto" type="button" onclick="clearInput('#art_title')">
+                        <svg class="iconsvg-close">
+                            <use xlink:href="/public/content/images/sprite.svg#close"></use>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <h3 class="box-title-break">Khám lâm sàng</h3>
+    <div class="row">
+        <div class="col-form-body col-md">
+            <div class="form-control-has-addon">
+                <textarea class="form-control" id="art_description" placeholder="Thông tin khám lâm sàng"></textarea>
+                <button class="btn form-control-addon btn-link p-0 min-h-auto" type="button" onclick="clearInput('#art_description')">
+                    <svg class="iconsvg-close">
+                    <use xlink:href="/public/content/images/sprite.svg#close"></use>
+                    </svg>
+                </button>
+            </div>
+          </div>
+    </div>
+    <h3 class="box-title-break">Kết quả xét nghiệm</h3>
+    <div class="row g-2 align-items-center">
+        <div class="col-4 d-flex">
+            <label class="col-form-label col-md-auto fw-bold mt-2 form-label-large" for="form-tieude">Hồng cầu (T/L)</label>
+            <div class="col-form-body col-md">
+                <div class="form-control-has-addon">
+                    <input type="text" name="title" class="form-control form-control-title" id="art_title" placeholder="Họ và tên">
+                    <button class="btn form-control-addon btn-link p-0 min-h-auto" type="button" onclick="clearInput('#art_title')">
+                        <svg class="iconsvg-close">
+                            <use xlink:href="/public/content/images/sprite.svg#close"></use>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="col-4 d-flex">
+            <label class="col-form-label col-md-auto fw-bold mt-2" for="form-tieude">BC (G/L)</label>
+            <div class="col-form-body col-md">
+                <div class="form-control-has-addon">
+                    <input type="text" name="title" class="form-control form-control-title" id="art_title" placeholder="Họ và tên">
+                    <button class="btn form-control-addon btn-link p-0 min-h-auto" type="button" onclick="clearInput('#art_title')">
+                        <svg class="iconsvg-close">
+                            <use xlink:href="/public/content/images/sprite.svg#close"></use>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="col-4 d-flex">
+            <label class="col-form-label col-md-auto fw-bold mt-2" for="form-tieude">TC (T/L)</label>
+            <div class="col-form-body col-md">
+                <div class="form-control-has-addon">
+                    <input type="text" name="title" class="form-control form-control-title" id="art_title" placeholder="Họ và tên">
+                    <button class="btn form-control-addon btn-link p-0 min-h-auto" type="button" onclick="clearInput('#art_title')">
+                        <svg class="iconsvg-close">
+                            <use xlink:href="/public/content/images/sprite.svg#close"></use>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row g-2 align-items-center">
+        <div class="col-6 d-flex">
+            <label class="col-form-label col-md-auto fw-bold mt-2 form-label-large" for="form-tieude">Albumin (G/L)</label>
+            <div class="col-form-body col-md">
+                <div class="form-control-has-addon">
+                    <input type="text" name="title" class="form-control form-control-title" id="art_title" placeholder="Họ và tên">
+                    <button class="btn form-control-addon btn-link p-0 min-h-auto" type="button" onclick="clearInput('#art_title')">
+                        <svg class="iconsvg-close">
+                            <use xlink:href="/public/content/images/sprite.svg#close"></use>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 d-flex">
+            <label class="col-form-label col-md-auto fw-bold mt-2" for="form-tieude">Na+/K+/Cl-</label>
+            <div class="col-form-body col-md">
+                <div class="form-control-has-addon">
+                    <input type="text" name="title" class="form-control form-control-title" id="art_title" placeholder="Họ và tên">
+                    <button class="btn form-control-addon btn-link p-0 min-h-auto" type="button" onclick="clearInput('#art_title')">
+                        <svg class="iconsvg-close">
+                            <use xlink:href="/public/content/images/sprite.svg#close"></use>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row g-2 align-items-center">
+        <div class="col-6 d-flex">
+            <label class="col-form-label col-md-auto fw-bold mt-2 form-label-large" for="form-tieude">AST/ALT/GGT (U/L)</label>
+            <div class="col-form-body col-md">
+                <div class="form-control-has-addon">
+                    <input type="text" name="title" class="form-control form-control-title" id="art_title" placeholder="Họ và tên">
+                    <button class="btn form-control-addon btn-link p-0 min-h-auto" type="button" onclick="clearInput('#art_title')">
+                        <svg class="iconsvg-close">
+                            <use xlink:href="/public/content/images/sprite.svg#close"></use>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 d-flex">
+            <label class="col-form-label col-md-auto fw-bold mt-2" for="form-tieude">Ure/Creatinin</label>
+            <div class="col-form-body col-md">
+                <div class="form-control-has-addon">
+                    <input type="text" name="title" class="form-control form-control-title" id="art_title" placeholder="Họ và tên">
+                    <button class="btn form-control-addon btn-link p-0 min-h-auto" type="button" onclick="clearInput('#art_title')">
+                        <svg class="iconsvg-close">
+                            <use xlink:href="/public/content/images/sprite.svg#close"></use>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row g-2 align-items-center">
+        <div class="col-6 d-flex">
+            <label class="col-form-label col-md-auto fw-bold mt-2 form-label-large" for="form-tieude">Bilirubin TP/TT</label>
+            <div class="col-form-body col-md">
+                <div class="form-control-has-addon">
+                    <input type="text" name="title" class="form-control form-control-title" id="art_title" placeholder="Họ và tên">
+                    <button class="btn form-control-addon btn-link p-0 min-h-auto" type="button" onclick="clearInput('#art_title')">
+                        <svg class="iconsvg-close">
+                            <use xlink:href="/public/content/images/sprite.svg#close"></use>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-form-body col-md">
+            <div class="form-control-has-addon">
+                <textarea class="form-control" id="art_description" placeholder="Ghi chú"></textarea>
+                <button class="btn form-control-addon btn-link p-0 min-h-auto" type="button" onclick="clearInput('#art_description')">
+                    <svg class="iconsvg-close">
+                    <use xlink:href="/public/content/images/sprite.svg#close"></use>
+                    </svg>
+                </button>
+            </div>
+          </div>
+    </div>
 </form>

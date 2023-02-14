@@ -13968,7 +13968,7 @@ span.flatpickr-weekday {
   --select2-border-radius: 0.75rem;
 }
 :root {
-  --form-horizontal-label-width: 6.25rem;
+  --form-horizontal-label-width: 5rem;
   --form-horizontal-body-width: 28rem;
 }
 .col-form-label {
@@ -15354,7 +15354,7 @@ html body > * {
   flex-direction: column;
   flex-grow: 1;
   padding-bottom: 3rem;
-  padding-top: 2.25rem;
+  padding-top: 1.75rem;
   width: 100%;
 }
 .page-nosidebar {
