@@ -5,9 +5,7 @@ var md5             = require('md5'),
     jwt             = require('jsonwebtoken'),
     db              = require('../../config/db'),
     logService      = require('../../admin/models/logModel'),
-
-    jwtPrivateKey   = "4343636e4d354b45517159456534636d4e34344e4d4e50427371614575577451",
-    domain          = "pr-ims.admicro.vn";
+    jwtPrivateKey   = "4343636e4d354b45517159456534636d4e34344e4d4e50427371614575577451";
 
 let webService = {
     removeVietnameseTones: function(str) {
@@ -39,22 +37,30 @@ let webService = {
             str = str.replace(/!|@|%|\^|\*|\(|\)|\+|\=|\<|\>|\?|\/|,|\.|\:|\;|\'|\"|\&|\#|\[|\]|~|\$|_|`|-|{|}|\||\\/g, " ");
             return str;
         } catch (error) {
-
+            webService.addToLogService(error, "webService removeVietnameseTones");
         }
     },
     parseDay: function(time) {
-        var date        = new Date(time);
-        var month       = (date.getMonth() + 1) < 10 ? '0' + (date.getMonth() + 1) : (date.getMonth() + 1);
-        var day         = (date.getDate()) < 10 ? '0' + (date.getDate()) : (date.getDate());
-        var hours       = (date.getHours()) < 10 ? '0' + (date.getHours()) : (date.getHours());
-        var minute      = (date.getMinutes) < 10 ? '0' + (date.getMinutes()) : (date.getMinutes());
-        var dateformat  = day + '-' + month + '-' + date.getFullYear();
-        return dateformat;
+        try {
+            var date        = new Date(time);
+            var month       = (date.getMonth() + 1) < 10 ? '0' + (date.getMonth() + 1) : (date.getMonth() + 1);
+            var day         = (date.getDate()) < 10 ? '0' + (date.getDate()) : (date.getDate());
+            var hours       = (date.getHours()) < 10 ? '0' + (date.getHours()) : (date.getHours());
+            var minute      = (date.getMinutes) < 10 ? '0' + (date.getMinutes()) : (date.getMinutes());
+            var dateformat  = day + '-' + month + '-' + date.getFullYear();
+            return dateformat;
+        } catch (error) {
+            webService.addToLogService(error, "webService parseDay");
+        }
     },
     addDays: function(days) {
-        var date = new Date();
-        date.setDate(date.getDate() + days);
-        return webService.parseDay(date);
+        try {
+            var date = new Date();
+            date.setDate(date.getDate() + days);
+            return webService.parseDay(date);
+        } catch (error) {
+            webService.addToLogService(error, "webService addDays");
+        }
     },
     addToLog: function(req, message) {
         let message_err = message.message ? message.message : message;
@@ -73,7 +79,7 @@ let webService = {
                 result += characters.charAt(Math.floor(Math.random() * charactersLength));
             }
         } catch (error) {
-
+            webService.addToLogService(error, "webService getStringRandom");
         }
     },
     fullUrl: function(req) {
@@ -84,647 +90,685 @@ let webService = {
                 // pathname: req.originalUrl
             });
         } catch (error) {
-
+            webService.addToLogService(error, "webService fullUrl");
         }
     },
     createHeaderToken: function() {
-        var data = {
-            domain: domain,
-            ctt: new Date()
-        };
-        return jwt.sign(data, jwtPrivateKey, {
-            algorithm: 'HS512',
-            expiresIn: 60 * 60
-        });
+        try {
+            var data = {
+                domain: domain,
+                ctt: new Date()
+            };
+            return jwt.sign(data, jwtPrivateKey, {
+                algorithm: 'HS512',
+                expiresIn: 60 * 60
+            });
+        } catch (error) {
+            webService.addToLogService(error, "webService createHeaderToken");
+        }
     },
     loginFormToken: function(username, password) {
-        var userData = {
-            upass: md5(password),
-            uname: username,
-            ctt: new Date()
-        };
-        return jwt.sign(userData, jwtPrivateKey, {
-            algorithm: 'HS256',
-            expiresIn: 60 * 60
-        });
+        try {
+            var userData = {
+                upass: md5(password),
+                uname: username,
+                ctt: new Date()
+            };
+            return jwt.sign(userData, jwtPrivateKey, {
+                algorithm: 'HS256',
+                expiresIn: 60 * 60
+            });
+        } catch (error) {
+            webService.addToLogService(error, "webService addDays");
+        }
     },
     readyToken: function(token) {
         try {
             return jwt.verify(token, jwtPrivateKey);
         } catch (err) {
-            return ""
+            webService.addToLogService(err, "webService addDays");
         }
     },
     createFormToken: function(parameter) {
-        var userData = {
-            uname: parameter.username,
-            pass: parameter.password,
-            fname: parameter.full_name,
-            mail: parameter.email,
-            phone: parameter.phone,
-            birthday: parameter.birthday,
-            adr: parameter.address,
-            gender: parseInt(parameter.gender),
-            groupid: 0,
-            saleid: 0,
-            issale: 0,
-            userview: 0,
-            job: '',
-            ctt: new Date()
-        };
-        return jwt.sign(userData, jwtPrivateKey, {
-            algorithm: 'HS256',
-            expiresIn: 60 * 60
-        });
+        try {
+            var userData = {
+                uname: parameter.username,
+                pass: parameter.password,
+                fname: parameter.full_name,
+                mail: parameter.email,
+                phone: parameter.phone,
+                birthday: parameter.birthday,
+                adr: parameter.address,
+                gender: parseInt(parameter.gender),
+                groupid: 0,
+                saleid: 0,
+                issale: 0,
+                userview: 0,
+                job: '',
+                ctt: new Date()
+            };
+            return jwt.sign(userData, jwtPrivateKey, {
+                algorithm: 'HS256',
+                expiresIn: 60 * 60
+            });
+        } catch (error) {
+            webService.addToLogService(err, "webService createFormToken");
+        }
     },
     createSideBarFilter: function(req, type = 1, perPage = 10) {
-        var query       = url.parse(req.url, true).query,
-            page        = isNaN(parseInt(query.page)) ? 1 : (parseInt(query.page) < 1 ? 1 : parseInt(query.page)),
-            arrPromise  = [],
-            listData    = {
-                search: {
-                    skip: (page - 1) * perPage,
-                    take: perPage,
-                    page: page,
-                    fromdate: "",
-                    todate: "",
-                    keyword: query.keyword == undefined ? "" : query.keyword,
-                    site_ids: query.site_ids == undefined ? "" : query.site_ids,
-                    status_ids: query.status_ids == undefined ? "" : query.status_ids,
-                    book_date: query.book_date == undefined ? "" : query.book_date,
-                    order_by: query.order_by == undefined ? 1 : parseInt(query.order_by),
-                    created_by: 0,
-                    role_ids: []
-                },
-                requestUri: "",
-                siteIds: [],
-                statusIds: [],
-                error: [],
-            };
+        try {
+            var query       = url.parse(req.url, true).query,
+                page        = isNaN(parseInt(query.page)) ? 1 : (parseInt(query.page) < 1 ? 1 : parseInt(query.page)),
+                arrPromise  = [],
+                listData    = {
+                    search: {
+                        skip: (page - 1) * perPage,
+                        take: perPage,
+                        page: page,
+                        fromdate: "",
+                        todate: "",
+                        keyword: query.keyword == undefined ? "" : query.keyword,
+                        site_ids: query.site_ids == undefined ? "" : query.site_ids,
+                        status_ids: query.status_ids == undefined ? "" : query.status_ids,
+                        book_date: query.book_date == undefined ? "" : query.book_date,
+                        order_by: query.order_by == undefined ? 1 : parseInt(query.order_by),
+                        created_by: 0,
+                        role_ids: []
+                    },
+                    requestUri: "",
+                    siteIds: [],
+                    statusIds: [],
+                    error: [],
+                };
 
-        if(req.user){
-            listData.search.created_by = req.user.id;
-            listData.search.role_ids   = req.user.role_id;
-        }
-        if (type == 0) {
-        listData.requestUri = "/search?keyword=" + listData.search.keyword;
-        } else if (type == 1) {
-            listData.requestUri = "/booking?keyword=" + listData.search.keyword;
-        } else if (type == 2) {
-            listData.requestUri = "/article?keyword=" + listData.search.keyword;
-        } else {
-            listData.requestUri = "?keyword=" + listData.search.keyword;
-        }
-
-        if (listData.search.site_ids !== '') {
-            var arr_site = listData.search.site_ids.split(",");
-            for (var i = 0; i < arr_site.length; i++) {
-                if(!isNaN(parseInt(arr_site[i]))){
-                    listData.siteIds.push(parseInt(arr_site[i]));
-                }
+            if(req.user){
+                listData.search.created_by = req.user.id;
+                listData.search.role_ids   = req.user.role_id;
             }
-            listData.requestUri += "&site_ids=" + listData.search.site_ids;
-        }
-        if (listData.search.status_ids !== '') {
-            var arr_status = listData.search.status_ids.split(",");
-            for (var i = 0; i < arr_status.length; i++) {
-                if(!isNaN(parseInt(arr_status[i]))){
-                    listData.statusIds.push(parseInt(arr_status[i]));
-                }
-            }
-            listData.requestUri += "&status_ids=" + listData.search.status_ids;
-        }
-        if (listData.search.order_by !== '') {
-            listData.requestUri += "&order_by=" + listData.search.order_by;
-        }
-        
-        if (listData.search.book_date == '') {
-            //dashboard set default 30 day
-            if(type == 3){
-                listData.search.fromdate = webService.addDays(-30);
-                listData.search.todate   = webService.parseDay(new Date());
-            }
-        }
-
-        if (listData.search.book_date !== '') {
-            if(listData.search.book_date.indexOf(' - ') == -1){
-                listData.search.fromdate = listData.search.book_date;
+            if (type == 0) {
+            listData.requestUri = "/search?keyword=" + listData.search.keyword;
+            } else if (type == 1) {
+                listData.requestUri = "/booking?keyword=" + listData.search.keyword;
+            } else if (type == 2) {
+                listData.requestUri = "/article?keyword=" + listData.search.keyword;
             } else {
-                var time = listData.search.book_date.split(' - ');
-                listData.search.fromdate = time[0];
-                listData.search.todate   = time[1];
+                listData.requestUri = "?keyword=" + listData.search.keyword;
             }
-            listData.requestUri += "&book_date=" + listData.search.book_date;
+
+            if (listData.search.site_ids !== '') {
+                var arr_site = listData.search.site_ids.split(",");
+                for (var i = 0; i < arr_site.length; i++) {
+                    if(!isNaN(parseInt(arr_site[i]))){
+                        listData.siteIds.push(parseInt(arr_site[i]));
+                    }
+                }
+                listData.requestUri += "&site_ids=" + listData.search.site_ids;
+            }
+            if (listData.search.status_ids !== '') {
+                var arr_status = listData.search.status_ids.split(",");
+                for (var i = 0; i < arr_status.length; i++) {
+                    if(!isNaN(parseInt(arr_status[i]))){
+                        listData.statusIds.push(parseInt(arr_status[i]));
+                    }
+                }
+                listData.requestUri += "&status_ids=" + listData.search.status_ids;
+            }
+            if (listData.search.order_by !== '') {
+                listData.requestUri += "&order_by=" + listData.search.order_by;
+            }
+            
+            if (listData.search.book_date == '') {
+                //dashboard set default 30 day
+                if(type == 3){
+                    listData.search.fromdate = webService.addDays(-30);
+                    listData.search.todate   = webService.parseDay(new Date());
+                }
+            }
+
+            if (listData.search.book_date !== '') {
+                if(listData.search.book_date.indexOf(' - ') == -1){
+                    listData.search.fromdate = listData.search.book_date;
+                } else {
+                    var time = listData.search.book_date.split(' - ');
+                    listData.search.fromdate = time[0];
+                    listData.search.todate   = time[1];
+                }
+                listData.requestUri += "&book_date=" + listData.search.book_date;
+            }
+            return new Promise(function(resolve, reject) {
+                Promise.all(arrPromise).then(function() {
+                    resolve(listData);
+                });
+            });
+        } catch (error) {
+            webService.addToLogService(err, "webService createSideBarFilter");
         }
-        return new Promise(function(resolve, reject) {
-            Promise.all(arrPromise).then(function() {
-                resolve(listData);
-            })
-        })
     },
     templateEmailNew: function(text_content, button) {
-        var content_html = `
-        <!doctype html>
-        <html xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">
+        try {
+            var content_html = `
+            <!doctype html>
+            <html xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">
 
-        <head>
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link href="https://fonts.googleapis.com/css?family=Ubuntu:300,400,500,700" rel="stylesheet" type="text/css">
-        <style type="text/css">
-            @import url(https://fonts.googleapis.com/css?family=Ubuntu:300,400,500,700);
-            #outlook a {
-                padding: 0;
-            }
-            body {
-                margin: 0;
-                padding: 0;
-                -webkit-text-size-adjust: 100%;
-                -ms-text-size-adjust: 100%;
-            }
-            table,
-            td {
-                border-collapse: collapse;
-                mso-table-lspace: 0pt;
-                mso-table-rspace: 0pt;
-            }
-            img {
-                border: 0;
-                height: auto;
-                line-height: 100%;
-                outline: none;
-                text-decoration: none;
-                -ms-interpolation-mode: bicubic;
-            }
-            p {
-                display: block;
-                margin: 0;
-            }
-            ul {
-                margin: 0;
-                padding-left: 28px;
-            }
-            ul li::marker {
-                color: #BDBDBD !important;
-                font-size: 1em;
-            }
-            @media only screen and (min-width:480px) {
-                .mj-column-per-100 {
-                    width: 100% !important;
-                    max-width: 100%;
+            <head>
+            <meta http-equiv="X-UA-Compatible" content="IE=edge">
+            <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1">
+            <link href="https://fonts.googleapis.com/css?family=Ubuntu:300,400,500,700" rel="stylesheet" type="text/css">
+            <style type="text/css">
+                @import url(https://fonts.googleapis.com/css?family=Ubuntu:300,400,500,700);
+                #outlook a {
+                    padding: 0;
                 }
-                .mj-column-per-50 {
-                    width: 50% !important;
-                    max-width: 50%;
+                body {
+                    margin: 0;
+                    padding: 0;
+                    -webkit-text-size-adjust: 100%;
+                    -ms-text-size-adjust: 100%;
                 }
-                .mj-column-per-40 {
-                    width: 39% !important;
-                    max-width: 39%;
+                table,
+                td {
+                    border-collapse: collapse;
+                    mso-table-lspace: 0pt;
+                    mso-table-rspace: 0pt;
                 }
-                .mj-column-per-60 {
-                    width: 61% !important;
-                    max-width: 61%;
+                img {
+                    border: 0;
+                    height: auto;
+                    line-height: 100%;
+                    outline: none;
+                    text-decoration: none;
+                    -ms-interpolation-mode: bicubic;
                 }
-                .moz-text-html .mj-column-per-100 {
-                    width: 100% !important;
-                    max-width: 100%;
+                p {
+                    display: block;
+                    margin: 0;
                 }
-                .moz-text-html .mj-column-per-50 {
-                    width: 50% !important;
-                    max-width: 50%;
+                ul {
+                    margin: 0;
+                    padding-left: 28px;
                 }
-                .moz-text-html .mj-column-per-40 {
-                    width: 39% !important;
-                    max-width: 39%;
+                ul li::marker {
+                    color: #BDBDBD !important;
+                    font-size: 1em;
                 }
-                .moz-text-html .mj-column-per-60 {
-                    width: 61% !important;
-                    max-width: 61%;
+                @media only screen and (min-width:480px) {
+                    .mj-column-per-100 {
+                        width: 100% !important;
+                        max-width: 100%;
+                    }
+                    .mj-column-per-50 {
+                        width: 50% !important;
+                        max-width: 50%;
+                    }
+                    .mj-column-per-40 {
+                        width: 39% !important;
+                        max-width: 39%;
+                    }
+                    .mj-column-per-60 {
+                        width: 61% !important;
+                        max-width: 61%;
+                    }
+                    .moz-text-html .mj-column-per-100 {
+                        width: 100% !important;
+                        max-width: 100%;
+                    }
+                    .moz-text-html .mj-column-per-50 {
+                        width: 50% !important;
+                        max-width: 50%;
+                    }
+                    .moz-text-html .mj-column-per-40 {
+                        width: 39% !important;
+                        max-width: 39%;
+                    }
+                    .moz-text-html .mj-column-per-60 {
+                        width: 61% !important;
+                        max-width: 61%;
+                    }
+                    }
+                    @media only screen and (max-width:480px) {
+                    table.mj-full-width-mobile {
+                        width: 100% !important;
+                    }
+                    td.mj-full-width-mobile {
+                        width: auto !important;
+                    }
+                    .mj-mg5 {
+                        margin-top: 30px;
+                    }
+                    .mj-fs13 {
+                        font-size: 13px !important;
+                    }
                 }
-                }
-                @media only screen and (max-width:480px) {
-                table.mj-full-width-mobile {
-                    width: 100% !important;
-                }
-                td.mj-full-width-mobile {
-                    width: auto !important;
-                }
-                .mj-mg5 {
-                    margin-top: 30px;
-                }
-                .mj-fs13 {
-                    font-size: 13px !important;
-                }
-            }
-        </style>
-        </head>
-        <body style="word-spacing:normal;background-color:#F4F4F4;">
-            <div style="background-color:#F4F4F4;">
-            <div style="background:#ffffff;background-color:#ffffff;margin:0px auto;max-width:700px;">
-                <table align="center" border="0" cellpadding="0" cellspacing="0" role="presentation"
-                style="background:#ffffff;background-color:#ffffff;width:100%;">
-                <tbody>
+            </style>
+            </head>
+            <body style="word-spacing:normal;background-color:#F4F4F4;">
+                <div style="background-color:#F4F4F4;">
+                <div style="background:#ffffff;background-color:#ffffff;margin:0px auto;max-width:700px;">
+                    <table align="center" border="0" cellpadding="0" cellspacing="0" role="presentation"
+                    style="background:#ffffff;background-color:#ffffff;width:100%;">
+                    <tbody>
+                        <tr>
+                        <td style="direction:ltr;font-size:0px;text-align:center;">
+                            <div class="mj-column-per-100 mj-outlook-group-fix"
+                            style="font-size:0px;text-align:left;direction:ltr;display:inline-block;vertical-align:top;width:100%;">
+                            <table border="0" cellpadding="0" cellspacing="0" role="presentation" style="vertical-align:top;"
+                                width="100%">
+                                <tbody>
+                                <tr>
+                                    <td align="center" style="font-size:0px;padding:24px 0px 13px 0; word-break:break-word;">
+                                    <table border="0" cellpadding="0" cellspacing="0" role="presentation"
+                                        style="border-collapse:collapse;border-spacing:0px;">
+                                        <tbody>
+                                        <tr>
+                                            <td>
+                                            <img height="auto"
+                                                src=""
+                                                style="border:0;display:block;outline:none;text-decoration:none;height:auto;max-width:100%;font-size:13px;"/>
+                                            </td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                            </div>
+                        </td>
+                        </tr>
+                    </tbody>
+                    </table>
+                </div>
+                <div style="background:#ffffff;background-color:#ffffff;margin:0px auto;max-width:700px; padding-top: 20px;">
+                    <table align="center" border="0" cellpadding="0" cellspacing="0" role="presentation"
+                    style="background:#ffffff;background-color:#ffffff;width:100%;">
+                    <tbody>
+                        <tr>
+                        <td style="direction:ltr;font-size:0px;text-align:center;">
+                            <div class="mj-column-per-100 mj-outlook-group-fix"
+                            style="font-size:0px;text-align:left;direction:ltr;display:inline-block;vertical-align:top;width:100%;">
+                            <table border="0" cellpadding="0" cellspacing="0" role="presentation" style="vertical-align:top;" width="100%">
+                                <tbody>` + text_content + `</tbody> 
+                            </table>   
+                            </div>
+                        </td>
+                        </tr>
+                    </tbody>
+                    </table>
+                </div>
+                <div style="background:#ffffff;background-color:#ffffff;margin:0px auto;max-width:700px;">
+                    <table align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" style="background:#ffffff;background-color:#ffffff;width:100%;">
+                    <tbody>
+                        <tr>
+                        <td style="direction:ltr;font-size:0px;padding:0 0 0 0;text-align:center;">
+                            <div class="mj-column-per-100 mj-outlook-group-fix"
+                            style="font-size:0px;text-align:left;direction:ltr;display:inline-block;vertical-align:top;width:100%;">
+                            <table border="0" cellpadding="0" cellspacing="0" role="presentation" style="vertical-align:top;" width="100%">
+                                <tbody>
+                                <tr>
+                                    <td align="center" style="font-size:0px;padding-bottom:34px;padding-top: 34px; word-break:break-word;">
+                                        <div style="font-family:'Nunito', Helvetica, Arial, sans-serif;font-size:15px;line-height:1;text-align:center;color:#000000;">` 
+                                        + button + `</div>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                            </div>
+                        </td>
+                        </tr>
+                    </tbody>
+                    </table>
+                </div>
+                <div style="background:#24346A ;background-color:#24346A;margin:0px auto;max-width:700px;">
+                    <table align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" style="background:#24346A;background-color:#24346A;width:100%;">
+                    <tbody>
+                        <tr>
+                        <td style="direction:ltr;font-size:0px;padding:24px 25px 24px 40px;text-align:center;">
+                            <div class="mj-column-per-40 mj-outlook-group-fix" style="font-size:0px;text-align:left;direction:ltr;display:inline-block;vertical-align:top;width:100%;">
+                            <table border="0" cellpadding="0" cellspacing="0" role="presentation" style="vertical-align:top;" width="100%">
+                                <tbody>
+                                <tr>
+                                    <td align="left" style="font-size:0px;word-break:break-word;">
+                                    <div style="font-family:Arial, sans-serif;font-size:13px;line-height:1;text-align:left;color:#55575d; margin-bottom: 17px;">
+                                        <p style="line-height: 19px; text-align: left; font-size:14px;color:#fcfcfc;font-family:'Nunito',Helvetica,Arial,sans-serif; display: flex;">
+                                        <img src="https://adi.admicro.vn/adt/tvc/files/images/1122/phone_1668496873.png" alt="" style="padding-right: 8px;">
+                                        <b>Tư vấn hỗ trợ</b>
+                                        </p>
+                                    </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td align="left" style="font-size:0px;word-break:break-word;">
+                                    <div style="font-family:Arial, sans-serif;font-size:13px;line-height:1;text-align:left;color:#A4B4CB;">
+                                        <p style="line-height: 16px; text-align: left; color:#A4B4CB;font-size:12px;font-family:'Nunito',Helvetica,Arial,sans-serif;margin-bottom: 10px;">
+                                        Email: <span style="color:#fff;"> <a href="mailto:hotrodinhduongtoiuu@gmail.com" style="color: #fff; text-decoration: none;"> hotrodinhduongtoiuu@gmail.com</a></span> </p>
+                                        <p style="line-height: 16px; text-align: left; color:#A4B4CB;font-size:12px;font-family:'Nunito',Helvetica,Arial,sans-serif;margin-bottom: 10px;">
+                                        Hotline: <span style="color:#fff;">
+                                            <a href="tel:0989402893" style="color:#fff; text-decoration: none;">0989402893</a>
+                                        </span>
+                                        </p>
+                                    </div>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                            </div>
+                            <div class="mj-column-per-60 mj-outlook-group-fix mj-mg5"
+                            style="font-size:0px;text-align:left;direction:ltr;display:inline-block;vertical-align:top;width:100%;">
+                            <table border="0" cellpadding="0" cellspacing="0" role="presentation" style="vertical-align:top;"width="100%">
+                                <tbody>
+                                <tr>
+                                    <td align="left" style="font-size:0px;word-break:break-word;">
+                                    <div style="font-family:Arial, sans-serif;font-size:13px;line-height:1;text-align:left;color:#55575d; margin-bottom: 17px;">
+                                        <p style="line-height: 19px; text-align: left; font-size:14px;color:#fcfcfc;font-family:'Nunito',Helvetica,Arial,sans-serif; display:flex;">
+                                        <img src="https://adi.admicro.vn/adt/tvc/files/images/1122/location_1668498012.png" alt="" style="padding-right: 8px;"><b>Địa chỉ</b>
+                                        </p>
+                                    </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td align="left" style="font-size:0px;word-break:break-word;">
+                                    <div style="font-family:Arial, sans-serif;font-size:13px;line-height:1;text-align:left;color:#55575d;">
+                                        <p style="line-height: 16px; text-align: left; color:#f5f5f5;font-size:12px;font-family:'Nunito Sans',Helvetica,Arial,sans-serif; margin-bottom:10px;">
+                                        Tầng 20, Center Building, 1 Nguyễn Huy Tưởng, Q. Thanh Xuân, Hà Nội</p>
+                                    </div>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                            </div>
+                        </td>
+                        </tr>
+                    </tbody>
+                    </table>
+                </div>
+                </div>
+                <div style="background:#ffffff;margin:0px auto;max-width:700px;">
+                <table align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" style="background:#ffffff;width:100%;">
+                    <tbody>
                     <tr>
-                    <td style="direction:ltr;font-size:0px;text-align:center;">
+                        <td style="direction:ltr;font-size:0px;padding:0 0 0 0;text-align:center;">
                         <div class="mj-column-per-100 mj-outlook-group-fix"
-                        style="font-size:0px;text-align:left;direction:ltr;display:inline-block;vertical-align:top;width:100%;">
-                        <table border="0" cellpadding="0" cellspacing="0" role="presentation" style="vertical-align:top;"
+                            style="font-size:0px;text-align:left;direction:ltr;display:inline-block;vertical-align:top;width:100%;">
+                            <table border="0" cellpadding="0" cellspacing="0" role="presentation" style="vertical-align:top;"
                             width="100%">
                             <tbody>
-                            <tr>
-                                <td align="center" style="font-size:0px;padding:24px 0px 13px 0; word-break:break-word;">
-                                <table border="0" cellpadding="0" cellspacing="0" role="presentation"
-                                    style="border-collapse:collapse;border-spacing:0px;">
-                                    <tbody>
-                                    <tr>
-                                        <td>
-                                        <img height="auto"
-                                            src="https://adi.admicro.vn/adt/tvc/files/images/0123/admicro_1673342597.png"
-                                            style="border:0;display:block;outline:none;text-decoration:none;height:auto;max-width:100%;font-size:13px;"/>
-                                        </td>
-                                    </tr>
-                                    </tbody>
-                                </table>
-                                </td>
-                            </tr>
-                            </tbody>
-                        </table>
-                        </div>
-                    </td>
-                    </tr>
-                </tbody>
-                </table>
-            </div>
-            <div style="background:#ffffff;background-color:#ffffff;margin:0px auto;max-width:700px; padding-top: 20px;">
-                <table align="center" border="0" cellpadding="0" cellspacing="0" role="presentation"
-                style="background:#ffffff;background-color:#ffffff;width:100%;">
-                <tbody>
-                    <tr>
-                    <td style="direction:ltr;font-size:0px;text-align:center;">
-                        <div class="mj-column-per-100 mj-outlook-group-fix"
-                        style="font-size:0px;text-align:left;direction:ltr;display:inline-block;vertical-align:top;width:100%;">
-                        <table border="0" cellpadding="0" cellspacing="0" role="presentation" style="vertical-align:top;" width="100%">
-                            <tbody>` + text_content + `</tbody> 
-                        </table>   
-                        </div>
-                    </td>
-                    </tr>
-                </tbody>
-                </table>
-            </div>
-            <div style="background:#ffffff;background-color:#ffffff;margin:0px auto;max-width:700px;">
-                <table align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" style="background:#ffffff;background-color:#ffffff;width:100%;">
-                <tbody>
-                    <tr>
-                    <td style="direction:ltr;font-size:0px;padding:0 0 0 0;text-align:center;">
-                        <div class="mj-column-per-100 mj-outlook-group-fix"
-                        style="font-size:0px;text-align:left;direction:ltr;display:inline-block;vertical-align:top;width:100%;">
-                        <table border="0" cellpadding="0" cellspacing="0" role="presentation" style="vertical-align:top;" width="100%">
-                            <tbody>
-                            <tr>
-                                <td align="center" style="font-size:0px;padding-bottom:34px;padding-top: 34px; word-break:break-word;">
-                                    <div style="font-family:'Nunito', Helvetica, Arial, sans-serif;font-size:15px;line-height:1;text-align:center;color:#000000;">` 
-                                    + button + `</div>
-                                </td>
-                            </tr>
-                            </tbody>
-                        </table>
-                        </div>
-                    </td>
-                    </tr>
-                </tbody>
-                </table>
-            </div>
-            <div style="background:#24346A ;background-color:#24346A;margin:0px auto;max-width:700px;">
-                <table align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" style="background:#24346A;background-color:#24346A;width:100%;">
-                <tbody>
-                    <tr>
-                    <td style="direction:ltr;font-size:0px;padding:24px 25px 24px 40px;text-align:center;">
-                        <div class="mj-column-per-40 mj-outlook-group-fix" style="font-size:0px;text-align:left;direction:ltr;display:inline-block;vertical-align:top;width:100%;">
-                        <table border="0" cellpadding="0" cellspacing="0" role="presentation" style="vertical-align:top;" width="100%">
-                            <tbody>
-                            <tr>
-                                <td align="left" style="font-size:0px;word-break:break-word;">
-                                <div style="font-family:Arial, sans-serif;font-size:13px;line-height:1;text-align:left;color:#55575d; margin-bottom: 17px;">
-                                    <p style="line-height: 19px; text-align: left; font-size:14px;color:#fcfcfc;font-family:'Nunito',Helvetica,Arial,sans-serif; display: flex;">
-                                    <img src="https://adi.admicro.vn/adt/tvc/files/images/1122/phone_1668496873.png" alt="" style="padding-right: 8px;">
-                                    <b>Tư vấn hỗ trợ</b>
+                                <tr>
+                                <td align="left" style="font-size:0px;padding:0px 40px;word-break:break-word;">
+                                    <div>
+                                    <p style="line-height: 18px; text-align: center; margin: 8px 0;font-size:13px;color:#333333;font-family:'Nunito',Helvetica,Arial,sans-serif">
+                                        <span style="color:#333333;font-family:'Nunito',Helvetica,Arial,sans-serif"> <i>Đây là emailtự động. Vui lòng không trả lời email này.</i> </span>
                                     </p>
-                                </div>
+                                    </div>
                                 </td>
-                            </tr>
-                            <tr>
-                                <td align="left" style="font-size:0px;word-break:break-word;">
-                                <div style="font-family:Arial, sans-serif;font-size:13px;line-height:1;text-align:left;color:#A4B4CB;">
-                                    <p style="line-height: 16px; text-align: left; color:#A4B4CB;font-size:12px;font-family:'Nunito',Helvetica,Arial,sans-serif;margin-bottom: 10px;">
-                                    Email: <span style="color:#fff;"> <a href="mailto:contact@admicro.vn" style="color: #fff; text-decoration: none;"> contact@admicro.vn</a></span> </p>
-                                    <p style="line-height: 16px; text-align: left; color:#A4B4CB;font-size:12px;font-family:'Nunito',Helvetica,Arial,sans-serif;margin-bottom: 10px;">
-                                    Hotline: <span style="color:#fff;">
-                                        <a href="tel:(024) 7307 7979 " style="color:#fff; text-decoration: none;">(024) 7307 7979</a>
-                                    </span>
-                                    </p>
-                                    <p style="line-height: 16px; text-align: left; color:#A4B4CB;font-size:12px;font-family:'Nunito',Helvetica,Arial,sans-serif;margin-bottom: 10px;">
-                                    Fax: <span style="color:#fff;"> (024) 7307 7980</span> </p>
-                                </div>
-                                </td>
-                            </tr>
+                                </tr>
                             </tbody>
-                        </table>
+                            </table>
                         </div>
-                        <div class="mj-column-per-60 mj-outlook-group-fix mj-mg5"
-                        style="font-size:0px;text-align:left;direction:ltr;display:inline-block;vertical-align:top;width:100%;">
-                        <table border="0" cellpadding="0" cellspacing="0" role="presentation" style="vertical-align:top;"width="100%">
-                            <tbody>
-                            <tr>
-                                <td align="left" style="font-size:0px;word-break:break-word;">
-                                <div style="font-family:Arial, sans-serif;font-size:13px;line-height:1;text-align:left;color:#55575d; margin-bottom: 17px;">
-                                    <p style="line-height: 19px; text-align: left; font-size:14px;color:#fcfcfc;font-family:'Nunito',Helvetica,Arial,sans-serif; display:flex;">
-                                    <img src="https://adi.admicro.vn/adt/tvc/files/images/1122/location_1668498012.png" alt="" style="padding-right: 8px;"><b>Địa chỉ</b>
-                                    </p>
-                                </div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td align="left" style="font-size:0px;word-break:break-word;">
-                                <div style="font-family:Arial, sans-serif;font-size:13px;line-height:1;text-align:left;color:#55575d;">
-                                    <p style="line-height: 16px; text-align: left; color:#f5f5f5;font-size:12px;font-family:'Nunito Sans',Helvetica,Arial,sans-serif; margin-bottom:10px;">
-                                    Tầng 20, Center Building, 1 Nguyễn Huy Tưởng, Q. Thanh Xuân, Hà Nội</p>
-                                    <p style="line-height: 16px; text-align: left;  color:#f5f5f5;font-size:14px;font-family:'Nunito Sans',Helvetica,Arial,sans-serif">
-                                    <a href="#" style="text-decoration:none;color: #F2C144; font-weight:600;">
-                                        <b>Xem báo giá Booking PR tại đây <span style="padding-left: 13px;"></span> <img
-                                            src="https://adi.admicro.vn/adt/tvc/files/images/0123/arright_1673343608.png" alt="">
-                                        </b>
-                                    </a>
-                                    </p>
-                                </div>
-                                </td>
-                            </tr>
-                            </tbody>
-                        </table>
-                        </div>
-                    </td>
+                        </td>
                     </tr>
-                </tbody>
+                    </tbody>
                 </table>
-            </div>
-            </div>
-            <div style="background:#ffffff;margin:0px auto;max-width:700px;">
-            <table align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" style="background:#ffffff;width:100%;">
-                <tbody>
-                <tr>
-                    <td style="direction:ltr;font-size:0px;padding:0 0 0 0;text-align:center;">
-                    <div class="mj-column-per-100 mj-outlook-group-fix"
-                        style="font-size:0px;text-align:left;direction:ltr;display:inline-block;vertical-align:top;width:100%;">
-                        <table border="0" cellpadding="0" cellspacing="0" role="presentation" style="vertical-align:top;"
-                        width="100%">
-                        <tbody>
-                            <tr>
-                            <td align="left" style="font-size:0px;padding:0px 40px;word-break:break-word;">
-                                <div>
-                                <p style="line-height: 18px; text-align: center; margin: 8px 0;font-size:13px;color:#333333;font-family:'Nunito',Helvetica,Arial,sans-serif">
-                                    <span style="color:#333333;font-family:'Nunito',Helvetica,Arial,sans-serif"> <i>Đây là emailtự động. Vui lòng không trả lời email này.</i> </span>
-                                </p>
-                                </div>
-                            </td>
-                            </tr>
-                        </tbody>
-                        </table>
-                    </div>
-                    </td>
-                </tr>
-                </tbody>
-            </table>
-            </div>
-        </body>
-        </html>
-        `;
-        return content_html;    
+                </div>
+            </body>
+            </html>
+            `;
+            return content_html;  
+        } catch (error) {
+            webService.addToLogService(err, "webService templateEmailNew");
+        }
     },
     countObjectSize: function(obj) {
-        let size = 0, key;
-        for (key in obj) {
-            if (obj.hasOwnProperty(key)) size++;
+        try {
+            let size = 0, key;
+            for (key in obj) {
+                if (obj.hasOwnProperty(key)) size++;
+            }
+            return size;
+        } catch (error) {
+            webService.addToLogService(err, "webService countObjectSize");
         }
-        return size;
     },
     updateRecordTable: function(param, condition, table){
         return new Promise((resolve, reject) => {
             db.get().getConnection(function(err, connection) {
-                if (err) {
-                    resolve({
-                        success: false,
-                        message: err
-                    });
-                }
-                let sql = 'UPDATE '+ table + ' SET ';
-                let paramSql = [];
-                if(typeof(param) == 'object'){
-                    let j = 0;
-                    for(let i in param){
-                        if(j == 0){
-                            sql += i +' = ?';
-                            j = 1;
-                        }else{
-                            sql += ', ' + i +' = ?';
-                        }
-                        paramSql.push(param[i]);
-                    }
-                }else{
-                    sql += param;
-                }
-                
-                let l = 0;
-                for(let k in condition){
-                    if(l == 0){
-                        sql += ' WHERE ' + k + ' = ?';
-                        l = 1;
-                    }else{
-                        sql += ' AND ' + k + ' = ?';
-                    }
-                    paramSql.push(condition[k]); 
-                }
-                let query = connection.query(sql, paramSql, function(error, results, fields) {
-                    connection.release();
-                    if (error) {
+                try {
+                    if (err) {
                         resolve({
                             success: false,
-                            message: error
+                            message: err
                         });
                     }
-                    resolve({
-                        success: true,
-                        message: "Successful",
-                        data: results
+                    let sql = 'UPDATE '+ table + ' SET ';
+                    let paramSql = [];
+                    if(typeof(param) == 'object'){
+                        let j = 0;
+                        for(let i in param){
+                            if(j == 0){
+                                sql += i +' = ?';
+                                j = 1;
+                            }else{
+                                sql += ', ' + i +' = ?';
+                            }
+                            paramSql.push(param[i]);
+                        }
+                    }else{
+                        sql += param;
+                    }
+                    
+                    let l = 0;
+                    for(let k in condition){
+                        if(l == 0){
+                            sql += ' WHERE ' + k + ' = ?';
+                            l = 1;
+                        }else{
+                            sql += ' AND ' + k + ' = ?';
+                        }
+                        paramSql.push(condition[k]); 
+                    }
+                    let query = connection.query(sql, paramSql, function(error, results, fields) {
+                        connection.release();
+                        if (error) {
+                            resolve({
+                                success: false,
+                                message: error
+                            });
+                        }
+                        resolve({
+                            success: true,
+                            message: "Successful",
+                            data: results
+                        });
                     });
-                });
+                } catch (error) {
+                    webService.addToLogService(err, "webService updateRecordTable");
+                }
             });
         });
     },
     addRecordTable: function(param, table){
         return new Promise((resolve, reject) => {
             db.get().getConnection(function(err, connection) {
-                if (err) {
-                    resolve({
-                        success: false,
-                        message: err
-                    });
-                }
-                let sql = 'INSERT INTO '+ table +'(';
-                let textVal = ') VALUES ('
-                let paramSql = [];
-                let j = 0;
-                for(var i in param){
-                    if(j == 0){
-                        sql += i ;
-                        textVal += '?';
-                        j = 1;
-                    }else{
-                        sql += ',' + i;
-                        textVal += ',?';
-                    }
-                    paramSql.push(param[i]);
-                }
-                
-                let query = connection.query((sql + textVal + ')'), paramSql, function(error, results, fields) {
-                    connection.release();
-                    if (error) {
+                try {
+                    if (err) {
                         resolve({
                             success: false,
-                            message: error
+                            message: err
                         });
                     }
-                    resolve({
-                        success: true,
-                        message: "Successful",
-                        data: results
+                    let sql = 'INSERT INTO '+ table +'(';
+                    let textVal = ') VALUES ('
+                    let paramSql = [];
+                    let j = 0;
+                    for(var i in param){
+                        if(j == 0){
+                            sql += i ;
+                            textVal += '?';
+                            j = 1;
+                        }else{
+                            sql += ',' + i;
+                            textVal += ',?';
+                        }
+                        paramSql.push(param[i]);
+                    }
+                    
+                    let query = connection.query((sql + textVal + ')'), paramSql, function(error, results, fields) {
+                        connection.release();
+                        if (error) {
+                            resolve({
+                                success: false,
+                                message: error
+                            });
+                        }
+                        resolve({
+                            success: true,
+                            message: "Successful",
+                            data: results
+                        });
                     });
-                });
+                } catch (error) {
+                    webService.addToLogService(err, "webService addRecordTable");
+                }
             });
         })
     },
     deleteRecordTable: function(condition, table){
         return new Promise((resolve, reject) => {
             db.get().getConnection(function(err, connection) {
-                if (err) resolve({success: false, message: err});
-                let sql = 'DELETE FROM ' + table +' WHERE ';
-                let paramSql = [];
-                let j = 0;
-                for(var i in condition){
-                    if(j == 0){
-                        sql += i + ' = ?';
-                        j = 1;
-                    }else{
-                        sql += ' AND ' + i + ' = ?';
+                try {
+                    if (err) resolve({success: false, message: err});
+                    let sql = 'DELETE FROM ' + table +' WHERE ';
+                    let paramSql = [];
+                    let j = 0;
+                    for(var i in condition){
+                        if(j == 0){
+                            sql += i + ' = ?';
+                            j = 1;
+                        }else{
+                            sql += ' AND ' + i + ' = ?';
+                        }
+                        paramSql.push(condition[i]);
                     }
-                    paramSql.push(condition[i]);
-                }
-                connection.query(sql, paramSql, function(error, results, fields) {
-                    connection.release();
-                    if (error) resolve({success: false, message: error});
-                    resolve({
-                        success: true,
-                        message: "Successful",
-                        data: results
+                    connection.query(sql, paramSql, function(error, results, fields) {
+                        connection.release();
+                        if (error) resolve({success: false, message: error});
+                        resolve({
+                            success: true,
+                            message: "Successful",
+                            data: results
+                        });
                     });
-                });
+                } catch (error) {
+                    webService.addToLogService(err, "webService deleteRecordTable");
+                }
             });
         })
     },
     getListTable: function(sql, paramSql){
         return new Promise((resolve, reject) => {
             db.get().getConnection(function(err, connection) {
-                if (err) {
-                    resolve({
-                        success: false,
-                        message: err
-                    });
-                }
-                
-                let query = connection.query(sql, paramSql, function(error, results, fields) {
-                    connection.release();
-                    if (error) {
+                try {
+                    if (err) {
                         resolve({
                             success: false,
-                            message: error
+                            message: err
                         });
                     }
-                    resolve({
-                        success: true,
-                        data: results,
-                        message: "Successful"
+                    
+                    let query = connection.query(sql, paramSql, function(error, results, fields) {
+                        connection.release();
+                        if (error) {
+                            resolve({
+                                success: false,
+                                message: error
+                            });
+                        }
+                        resolve({
+                            success: true,
+                            data: results,
+                            message: "Successful"
+                        });
                     });
-                });
-                console.log("query", query.sql);
+                } catch (error) {
+                    webService.addToLogService(err, "webService getListTable");
+                }
             });
         });
     },
     getBookingStatusOption: function(type = 1) {
-        var result = {
-            value: [0,1,2,3,4,-1],
-            data: []
-        };
-
-        if (type != 1) {
-            result.value = [-2,5,1,2,6,7,3,4,-1];
+        try {
+            var result = {
+                value: [0,1,2,3,4,-1],
+                data: []
+            };
+    
+            if (type != 1) {
+                result.value = [-2,5,1,2,6,7,3,4,-1];
+            }
+            for (var i = 0; i < result.value.length; i++) {
+                result.data.push({
+                    label: '<span class="badge badge-'+webService.bookingStatusClass(result.value[i]).name+'">'+ webService.bookingStatusClass(result.value[i]).value +'</span>',
+                    value: result.value[i]
+                });
+            }
+            return result;
+        } catch (error) {
+            webService.addToLogService(err, "webService getBookingStatusOption");
         }
-        for (var i = 0; i < result.value.length; i++) {
-            result.data.push({
-                label: '<span class="badge badge-'+webService.bookingStatusClass(result.value[i]).name+'">'+ webService.bookingStatusClass(result.value[i]).value +'</span>',
-                value: result.value[i]
-            });
-        }
-        return result;
     },
     bookingStatusClass: function(status) {
-        var color   = '',
-            result  = {
-                name: '',
-                color: '',
-                value: ''
+        try {
+            var color   = '',
+                result  = {
+                    name: '',
+                    color: '',
+                    value: ''
+                }
+            if (status == -2) {
+                result.name  = 'bai-nhap';
+                result.color = '#AD9D85';
+                result.value = 'Nháp';
+            } else if (status == -1) {
+                result.name  = 'da-huy';
+                result.color = '#F2564C';
+                result.value = 'Đã hủy';
+            } else if (status == 0) {
+                result.name  = 'giu-cho';
+                result.color = '#999';
+                result.value = 'Giữ chỗ';
+            } else if (status == 1) {
+                result.name  = 'cho-duyet';
+                result.color = '#5BCD8F';
+                result.value = 'Chờ duyệt';
+            } else if (status == 2) {
+                result.name  = 'da-duyet';
+                result.color = '#60BFD4';
+                result.value = 'Đã duyệt';
+            } else if (status == 3) {
+                result.name  = 'tra-lai';
+                result.color = '#6D7DEE';
+                result.value = 'Bị trả lại';
+            } else if (status == 4) {
+                result.name  = 'xuat-ban';
+                result.color = '#B8D975';
+                result.value = 'Đã xuất bản';
+            } else if (status == 5) {
+                result.name  = 'gui-duyet';
+                result.color = '#F2C144';
+                result.value = 'Gửi duyệt';
+            } else if (status == 6) {
+                result.name  = 'gui-dang';
+                result.color = '#FFB36D';
+                result.value = 'Gửi đăng';
+            } else if (status == 7) {
+                result.name  = 'cho-dang';
+                result.color = '#4DB3AD';
+                result.value = 'Chờ đăng';
             }
-        if (status == -2) {
-            result.name  = 'bai-nhap';
-            result.color = '#AD9D85';
-            result.value = 'Nháp';
-        } else if (status == -1) {
-            result.name  = 'da-huy';
-            result.color = '#F2564C';
-            result.value = 'Đã hủy';
-        } else if (status == 0) {
-            result.name  = 'giu-cho';
-            result.color = '#999';
-            result.value = 'Giữ chỗ';
-        } else if (status == 1) {
-            result.name  = 'cho-duyet';
-            result.color = '#5BCD8F';
-            result.value = 'Chờ duyệt';
-        } else if (status == 2) {
-            result.name  = 'da-duyet';
-            result.color = '#60BFD4';
-            result.value = 'Đã duyệt';
-        } else if (status == 3) {
-            result.name  = 'tra-lai';
-            result.color = '#6D7DEE';
-            result.value = 'Bị trả lại';
-        } else if (status == 4) {
-            result.name  = 'xuat-ban';
-            result.color = '#B8D975';
-            result.value = 'Đã xuất bản';
-        } else if (status == 5) {
-            result.name  = 'gui-duyet';
-            result.color = '#F2C144';
-            result.value = 'Gửi duyệt';
-        } else if (status == 6) {
-            result.name  = 'gui-dang';
-            result.color = '#FFB36D';
-            result.value = 'Gửi đăng';
-        } else if (status == 7) {
-            result.name  = 'cho-dang';
-            result.color = '#4DB3AD';
-            result.value = 'Chờ đăng';
+            return result;
+        } catch (error) {
+            webService.addToLogService(err, "webService bookingStatusClass");
         }
-        return result;
     },
 }
 

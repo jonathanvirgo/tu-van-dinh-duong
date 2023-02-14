@@ -178,16 +178,6 @@ router.get('/search', function(req, res) {
     }
 })
 
-router.get('/bao-gia', function(req, res) {
-    if (!req.user) {
-        return res.redirect('/user/login');
-    }
-    res.render('pages/quote.ejs', { 
-        user: req.user,
-        errors: []
-    });
-})
-
 router.get('/lien-he', function(req, res) {
     try {
         if (!req.user) {

@@ -9,7 +9,6 @@
     roleUserService = require('./../models/roleUsersModel'),
     logService      = require('./../models/logModel'),
     adminService    = require('./../models/adminModel'),
-    webService      = require('../../web/models/webModel'),
     modelService    = require('./../models/userModel'); 
 
 router.get('/', function (req, res, next) {

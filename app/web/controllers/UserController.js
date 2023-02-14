@@ -39,7 +39,7 @@ router.post('/login', function (req, res, next) {
             return;
         }
         return new Promise((resolve, reject) => {
-            let sqlGetListRequest = 'SELECT * FROM user WHERE name = ? OR email = ?';
+            let sqlGetListRequest = 'SELECT * FROM user WHERE active = 1 AND ( name = ? OR email = ?)';
             webService.getListTable(sqlGetListRequest ,[username, username]).then(responseData =>{
                 console.log("getListTable", responseData);
                 if(!responseData.success){
@@ -60,12 +60,20 @@ router.post('/login', function (req, res, next) {
                         resultData.status  = true;
                         resultData.message = "Đăng nhập thành công!";
                         res.send(resultData);
+                        return;
                     });
+                }else{
+                    resultData.message = "Tài khoản chưa được kích hoạt! Vui lòng kiểm tra email để kích hoạt tài khoản"; 
+                    res.send(resultData);
+                    return;
                 }
             });
         })
     } catch (error) {
-        
+        logService.create(req, error.message).then(function() {
+            resultData.message = error.message;
+            res.json(resultData);
+        });
     }
 })
 
@@ -85,7 +93,8 @@ router.post('/signup', function (req, res, next) {
     var str_error       = [];
 
     return new Promise(function (resolve, reject) {
-        var parameter = {
+        try {
+            var parameter = {
                 full_name: req.body.full_name,
                 email: req.body.email,
                 phone: req.body.phone,
@@ -95,95 +104,101 @@ router.post('/signup', function (req, res, next) {
                 username: req.body.username,
                 password: req.body.password,
                 confirm_password: req.body.confirm_password
-            },  
-            resultData = {
-                "status": false,
-                "message": ""
-            },
-            list_error = {
-                full_name: [],
-                email: [],
-                phone: [],
-                birthday: [],
-                gender: [],
-                username: [],
-                password: [],
-                confirm_password: []
-            };
-        
-        if(parameter.full_name == ""){
-            list_error.full_name.push("Họ và tên được yêu cầu!");
-        }
-        if(parameter.email == ""){
-            list_error.email.push("Email được yêu cầu!");
-        } else {
-            if(!validator.isEmail(parameter.email)){
-                list_error.email.push('Email sử dụng không hợp lệ!');
+                },  
+                resultData = {
+                    "status": false,
+                    "message": ""
+                },
+                list_error = {
+                    full_name: [],
+                    email: [],
+                    phone: [],
+                    birthday: [],
+                    gender: [],
+                    username: [],
+                    password: [],
+                    confirm_password: []
+                };
+            
+            if(parameter.full_name == ""){
+                list_error.full_name.push("Họ và tên được yêu cầu!");
             }
-        }
-        if(parameter.phone == ""){
-            list_error.phone.push("Số điện thoại được yêu cầu!");
-        } else {
-            if(!/^[0-9]+$/.test(parameter.phone)){
-                list_error.phone.push("Số điện thoại không hợp lệ");
+            if(parameter.email == ""){
+                list_error.email.push("Email được yêu cầu!");
+            } else {
+                if(!validator.isEmail(parameter.email)){
+                    list_error.email.push('Email sử dụng không hợp lệ!');
+                }
             }
-        }
-        if(parameter.birthday == ""){
-            list_error.birthday.push("Ngày sinh được yêu cầu!");
-        } else {
-            var birthday = new Date(parameter.birthday),
-                to_day   = new Date();
-            if(birthday >= to_day){
-                list_error.birthday.push("Ngày sinh không được lớn hơn ngày hiện tại!");
-            }  
-        }
+            if(parameter.phone == ""){
+                list_error.phone.push("Số điện thoại được yêu cầu!");
+            } else {
+                if(!/^[0-9]+$/.test(parameter.phone)){
+                    list_error.phone.push("Số điện thoại không hợp lệ");
+                }
+            }
+            if(parameter.birthday == ""){
+                list_error.birthday.push("Ngày sinh được yêu cầu!");
+            } else {
+                var birthday = new Date(parameter.birthday),
+                    to_day   = new Date();
+                if(birthday >= to_day){
+                    list_error.birthday.push("Ngày sinh không được lớn hơn ngày hiện tại!");
+                }  
+            }
 
-        if(parameter.gender == -1){
-            list_error.gender.push("Giới tính được yêu cầu!");
-        }
-        if(parameter.username == ""){
-            list_error.username.push("Tên đăng nhập được yêu cầu!");
-        } else {
-            if (parameter.username.length < 4) {
-                list_error.username.push("Tên đăng nhập ít nhất 4 ký tự");
+            if(parameter.gender == -1){
+                list_error.gender.push("Giới tính được yêu cầu!");
             }
-            if (parameter.username.length > 65) {
-                list_error.username.push('Tên đăng nhập không được quá 65 ký tự');
+            if(parameter.username == ""){
+                list_error.username.push("Tên đăng nhập được yêu cầu!");
+            } else {
+                if (parameter.username.length < 4) {
+                    list_error.username.push("Tên đăng nhập ít nhất 4 ký tự");
+                }
+                if (parameter.username.length > 65) {
+                    list_error.username.push('Tên đăng nhập không được quá 65 ký tự');
+                }
+                if (!validator.matches(parameter.username, "^[a-zA-Z0-9_\.\-]*$")) {
+                    list_error.username.push('Tên truy cập của bạn không hợp lệ!');
+                }
             }
-            if (!validator.matches(parameter.username, "^[a-zA-Z0-9_\.\-]*$")) {
-                list_error.username.push('Tên truy cập của bạn không hợp lệ!');
+            if(parameter.password == ""){
+                list_error.password.push("Mật khẩu được yêu cầu!");
             }
-        }
-        if(parameter.password == ""){
-            list_error.password.push("Mật khẩu được yêu cầu!");
-        }
-        if(parameter.confirm_password == ""){
-            list_error.confirm_password.push("Xác nhận mật khẩu được yêu cầu!");
-        }
-        if (parameter.password !== parameter.confirm_password) {
-            list_error.confirm_password.push('Mật khẩu và xác nhận mật khẩu không đúng!');
-        }
-        if(parameter.password !== "" && parameter.confirm_password){
-            if (parameter.password.length < 9) {
-                list_error.password.push("Mật khẩu sử dụng tối thiểu 9 ký tự");
+            if(parameter.confirm_password == ""){
+                list_error.confirm_password.push("Xác nhận mật khẩu được yêu cầu!");
             }
-        }
-        if(str_error.length > 0 || 
-            list_error.full_name.length > 0 || 
-            list_error.email.length > 0 || 
-            list_error.phone.length > 0 || 
-            list_error.birthday.length > 0 || 
-            list_error.gender.length > 0 || 
-            list_error.username.length > 0 || 
-            list_error.password.length > 0 || 
-            list_error.confirm_password.length > 0){
-            resultData.message = str_error.toString();
-            resultData.error   = list_error;
-            res.send(resultData);
-            return;
-        }
+            if (parameter.password !== parameter.confirm_password) {
+                list_error.confirm_password.push('Mật khẩu và xác nhận mật khẩu không đúng!');
+            }
+            if(parameter.password !== "" && parameter.confirm_password){
+                if (parameter.password.length < 9) {
+                    list_error.password.push("Mật khẩu sử dụng tối thiểu 9 ký tự");
+                }
+            }
+            if(str_error.length > 0 || 
+                list_error.full_name.length > 0 || 
+                list_error.email.length > 0 || 
+                list_error.phone.length > 0 || 
+                list_error.birthday.length > 0 || 
+                list_error.gender.length > 0 || 
+                list_error.username.length > 0 || 
+                list_error.password.length > 0 || 
+                list_error.confirm_password.length > 0){
+                resultData.message = str_error.toString();
+                resultData.error   = list_error;
+                res.send(resultData);
+                return;
+            }
 
-        createUser(resultData, list_error, parameter, req, res);
+            createUser(resultData, list_error, parameter, req, res);
+        } catch (error) {
+            logService.create(req, error.message).then(function() {
+                resultData.message = error.message;
+                res.send(resultData);
+            });
+        }
     });
 })
 
@@ -283,54 +298,62 @@ function createUser(resultData, list_error, parameter, req, res) {
             address: parameter.address,
             activePasswordToken: "",
             resetPasswordExpires: new Date(Date.now() + 3600000),
-            active: 1
+            active: 0
         };
 
     return new Promise(function (resolve, reject) {
-        if(list_error.full_name.length > 0 || 
-            list_error.email.length > 0 || 
-            list_error.phone.length > 0 || 
-            list_error.birthday.length > 0 || 
-            list_error.gender.length > 0 || 
-            list_error.username.length > 0 || 
-            list_error.password.length > 0 || 
-            list_error.confirm_password.length > 0){
-            resultData.error = list_error;
-            res.send(resultData);
-            return;
-        }
-        crypto.randomBytes(20, function (err, buf) {
-            pr_user.activePasswordToken  = buf.toString('hex');
-            userService.create(pr_user, function (err, reUser, fields) {
-                if (err) {
-                    logService.create(req, err).then(function(){
-                        resultData.message = err.sqlMessage;
-                        res.send(resultData);
-                    });
-                    return;
-                }
-                if (reUser.insertId !== undefined) {    
-                    roleUserService.create({user_id: reUser.insertId, role_id: 2}, function (err, rsRole, fields) {
-                        if (err) {
-                            logService.create(req, err).then(function(){
-                                resultData.message = err.sqlMessage;
+        try {
+            if(list_error.full_name.length > 0 || 
+                list_error.email.length > 0 || 
+                list_error.phone.length > 0 || 
+                list_error.birthday.length > 0 || 
+                list_error.gender.length > 0 || 
+                list_error.username.length > 0 || 
+                list_error.password.length > 0 || 
+                list_error.confirm_password.length > 0){
+                resultData.error = list_error;
+                res.send(resultData);
+                return;
+            }
+            crypto.randomBytes(20, function (err, buf) {
+                pr_user.activePasswordToken  = buf.toString('hex');
+                userService.create(pr_user, function (err, reUser, fields) {
+                    if (err) {
+                        logService.create(req, err).then(function(){
+                            resultData.message = err.sqlMessage;
+                            res.send(resultData);
+                        });
+                        return;
+                    }
+                    if (reUser.insertId !== undefined) {    
+                        roleUserService.create({user_id: reUser.insertId, role_id: 2}, function (err, rsRole, fields) {
+                            if (err) {
+                                logService.create(req, err).then(function(){
+                                    resultData.message = err.sqlMessage;
+                                    res.send(resultData);
+                                });
+                                return;
+                            }
+                            var activeaccount = 'http://' + req.headers.host + '/user/activeaccount/' + pr_user.activePasswordToken;
+                            mailService.mail_signup(parameter.email, activeaccount).then(function(success){
+                                webService.addLogMail(JSON.stringify(success), JSON.stringify({email: parameter.email, link_active: activeaccount}), success.success ? 1 : 0, 0, 'mail_signup');
+                                resultData.status  = true;
+                                resultData.message = "Đăng ký thành công. Vui lòng kiểm tra email " + parameter.email + " để kích hoạt tài khoản theo hướng dẫn trước khi đăng nhập hệ thống!";
                                 res.send(resultData);
                             });
-                            return;
-                        }
-                        // var activeaccount = 'http://' + req.headers.host + '/user/activeaccount/' + pr_user.activePasswordToken;
-                        // mailService.mail_signup(parameter.email, activeaccount).then(function(responseData){
-                            resultData.status  = true;
-                            resultData.message = "Đăng ký thành công. Vui lòng kiểm tra email " + parameter.email + " để kích hoạt tài khoản theo hướng dẫn trước khi đăng nhập hệ thống!";
-                            res.send(resultData);
-                        // });
-                    })
-                } else {
-                    resultData.message = "Dữ liệu trả về không xác định!";
-                    res.send(resultData);
-                }
+                        })
+                    } else {
+                        resultData.message = "Dữ liệu trả về không xác định!";
+                        res.send(resultData);
+                    }
+                });
             });
-        });
+        } catch (error) {
+            logService.create(req, error.message).then(function() {
+                resultData.message = error.message;
+                res.send(resultData);
+            });
+        }
     });
 }
 module.exports = router;

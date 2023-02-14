@@ -4,7 +4,7 @@
       <div class="box-header">
         <h2 class="box-title">Danh sách khám <small class="text-icon fw-6">(<%=countArticle%>)</small>
         </h2>
-        <a class="box-more-link link-primary ms-auto" href="/kham">
+        <a class="box-more-link link-primary ms-auto" href="/examine">
           Xem đầy đủ
           <svg class="iconsvg-arrow-right ms-1 flex-shrink-0">
             <use xlink:href="/public/content/images/sprite.svg#arrow-right"></use>
@@ -32,7 +32,7 @@
                   <tr>
                     <td class="fw-6 text-body-2"><%=(i+1)%></td>
                     <td>
-                      <a target="_blank" href="/article/edit/<%=listArticle[i].book_id%>">
+                      <a target="_blank" href="/examine/edit/<%=listArticle[i].book_id%>">
                         <span class="text-primary fw-6 fs-13px">
                           <%=listArticle[i].id_request%>
                         </span>

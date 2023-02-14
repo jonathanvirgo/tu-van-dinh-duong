@@ -15,11 +15,10 @@ router.get('/', function(req, res) {
         if (!req.user) {
             return res.redirect('/user/login');
         }
-        webService.createSideBarFilter(req, 2).then(function(filter){
+        webService.createSideBarFilter(req, 1).then(function(filter){
             var str_errors  = filter.error,
                 arrPromise  = [],
-                pageview    = [],
-                listArticle = [],
+                listExamine = [],
                 paginator   = {
                     perPage: 0,
                     page: 0,
@@ -32,35 +31,35 @@ router.get('/', function(req, res) {
                     currentPage: '',
                 };
 
-            arrPromise.push(new Promise(function (resolve, reject) {
-                articleService.countAllArticle({search: filter.search, filter: true}, function (err, result, fields) {
-                    if (err) {
-                        return logService.create(req, err).then(function(){
-                            str_errors.push(err.sqlMessage);
-                            resolve();
-                        });
-                    }
-                    if (result !== undefined) {
-                        paginator.totalItem = result[0].count;
-                    }
-                    resolve();
-                });
-            }));
+            // arrPromise.push(new Promise(function (resolve, reject) {
+            //     articleService.countAllArticle({search: filter.search, filter: true}, function (err, result, fields) {
+            //         if (err) {
+            //             return logService.create(req, err).then(function(){
+            //                 str_errors.push(err.sqlMessage);
+            //                 resolve();
+            //             });
+            //         }
+            //         if (result !== undefined) {
+            //             paginator.totalItem = result[0].count;
+            //         }
+            //         resolve();
+            //     });
+            // }));
 
-            arrPromise.push(new Promise(function (resolve, reject) {
-                articleService.getAllArticle({search: filter.search, filter: true}, function (err, result, fields) {
-                    if (err) {
-                        return logService.create(req, err).then(function(){
-                            str_errors.push(err.sqlMessage);
-                            resolve();
-                        });
-                    }
-                    if (result !== undefined) {
-                        listArticle = result;
-                    }
-                    resolve();
-                });
-            }));
+            // arrPromise.push(new Promise(function (resolve, reject) {
+            //     articleService.getAllArticle({search: filter.search, filter: true}, function (err, result, fields) {
+            //         if (err) {
+            //             return logService.create(req, err).then(function(){
+            //                 str_errors.push(err.sqlMessage);
+            //                 resolve();
+            //             });
+            //         }
+            //         if (result !== undefined) {
+            //             listArticle = result;
+            //         }
+            //         resolve();
+            //     });
+            // }));
 
             return new Promise(function (resolve, reject) {
                 Promise.all(arrPromise).then(function () {
@@ -76,7 +75,7 @@ router.get('/', function(req, res) {
                         paginator.hasPrevPage = true;
                         paginator.prevPage    = filter.requestUri + '&page=' + (paginator.page - 1);
                     }
-                    res.render('article/index.ejs', { 
+                    res.render('examine/index.ejs', { 
                         user: req.user,
                         errors: str_errors,
                         listArticle: listArticle,
@@ -86,7 +85,7 @@ router.get('/', function(req, res) {
                         paginator: paginator
                     });
                 }).catch(err => {
-                    res.render("article/index.ejs", {
+                    res.render("examine/index.ejs", {
                         user: req.user,
                         errors: [err],
                         filter: filter
@@ -96,7 +95,7 @@ router.get('/', function(req, res) {
         });
     } catch (e) {
         webService.createSideBarFilter(req, 1).then(function(dataFilter) {
-            res.render("article/index.ejs", {
+            res.render("examine/index.ejs", {
                 user: req.user,
                 errors: [e.message],
                 filter: dataFilter
@@ -253,7 +252,7 @@ router.get('/edit/:id', function(req, res, next) {
                     //         }
                     //     }
                     // }
-                    res.render("article/" + page_name + ".ejs", {
+                    res.render("examine/" + page_name + ".ejs", {
                         moment: moment,
                         page: page_name,
                         user: req.user,
@@ -282,7 +281,7 @@ router.get('/edit/:id', function(req, res, next) {
                         price_article: (resultData.detailArticle.article && resultData.detailArticle.article.price) ? parseInt(resultData.detailArticle.article.price.replaceAll(',','')) : 0
                     });
                 }).catch(err => {
-                    res.render("article/detail.ejs", {
+                    res.render("examine/detail.ejs", {
                         user: req.user,
                         errors: [err],
                         filter: resultData.filter,
@@ -290,7 +289,7 @@ router.get('/edit/:id', function(req, res, next) {
                     });
                 });
             }).catch(err => {
-                res.render("article/detail.ejs", {
+                res.render("examine/detail.ejs", {
                     user: req.user,
                     errors: [err],
                     filter: resultData.filter,
@@ -300,7 +299,7 @@ router.get('/edit/:id', function(req, res, next) {
         });
     } catch (e) {
         webService.createSideBarFilter(req, 2).then(function(dataFilter) {
-            res.render("article/detail.ejs", {
+            res.render("examine/detail.ejs", {
                 user: req.user,
                 errors: [e.message],
                 filter: dataFilter,
@@ -320,55 +319,7 @@ router.get('/create', function(req, res, next) {
             resultData = {
                 filter: [],
                 category: []
-            },
-            article = {
-                booking_id: 0,
-                status: -2,
-                type: 1,
-                id_request: "",
-                list_channel_allow: '[]',
-                search_status: -2
-            }
-            query   = url.parse(req.url, true).query,
-            site_id = query.site_id == undefined ? 1 : query.site_id;
-
-        arrPromise.push(new Promise((resolve, reject) => {
-            bookingService.checkDraftBooking(req.user.id).then(function(responseData) {
-                if (!responseData.success) {
-                    str_errors.push(responseData.message);
-                    resolve();
-                } else {
-                    if (responseData.data[0]) {
-                        article.booking_id = responseData.data[0].booking_id;
-                        article.id_request = responseData.data[0].id_request;
-                        articleService.updateRecordTable("created_at = CURRENT_TIMESTAMP",{booking_id: responseData.data[0].booking_id}, 'pr_article');
-                        resolve();
-                    } else {
-                        bookingService.createDraftBooking({
-                            created_by: req.user.id
-                        }).then(function(responseData_1) {
-                            if (!responseData_1.success) {
-                                str_errors.push(responseData_1.message);
-                                resolve();
-                            } else {
-                                if (responseData_1.data.insertId !== undefined) {
-                                    article.booking_id = responseData_1.data.insertId;
-                                    articleService.createDraftArticle(article.booking_id).then(function(responseData_2) {
-                                        if (!responseData_2.success) {
-                                            str_errors.push(responseData_2.message);
-                                        }
-                                        article.id_request = responseData_2.id_request;
-                                        resolve();
-                                    });
-                                } else {
-                                    resolve();
-                                }
-                            }
-                        });
-                    }
-                }
-            });
-        }));
+            };
 
         arrPromise.push(webService.createSideBarFilter(req, 2).then(function(dataFilter) {
             resultData.filter = dataFilter;
@@ -376,37 +327,19 @@ router.get('/create', function(req, res, next) {
                 str_errors = str_errors.concat(resultData.filter.error);
             }
         }));
-        arrPromise.push(webService.getListWebsiteChannelFormat(req, site_id).then(function(dataCategory) {
-            resultData.category = dataCategory;
-            if (resultData.category.error.length > 0) {
-                str_errors = str_errors.concat(resultData.category.error);
-            }
-        }));
+
+        console.log(resultData);
 
         return new Promise(function(resolve, reject) {
             Promise.all(arrPromise).then(function() {
-                res.render("article/create.ejs", {
-                    page: "create",
+                res.render("examine/create.ejs", {
                     user: req.user,
                     errors: str_errors,
                     filter: resultData.filter,
-                    websites: resultData.category.websites,
-                    formats: resultData.category.formats,
-                    channels: webService.sortChannelForVirtualSelect(resultData.category.channels),
-                    statusClass: webService.bookingStatusClass(article.search_status),
-                    article: article,
-                    title: article.id_request,
-                    content: [],
-                    files: [],
-                    listRequestCancel: [],
-                    listRequestEdit: [],
-                    listRequest: [],
-                    versionContent: 0,
-                    moment: moment,
-                    price_allow_fm: "0"
+                    moment: moment
                 });
             }).catch(err => {
-                res.render("article/create.ejs", {
+                res.render("examine/create.ejs", {
                     user: req.user,
                     errors: [err],
                     filter: resultData.filter,
@@ -416,7 +349,7 @@ router.get('/create', function(req, res, next) {
         });
     } catch (e) {
         webService.createSideBarFilter(req, 2).then(function(dataFilter) {
-            res.render("article/create.ejs", {
+            res.render("examine/create.ejs", {
                 user: req.user,
                 errors: [e.message],
                 filter: dataFilter,

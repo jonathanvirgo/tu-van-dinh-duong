@@ -1,0 +1,79 @@
+<form id="kham_form" class="form-horizontal">
+	<div class="row g-2 align-items-center">
+        <div class="col-6 d-flex">
+            <label class="col-form-label col-md-auto fw-bocld" for="form-tieude">Họ và tên
+                <span class="text-danger">*</span>
+            </label>
+            <div class="col-form-body col-md">
+                <div class="form-control-has-addon">
+                    <input type="text" name="title" class="form-control form-control-title" id="art_title" placeholder="Nhập họ và tên">
+                    <button class="btn form-control-addon btn-link p-0 min-h-auto" type="button" onclick="clearInput('#art_title')">
+                        <svg class="iconsvg-close">
+                            <use xlink:href="/public/content/images/sprite.svg#close"></use>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="col-3 d-flex">
+            <label class="col-form-label col-md-auto fw-bold" for="form-tieude">Giới tính
+                <span class="text-danger">*</span>
+            </label>
+            <div class="col-form-body col-md">
+                <div class="form-control-has-addon">
+                    
+                </div>
+            </div>
+        </div>
+        <div class="col-3">
+            <div class="row">
+                <div class="col-6 d-flex">
+                    <label class="col-form-label col-md-auto fw-bold" for="form-tieude">Năm sinh
+                        <span class="text-danger">*</span>
+                    </label>
+                    <div class="col-form-body col-md">
+                        <div class="form-control-has-addon">
+                            <input type="text" name="title" class="form-control form-control-title" id="art_title" placeholder="Nhập tiêu đề bài viết">
+                            <button class="btn form-control-addon btn-link p-0 min-h-auto" type="button" onclick="clearInput('#art_title')">
+                                <svg class="iconsvg-close">
+                                    <use xlink:href="/public/content/images/sprite.svg#close"></use>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6 d-flex">
+                    <label class="col-form-label col-md-auto fw-bold" for="form-tieude">Tuổi
+                        <span class="text-danger">*</span>
+                    </label>
+                    <div class="col-form-body col-md">
+                        <div class="form-control-has-addon">
+                            <input type="text" name="title" class="form-control form-control-title" id="art_title" placeholder="Nhập tiêu đề bài viết">
+                            <button class="btn form-control-addon btn-link p-0 min-h-auto" type="button" onclick="clearInput('#art_title')">
+                                <svg class="iconsvg-close">
+                                    <use xlink:href="/public/content/images/sprite.svg#close"></use>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+	</div>
+
+	<div class="row g-2 align-items-center">
+	  <label class="col-form-label col-md-auto fw-bold" for="art_description">Mô tả
+		<!-- <span class="text-danger">*</span> -->
+	  </label>
+	  <div class="col-form-body col-md">
+        <div class="form-control-has-addon">
+            <textarea class="form-control" id="art_description" placeholder="Nhập mô tả cho bài viết"></textarea>
+            <button class="btn form-control-addon btn-link p-0 min-h-auto" type="button" onclick="clearInput('#art_description')">
+                <svg class="iconsvg-close">
+                <use xlink:href="/public/content/images/sprite.svg#close"></use>
+                </svg>
+            </button>
+        </div>
+	  </div>
+	</div>
+</form>

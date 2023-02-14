@@ -1,0 +1,72 @@
+<html lang="en">
+   <head>
+      <%- include('../layout/head') %>
+      <title>Tiếp nhận khám</title>
+   </head>
+   <body>
+      <div class="page">
+         <%- include('../layout/header',{user: user}) %>
+         <%- include('../layout/sidebar') %>
+         <div class="page-main">
+            <% if (errors.length > 0){%>
+            <div class="container-fluid">
+               <div class="row gy-32px">
+                     <div class="alert-dismissable">
+                         <div class="alert alert-danger">
+                             <ul>
+                                 <% for (i = 0;i < errors.length;i++){%>
+                                     <li><%=errors[i]%></li>
+                                 <%}%>
+                             </ul>
+                         </div>
+                     </div>
+               </div>
+            </div>
+            <% } else { %>
+            <div class="container">
+              <div id="dung_bai_tab">
+                <div class="tab box">
+                  <ul class="tab-nav nav nav-tabs justify-content-center">
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="#kham" data-bs-toggle="tab" role="tab" aria-controls="tab" aria-selected="true" id="kham-tab">Khám</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#tuvandinhduong" data-bs-toggle="tab" role="tab" aria-controls="tab" aria-selected="false" id="tuvandinhduong-tab">Tư vấn dinh dưỡng</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#thucdonmau" data-bs-toggle="tab" role="tab" aria-controls="tab" aria-selected="false" id="thucdonmau-tab">Thực đơn mẫu</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#kedon" data-bs-toggle="tab" role="tab" aria-controls="tab" aria-selected="false" id="kedon-tab">Kê đơn</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#chidinhcanlamsang" data-bs-toggle="tab" role="tab" aria-controls="tab" aria-selected="false" id="chidinhcanlamsang-tab">Chỉ định cận lâm sàng</a>
+                    </li>
+                  </ul>
+                </div>
+
+                <div class="tab-content">
+                  <div class="tab-pane fade box-body show active" id="kham">
+                    <%- include('../examine/kham') %>
+                  </div>
+                  <div class="tab-pane fade box-body" id="tuvandinhduong">
+                    <%- include('../examine/tuvandinhduong') %>
+                  </div>
+                  <div class="tab-pane fade box-body" id="thucdonmau">
+                    <%- include('../examine/thucdonmau') %>
+                  </div>
+                  <div class="tab-pane fade box-body" id="kedon">
+                    <%- include('../examine/kedon') %>
+                  </div>
+                  <div class="tab-pane fade box-body" id="chidinhcanlamsang">
+                    <%- include('../examine/chidinhcanlamsang') %>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <% } %>
+         </div>
+          <%- include('../layout/footer', { footer_class: ""}) %>
+      </div>
+   </body>
+</html>
