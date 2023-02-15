@@ -44,52 +44,9 @@ function numberKeyOnly(evt) {
     return true;
 }
 
-function uname_change() {
-    var loading = $("#signup-form #imgajaxusername");
-    var uname   = $("#signup-form #username").val();
-    
-    $("#imgchkuname").html("");
-    $("#signup-form #username").removeClass('error-border');
-    $("#signup-form #username").val($.trim(uname));
-
-    if (uname == '' || $.trim(uname) == '') {
-        document.getElementById("username").focus();
-        $("#signup-form #username").addClass('error-border');
-        $("#imgchkuname").html("Tên đăng nhập không được để trống!");
-        return;
-    } else {
-        if(uname.length < 4){
-            $("#imgchkuname").html("Tên đăng nhập sử dụng tối thiểu 4 ký tự");
-            document.getElementById("username").focus();
-            $("#signup-form #username").addClass('error-border');
-            return;
-        }
-        $.ajax({
-            url: "/user/checkuname?uname=" + uname,
-            type: 'GET',
-            beforeSend: function () {
-                loading.show();
-            },
-            success: function (result) {
-                loading.hide();
-                if (!result.status) {
-                    document.getElementById("username").focus();
-                    $("#imgchkuname").html(result.message);
-                    $("#signup-form #username").addClass('error-border');
-                }
-            },
-            error: function(jqXHR, exception){
-                loading.hide();
-                ajax_call_error(jqXHR, exception);
-            }
-        });
-    }
-}
-
 function phone_change() {
-    var loading = $("#signup-form #imgajaxphone");
     var phone   = $("#signup-form #phone").val();
-    
+    console.log("phone_change");
     $("#imgchkphone").html("");
     $("#signup-form #phone").removeClass('error-border');
 
@@ -104,25 +61,6 @@ function phone_change() {
             $("#signup-form #phone").addClass('error-border');
             return;
         }
-        $.ajax({
-            url: "/user/checkphone?phone=" + phone,
-            type: 'GET',
-            beforeSend: function () {
-                loading.show();
-            },
-            success: function (result) {
-                loading.hide();
-                if (!result.status) {
-                    document.getElementById("phone").focus();
-                    $("#imgchkphone").html(result.message);
-                    $("#signup-form #phone").addClass('error-border');
-                }
-            },
-            error: function(jqXHR, exception){
-                loading.hide();
-                ajax_call_error(jqXHR, exception);
-            }
-        });
     }
 }
 
@@ -140,30 +78,11 @@ function email_change() {
         $("#imgchkemail").html("Email không được để trống!");
         return;
     } else {
-        $.ajax({
-            url: "/user/checkemail?email=" + email,
-            type: 'GET',
-            beforeSend: function () {
-                loading.show();
-            },
-            success: function (result) {
-                loading.hide();
-                if (!result.status) {
-                    document.getElementById("email").focus();
-                    $("#imgchkemail").html(result.message);
-                    $("#signup-form #email").addClass('error-border');
-                }
-            },
-            error: function(jqXHR, exception){
-                loading.hide();
-                ajax_call_error(jqXHR, exception);
-            }
-        });
+    
     }
 }
 
 function password_change() {
-    var loading          = $("#signup-form #imgajaxpassword");
     var password         = $("#signup-form #password").val();
     var confirm_password = $("#signup-form #confirm_password").val();
 
@@ -187,28 +106,6 @@ function password_change() {
             $("#signup-form #password").addClass('error-border');
             return;
         }
-        $.ajax({
-            url: "/user/checkpassword",
-            type: 'POST',
-            data: {
-                password: password
-            },
-            beforeSend: function () {
-                loading.show();
-            },
-            success: function (result) {
-                loading.hide();
-                if (!result.status) {
-                    document.getElementById("password").focus();
-                    $("#imgchkpassword").html(result.message);
-                    $("#signup-form #password").addClass('error-border');
-                }
-            },
-            error: function(jqXHR, exception){
-                loading.hide();
-                ajax_call_error(jqXHR, exception);
-            }
-        });
     }
 }
 
@@ -247,38 +144,18 @@ function validDateBirthday(dateString){
 
 function signup() {
     var check_signup     = true,
-        check_name       = true,
         check_email      = true,
         check_phone      = true,
-        check_birthday   = true,
-        check_gender     = true,
-        check_username   = true,
         check_password   = true,
         check_confirm_pw = true,
         form         = $("#signup-form"),
         loading      = $("#loading-page"),
-        full_name    = $("#signup-form #full_name").val(),
         email        = $("#signup-form #email").val(),
         phone        = $("#signup-form #phone").val(),
-        birthday     = $("#signup-form #birthday").val(),
-        gender       = $("#signup-form #gender").val(),
-        username     = $("#signup-form #username").val(),
         password     = $("#signup-form #password").val(),
         confirm_pw   = $("#signup-form #confirm_password").val();
     
-    if ($("#imgchkfull_name").text() !== ''){
-        check_signup = false;
-        check_name   = false;
-    } else {
-        $("#signup-form #full_name").removeClass('error-border');
-        if (full_name == "" || $.trim(full_name) == "") {
-            $("#imgchkfull_name").html("Họ và tên không được để trống!");
-            $("#signup-form #full_name").addClass('error-border');
-            check_signup = false;
-            check_name   = false;
-        }
-    }
-
+    console.log("signup", email, phone, password, confirm_pw);
     if ($("#imgchkphone").text() !== ''){
         check_signup = false;
         check_phone  = false;
@@ -291,28 +168,6 @@ function signup() {
             check_phone  = false;
         }
     }
-
-    if ($("#imgchkbirthday").text() !== ''){
-        check_signup   = false;
-        check_birthday = false;
-    } else {
-        $("#signup-form #birthday").removeClass('error-border');
-        if (birthday == "") {
-            $("#imgchkbirthday").html("Ngày sinh không được để trống!");
-            $("#signup-form #birthday").addClass('error-border');
-            check_signup   = false;
-            check_birthday = false;
-        }
-    }
-    
-    $("#imgchkgender").html("");
-    $("#signup-form #gender").removeClass('error-border');
-    if (gender == "") {
-        $("#imgchkgender").html("Giới tính không được để trống!");
-        $("#signup-form #gender").addClass('error-border');
-        check_signup = false;
-        check_gender = false;
-    }
     
     if ($("#imgchkemail").text() !== ''){
         check_signup = false;
@@ -324,19 +179,6 @@ function signup() {
             $("#signup-form #email").addClass('error-border');
             check_signup = false;
             check_email  = false;
-        }
-    }
-
-    if ($("#imgchkuname").text() !== ''){
-        check_signup   = false;
-        check_username = false;
-    } else {
-        $("#signup-form #username").removeClass('error-border');
-        if (username == "" || $.trim(username) == "") {
-            $("#imgchkuname").html("Tên đăng nhập không được để trống!");
-            $("#signup-form #username").addClass('error-border');
-            check_signup   = false;
-            check_username = false;
         }
     }
     
@@ -366,30 +208,15 @@ function signup() {
         }
     }
 
-    if(!check_name){
-        document.getElementById("full_name").focus();
-        return;
-    }
     if(!check_phone){
         document.getElementById("phone").focus();
-        return;
-    }
-    if(!check_birthday){
-        document.getElementById("birthday").focus();
-        return;
-    }
-    if(!check_gender){
-        document.getElementById("gender").focus();
         return;
     }
     if(!check_email){
         document.getElementById("email").focus();
         return;
     }
-    if(!check_username){
-        document.getElementById("username").focus();
-        return;
-    }
+
     if(!check_password){
         document.getElementById("password").focus();
         return;
@@ -446,10 +273,6 @@ function signup() {
                         if(result.error.email.length > 0){
                             $("#imgchkemail").html(result.error.email.toString());
                             $("#signup-form #email").addClass('error-border');
-                        }
-                        if(result.error.username.length > 0){
-                            $("#imgchkuname").html(result.error.username.toString());
-                            $("#signup-form #username").addClass('error-border');
                         }
                         if(result.error.password.length > 0){
                             $("#imgchkpassword").html(result.error.password.toString());
@@ -584,10 +407,15 @@ $('a[data-bs-toggle="tab"]').on('shown.bs.tab', function (e) {
     $("#signup-form .form-control").removeClass('error-border');
     $("#signup-form .form-control").val('');
     $("#signup-form .ver-middle").html('');
-    $("#form-floating-gender .select2-selection__placeholder").html('Giới tính <span class="text-danger">*</span>');
-    
-    $("#signup-form #gender").change(function() {
-        $("#form-floating-gender .select2-selection__placeholder").html('Giới tính <span class="text-danger">*</span>');
+
+    $("#signup-form #email").change(function() {
+        email_change();
+    });
+    $("#signup-form #password").change(function() {
+        password_change();
+    });
+    $("#signup-form #birthday").change(function() {
+        birthday_change();
     });
 
     $("#signup-form #confirm_password").change(function() {
@@ -614,16 +442,6 @@ $('a[data-bs-toggle="tab"]').on('shown.bs.tab', function (e) {
             $("#signup-form #confirm_password").addClass('error-border');
             document.getElementById("confirm_password").focus();
             return;
-        }
-    });
-
-    $("#signup-form #full_name").change(function() {
-        var full_name = $("#signup-form #full_name").val();
-        $("#signup-form #full_name").val($.trim(full_name));
-
-        if ($.trim(full_name) !== "") {
-            $("#imgchkfull_name").html("");
-            $("#signup-form #full_name").removeClass('error-border');
         }
     });
 

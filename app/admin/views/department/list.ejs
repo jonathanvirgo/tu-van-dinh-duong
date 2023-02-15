@@ -1,0 +1,178 @@
+<html lang="en">
+  <head>
+    <title>Danh sách bệnh viện</title>
+    <%- include('../shared/head') %>
+  </head>
+  <body class="hold-transition sidebar-mini layout-fixed control-sidebar-slide-open">
+    <div class="wrapper">
+      <%- include('../shared/menu',{user: user}) %>
+      <div class="content-wrapper">
+        <div class="content-header clearfix">
+          <h1 class="float-left">
+            Danh sách bệnh viện
+          </h1>
+          <div class="float-right">
+            <a href="/admin/hospital/create" class="btn btn-primary">
+                <i class="fas fa-plus-square"></i> Thêm mới
+            </a>
+          </div>
+        </div>
+        <section class="content">
+          <div class="container-fluid">
+            <div class="form-horizontal">
+              <div class="cards-group">
+                <div class="card card-default card-search">
+                  <div class="card-body">
+                    <div class="row search-row opened">
+                      <div class="search-text">Tìm kiếm</div>
+                      <div class="icon-search">
+                        <i class="fas fa-search" aria-hidden="true"></i>
+                      </div>
+                      <div class="icon-collapse">
+                        <i class="far fa-angle-up" aria-hidden="true"></i>
+                      </div>
+                    </div>
+                    <div class="search-body">
+                      <div class="row">
+                        <div class="col-md-12">
+                          <div class="form-group row">
+                            <div class="col-md-3">
+                              <div class="label-wrapper">
+                                <label class="col-form-label">Tên</label>
+                              </div>
+                            </div>
+                            <div class="col-md-9">
+                                <input class="form-control text-box single-line" id="search_name" name="search_name" type="text">
+                                <button type="button" id="search-button" class="btn btn-primary btn-search"> 
+                                    <i class="fas fa-search"></i> Tìm kiếm 
+                                </button>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="card card-default">
+                  <div class="card-body">
+                    <table class="table table-bordered table-hover table-striped dataTable" width=100% id="hospital-grid">
+                    </table>
+                    <script type="text/javascript">
+                        $(document).ready(function() {
+                            var loading = $("#loading-page");
+                            $("#hospital-grid").DataTable({
+                                processing: !0,
+                                serverSide: !0,
+                                ajax: {
+                                    url: "/admin/hospital/list",
+                                    type: "POST",
+                                    dataType: "json",
+                                    dataSrc: function(response){
+                                        return response.data;
+                                    },
+                                    beforeSend: function() {
+                                        loading.show();
+                                        window.setTimeout(function () {
+                                            loading.hide();
+                                        }, 500);
+                                    },
+                                    data: function(n){
+                                        if (!n) {
+                                            n = {};
+                                        }
+                                        n.search_name  = $("#search_name").val();
+                                        return n;
+                                    }
+                                },
+                                scrollX: !0,
+                                info: !0,
+                                paging: !0,
+                                pagingType: "simple_numbers",
+                                language: {
+                                    emptyTable: "Không có dữ liệu",
+                                    info: "_START_-_END_ of _TOTAL_ items",
+                                    infoEmpty: "Không có dữ liệu",
+                                    infoFiltered: "(filtered from _MAX_ total entries)",
+                                    thousands: ",",
+                                    lengthMenu: "Show _MENU_ items",
+                                    loadingRecords: "Đang tải dữ liệu...",
+                                    processing: "<i class='fa fa-refresh fa-spin'><\/i>",
+                                    search: "Tìm kiếm:",
+                                    zeroRecords: "Không có dữ liệu",
+                                    paginate: {
+                                        first: "<i class='k-icon k-i-seek-w'><\/i>",
+                                        last: "<i class='k-icon k-i-seek-e'><\/i>",
+                                        next: "<i class='k-icon k-i-arrow-e'><\/i>",
+                                        previous: "<i class='k-icon k-i-arrow-w'><\/i>"
+                                    },
+                                    aria: {
+                                        sortAscending: ": activate to sort column ascending",
+                                        sortDescending: ": activate to sort column descending"
+                                    }
+                                },
+                                pageLength: 15,
+                                lengthMenu: [15, 20, 50, 100],
+                                ordering: !1,
+                                buttons: [{
+                                    name: "refresh",
+                                    text: '<i class="fas fa-sync-alt" style="padding-left: 5px"><\/i>',
+                                    action: function() {
+                                        updateTable("#hospital-grid", !1)
+                                    }
+                                }],
+                                dom: "<'row'<'col-md-12't>><'row margin-t-5'<'col-lg-5 col-xs-12'<'float-lg-left'p>><'col-lg-3 col-xs-12'<'text-center'l>><'col-lg-3 col-xs-12'<'float-lg-right text-center'i>><'col-lg-1 col-xs-12'<'float-lg-right text-center data-tables-refresh'B>>>",
+                                columns: [{
+                                    title: "Tên",
+                                    visible: !0,
+                                    searchable: !1,
+                                    render: function(n) {
+                                        return escapeHtml(n)
+                                    },
+                                    data: "name"
+                                }, 
+                                {
+                                    title: "Phone",
+                                    visible: !0,
+                                    searchable: !1,
+                                    render: function(n) {
+                                        return escapeHtml(n)
+                                    },
+                                    data: "phone"
+                                },
+                                {
+                                    title: "Địa chỉ",
+                                    visible: !0,
+                                    searchable: !1,
+                                    render: function(n) {
+                                        return escapeHtml(n)
+                                    },
+                                    data: "address"
+                                },{
+                                    title: "Sửa",
+                                    width: "100",
+                                    visible: !0,
+                                    searchable: !1,
+                                    className: "button-column",
+                                    render: function(n, t, i, r) {
+                                        return '<a class="btn btn-default" href="/admin/hospital/edit/' + n + '"><i class="fas fa-pencil-alt"><\/i> Sửa<\/a>'
+                                    },
+                                    data: "id"
+                                }]
+                            });
+                            $("#search-button").click(function() {
+                                return $("#hospital-grid").DataTable().ajax.reload();
+                            });
+                            $("#hospital-grid").DataTable().columns.adjust();
+                        })
+                    </script>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+      <%- include('../shared/footer') %>
+    </div>
+  </body>
+</html>

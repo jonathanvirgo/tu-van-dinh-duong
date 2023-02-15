@@ -32,8 +32,8 @@
                     <div class="mb-4">
                       <div class="form-floating">
                         <label class="form-control-user"></label>
-                        <input maxlength="65" class="form-control form-control-icon-start" id="login_username" name="login_username" type="text" placeholder="Tên đăng nhập" />
-                        <label for="form-login-name">Tên đăng nhập </label>
+                        <input maxlength="65" class="form-control form-control-icon-start" id="login_username" name="login_username" type="text" placeholder="Số điện thoại hoặc email" />
+                        <label for="form-login-name">Phone / Email </label>
                       </div>
                       <span id="ercf_username" class="ver-middle form-text fst-italic text-danger mt-1"></span>
                     </div>
@@ -60,18 +60,25 @@
                 <div class="tab-pane fade" id="tab-register">
                   <form class="form-mde" id="signup-form" novalidate action="/user/signup" method="POST">
                     <div class="row gy-4 mb-4">
-                      <div class="col-md-12">
-                        <div class="form-floating">
-                          <input class="form-control form-control-has-addon" type="text" id="username" name="username" placeholder="Tên đăng nhập" required />
-                          <img alt="Loading..." class="ajax_loading" id="imgajaxusername" src="/public/content/images/ajaxLoading.gif">
+                      <div class="col-md-6">
+                        <div class="form-floating form-control-wrapper">
+                          <input class="form-control" id="email" name="email" type="text" placeholder="Email" required />
+                          <img alt="Loading..." class="ajax_loading" id="imgajaxemail" src="/public/content/images/ajaxLoading.gif">
+                          <span id="imgchkemail" class="ver-middle form-text fst-italic text-danger mt-2"></span>
                           <label>
-                            Tên đăng nhập <span class="text-danger">*</span>
+                            Email <span class="text-danger">*</span>
                           </label>
                         </div>
-                        <div class="form-text fst-italic text-gray-4 mt-2">
-                        Tên đăng nhập chứa nhiều nhất 65 ký tự- ít nhất 4 ký tự. Đồng thời chỉ bao gồm các ký tự chữ cái, chữ số, ký tự "_" và phải bắt đầu bằng 1 ký tự chữ cái
+                      </div>
+                      <div class="col-md-6">
+                        <div class="form-floating">
+                          <input class="form-control form-control-has-addon" id="phone" name="phone" type="text" placeholder="Số điện thoại" required />
+                          <img alt="Loading..." class="ajax_loading" id="imgajaxphone" src="/public/content/images/ajaxLoading.gif">
+                          <span id="imgchkphone" class="ver-middle form-text fst-italic text-danger mt-2"></span>
+                          <label>
+                            Số điện thoại <span class="text-danger">*</span>
+                          </label>
                         </div>
-                        <span id="imgchkuname" class="ver-middle form-text fst-italic text-danger mt-2"></span>
                       </div>
                       <div class="col-md-12 mt-2">
                         <div class="form-floating form-control-has-addon">
@@ -108,29 +115,7 @@
                         <div class="form-floating">
                           <input class="form-control form-control-has-addon" id="full_name" name="full_name" type="text" placeholder="Họ tên" required />
                           <span id="imgchkfull_name" class="ver-middle form-text fst-italic text-danger mt-2"></span>
-                          <label>
-                            Họ tên <span class="text-danger">*</span>
-                          </label>
-                        </div>
-                      </div>
-                      <div class="col-md-6">
-                        <div class="form-floating form-control-wrapper">
-                          <input class="form-control" id="email" name="email" type="text" placeholder="Email" required />
-                          <img alt="Loading..." class="ajax_loading" id="imgajaxemail" src="/public/content/images/ajaxLoading.gif">
-                          <span id="imgchkemail" class="ver-middle form-text fst-italic text-danger mt-2"></span>
-                          <label>
-                            Email <span class="text-danger">*</span>
-                          </label>
-                        </div>
-                      </div>
-                      <div class="col-md-6">
-                        <div class="form-floating">
-                          <input class="form-control form-control-has-addon" id="phone" name="phone" type="text" placeholder="Số điện thoại" required />
-                          <img alt="Loading..." class="ajax_loading" id="imgajaxphone" src="/public/content/images/ajaxLoading.gif">
-                          <span id="imgchkphone" class="ver-middle form-text fst-italic text-danger mt-2"></span>
-                          <label>
-                            Số điện thoại <span class="text-danger">*</span>
-                          </label>
+                          <label>Họ tên</label>
                         </div>
                       </div>
                       <div class="col-md-6">
@@ -144,9 +129,7 @@
                         <div class="flatpickr form-floating">
                           <input autocomplete="off" class="form-control" type="text" id="birthday" name="birthday" placeholder="Ngày sinh"/>
                           <span id="imgchkbirthday" class="ver-middle form-text fst-italic text-danger mt-2"></span>
-                          <label class="form-label-floating">
-                            Ngày sinh <span class="text-danger">*</span>
-                          </label>
+                          <label class="form-label-floating">Ngày sinh</label>
                         </div>
                       </div>
                       <div class="col-md-6">

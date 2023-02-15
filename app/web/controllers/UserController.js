@@ -39,7 +39,7 @@ router.post('/login', function (req, res, next) {
             return;
         }
         return new Promise((resolve, reject) => {
-            let sqlGetListRequest = 'SELECT * FROM user WHERE active = 1 AND ( name = ? OR email = ?)';
+            let sqlGetListRequest = 'SELECT * FROM user WHERE active = 1 AND ( phone = ? OR email = ?)';
             webService.getListTable(sqlGetListRequest ,[username, username]).then(responseData =>{
                 console.log("getListTable", responseData);
                 if(!responseData.success){
@@ -63,7 +63,7 @@ router.post('/login', function (req, res, next) {
                         return;
                     });
                 }else{
-                    resultData.message = "Tài khoản chưa được kích hoạt! Vui lòng kiểm tra email để kích hoạt tài khoản"; 
+                    resultData.message = "Tài khoản không tồn tại hoặc chưa được kích hoạt! Vui lòng kiểm tra email để kích hoạt tài khoản"; 
                     res.send(resultData);
                     return;
                 }
@@ -100,7 +100,7 @@ router.post('/signup', function (req, res, next) {
                 phone: req.body.phone,
                 address: req.body.address,
                 birthday: req.body.birthday,
-                gender: isNaN(parseInt(req.body.gender)) ? -1 : parseInt(req.body.gender),
+                gender: isNaN(parseInt(req.body.gender)) ? 2 : parseInt(req.body.gender),
                 username: req.body.username,
                 password: req.body.password,
                 confirm_password: req.body.confirm_password
@@ -119,10 +119,7 @@ router.post('/signup', function (req, res, next) {
                     password: [],
                     confirm_password: []
                 };
-            
-            if(parameter.full_name == ""){
-                list_error.full_name.push("Họ và tên được yêu cầu!");
-            }
+
             if(parameter.email == ""){
                 list_error.email.push("Email được yêu cầu!");
             } else {
@@ -138,7 +135,7 @@ router.post('/signup', function (req, res, next) {
                 }
             }
             if(parameter.birthday == ""){
-                list_error.birthday.push("Ngày sinh được yêu cầu!");
+                
             } else {
                 var birthday = new Date(parameter.birthday),
                     to_day   = new Date();
@@ -147,22 +144,6 @@ router.post('/signup', function (req, res, next) {
                 }  
             }
 
-            if(parameter.gender == -1){
-                list_error.gender.push("Giới tính được yêu cầu!");
-            }
-            if(parameter.username == ""){
-                list_error.username.push("Tên đăng nhập được yêu cầu!");
-            } else {
-                if (parameter.username.length < 4) {
-                    list_error.username.push("Tên đăng nhập ít nhất 4 ký tự");
-                }
-                if (parameter.username.length > 65) {
-                    list_error.username.push('Tên đăng nhập không được quá 65 ký tự');
-                }
-                if (!validator.matches(parameter.username, "^[a-zA-Z0-9_\.\-]*$")) {
-                    list_error.username.push('Tên truy cập của bạn không hợp lệ!');
-                }
-            }
             if(parameter.password == ""){
                 list_error.password.push("Mật khẩu được yêu cầu!");
             }
@@ -178,12 +159,9 @@ router.post('/signup', function (req, res, next) {
                 }
             }
             if(str_error.length > 0 || 
-                list_error.full_name.length > 0 || 
                 list_error.email.length > 0 || 
                 list_error.phone.length > 0 || 
                 list_error.birthday.length > 0 || 
-                list_error.gender.length > 0 || 
-                list_error.username.length > 0 || 
                 list_error.password.length > 0 || 
                 list_error.confirm_password.length > 0){
                 resultData.message = str_error.toString();
@@ -288,13 +266,13 @@ function createUser(resultData, list_error, parameter, req, res) {
     var passwordData  = adminService.sha512(parameter.password, adminService.salt()),
         pr_user       = {
             user_id: 0,
-            name: parameter.username,
-            full_name: parameter.full_name,
+            name: parameter.email ? parameter.email : parameter.phone,
+            full_name: parameter.full_name ? parameter.full_name : '',
             password: passwordData.passwordHash,
             email: parameter.email,
             phone: parameter.phone,
-            gender: parameter.gender,
-            birthday: parameter.birthday.split("-").reverse().join("-"),
+            gender: parameter.gender ? parameter.gender : 2,
+            birthday: parameter.birthday ? parameter.birthday.split("-").reverse().join("-") : "1990-08-31",
             address: parameter.address,
             activePasswordToken: "",
             resetPasswordExpires: new Date(Date.now() + 3600000),
@@ -303,12 +281,9 @@ function createUser(resultData, list_error, parameter, req, res) {
 
     return new Promise(function (resolve, reject) {
         try {
-            if(list_error.full_name.length > 0 || 
-                list_error.email.length > 0 || 
+            if(list_error.email.length > 0 || 
                 list_error.phone.length > 0 || 
-                list_error.birthday.length > 0 || 
-                list_error.gender.length > 0 || 
-                list_error.username.length > 0 || 
+                list_error.birthday.length > 0 ||
                 list_error.password.length > 0 || 
                 list_error.confirm_password.length > 0){
                 resultData.error = list_error;
@@ -336,6 +311,7 @@ function createUser(resultData, list_error, parameter, req, res) {
                             }
                             var activeaccount = 'http://' + req.headers.host + '/user/activeaccount/' + pr_user.activePasswordToken;
                             mailService.mail_signup(parameter.email, activeaccount).then(function(success){
+                                console.log("mail_signup", success);
                                 webService.addLogMail(JSON.stringify(success), JSON.stringify({email: parameter.email, link_active: activeaccount}), success.success ? 1 : 0, 0, 'mail_signup');
                                 resultData.status  = true;
                                 resultData.message = "Đăng ký thành công. Vui lòng kiểm tra email " + parameter.email + " để kích hoạt tài khoản theo hướng dẫn trước khi đăng nhập hệ thống!";
@@ -356,4 +332,5 @@ function createUser(resultData, list_error, parameter, req, res) {
         }
     });
 }
+
 module.exports = router;

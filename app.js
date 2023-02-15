@@ -22,6 +22,8 @@ var admin_role     = require('./app/admin/controllers/roleController');
 var admin_setting  = require('./app/admin/controllers/settingController');
 var admin_error    = require('./app/admin/controllers/errorController');
 var admin_log      = require('./app/admin/controllers/logController');
+var admin_hospital    = require('./app/admin/controllers/hospitalController');
+var admin_department  = require('./app/admin/controllers/departmentController');
 
 require('./app/config/passport')(passport);
 
@@ -75,6 +77,8 @@ app.use('/admin/role', admin_role);
 app.use('/admin/setting', admin_setting);
 app.use('/admin/error', admin_error);
 app.use('/admin/log', admin_log);
+app.use('/admin/hospital', admin_hospital);
+app.use('/admin/department', admin_department);
 
 app.get('/robots.txt', function (req, res) {
   res.type('text/plain');

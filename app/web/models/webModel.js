@@ -770,6 +770,23 @@ let webService = {
             webService.addToLogService(err, "webService bookingStatusClass");
         }
     },
+    addLogMail: function(result, param, is_send, sent_tries, type) {
+        return new Promise(function(resolve, reject) {
+            db.get().getConnection(function(err, connection) {
+                try {
+                    if (err) reject(err);
+                    let sql = 'INSERT INTO log_mail(result, param, is_send, sent_tries, type) VALUES (?,?,?,?,?)';
+                    connection.query(sql, [result, param, is_send, sent_tries, type], function(error, results, fields) {
+                        connection.release();
+                        if (error) reject(error);
+                        resolve(results);
+                    });
+                } catch (error) {
+                    webService.addToLogService(err, "webService addLogMail");
+                }
+            });
+        });
+    }
 }
 
 module.exports = webService;

@@ -96,7 +96,10 @@ let userService = {
         db.get().getConnection(function (err, connection) {
             try {
                 if (err) return callback(err);
-                var sql   = 'SELECT * FROM user WHERE id = ?';
+                var sql   = 'SELECT user.*, department.name AS khoa, hospital.name AS benhvien FROM `user`' 
+                            + `LEFT JOIN department ON user.department_id = department.id
+                            LEFT JOIN hospital ON department.hospital_id = hospital.id
+                            WHERE user.id = ?`;
                 var query = connection.query(sql, [id], function (err, results, fields) {
                     connection.release();
                     if (err) return callback(err);

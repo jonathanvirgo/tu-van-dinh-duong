@@ -3,7 +3,8 @@ var passport        = require('passport'),
     userService     = require('./../admin/models/userModel'),
     roleUserService = require('./../admin/models/roleUsersModel'),
     logService      = require('./../admin/models/logModel'),
-    crypto          = require('crypto');
+    crypto          = require('crypto'),
+    webService      = require('./../web/models/webModel');
 
 module.exports = function(passport) {
     passport.serializeUser(function(user, done) {
@@ -24,7 +25,7 @@ module.exports = function(passport) {
         arrPromise.push(new Promise(function (resolve, reject) {
             userService.getUserById(id, function (err, resUser, fields) {
                 if (err) {
-                    return logService.create(req, err).then(function(log_id){
+                    return webService.addToLogService(err, 'passport getUserById').then(log_id =>{
                         resolve();
                     });
                 }
@@ -34,6 +35,8 @@ module.exports = function(passport) {
                     detailUser.email      = resUser[0].email;
                     detailUser.full_name  = resUser[0].full_name;
                     detailUser.phone      = resUser[0].phone;
+                    detailUser.khoa       = resUser[0].khoa
+                    detailUser.benhvien   = resUser[0].benhvien
                 }
                 resolve();
             });
@@ -42,7 +45,7 @@ module.exports = function(passport) {
         arrPromise.push(new Promise(function (resolve, reject) {
             roleUserService.getRoleByUserId(id, function (err, result, fields) {
                 if (err) {
-                    return logService.create(req, err).then(function(log_id){
+                    return webService.addToLogService(err, 'passport getRoleByUserId').then(log_id =>{
                         resolve();
                     });
                 }

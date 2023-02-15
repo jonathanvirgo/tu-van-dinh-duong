@@ -2,6 +2,10 @@
 .k-multiselect-wrap .k-select{
   top:6px;
 }
+.flex-center{
+  justify-content: center;
+  display: flex;
+}
 .wrapper .content-wrapper .alert.alert-dismissable ul{
   margin: 0px;
   padding: 0px;
