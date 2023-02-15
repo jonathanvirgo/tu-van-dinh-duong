@@ -102,7 +102,6 @@ router.post('/create', function (req, res, next) {
                 }
                 if (results.insertId !== undefined) {
                     if (btn_action == "save") {
-                        console.log("returnUrl",returnUrl);
                         res.redirect(returnUrl);
                     } else {
                         res.redirect(returnUrl + '/edit/' + results.insertId);

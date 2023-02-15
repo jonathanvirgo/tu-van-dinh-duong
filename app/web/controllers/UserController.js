@@ -26,7 +26,6 @@ router.post('/login', function (req, res, next) {
                 "status": false,
                 "message": ""
             };
-        console.log("login 1", username, password);
         if(username == ""){
             str_error.push("Tên đăng nhập được yêu cầu!");
         }
@@ -41,7 +40,6 @@ router.post('/login', function (req, res, next) {
         return new Promise((resolve, reject) => {
             let sqlGetListRequest = 'SELECT * FROM user WHERE active = 1 AND ( phone = ? OR email = ?)';
             webService.getListTable(sqlGetListRequest ,[username, username]).then(responseData =>{
-                console.log("getListTable", responseData);
                 if(!responseData.success){
                     resultData.message = "Tên đăng nhập chưa được đăng ký"; 
                     res.send(resultData);
@@ -49,7 +47,6 @@ router.post('/login', function (req, res, next) {
                 }
                 if(responseData.data && responseData.data.length > 0){
                     req.logIn(responseData.data[0], function (err) {
-                        console.log("err", err);
                         if (err) {
                             logService.create(req, err).then(function(){
                                 resultData.message = err;
@@ -311,7 +308,6 @@ function createUser(resultData, list_error, parameter, req, res) {
                             }
                             var activeaccount = 'http://' + req.headers.host + '/user/activeaccount/' + pr_user.activePasswordToken;
                             mailService.mail_signup(parameter.email, activeaccount).then(function(success){
-                                console.log("mail_signup", success);
                                 webService.addLogMail(JSON.stringify(success), JSON.stringify({email: parameter.email, link_active: activeaccount}), success.success ? 1 : 0, 0, 'mail_signup');
                                 resultData.status  = true;
                                 resultData.message = "Đăng ký thành công. Vui lòng kiểm tra email " + parameter.email + " để kích hoạt tài khoản theo hướng dẫn trước khi đăng nhập hệ thống!";

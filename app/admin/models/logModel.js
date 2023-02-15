@@ -41,11 +41,12 @@ let logService = {
         return new Promise(function(resolve, reject) {
             db.get().getConnection(function (err, connection) {
                 try {
+                    
                     if (err) {
                         return resolve(0);
                     }
-                    let short_message = message ? (message.sqlMessage != undefined ? message.sqlMessage : message) : '';
-                    let full_message  = message.sql != undefined ? message.sql : '';
+                    let short_message = typeof(message) == 'string' ? message : (message.sqlMessage != undefined ? message.sqlMessage : '');
+                    let full_message  = (message && message.sql != undefined) ? message.sql : '';
                     let sql           = "INSERT INTO log_err(short_message,full_message,page_url) VALUES (?,?,?)";
                     connection.query(sql, [
                             short_message,

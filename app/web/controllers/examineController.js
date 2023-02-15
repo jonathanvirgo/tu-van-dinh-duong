@@ -328,8 +328,6 @@ router.get('/create', function(req, res, next) {
             }
         }));
 
-        console.log(resultData);
-
         return new Promise(function(resolve, reject) {
             Promise.all(arrPromise).then(function() {
                 res.render("examine/create.ejs", {
