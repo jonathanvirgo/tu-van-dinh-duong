@@ -6,14 +6,14 @@ let roleService = {
         db.get().getConnection(function (err, connection) {
             try {
                 if (err) return callback(err);
-                var sql   = "INSERT INTO hospital(name,phone,address) VALUES (?,?,?)";
-                var query = connection.query(sql, [parameter.name,parameter.phone,parameter.address], function (err, results, fields) {
+                var sql   = "INSERT INTO department (name,hospital_id,phone) VALUES (?,?,?)";
+                var query = connection.query(sql, [parameter.name,parameter.hospital_id,parameter.phone], function (err, results, fields) {
                     connection.release();
                     if (err) return callback(err);
                     callback(null, results, fields);
                 });
             } catch (error) {
-                webService.addToLogService(error, 'hospitalModel create');
+                webService.addToLogService(error, 'departmentModel create');
             }
         });
     },
@@ -21,14 +21,14 @@ let roleService = {
         db.get().getConnection(function (err, connection) {
             try {
                 if (err) return callback(err);
-                var sql   = 'UPDATE hospital SET name = ?, address = ?, phone = ? WHERE id=?';
-                var query = connection.query(sql, [parameter.name,parameter.address,parameter.phone, parameter.id], function (err, results, fields) {
+                var sql   = 'UPDATE department SET name = ?, hospital_id = ?, phone = ? WHERE id=?';
+                var query = connection.query(sql, [parameter.name,parameter.hospital_id,parameter.phone, parameter.id], function (err, results, fields) {
                     connection.release();
                     if (err) return callback(err);
                     callback(null, results, fields);
                 });
             } catch (error) {
-                webService.addToLogService(error, 'hospitalModel update');
+                webService.addToLogService(error, 'departmentModel update');
             }
         });
     },
@@ -36,14 +36,14 @@ let roleService = {
         db.get().getConnection(function (err, connection) {
             try {
                 if (err) return callback(err);
-                var sql   = 'DELETE FROM hospital WHERE id=?';
+                var sql   = 'DELETE FROM department WHERE id=?';
                 var query = connection.query(sql, [role_id], function (err, results, fields) {
                     connection.release();
                     if (err) return callback(err);
                     callback(null, results, fields);
                 });
             } catch (error) {
-                webService.addToLogService(error, 'hospitalModel delete');
+                webService.addToLogService(error, 'departmentModel delete');
             }
         });
     },
@@ -52,7 +52,7 @@ let roleService = {
             try {
                 if (err) return callback(err);
                 var paraSQL = [];
-                var sql     = 'SELECT COUNT(*) AS count FROM hospital';
+                var sql     = 'SELECT COUNT(*) AS count FROM department WHERE id > 0';
                 if (parameter.search_name != "") {
                     sql += " AND name LIKE ?";
                     paraSQL.push("%" + parameter.search_name + "%");
@@ -63,7 +63,7 @@ let roleService = {
                     callback(null, results, fields);
                 });
             } catch (error) {
-                webService.addToLogService(error, 'hospitalModel countAllRole');
+                webService.addToLogService(error, 'departmentModel countAllDepartment');
             }
         });
     },
@@ -72,20 +72,20 @@ let roleService = {
             try {
                 if (err) return callback(err);
                 var paraSQL = [];
-                var sql     = 'SELECT * FROM hospital';
+                var sql     = 'SELECT department.*, hospital.name AS hospital_name FROM department INNER JOIN hospital ON department.hospital_id = hospital.id WHERE department.id > 0';
                 
                 if (parameter.search_name != "") {
-                    sql += " AND name LIKE ?";
+                    sql += " AND department.name LIKE ?";
                     paraSQL.push("%" + parameter.search_name + "%");
                 }
-                sql += " ORDER BY id DESC LIMIT " + parameter.skip + "," + parameter.take;
+                sql += " ORDER BY department.id DESC LIMIT " + parameter.skip + "," + parameter.take;
                 var query = connection.query(sql, paraSQL, function (err, results, fields) {
                     connection.release();
                     if (err) return callback(err);
                     callback(null, results, fields);
                 });
             } catch (error) {
-                webService.addToLogService(error, 'hospitalModel getAllRole');
+                webService.addToLogService(error, 'departmentModel getAllDepartment');
             }
         });
     },
@@ -93,14 +93,14 @@ let roleService = {
         db.get().getConnection(function (err, connection) {
             try {
                 if (err) return callback(err);
-                var sql   = 'SELECT * FROM hospital WHERE id = ?';
+                var sql   = 'SELECT * FROM department WHERE id = ?';
                 var query = connection.query(sql, [role_id], function (err, results, fields) {
                     connection.release();
                     if (err) return callback(err);
                     callback(null, results, fields);
                 });
             } catch (error) {
-                webService.addToLogService(error, 'hospitalModel getRoleById');
+                webService.addToLogService(error, 'departmentModel getDepartmentById');
             }
         });
     }

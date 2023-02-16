@@ -81,8 +81,8 @@ router.post('/create', function (req, res, next) {
             btn_action = req.body.save != undefined ? req.body.save : req.body.saveContinue,
             parameter  = {
                 name: req.body.hospital_name,
-                address: req.body.hospital_address,
-                phone: req.body.hospital_phone
+                address: req.body.hospital_address ? req.body.hospital_address : '',
+                phone: req.body.hospital_phone ? req.body.hospital_phone : ''
             };
             
         if(parameter.name == ''){
@@ -231,7 +231,7 @@ router.post('/list', function (req, res, next) {
         }));
 
         arrPromise.push(new Promise(function (resolve, reject) {
-            modelService.getAllHospital(parameter, function (err, result, fields) {
+            modelService.getAllHospitalFromParam(parameter, function (err, result, fields) {
                 if (err) {
                     return logService.create(req, err).then(function(){
                         resultMessage.error = err.sqlMessage;

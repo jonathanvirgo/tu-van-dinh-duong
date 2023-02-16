@@ -52,7 +52,7 @@ let roleService = {
             try {
                 if (err) return callback(err);
                 var paraSQL = [];
-                var sql     = 'SELECT COUNT(*) AS count FROM hospital';
+                var sql     = 'SELECT COUNT(*) AS count FROM hospital WHERE id > 0';
                 if (parameter.search_name != "") {
                     sql += " AND name LIKE ?";
                     paraSQL.push("%" + parameter.search_name + "%");
@@ -67,12 +67,12 @@ let roleService = {
             }
         });
     },
-    getAllHospital: function (parameter, callback) {
+    getAllHospitalFromParam: function (parameter, callback) {
         db.get().getConnection(function (err, connection) {
             try {
                 if (err) return callback(err);
                 var paraSQL = [];
-                var sql     = 'SELECT * FROM hospital';
+                var sql     = 'SELECT * FROM hospital WHERE id > 0';
                 
                 if (parameter.search_name != "") {
                     sql += " AND name LIKE ?";
@@ -103,7 +103,24 @@ let roleService = {
                 webService.addToLogService(error, 'hospitalModel getRoleById');
             }
         });
-    }
+    },
+    getAllHospital: function (callback) {
+        db.get().getConnection(function (err, connection) {
+            try {
+                if (err) return callback(err);
+                var paraSQL = [];
+                var sql     = 'SELECT * FROM hospital ORDER BY id DESC';
+
+                var query = connection.query(sql, paraSQL, function (err, results, fields) {
+                    connection.release();
+                    if (err) return callback(err);
+                    callback(null, results, fields);
+                });
+            } catch (error) {
+                webService.addToLogService(error, 'hospitalModel getAllRole');
+            }
+        });
+    },
 }
 
 module.exports = roleService;
