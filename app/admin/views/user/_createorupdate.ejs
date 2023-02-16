@@ -38,6 +38,80 @@
 </div>
 <div class="form-group row">
   <div class="col-md-3">
+    <div class="label-wrapper flex-center">
+      <label class="col-form-label">Bệnh viện</label>
+    </div>
+  </div>
+  <div class="col-md-9">
+    <div class="input-group-append input-group-required">
+      <div class="input-group">
+        <select id="hospital_id" name="hospital_id" placeholder="Chọn bệnh viện">
+          <option></option>
+          <% if (hospital.length > 0){%>
+            <% for (i = 0;i < hospital.length;i++){%>
+              <option <%=(hospital[i].id == pr_user.hospital_id) ? 'selected' : ''%> value="<%=hospital[i].id%>"><%=hospital[i].name%></option>
+            <%}%>
+          <%}%>
+        </select>
+        <script>
+          $("#hospital_id").kendoDropDownList({
+            change: function(e) {
+              let value = this.value();
+              let department_id = <%=pr_user.department_id ? pr_user.department_id : 0%>;
+              $.ajax({
+                type: 'GET',
+                url: '/admin/department/list-follow-hospital',
+                data: { hos_id: value},
+                success: function (response) {
+                  console.log(response);
+                    if (response.length > 0) {
+                      $("#department_id").kendoDropDownList({
+                        dataSource: response,
+                        dataTextField: "name",
+                        dataValueField: "id"
+                      });
+                      let dropdownlistDepartment = $("#department_id").data("kendoDropDownList");
+                      if(response.findIndex(s => s.id == department_id)){
+                        dropdownlistDepartment.value(department_id);
+                      }else{
+                        dropdownlistDepartment.value('');
+                      }
+                      dropdownlistDepartment.trigger("change");
+                    }
+                }
+              });      
+            }
+          });
+          </script>
+      </div>
+      <div class="input-group-btn"><span class="required">*</span></div>
+    </div>
+  </div>
+</div>
+<div class="form-group row">
+  <div class="col-md-3">
+    <div class="label-wrapper flex-center">
+      <label class="col-form-label">Khoa</label>
+    </div>
+  </div>
+  <div class="col-md-9">
+    <div class="input-group-append input-group-required">
+      <div class="input-group">
+        <select id="department_id" name="department_id">
+          <% if( pr_user.department_id ){ %>
+            <option selected value="<%=pr_user.department_id%>"><%=pr_user.department_name%></option>
+          <% } %>
+        </select>
+        <script>
+          $("#department_id").kendoDropDownList({});
+        </script>
+      </div>
+      <div class="input-group-btn"><span class="required">*</span></div>
+    </div>
+  </div>
+</div>
+<div class="form-group row">
+  <div class="col-md-3">
     <div class="label-wrapper">
       <label class="col-form-label">Mật khẩu</label>
     </div>
@@ -130,18 +204,6 @@
 <div class="form-group row">
   <div class="col-md-3">
     <div class="label-wrapper">
-      <label class="col-form-label">Địa chỉ IP</label>
-    </div>
-  </div>
-  <div class="col-md-9">
-    <div class="form-text-row">
-      <%=pr_user.last_ip%>
-    </div>
-  </div>
-</div>
-<div class="form-group row">
-  <div class="col-md-3">
-    <div class="label-wrapper">
       <label class="col-form-label">Ngày tạo</label>
     </div>
   </div>
@@ -164,18 +226,6 @@
   </div>
 </div>
 <%}%>
-<div class="form-group row">
-  <div class="col-md-3">
-    <div class="label-wrapper">
-      <label class="col-form-label">SSO User Id</label>
-    </div>
-  </div>
-  <div class="col-md-9">
-    <div class="input-group">
-      <input class="form-control text-box single-line" id="user_id" name="user_id" type="number" value="<%=pr_user.user_id%>">
-    </div>
-  </div>
-</div>
 <div class="form-group row">
   <div class="col-md-3">
     <div class="label-wrapper">
@@ -231,6 +281,10 @@
       <div class="form-check">
         <input <%=pr_user.gender == 1 ? "checked" : ""%> type="radio" class="form-check-input" name="gender" id="gender_female" value="female"/> 
         <label class="form-check-label"> Nữ </label>
+      </div>
+      <div class="form-check">
+        <input <%=pr_user.gender == 2 ? "checked" : ""%> type="radio" class="form-check-input" name="gender" id="gender_orther" value="orther"/> 
+        <label class="form-check-label"> Khác </label>
       </div>
     </div>
   </div>

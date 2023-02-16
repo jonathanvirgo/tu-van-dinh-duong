@@ -306,6 +306,40 @@ router.post('/list', function (req, res, next) {
     }
 });
 
+router.get('/list-follow-hospital', function (req, res, next) {
+    var resultMessage = {
+        "data": [],
+        "error": ""
+    };
+    try {
+        if (!req.user) {
+            return res.redirect('/user/login');
+        }
+        if (!req.user.isAdmin) {
+            throw new Error(notice_admin);
+        }
+        var hospital_id = req.query.hos_id;
+
+        modelService.getAllDepartmentByHospital(hospital_id, function (err, result, fields) {
+            if (err) {
+                return logService.create(req, err).then(function(){
+                    resultMessage.error = err.sqlMessage;
+                });
+            }
+            if (result !== undefined) {
+                resultMessage.data = result;
+            }
+            console.log(result);
+            res.send(result);
+        });
+    } catch (e) {
+        logService.create(req, e.message).then(function(){
+            resultMessage.error = e.message;
+            res.send(resultMessage);
+        });
+    }
+});
+
 function viewPage(name) {
     return path.resolve(__dirname, "../views/department/" + name + ".ejs");
 }

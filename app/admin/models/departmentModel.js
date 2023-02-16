@@ -103,7 +103,23 @@ let roleService = {
                 webService.addToLogService(error, 'departmentModel getDepartmentById');
             }
         });
-    }
+    },
+    getAllDepartmentByHospital: function (id_hospital, callback) {
+        db.get().getConnection(function (err, connection) {
+            try {
+                if (err) return callback(err);
+                var sql     = 'SELECT id, name FROM department WHERE hospital_id = ?';
+                
+                var query = connection.query(sql, [id_hospital], function (err, results, fields) {
+                    connection.release();
+                    if (err) return callback(err);
+                    callback(null, results, fields);
+                });
+            } catch (error) {
+                webService.addToLogService(error, 'departmentModel getAllDepartmentByHospital');
+            }
+        });
+    },
 }
 
 module.exports = roleService;

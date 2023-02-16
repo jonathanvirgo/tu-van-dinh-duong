@@ -9,6 +9,7 @@
     roleUserService = require('./../models/roleUsersModel'),
     logService      = require('./../models/logModel'),
     adminService    = require('./../models/adminModel'),
+    hospitalService = require('../models/hospitalModel'),
     modelService    = require('./../models/userModel'); 
 
 router.get('/', function (req, res, next) {
@@ -49,21 +50,52 @@ router.get('/create', function (req, res, next) {
         if (!req.user.isAdmin) {
             throw new Error(notice_admin);
         }
-        roleService.searchAllRole(function (err, result, fields) {
-            if (err) {
-                adminService.addToLog(req, res, err);
-                return;
-            }
-            res.render(viewPage("create"), {
-                user: req.user,
-                roles: result,
-                role_ids: [],
-                pr_user: [],
-                errors: [],
-                moment: moment,
-                create_or_update : 1
+        let arrPromise = [],
+            roles      = [],
+            hospital   = [];
+            
+        arrPromise.push(new Promise(function (resolve, reject) {
+            hospitalService.getAllHospital(function (err, result, fields) {
+                if (err) {
+                    return logService.create(req, err).then(function(log_id){
+                        str_error.push(err.sqlMessage);
+                        resolve();
+                    });
+                }
+                if (result !== undefined) {
+                    hospital = result;
+                }
+                resolve();
             });
-         })
+        }));
+        arrPromise.push(new Promise(function (resolve, reject) {
+            roleService.searchAllRole(function (err, result, fields) {
+                if (err) {
+                    return logService.create(req, err).then(function(log_id){
+                        str_error.push(err.sqlMessage);
+                        resolve();
+                    });
+                }
+                if (result !== undefined) {
+                    roles = result;
+                }
+                resolve();
+            });
+        }));
+        return new Promise((resolve, reject) => {
+            Promise.all(arrPromise).then(function () {
+                res.render(viewPage("create"), {
+                    user: req.user,
+                    roles: roles,
+                    role_ids: [],
+                    pr_user: [],
+                    errors: [],
+                    moment: moment,
+                    hospital: hospital,
+                    create_or_update : 1
+                });
+            });
+        })
     } catch (e) {
         adminService.addToLog(req, res, e.message);
     }
@@ -81,6 +113,7 @@ router.get('/edit/:id', function (req, res) {
             arrPromise  = [], 
             roles       = [],
             pr_user     = [],
+            hospital    = [],
             role_ids    = [];
 
         arrPromise.push(new Promise(function (resolve, reject) {
@@ -129,7 +162,20 @@ router.get('/edit/:id', function (req, res) {
                 resolve();
             });
         }));
-
+        arrPromise.push(new Promise(function (resolve, reject) {
+            hospitalService.getAllHospital(function (err, result, fields) {
+                if (err) {
+                    return logService.create(req, err).then(function(log_id){
+                        str_error.push(err.sqlMessage);
+                        resolve();
+                    });
+                }
+                if (result !== undefined) {
+                    hospital = result;
+                }
+                resolve();
+            });
+        }));
         return new Promise(function (resolve, reject) {
             Promise.all(arrPromise).then(function () {
                 if (pr_user) {
@@ -140,7 +186,8 @@ router.get('/edit/:id', function (req, res) {
                         pr_user: pr_user,
                         moment: moment,
                         errors: str_error,
-                        create_or_update : 0
+                        create_or_update : 0,
+                        hospital: hospital
                     });
                 } else {
                     adminService.addToLog(req, res, 'Không tìm thấy user có user_id=' + req.params.id);
@@ -159,7 +206,7 @@ function validatorUser(req, parameter, selected_role_ids, userId = 0){
     if(parameter.name == ''){
         str_error.push("Tên đăng nhập được yêu cầu!");
     } else {
-        if (!validator.matches(parameter.name, "^[a-zA-Z0-9_\.\-]*$")) {
+        if (!validator.matches(parameter.name, "^[a-zA-Z0-9_@\.\-]*$")) {
             str_error.push('Tên truy cập của bạn không hợp lệ!');
         } else {
             arrPromise.push(new Promise(function (resolve, reject) {
@@ -179,9 +226,6 @@ function validatorUser(req, parameter, selected_role_ids, userId = 0){
                 })
             }));
         }
-    }
-    if(parameter.full_name == ''){
-        str_error.push("Tên đầy đủ được yêu cầu!");
     }
     if(parameter.email == ''){
         str_error.push("Email được yêu cầu!");
@@ -245,6 +289,7 @@ router.post('/create', function (req, res, next) {
                 phone: req.body.phone,
                 gender: req.body.gender == "male" ? 0 : 1,
                 birthday: adminService.parseDay(req.body.birthday),
+                department_id: req.body.department_id,
                 address: req.body.address,
                 activePasswordToken: "",
                 resetPasswordExpires: new Date(Date.now() + 3600000),
@@ -347,6 +392,7 @@ router.post('/edit/:id', function (req, res, next) {
             role_ids          = [],
             roles             = [],
             arrPromise        = [],
+            hospital          = [],
             roleUserPromise   = [],
             passwordData      = adminService.sha512(req.body.password, adminService.salt()),
             active            = req.body.active == "on" ? 1 : 0,
@@ -363,6 +409,7 @@ router.post('/edit/:id', function (req, res, next) {
                 gender: req.body.gender == "male" ? 0 : 1,
                 birthday: adminService.parseDay(req.body.birthday),
                 address: req.body.address,
+                department_id: req.body.department_id,
                 active: active
             };
         arrPromise.push(new Promise(function (resolve, reject) {
@@ -390,7 +437,20 @@ router.post('/edit/:id', function (req, res, next) {
                 resolve();
             })
         }));
-        
+        arrPromise.push(new Promise(function (resolve, reject) {
+            hospitalService.getAllHospital(function (err, result, fields) {
+                if (err) {
+                    return logService.create(req, err).then(function(log_id){
+                        str_error.push(err.sqlMessage);
+                        resolve();
+                    });
+                }
+                if (result !== undefined) {
+                    hospital = result;
+                }
+                resolve();
+            });
+        }));
         return new Promise(function (resolve, reject) {
             Promise.all(arrPromise).then(function () {
                 if(pr_user == undefined){
@@ -416,6 +476,7 @@ router.post('/edit/:id', function (req, res, next) {
                                 role_ids: role_ids,
                                 pr_user: parameter,
                                 errors: str_error,
+                                hospital: hospital,
                                 moment: moment,
                                 create_or_update : 0
                             });
@@ -479,6 +540,7 @@ router.post('/edit/:id', function (req, res, next) {
             })
         })
     } catch (e) {
+        console.log(e);
         adminService.addToLog(req, res, e.message);
     }
 });

@@ -16,10 +16,11 @@ let userService = {
                             gender,
                             birthday,
                             address,
+                            department_id,
                             activePasswordToken,
                             resetPasswordExpires,
                             active) 
-                            VALUES (?,?,?,?,?,?,?,?,?,?,?,?)`;
+                            VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)`;
                 var query = connection.query(sql,
                     [
                         parameter.user_id,
@@ -31,6 +32,7 @@ let userService = {
                         parameter.gender,
                         parameter.birthday,
                         parameter.address,
+                        parameter.department_id,
                         parameter.activePasswordToken,
                         parameter.resetPasswordExpires,
                         parameter.active,
@@ -46,10 +48,11 @@ let userService = {
         });
     },
     update: function (parameter, callback) {
+        console.log("update1", parameter);
         db.get().getConnection(function (err, connection) {
             try {
                 if (err) return callback(err);
-                var sql     = 'UPDATE user SET user_id = ?, name = ?, full_name = ?,password = ?,email = ?, phone = ?, gender = ?, birthday = ?, address = ?, last_ip = ?, active = ? WHERE id=?';
+                var sql     = 'UPDATE user SET user_id = ?, name = ?, full_name = ?,password = ?,email = ?, phone = ?, gender = ?, birthday = ?, address = ?, department_id = ?, last_ip = ?, active = ? WHERE id=?';
                 var paraSQL = [
                     parameter.user_id,
                     parameter.name,
@@ -60,13 +63,14 @@ let userService = {
                     parameter.gender,
                     parameter.birthday,
                     parameter.address,
+                    parameter.department_id,
                     parameter.last_ip,
                     parameter.active,
                     parameter.id
                 ];
                 
                 if(parameter.password == ''){
-                    sql     = 'UPDATE user SET user_id = ?, name = ?, full_name = ?,email = ?, phone = ?, gender = ?, birthday = ?, address = ?, last_ip = ?, active = ? WHERE id=?';
+                    sql     = 'UPDATE user SET user_id = ?, name = ?, full_name = ?,email = ?, phone = ?, gender = ?, birthday = ?, address = ?, department_id = ?, last_ip = ?, active = ? WHERE id=?';
                     paraSQL = [
                         parameter.user_id,
                         parameter.name,
@@ -76,6 +80,7 @@ let userService = {
                         parameter.gender,
                         parameter.birthday,
                         parameter.address,
+                        parameter.department_id,
                         parameter.last_ip,
                         parameter.active,
                         parameter.id
@@ -87,6 +92,7 @@ let userService = {
                     if (err) return callback(err);
                     callback(null, results, fields);
                 });
+                console.log("update2", query.sql);
             } catch (error) {
                 webService.addToLogService(error, 'userService update');
             }
@@ -96,7 +102,7 @@ let userService = {
         db.get().getConnection(function (err, connection) {
             try {
                 if (err) return callback(err);
-                var sql   = 'SELECT user.*, department.name AS khoa, hospital.name AS benhvien FROM `user`' 
+                var sql   = 'SELECT user.*, department.name AS department_name,department.id AS department_id, hospital.name AS hospital_name,  hospital.id AS hospital_id FROM `user`' 
                             + `LEFT JOIN department ON user.department_id = department.id
                             LEFT JOIN hospital ON department.hospital_id = hospital.id
                             WHERE user.id = ?`;
@@ -323,6 +329,21 @@ let userService = {
                 }
             });
         })
-    }
+    },
+    getUserByPhoneOrEmail: function(param, expireDate) {
+        db.get().getConnection(function(err, connection) {
+            try {
+                if (err) return callback(err);
+                var sql   = 'SELECT * FROM user WHERE phone = ? OR email = ?';
+                var query = connection.query(sql, [param.phone,param.email], function (err, results, fields) {
+                    connection.release();
+                    if (err) return callback(err);
+                    callback(null, results, fields);
+                });
+            } catch (error) {
+                webService.addToLogService(error, 'userService getUserByToken');
+            }
+        });
+    },
 }
 module.exports = userService;
