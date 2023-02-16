@@ -13,16 +13,18 @@
         <span class="nav-text">Dashboard</span>
       </a>
     </li>
-    <li class="nav-item-header">KHÁM BỆNH</li>
-    <li class="nav-item-btn">
-      <a id="btn_sidebar_create_article" class="btn btn-primary sidebar-btn-post w-100" href="/examine/create">
-        <svg class="iconsvg-edit">
-          <use xlink:href="/public/content/images/sprite.svg#edit"></use>
-        </svg>
-        <span class="nav-text">Tiếp nhận khám</span>
-      </a>
-    </li>
     <% if (user){%>
+      <%if([1,3,4,5].includes(user.role_id[0])){ %>
+        <li class="nav-item-header">KHÁM BỆNH</li>
+        <li class="nav-item-btn">
+          <a id="btn_sidebar_create_article" class="btn btn-primary sidebar-btn-post w-100" href="/examine/create">
+            <svg class="iconsvg-edit">
+              <use xlink:href="/public/content/images/sprite.svg#edit"></use>
+            </svg>
+            <span class="nav-text">Tiếp nhận khám</span>
+          </a>
+        </li>
+      <% } %>
       <% if (user.isAdmin == true){%>
       <li class="nav-item-btn">
         <a href="/admin" class="btn btn-primary sidebar-btn-post w-100">
