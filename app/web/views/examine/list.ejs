@@ -1,0 +1,85 @@
+<div class="box">
+  <div class="box-header">
+    <h2 class="box-title">Danh sách phiếu khám <small class="text-icon fw-6">(<%=paginator.totalItem%>)</small>
+    </h2>
+    <div class="paginate fs-13px ms-auto d-none d-md-flex">
+      <%- include('../layout/pagination') %>
+    </div>
+  </div>
+  <div class="box-body box-table">
+    <div class="table-responsive-xl table-responsive-flush mb-4">
+      <div class="table-responsive-inner"></div>
+      <table class="table-1 table table-pe-x-3 mb-0 align-middle table-ds-booking">
+        <thead>
+          <tr>
+            <td>STT</td>
+            <td class="table-sort">
+              <span>Tên bệnh nhân</span>
+            </td>
+            <td class="table-sort">
+              <span>Phone</span>
+            </td>
+            <td>
+              <span>Address</span>
+            </td>
+            <td class="table-sort">
+              <span>Chuẩn đoán</span>
+            </td>
+            <td class="table-sort">
+              <span>Thời gian</span>
+            </td>
+            <td class="table-sort w-1">
+              <span>Trạng thái</span>
+            </td>
+            <td class="table-sort w-1">Hành động</td>
+          </tr>
+        </thead>
+        <tbody>
+          <% if (listExamine.length > 0){%>
+            <% for (i = 0;i < listExamine.length;i++){%>
+              <tr>
+              <td class="fw-6 text-body-2"><%=i + ((paginator.perPage * paginator.page) - (paginator.perPage -1))%></td>
+              <td>
+                <a target="_blank" href="">
+                  <span class="text-primary fw-6 fs-13px"></span>
+                </a>
+              </td>
+              <td class="fw-14px"></td>
+              <td class="fs-13px"></td>
+              <td class="min-w-150px">
+                <div class="flex-center-y fs-13px">
+                  <img class="img-fluid me-2" src="/public/content/images/user.svg" alt="" />
+                  
+                </div>
+              </td>
+              <td class="fs-13px">
+                <br>
+                <small class="text-body-2"></small>
+              </td>
+              <td class="text-center">
+                
+              </td>
+              <td>
+                <span class="badge">
+                  
+                </span>
+              </td>
+              <td>
+                <div class="flex-center-x gap-10px">
+                </div>
+              </td>
+            </tr>
+            <%}%>
+          <%} else {%>
+          <tr>
+            <td colspan="9" style="text-align: center;"><b>Không có dữ liệu!</b></td>
+          </tr>
+          <% } %>
+        </tbody>
+      </table>
+    </div>
+    <div class="paginate fs-13px mx-auto">
+      <%- include('../layout/pagination') %>
+    </div>
+  </div>
+</div>

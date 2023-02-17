@@ -78,9 +78,8 @@ router.get('/', function(req, res) {
                     res.render('examine/index.ejs', { 
                         user: req.user,
                         errors: str_errors,
-                        listArticle: listArticle,
+                        listExamine: [],
                         moment: moment,
-                        webService: webService,
                         filter: filter,
                         paginator: paginator
                     });
@@ -109,37 +108,23 @@ router.get('/edit/:id', function(req, res, next) {
         if (!req.user) {
             return res.redirect('/user/login');
         }
-        var artPromise       = [],
-            arrPromise       = [],
+        var arrPromise       = [],
             str_errors       = [],
-            channelAllowId   = [],
-            channelAllow     = [],
-            channelAllowName = [],
-            listRequestCancel = [],
-            listRequestEdit = [],
-            listRequest     = [],
-            page_name        = "edit",
             resultData       = {
                 filter: [],
-                category: [],
-                bookings: [],
-                times:[],
                 detailArticle: {
                     status: [],
                     article: [],
-                    file: [],
-                    content: "",
-                    version: 0,
-                    isLockPublish: false
+                    version: 0
                 }
             };
-        artPromise.push(webService.createSideBarFilter(req, 2).then(function(dataFilter) {
+        arrPromise.push(webService.createSideBarFilter(req, 2).then(function(dataFilter) {
             resultData.filter = dataFilter;
             if (resultData.filter.error.length > 0) {
                 str_errors = str_errors.concat(resultData.filter.error);
             }
         }));
-        artPromise.push(articleService.getDetailArticleEdit(req.params.id).then(function(detailArticle) {
+        arrPromise.push(articleService.getDetailArticleEdit(req.params.id).then(function(detailArticle) {
             if (detailArticle.errors.length > 0) {
                 str_errors = str_errors.concat(detailArticle.errors);
             }
@@ -149,151 +134,24 @@ router.get('/edit/:id', function(req, res, next) {
                 if (!req.user.role_id.includes(1) && detailArticle.detail.created_by !== req.user.id) {
                     str_errors.push("Bạn không có quyền truy cập thông tin bài #" + req.params.id);
                 }
-                var price_allow  = detailArticle.detail.price_allow;
                 resultData.detailArticle.status  = detailArticle.detail.search_status;
-                resultData.detailArticle.article = detailArticle.detail;
-                resultData.detailArticle.content = detailArticle.content;
-                resultData.detailArticle.file    = detailArticle.file;
-                if(detailArticle.content.length > 0){
-                    resultData.detailArticle.version = detailArticle.content[0].version;
-                }
-                if(detailArticle.detail.list_channel_allow){
-                    channelAllowId = JSON.parse(detailArticle.detail.list_channel_allow);
-                }
-
-                arrPromise.push(new Promise(function(resolve, reject) {
-                    if(req.query.booking_id && req.query.booking_id > 0){
-                        resultData.detailArticle.article['booking_id_add'] = req.query.booking_id;
-                    }
-                    bookingService.getListBookingForPublish(resultData.detailArticle.article, req.user, function(err, result, fields) {
-                        if (err) {
-                            return logService.create(req, err).then(function() {
-                                str_errors.push(err.sqlMessage);
-                                resolve();
-                            });
-                        }
-                        if (result !== undefined) {
-                            for (var i = 0; i < result.length; i++) {
-                                var date_now  = moment(new Date()).format('YYYY-MM-DD HH:mm:ss');
-                                var book_time = moment(result[i].book_date).format('YYYY-MM-DD') + " " + result[i].time_from;
-                                //str_errors.push(result[i].id + ' date ' + date_now + ' -- '+ book_time);
-                                if(book_time > date_now){
-                                    resultData.bookings.push({
-                                        id: result[i].id,
-                                        fm_id: result[i].fm_id,
-                                        channel_id: result[i].channel_id,
-                                        time_from: result[i].time_from,
-                                        booking_id_pr: result[i].booking_id_pr,
-                                        book_date: moment(result[i].book_date).format('DD-MM-YYYY'),
-                                        name: "#" + result[i].booking_id_pr + "-" + result[i].domaingroup + " | " + result[i].time_from + " | " + moment(result[i].book_date).format('DD-MM-YYYY') + " | " + result[i].channel_name + " | " + result[i].fm_name + " | " + result[i].price,
-                                    });
-                                }   
-                            }
-                        }
-                        resolve();
-                    });
-                }));
-
-                arrPromise.push(webService.getListWebsiteChannelFormat(req, resultData.detailArticle.article.site_id).then(function(dataCategory) {
-                    resultData.category = dataCategory;
-                    if (resultData.category.error.length > 0) {
-                        str_errors = str_errors.concat(resultData.category.error);
-                    }
-                    // if(price_allow > 0){
-                    //     var list_formats = [];
-                    //     for (var [i, format] of resultData.category.formats.entries()){
-                    //         if(format.price <= price_allow){
-                    //             list_formats.push(format);
-                    //         }
-                    //     }
-                    //     resultData.category.formats = list_formats;
-                    // }
-                }));
-
-                arrPromise.push(webService.getTimeFromToolPR(req, resultData.detailArticle.article.channel_id, webService.parseDay(resultData.detailArticle.article.book_date)).then(function(resultTime) {
-                    resultData.times = resultTime.time;
-                }));
-                if(resultData.detailArticle.article.search_status && resultData.detailArticle.article.search_status == 2){
-                    let sqlCountRequestEdit = 'SELECT COUNT(id) AS total FROM pr_history_article WHERE `type` = 2 AND request_type = 1 AND active = 1 AND `status` = 1 AND booking_id = ?';
-                    arrPromise.push(articleService.getListTable(sqlCountRequestEdit ,[req.params.id]).then(responseData =>{
-                        if(!responseData.success){
-                            str_errors.push(responseData.message);
-                        }
-                        if(responseData.data && responseData.data.length > 0){
-                            if(responseData.data[0].total > 0){
-                                resultData.detailArticle.isLockPublish = true;
-                            }
-                        }
-                    }));
-                }
-            }
-        }));
-        let sqlGetListRequest = 'SELECT * FROM pr_history_article WHERE booking_id = ? AND active = 1 ORDER BY id DESC';
-        arrPromise.push(articleService.getListTable(sqlGetListRequest ,[req.params.id]).then(responseData =>{
-            if(!responseData.success){
-                str_errors.push(responseData.message);
-            }
-            if(responseData.data && responseData.data.length > 0){
-                listRequestCancel   = responseData.data.filter(s => s.request_type == 2);
-                listRequestEdit     = responseData.data.filter(s => s.request_type == 1);
-                listRequest         = responseData.data;
+                
             }
         }));
 
         return new Promise(function(resolve, reject) {
-            Promise.all(artPromise).then(function() {
-                Promise.all(arrPromise).then(function() {
-                    var listChannels = webService.sortChannelForVirtualSelect(resultData.category.channels);
-                    // if (channelAllowId.length > 0) {
-                    //     for (var i = 0; i < listChannels.length; i++) {
-                    //         if (channelAllowId.includes(listChannels[i].value.toString())){
-                    //             channelAllow.push(listChannels[i]);
-                    //             channelAllowName.push(listChannels[i].label);
-                    //         }
-                    //     }
-                    // }
-                    res.render("examine/" + page_name + ".ejs", {
-                        moment: moment,
-                        page: page_name,
-                        user: req.user,
-                        errors: str_errors,
-                        filter: resultData.filter,
-                        websites: resultData.category.websites,
-                        formats: resultData.category.formats,
-                        times: resultData.times,
-                        // channels: channelAllow.length > 0 ? channelAllow : listChannels,
-                        channels: listChannels,
-                        bookings: resultData.bookings,
-                        channelAllowId: channelAllowId,
-                        // channelAllowName: channelAllowName,
-                        article: resultData.detailArticle.article ? resultData.detailArticle.article : null,
-                        title: resultData.detailArticle.article ? resultData.detailArticle.article.id_request : '',
-                        content: resultData.detailArticle.content,
-                        files: resultData.detailArticle.file,
-                        statusClass: webService.bookingStatusClass(resultData.detailArticle.status),
-                        bookingPostType: webService.bookingPostType(resultData.detailArticle.article ? resultData.detailArticle.article.post_type : 'default'),
-                        listRequestCancel: listRequestCancel,
-                        listRequestEdit: listRequestEdit,
-                        listRequest: listRequest,
-                        versionContent: resultData.detailArticle.version,
-                        price_allow_fm: new Intl.NumberFormat('en-US').format(resultData.detailArticle.article ? resultData.detailArticle.article.price_allow : 0),
-                        isLockPublish: resultData.detailArticle.isLockPublish,
-                        price_article: (resultData.detailArticle.article && resultData.detailArticle.article.price) ? parseInt(resultData.detailArticle.article.price.replaceAll(',','')) : 0
-                    });
-                }).catch(err => {
-                    res.render("examine/detail.ejs", {
-                        user: req.user,
-                        errors: [err],
-                        filter: resultData.filter,
-                        title: err
-                    });
+            Promise.all(arrPromise).then(function() {
+                res.render("examine/" + page_name + ".ejs", {
+                    moment: moment,
+                    user: req.user,
+                    errors: str_errors,
+                    filter: resultData.filter
                 });
             }).catch(err => {
                 res.render("examine/detail.ejs", {
                     user: req.user,
                     errors: [err],
-                    filter: resultData.filter,
-                    title: err
+                    filter: resultData.filter
                 });
             });
         });
@@ -302,8 +160,7 @@ router.get('/edit/:id', function(req, res, next) {
             res.render("examine/detail.ejs", {
                 user: req.user,
                 errors: [e.message],
-                filter: dataFilter,
-                title: e.message
+                filter: dataFilter
             });
         })
     }
@@ -317,8 +174,7 @@ router.get('/create', function(req, res, next) {
         var str_errors = [],
             arrPromise = [],
             resultData = {
-                filter: [],
-                category: []
+                filter: []
             };
 
         arrPromise.push(webService.createSideBarFilter(req, 2).then(function(dataFilter) {
@@ -340,8 +196,7 @@ router.get('/create', function(req, res, next) {
                 res.render("examine/create.ejs", {
                     user: req.user,
                     errors: [err],
-                    filter: resultData.filter,
-                    title: err,
+                    filter: resultData.filter
                 });
             });
         });
@@ -354,6 +209,86 @@ router.get('/create', function(req, res, next) {
                 title: e.message,
             });
         })
+    }
+});
+
+router.post('/create', function(req, res, next) {
+    var resultData = {
+        success: false,
+        message: "",
+        data: ''
+    };
+    try {
+        if (!req.user) {
+            resultData.message = "Vui lòng đăng nhập lại để thực hiện chức năng này!";
+            res.json(resultData);
+            return;
+        }
+        var str_errors   = [],
+            arrPromise   = [],
+            parameter    = {
+                booking_id_pr: 0,
+                booking_id: parseInt(fields.booking_id),
+                booking_id_add: isNaN(parseInt(fields.booking_id_add)) ? 0 : parseInt(fields.booking_id_add),
+                site_id: parseInt(fields.site_id),
+                fm_id: parseInt(fields.fm_id),
+                channel_id: parseInt(fields.channel_id),
+                book_date: fields.book_date.split("-").reverse().join("-"),
+                time_from: fields.time_from,
+                id_request: fields.id_request,
+                status: parseInt(fields.status),
+                search_status: isNaN(parseInt(fields.search_status)) ? -2 : parseInt(fields.search_status),
+                post_type: fields.post_type,
+                description: fields.description,
+                title: fields.title,
+                url_demo: fields.url_demo ? fields.url_demo : '',
+                price: fields.price,
+                created_by: req.user.id,
+                type: fields.type,
+                user_id: req.user.id,
+                domain: fields.domain,
+                site_name: fields.site_name,
+                fm_name: fields.fm_name,
+                channel_name: fields.channel_name,
+                autoSave: isNaN(parseInt(fields.autoSave)) ? 0 : parseInt(fields.autoSave),
+                approve: parseInt(fields.approve),
+                page: fields.page,
+                fieldUpdate: null,
+                requestEdit: fields.requestEdit ? JSON.parse(fields.requestEdit) : ''
+            };
+        
+        if(parameter.title == ""){
+            str_errors.push("Tiêu đề không được bỏ trống!");
+        }
+        if(parameter.fm_id == 0){
+            str_errors.push("Loại bài không được bỏ trống!");
+        }
+        if(parameter.channel_id == 0){
+            str_errors.push("Chuyên mục không được bỏ trống!");
+        }
+        if (str_errors.length > 0) {
+            resultData.message = str_errors.toString();
+            res.json(resultData);
+            return;
+        } else {
+            articleService.update(parameter, function(err, result, fields) {
+                if (err) {
+                    return logService.create(req, err).then(function() {
+                        str_errors.push(err.sqlMessage);
+                        resolve();
+                    });
+                }
+                if (result == undefined) {
+                    str_errors.push("Dữ liệu trả về không xác định khi cập nhật bài viết có booking" + parameter.booking_id);
+                }
+                resolve();
+            });
+        }
+    } catch (e) {
+        logService.create(req, e.message).then(function() {
+            resultData.message = e.message;
+            res.json(resultData);
+        });
     }
 });
 
