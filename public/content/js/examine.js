@@ -111,7 +111,6 @@ function changeTabExamine(tab){
             dataExamine.examine['cus_name'] = $('#cus_name').val();
             dataExamine.examine['cus_gender'] = $('#cus_gender').val();
             dataExamine.examine['cus_year'] = $('#cus_year').val();
-            dataExamine.examine['cus_age'] = $('#cus_age').val();
             dataExamine.examine['cus_address'] = $('#cus_address').val();
             dataExamine.examine['diagnostic'] = $('#diagnostic').val();
             dataExamine.examine['cus_length'] = $('#cus_length').val();

@@ -1,14 +1,8 @@
 var express         = require('express'),
     router          = express.Router(),
-    {IncomingForm}  = require("formidable"),
-    path            = require('path'),
-    url             = require('url'),
-    fs              = require('fs'),
     moment          = require('moment'),
-    request         = require('request'),
     logService      = require('../../admin/models/logModel'),
-    webService      = require('./../models/webModel'),
-    pathPublic      = "../../../";
+    webService      = require('./../models/webModel');
 
 router.get('/', function(req, res) {
     try {
@@ -224,54 +218,34 @@ router.post('/create', function(req, res, next) {
             res.json(resultData);
             return;
         }
+        console.log("create", req.body);
         var str_errors   = [],
             arrPromise   = [],
             parameter    = {
-                booking_id_pr: 0,
-                booking_id: parseInt(fields.booking_id),
-                booking_id_add: isNaN(parseInt(fields.booking_id_add)) ? 0 : parseInt(fields.booking_id_add),
-                site_id: parseInt(fields.site_id),
-                fm_id: parseInt(fields.fm_id),
-                channel_id: parseInt(fields.channel_id),
-                book_date: fields.book_date.split("-").reverse().join("-"),
-                time_from: fields.time_from,
-                id_request: fields.id_request,
-                status: parseInt(fields.status),
-                search_status: isNaN(parseInt(fields.search_status)) ? -2 : parseInt(fields.search_status),
-                post_type: fields.post_type,
-                description: fields.description,
-                title: fields.title,
-                url_demo: fields.url_demo ? fields.url_demo : '',
-                price: fields.price,
-                created_by: req.user.id,
-                type: fields.type,
-                user_id: req.user.id,
-                domain: fields.domain,
-                site_name: fields.site_name,
-                fm_name: fields.fm_name,
-                channel_name: fields.channel_name,
-                autoSave: isNaN(parseInt(fields.autoSave)) ? 0 : parseInt(fields.autoSave),
-                approve: parseInt(fields.approve),
-                page: fields.page,
-                fieldUpdate: null,
-                requestEdit: fields.requestEdit ? JSON.parse(fields.requestEdit) : ''
+                
             };
         
-        if(parameter.title == ""){
-            str_errors.push("Tiêu đề không được bỏ trống!");
+        if(req.body.cus_name){
+            str_errors.push("Thiếu họ tên!");
         }
-        if(parameter.fm_id == 0){
-            str_errors.push("Loại bài không được bỏ trống!");
+        if(req.body.cus_gender){
+            str_errors.push("Thiếu giới tính!");
         }
-        if(parameter.channel_id == 0){
-            str_errors.push("Chuyên mục không được bỏ trống!");
+        if(req.body.cus_year){
+            str_errors.push("Thiếu năm sinh!");
         }
         if (str_errors.length > 0) {
             resultData.message = str_errors.toString();
             res.json(resultData);
             return;
         } else {
-            articleService.update(parameter, function(err, result, fields) {
+            arrPromise.push(webService.addRecordTable( req.body, 'pr_history_article').then(responseData =>{
+                if(!responseData.success){
+                    str_errors.push(responseData.message);
+                    logService.create(req, responseData.message);
+                }
+            }));
+            arrPromise.push(articleService.update(parameter, function(err, result, fields) {
                 if (err) {
                     return logService.create(req, err).then(function() {
                         str_errors.push(err.sqlMessage);
@@ -282,7 +256,19 @@ router.post('/create', function(req, res, next) {
                     str_errors.push("Dữ liệu trả về không xác định khi cập nhật bài viết có booking" + parameter.booking_id);
                 }
                 resolve();
-            });
+            }));
+            arrPromise.push(articleService.update(parameter, function(err, result, fields) {
+                if (err) {
+                    return logService.create(req, err).then(function() {
+                        str_errors.push(err.sqlMessage);
+                        resolve();
+                    });
+                }
+                if (result == undefined) {
+                    str_errors.push("Dữ liệu trả về không xác định khi cập nhật bài viết có booking" + parameter.booking_id);
+                }
+                resolve();
+            }));
         }
     } catch (e) {
         logService.create(req, e.message).then(function() {
