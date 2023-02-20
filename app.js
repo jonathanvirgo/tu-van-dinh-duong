@@ -14,6 +14,7 @@ var home       = require('./app/web/controllers/homeController');
 var user       = require('./app/web/controllers/userController');
 var mail       = require('./app/web/controllers/sendMailController');
 var examine    = require('./app/web/controllers/examineController');
+var test       = require('./app/web/controllers/testController');
 
 //Admin
 var admin          = require('./app/admin/controllers/adminController');
@@ -68,7 +69,7 @@ app.use('/', home);
 app.use('/user', user);
 app.use('/examine', examine);
 app.use('/mail', mail);
-
+app.use('/test', test);
 
 //Admin
 app.use('/admin', admin);

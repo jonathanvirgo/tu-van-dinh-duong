@@ -168,9 +168,7 @@ let webService = {
                         fromdate: "",
                         todate: "",
                         keyword: query.keyword == undefined ? "" : query.keyword,
-                        site_ids: query.site_ids == undefined ? "" : query.site_ids,
                         status_ids: query.status_ids == undefined ? "" : query.status_ids,
-                        book_date: query.book_date == undefined ? "" : query.book_date,
                         order_by: query.order_by == undefined ? 1 : parseInt(query.order_by),
                         created_by: 0,
                         role_ids: []
@@ -185,56 +183,16 @@ let webService = {
                 listData.search.created_by = req.user.id;
                 listData.search.role_ids   = req.user.role_id;
             }
-            if (type == 0) {
-            listData.requestUri = "/search?keyword=" + listData.search.keyword;
-            } else if (type == 1) {
-                listData.requestUri = "/booking?keyword=" + listData.search.keyword;
-            } else if (type == 2) {
-                listData.requestUri = "/article?keyword=" + listData.search.keyword;
+            if (type == 1) {
+                listData.requestUri = "/examine?keyword=" + listData.search.keyword;
             } else {
                 listData.requestUri = "?keyword=" + listData.search.keyword;
             }
 
-            if (listData.search.site_ids !== '') {
-                var arr_site = listData.search.site_ids.split(",");
-                for (var i = 0; i < arr_site.length; i++) {
-                    if(!isNaN(parseInt(arr_site[i]))){
-                        listData.siteIds.push(parseInt(arr_site[i]));
-                    }
-                }
-                listData.requestUri += "&site_ids=" + listData.search.site_ids;
-            }
-            if (listData.search.status_ids !== '') {
-                var arr_status = listData.search.status_ids.split(",");
-                for (var i = 0; i < arr_status.length; i++) {
-                    if(!isNaN(parseInt(arr_status[i]))){
-                        listData.statusIds.push(parseInt(arr_status[i]));
-                    }
-                }
-                listData.requestUri += "&status_ids=" + listData.search.status_ids;
-            }
             if (listData.search.order_by !== '') {
                 listData.requestUri += "&order_by=" + listData.search.order_by;
             }
-            
-            if (listData.search.book_date == '') {
-                //dashboard set default 30 day
-                if(type == 3){
-                    listData.search.fromdate = webService.addDays(-30);
-                    listData.search.todate   = webService.parseDay(new Date());
-                }
-            }
 
-            if (listData.search.book_date !== '') {
-                if(listData.search.book_date.indexOf(' - ') == -1){
-                    listData.search.fromdate = listData.search.book_date;
-                } else {
-                    var time = listData.search.book_date.split(' - ');
-                    listData.search.fromdate = time[0];
-                    listData.search.todate   = time[1];
-                }
-                listData.requestUri += "&book_date=" + listData.search.book_date;
-            }
             return new Promise(function(resolve, reject) {
                 Promise.all(arrPromise).then(function() {
                     resolve(listData);
@@ -604,15 +562,18 @@ let webService = {
                         if(j == 0){
                             sql += i ;
                             textVal += '?';
-                            j = 1;
+                        }else if(j == (Object.keys(param).length - 1)){
+                            sql += ',' + i +',created_at';
+                            textVal += ',?';
                         }else{
                             sql += ',' + i;
                             textVal += ',?';
                         }
+                        j++;
                         paramSql.push(param[i]);
                     }
                     
-                    let query = connection.query((sql + textVal + ')'), paramSql, function(error, results, fields) {
+                    let query = connection.query((sql + textVal + ',CURRENT_TIMESTAMP)'), paramSql, function(error, results, fields) {
                         connection.release();
                         if (error) {
                             resolve({
@@ -724,46 +685,22 @@ let webService = {
                     color: '',
                     value: ''
                 }
-            if (status == -2) {
-                result.name  = 'bai-nhap';
-                result.color = '#AD9D85';
-                result.value = 'Nháp';
-            } else if (status == -1) {
+           if (status == 1) {
+                result.name  = 'gui-duyet';
+                result.color = '#F2C144';
+                result.value = 'Tiếp nhận';
+            } else if (status == 2) {
+                result.name  = 'cho-duyet';
+                result.color = '#5BCD8F';
+                result.value = 'Đang khám';
+            } else if (status == 3) {
+                result.name  = 'da-duyet';
+                result.color = '#60BFD4';
+                result.value = 'Hoàn thành';
+            } else if (status == 4) {
                 result.name  = 'da-huy';
                 result.color = '#F2564C';
                 result.value = 'Đã hủy';
-            } else if (status == 0) {
-                result.name  = 'giu-cho';
-                result.color = '#999';
-                result.value = 'Giữ chỗ';
-            } else if (status == 1) {
-                result.name  = 'cho-duyet';
-                result.color = '#5BCD8F';
-                result.value = 'Chờ duyệt';
-            } else if (status == 2) {
-                result.name  = 'da-duyet';
-                result.color = '#60BFD4';
-                result.value = 'Đã duyệt';
-            } else if (status == 3) {
-                result.name  = 'tra-lai';
-                result.color = '#6D7DEE';
-                result.value = 'Bị trả lại';
-            } else if (status == 4) {
-                result.name  = 'xuat-ban';
-                result.color = '#B8D975';
-                result.value = 'Đã xuất bản';
-            } else if (status == 5) {
-                result.name  = 'gui-duyet';
-                result.color = '#F2C144';
-                result.value = 'Gửi duyệt';
-            } else if (status == 6) {
-                result.name  = 'gui-dang';
-                result.color = '#FFB36D';
-                result.value = 'Gửi đăng';
-            } else if (status == 7) {
-                result.name  = 'cho-dang';
-                result.color = '#4DB3AD';
-                result.value = 'Chờ đăng';
             }
             return result;
         } catch (error) {
@@ -783,6 +720,41 @@ let webService = {
                     });
                 } catch (error) {
                     webService.addToLogService(err, "webService addLogMail");
+                }
+            });
+        });
+    },
+    createCountId: function() {
+        return new Promise(function(resolve, reject) {
+            let date = moment().format('DDMMYY');
+            let id   = '';
+            let sqlIdCount = 'SELECT id_count FROM examine ORDER BY id DESC LIMIT 1';
+            webService.getListTable(sqlIdCount, []).then(success => {
+                if(success.success) {
+                    if (success.data.length == 0) {
+                        id = 'PK001' + date;
+                    } else {
+                        if (success.data[0] && success.data[0].id_count) {
+                            let id_count = success.data[0].id_count;
+                            if (String(id_count).length >= 10) {
+                                checkDate = id_count.slice(-6);
+                                if (checkDate == date) {
+                                    let number = parseInt((id_count.slice(0, id_count.length - 6)).substring(2));
+                                    number += 1;
+                                    id = "PK" + String(number).padStart(3, '0') + date;
+                                } else {
+                                    id = 'PK001' + date;
+                                }
+                            } else {
+                                id = 'PK001' + date;
+                            }
+                        } else {
+                            id = 'PK001' + date;
+                        }
+                    }
+                    resolve({success: true, id_count : id});
+                }else{
+                    resolve({success: false, message : success.message});
                 }
             });
         });

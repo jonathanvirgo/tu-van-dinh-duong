@@ -1,6 +1,6 @@
 <form id="kham_form" class="form-horizontal">
     <h3 class="box-title-break">Thông tin chung</h3>
-	<div class="row g-2 align-items-center">
+    <div class="row g-2 align-items-center">
         <div class="col-12 col-md-6 d-flex">
             <label class="col-form-label col-md-auto fw-bold mt-2" for="cus_name">Họ và tên
                 <span class="text-danger">*</span>
@@ -16,9 +16,26 @@
                 </div>
             </div>
         </div>
-        <div class="col-6 col-md-3 d-flex">
+        <div class="col-12 col-md-6 d-flex">
+            <label class="col-form-label col-md-auto fw-bold mt-2" for="cus_phone">Phone
+                <!-- <span class="text-danger">*</span> -->
+            </label>
+            <div class="col-form-body col-md">
+                <div class="form-control-has-addon">
+                    <input type="text" name="cus_phone" class="form-control form-control-title" id="cus_phone" placeholder="Tìm kiếm theo số điện thoại">
+                    <button class="btn form-control-addon btn-link p-0 min-h-auto" type="button" onclick="clearInput('#cus_phone')">
+                        <svg class="iconsvg-close">
+                            <use xlink:href="/public/content/images/sprite.svg#close"></use>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+	<div class="row g-2 align-items-center">
+        <div class="col-12 col-md-2 d-flex">
             <label class="col-form-label col-md-auto fw-bold mt-2" for="cus_gender">Giới tính
-                <span class="text-danger">*</span>
+                <!-- <span class="text-danger">*</span> -->
             </label>
             <div class="col-form-body col-md">
                 <div class="form-control-has-addon">
@@ -31,25 +48,20 @@
                 </div>
             </div>
         </div>
-        <div class="col-6 col-md-3 d-flex">
+        <div class="col-12 col-md-4 d-flex">
             <div class="d-flex me-2">
-                <label class="col-form-label col-md-auto fw-bold mt-2 me-2" for="cus_year">Năm sinh
+                <label class="col-form-label col-md-auto fw-bold mt-2 me-2" for="cus_birthday">Ngày sinh
                     <span class="text-danger">*</span>
                 </label>
                 <div class="col-form-body col-md">
                     <div class="form-control-has-addon">
-                        <input type="number" name="cus_year" class="form-control form-control-title p-1" id="cus_year" placeholder="Năm sinh">
-                        <button class="btn form-control-addon btn-link p-0 min-h-auto" type="button" onclick="clearInput('#cus_year')">
-                            <svg class="iconsvg-close">
-                                <use xlink:href="/public/content/images/sprite.svg#close"></use>
-                            </svg>
-                        </button>
+                        <input type="text" name="cus_birthday" class="form-control form-control-title p-1" id="cus_birthday" placeholder="Ngày sinh">
                     </div>
                 </div>
             </div>
             <div class="d-flex">
                 <label class="col-md-auto fw-bold mt-2 me-2" for="cus_age">Tuổi
-                    <span class="text-danger">*</span>
+                    <!-- <span class="text-danger">*</span> -->
                 </label>
                 <div class="col-form-body col-md">
                     <div class="form-control-has-addon">
@@ -60,6 +72,21 @@
                             </svg>
                         </button>
                     </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 col-md-6 d-flex">
+            <label class="col-form-label col-md-auto fw-bold mt-2" for="cus_email">Email
+                <!-- <span class="text-danger">*</span> -->
+            </label>
+            <div class="col-form-body col-md">
+                <div class="form-control-has-addon">
+                    <input type="text" name="cus_email" class="form-control form-control-title" id="cus_email" placeholder="Email">
+                    <button class="btn form-control-addon btn-link p-0 min-h-auto" type="button" onclick="clearInput('#cus_email')">
+                        <svg class="iconsvg-close">
+                            <use xlink:href="/public/content/images/sprite.svg#close"></use>
+                        </svg>
+                    </button>
                 </div>
             </div>
         </div>

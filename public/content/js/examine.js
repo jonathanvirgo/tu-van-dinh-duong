@@ -69,7 +69,7 @@ function clearInput(id){
 }
 
 function returnList() {
-    window.location.href = '/';
+    window.location.href = '/examine';
 }
 
 function saveExamine(){
@@ -109,8 +109,10 @@ function changeTabExamine(tab){
     switch(dataExamine.tab){
         case 1:
             dataExamine.examine['cus_name'] = $('#cus_name').val();
+            dataExamine.examine['cus_phone'] = $('#cus_phone').val();
+            dataExamine.examine['cus_email'] = $('#cus_email').val();
             dataExamine.examine['cus_gender'] = $('#cus_gender').val();
-            dataExamine.examine['cus_year'] = $('#cus_year').val();
+            dataExamine.examine['cus_birthday'] = $('#cus_birthday').val();
             dataExamine.examine['cus_address'] = $('#cus_address').val();
             dataExamine.examine['diagnostic'] = $('#diagnostic').val();
             dataExamine.examine['cus_length'] = $('#cus_length').val();
@@ -149,3 +151,10 @@ function changeTabExamine(tab){
     }
     dataExamine.tab = tab;
 }
+
+$(document).ready(function(){
+    $("#cus_birthday").flatpickr({
+        dateFormat: "d-m-Y",
+        maxDate: "today"
+    });
+});

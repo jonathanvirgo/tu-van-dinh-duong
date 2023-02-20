@@ -1,0 +1,54 @@
+var express         = require('express'),
+    router          = express.Router(),
+    moment          = require('moment'),
+    logService      = require('../../admin/models/logModel'),
+    webService      = require('./../models/webModel');
+
+router.post('/', function(req, res) {
+    try {
+        let parameter    = {
+            cus_name:               req.body.cus_name,
+            cus_phone:              req.body.cus_phone,
+            cus_email:              req.body.cus_email,
+            cus_gender:             req.body.cus_gender,
+            cus_birthday:           req.body.cus_birthday,
+            cus_address:            req.body.cus_address,
+            diagnostic:             req.body.diagnostic,
+            cus_length:             req.body.cus_length,
+            cus_cntc:               req.body.cus_cntc,
+            cus_cnht:               req.body.cus_cnht,
+            cus_bmi:                req.body.cus_bmi,
+            clinical_examination:   req.body.clinical_examination,
+            erythrocytes:           req.body.erythrocytes,
+            cus_bc:                 req.body.cus_bc,
+            cus_tc:                 req.body.cus_tc,
+            cus_albumin:            req.body.cus_albumin,
+            cus_nakcl:              req.body.cus_nakcl,
+            cus_astaltggt:          req.body.cus_astaltggt,
+            cus_urecreatinin:       req.body.cus_urecreatinin,
+            cus_bilirubin:          req.body.cus_bilirubin,
+            exa_note:               req.body.exa_note,
+            cus_fat:                req.body.cus_fat,
+            cus_water:              req.body.cus_water,
+            cus_visceral_fat:       req.body.cus_visceral_fat,
+            cus_bone_weight:        req.body.cus_bone_weight,
+            cus_chcb:               req.body.cus_chcb,
+            cus_waist:              req.body.cus_waist,
+            cus_butt:               req.body.cus_butt,
+            cus_cseomong:           req.body.cus_cseomong,
+            active_mode_of_living:  req.body.active_mode_of_living,
+        };
+        let sqlFindCustomer = 'SELECT id FROM customer WHERE cus_name = ? AND cus_gender = ? AND cus_birthday = ? AND cus_address = ?';
+        webService.getListTable(sqlFindCustomer ,[parameter.cus_name, parameter.cus_gender, parameter.cus_birthday, parameter.cus_address]).then(responseData2 =>{
+            console.log(responseData2);
+            if(responseData2.data && responseData2.data.length == 0){
+
+            }
+            res.json(responseData2);
+        });
+    } catch (e) {
+        
+    }
+});
+
+module.exports = router;
