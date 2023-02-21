@@ -64,13 +64,15 @@ CREATE TABLE `customer` (
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp(),
   PRIMARY KEY (`id`),
   UNIQUE KEY `phone` (`cus_phone`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4;
 
 /*Data for the table `customer` */
 
 insert  into `customer`(`id`,`cus_name`,`cus_email`,`cus_phone`,`cus_gender`,`cus_birthday`,`cus_address`,`department_id`,`created_at`,`updated_at`) values 
 (1,'Nguyễn Quốc Đat','','0989402893',1,'0000-00-00','24 Trâu Quỳ Gia lâm Hà nội',2,NULL,'2023-02-20 15:03:42'),
-(2,'Nguyễn Phương Linh','','0941926837',0,'2020-10-15','24 Trâu Quỳ  - Gia Lâm - Hà Nội',2,'2023-02-20 15:20:14','2023-02-20 15:20:14');
+(2,'Nguyễn Phương Linh','','0941926837',0,'2020-10-15','24 Trâu Quỳ  - Gia Lâm - Hà Nội',2,'2023-02-20 15:20:14','2023-02-20 15:20:14'),
+(3,'Bài test 2','qdatvirgo@gmail.com','Bài test 2',0,'2023-02-06','24 Trâu Quỳ Gia Lâm Hà Nội',2,'2023-02-21 17:16:37','2023-02-21 17:16:37'),
+(4,'Bài test 4','','',1,'2023-02-21','',2,'2023-02-21 17:20:14','2023-02-21 17:20:14');
 
 /*Table structure for table `department` */
 
@@ -104,28 +106,28 @@ CREATE TABLE `examine` (
   `cus_birthday` date DEFAULT NULL,
   `cus_address` varchar(1024) DEFAULT NULL,
   `diagnostic` longtext DEFAULT NULL COMMENT 'Chuan doan',
-  `cus_length` float DEFAULT NULL,
-  `cus_cntc` float DEFAULT NULL,
-  `cus_cnht` float DEFAULT NULL,
-  `cus_bmi` float DEFAULT NULL,
+  `cus_length` varchar(255) DEFAULT NULL,
+  `cus_cntc` varchar(255) DEFAULT NULL,
+  `cus_cnht` varchar(255) DEFAULT NULL,
+  `cus_bmi` varchar(255) DEFAULT NULL,
   `clinical_examination` longtext DEFAULT NULL COMMENT 'Kham lam sang',
-  `erythrocytes` float DEFAULT NULL,
-  `cus_bc` float DEFAULT NULL,
-  `cus_tc` float DEFAULT NULL,
-  `cus_albumin` float DEFAULT NULL,
-  `cus_nakcl` float DEFAULT NULL,
-  `cus_astaltggt` float DEFAULT NULL,
-  `cus_urecreatinin` float DEFAULT NULL,
-  `cus_bilirubin` float DEFAULT NULL,
-  `exa_note` float DEFAULT NULL,
-  `cus_fat` float DEFAULT NULL,
-  `cus_water` float DEFAULT NULL,
-  `cus_visceral_fat` float DEFAULT NULL,
-  `cus_bone_weight` float DEFAULT NULL,
-  `cus_chcb` float DEFAULT NULL,
-  `cus_waist` float DEFAULT NULL,
-  `cus_butt` float DEFAULT NULL,
-  `cus_cseomong` float DEFAULT NULL,
+  `erythrocytes` varchar(255) DEFAULT NULL,
+  `cus_bc` varchar(255) DEFAULT NULL,
+  `cus_tc` varchar(255) DEFAULT NULL,
+  `cus_albumin` varchar(255) DEFAULT NULL,
+  `cus_nakcl` varchar(255) DEFAULT NULL,
+  `cus_astaltggt` varchar(255) DEFAULT NULL,
+  `cus_urecreatinin` varchar(255) DEFAULT NULL,
+  `cus_bilirubin` varchar(255) DEFAULT NULL,
+  `exa_note` longtext DEFAULT NULL,
+  `cus_fat` varchar(255) DEFAULT NULL,
+  `cus_water` varchar(255) DEFAULT NULL,
+  `cus_visceral_fat` varchar(255) DEFAULT NULL,
+  `cus_bone_weight` varchar(255) DEFAULT NULL,
+  `cus_chcb` varchar(255) DEFAULT NULL,
+  `cus_waist` varchar(255) DEFAULT NULL,
+  `cus_butt` varchar(255) DEFAULT NULL,
+  `cus_cseomong` varchar(255) DEFAULT NULL,
   `active_mode_of_living` longtext DEFAULT NULL COMMENT 'che do van dong sinh hoat',
   `department_id` int(11) DEFAULT NULL,
   `status` int(11) DEFAULT NULL COMMENT '1 tiep nhan 2 dang kham 3 hoan thanh 4 da huy',
@@ -133,14 +135,19 @@ CREATE TABLE `examine` (
   `created_at` timestamp NULL DEFAULT NULL ON UPDATE current_timestamp(),
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp(),
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4;
 
 /*Data for the table `examine` */
 
 insert  into `examine`(`id`,`count_id`,`cus_name`,`cus_phone`,`cus_email`,`cus_gender`,`cus_birthday`,`cus_address`,`diagnostic`,`cus_length`,`cus_cntc`,`cus_cnht`,`cus_bmi`,`clinical_examination`,`erythrocytes`,`cus_bc`,`cus_tc`,`cus_albumin`,`cus_nakcl`,`cus_astaltggt`,`cus_urecreatinin`,`cus_bilirubin`,`exa_note`,`cus_fat`,`cus_water`,`cus_visceral_fat`,`cus_bone_weight`,`cus_chcb`,`cus_waist`,`cus_butt`,`cus_cseomong`,`active_mode_of_living`,`department_id`,`status`,`created_by`,`created_at`,`updated_at`) values 
-(1,'','Nguyễn Quốc Đạt','0989402893','',1,'1990-08-31','24 Trâu Quỳ - Gia Lâm - Hà Nội','',0,0,0,0,'',0,0,0,0,0,0,0,0,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,2,1,NULL,'2023-02-20 17:28:06','2023-02-20 14:56:34'),
-(2,'','Nguyễn Quốc Đat','0989402893','',1,'1990-08-31','24 Trâu Quỳ Gia lâm Hà nội','',0,0,0,0,'',0,0,0,0,0,0,0,0,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,2,1,NULL,'2023-02-20 17:28:05','2023-02-20 15:03:42'),
-(3,'','Nguyễn Phương Linh','0941926837','',0,'2020-10-15','24 Trâu Quỳ  - Gia Lâm - Hà Nội','',0,0,0,0,'',0,0,0,0,0,0,0,0,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,2,1,NULL,'2023-02-20 17:27:32','2023-02-20 15:20:14');
+(1,'1','Nguyễn Quốc Đạt','0989402893','',1,'1990-08-31','24 Trâu Quỳ - Gia Lâm - Hà Nội','','0','0','0','0','','0','0','0','0','0','0','0','0','0',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,2,1,NULL,'2023-02-21 15:02:25','2023-02-20 14:56:34'),
+(2,'2','Nguyễn Quốc Đat','0989402893','',1,'1990-08-31','24 Trâu Quỳ Gia lâm Hà nội','','0','0','0','0','','0','0','0','0','0','0','0','0','0',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,2,1,NULL,'2023-02-21 15:02:26','2023-02-20 15:03:42'),
+(3,'3','Nguyễn Phương Linh','0941926837','',0,'2020-10-15','24 Trâu Quỳ  - Gia Lâm - Hà Nội','','0','0','0','0','','0','0','0','0','0','0','0','0','0',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,2,1,NULL,'2023-02-21 15:02:30','2023-02-20 15:20:14'),
+(4,'00101210223','Bài test 1','0989402893','qdatvirgo@gmail.com',1,'1990-08-31','24 Trâu Quỳ GIa Lâm Hà Nội','test 1 ','0','0','0','0','','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','',2,1,6,'2023-02-21 17:09:41','2023-02-21 17:09:41'),
+(5,'00101210223','Bài test 2','Bài test 2','qdatvirgo@gmail.com',0,'2023-02-06','24 Trâu Quỳ Gia Lâm Hà Nội','test 2','','','','','','','','','','','','','','',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,2,1,6,'2023-02-21 17:16:37','2023-02-21 17:16:37'),
+(6,'00101210223','Bài test 3','0989402893','',1,'2023-02-21','','','','','','','','','','','','','','','','',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,2,1,6,'2023-02-21 17:18:14','2023-02-21 17:18:14'),
+(7,'00101210223','Bài test 4','','',1,'2023-02-21','','','','','','','','','','','','','','','','',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,2,1,6,'2023-02-21 17:20:14','2023-02-21 17:20:14'),
+(8,'00201210223','Bài test 51','','',0,'2023-02-21','','','','','','','','','','','','','','','','',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,2,1,6,'2023-02-21 17:32:23','2023-02-21 17:21:43');
 
 /*Table structure for table `food_info` */
 
@@ -197,7 +204,7 @@ CREATE TABLE `log_err` (
   `last_ip` varchar(40) DEFAULT NULL,
   `create_on` timestamp NULL DEFAULT current_timestamp(),
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8mb4;
 
 /*Data for the table `log_err` */
 
@@ -210,7 +217,8 @@ insert  into `log_err`(`id`,`user_id`,`short_message`,`full_message`,`page_url`,
 (12,6,'Unknown column \'examine.department_id\' in \'on clause\'','SELECT COUNT(*) AS count FROM examine\n                                NNER JOIN department ON examine.department_id = department.id\n                                INNER JOIN hospital ON department.hospital_id = hospital.id ORDER BY examine.created_at DESC LIMIT 0,10','/examine','http://localhost:3000/',NULL,'2023-02-20 16:49:48'),
 (13,6,'Unknown column \'examine.department_id\' in \'on clause\'','SELECT COUNT(*) AS count FROM examine\n                                NNER JOIN department ON examine.department_id = department.id\n                                INNER JOIN hospital ON department.hospital_id = hospital.id ORDER BY examine.created_at DESC LIMIT 0,10','/examine','http://localhost:3000/',NULL,'2023-02-20 16:53:28'),
 (14,6,'Unknown column \'examine.department_id\' in \'on clause\'','SELECT COUNT(*) AS count FROM examine\n                                NNER JOIN department ON examine.department_id = department.id\n                                INNER JOIN hospital ON department.hospital_id = hospital.id ORDER BY examine.created_at DESC LIMIT 0,10','/examine','http://localhost:3000/',NULL,'2023-02-20 16:54:50'),
-(15,6,'Unknown column \'examine.department_id\' in \'on clause\'','SELECT COUNT(*) AS count FROM examine\n                                NNER JOIN department ON examine.department_id = department.id\n                                INNER JOIN hospital ON department.hospital_id = hospital.id ORDER BY examine.created_at DESC LIMIT 0,10','/examine','http://localhost:3000/',NULL,'2023-02-20 16:56:50');
+(15,6,'Unknown column \'examine.department_id\' in \'on clause\'','SELECT COUNT(*) AS count FROM examine\n                                NNER JOIN department ON examine.department_id = department.id\n                                INNER JOIN hospital ON department.hospital_id = hospital.id ORDER BY examine.created_at DESC LIMIT 0,10','/examine','http://localhost:3000/',NULL,'2023-02-20 16:56:50'),
+(16,6,'Duplicate entry \'\' for key \'phone\'','INSERT INTO customer(cus_name,cus_phone,cus_email,cus_gender,cus_birthday,cus_address,department_id,created_at) VALUES (\'Bài test 5\',\'\',\'\',\'0\',\'2023-02-21\',\'\',2,CURRENT_TIMESTAMP)','/examine/create','http://localhost:3000/examine/create',NULL,'2023-02-21 17:21:43');
 
 /*Table structure for table `log_mail` */
 
@@ -351,7 +359,7 @@ insert  into `role`(`role_id`,`role_name`) values
 (2,'Customer'),
 (3,'System'),
 (4,'Doctor'),
-(5,'Channel Management');
+(5,'Management');
 
 /*Table structure for table `role_user` */
 
@@ -420,7 +428,7 @@ CREATE TABLE `user` (
 
 insert  into `user`(`id`,`user_id`,`name`,`full_name`,`password`,`email`,`phone`,`gender`,`birthday`,`address`,`activePasswordToken`,`resetPasswordToken`,`resetPasswordExpires`,`active`,`last_ip`,`last_login`,`department_id`,`create_on`) values 
 (6,0,'qdatvirgo@gmail.com','','8f3633d9970f51a509728be61fb9ee213ea6999e0867c7b67a5ca9005d70d07072fbe003c2ad867483b75427a71542764a9d6a8f58accd6605bbc10cd9a74b93','qdatvirgo@gmail.com','9738781040',1,'1990-08-31','2641 Euclid Avenue',NULL,NULL,NULL,1,NULL,'2023-02-15 14:25:20',2,'2023-02-15 14:25:20'),
-(11,0,'qdatvirgo@gmail.com','','8f3633d9970f51a509728be61fb9ee213ea6999e0867c7b67a5ca9005d70d07072fbe003c2ad867483b75427a71542764a9d6a8f58accd6605bbc10cd9a74b93','qdatvirgo1@gmail.com','9738781041',1,'1990-08-31','2641 Euclid Avenue',NULL,NULL,NULL,1,NULL,'2023-02-15 14:25:20',NULL,'2023-02-15 14:25:20');
+(11,0,'qdatvirgo@gmail.com','','8f3633d9970f51a509728be61fb9ee213ea6999e0867c7b67a5ca9005d70d07072fbe003c2ad867483b75427a71542764a9d6a8f58accd6605bbc10cd9a74b93','qdatvirgo1@gmail.com','9738781041',1,'1990-08-31','2641 Euclid Avenue',NULL,NULL,NULL,1,NULL,'2023-02-15 14:25:20',2,'2023-02-15 14:25:20');
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
