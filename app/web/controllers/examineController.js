@@ -10,7 +10,7 @@ router.get('/', function(req, res) {
         if (!req.user) {
             return res.redirect('/user/login');
         }
-        webService.createSideBarFilter(req, 2).then(function(filter){
+        webService.createSideBarFilter(req, 1).then(function(filter){
             var str_errors  = filter.error,
                 arrPromise  = [],
                 pageview    = [],
@@ -110,55 +110,67 @@ router.get('/edit/:id', function(req, res, next) {
             str_errors       = [],
             resultData       = {
                 filter: [],
-                detailArticle: {
-                    status: [],
-                    article: [],
-                    version: 0
-                }
+                detailExamine: {}
             };
-        arrPromise.push(webService.createSideBarFilter(req, 2).then(function(dataFilter) {
+        arrPromise.push(webService.createSideBarFilter(req, 1).then(function(dataFilter) {
             resultData.filter = dataFilter;
             if (resultData.filter.error.length > 0) {
                 str_errors = str_errors.concat(resultData.filter.error);
             }
         }));
-        arrPromise.push(articleService.getDetailArticleEdit(req.params.id).then(function(detailArticle) {
-            if (detailArticle.errors.length > 0) {
-                str_errors = str_errors.concat(detailArticle.errors);
-            }
-            if (!detailArticle.detail) {
-                str_errors.push("Không tìm thấy thông tin bài viết có mã #" + req.params.id);
-            } else {
-                if (!req.user.role_id.includes(1) && detailArticle.detail.created_by !== req.user.id) {
-                    str_errors.push("Bạn không có quyền truy cập thông tin bài #" + req.params.id);
+        arrPromise.push(examineService.getDetailExamineById(req.params.id).then(function(detailExamine) {
+            if (detailExamine.success) {
+                if(detailExamine.data.length == 0){
+                    str_errors.push("Không tìm thấy thông tin bài viết có mã #" + req.params.id);
+                }else{
+                    if (!req.user.role_id.includes(1) && !req.user.role_id.includes(2)){
+                        //Nếu là quản lý xem toàn viện
+                        if(req.user.role_id.includes(5) && req.user.hospital_id !== detailExamine.data[0].hospital_id){
+                            str_errors.push("Bạn không có quyền truy cập thông tin bài #" + req.params.id);
+                        }else if(req.user.role_id.includes(4) && req.user.department_id !== detailExamine.data[0].department_id){
+                            //Nếu là bác sĩ xem theo khoa
+                            str_errors.push("Bạn không có quyền truy cập thông tin bài #" + req.params.id);
+                        }else if(!(req.user.role_id.includes(2) && (req.user.phone == detailExamine.data[0].cus_phone || req.user.email == detailExamine.data[0].cus_email))){
+                            //Nếu là bệnh nhân xem theo số điện thoại hoặc email
+                            str_errors.push("Bạn không có quyền truy cập thông tin bài #" + req.params.id);
+                        }
+                    }
+                    resultData.detailExamine = detailExamine.data[0];
+                    console.log("id", resultData.detailExamine);
                 }
-                resultData.detailArticle.status  = detailArticle.detail.search_status;
-                
+            }else{
+                str_errors = str_errors.push(detailExamine.message);
             }
         }));
 
         return new Promise(function(resolve, reject) {
             Promise.all(arrPromise).then(function() {
-                res.render("examine/" + page_name + ".ejs", {
+                res.render("examine/create.ejs", {
                     moment: moment,
                     user: req.user,
                     errors: str_errors,
-                    filter: resultData.filter
+                    filter: resultData.filter,
+                    examine: resultData.detailExamine,
+                    page:'edit'
                 });
             }).catch(err => {
-                res.render("examine/detail.ejs", {
+                res.render("examine/create.ejs", {
                     user: req.user,
                     errors: [err],
-                    filter: resultData.filter
+                    filter: resultData.filter,
+                    examine: {},
+                    page:'edit'
                 });
             });
         });
     } catch (e) {
-        webService.createSideBarFilter(req, 2).then(function(dataFilter) {
-            res.render("examine/detail.ejs", {
+        webService.createSideBarFilter(req, 1).then(function(dataFilter) {
+            res.render("examine/create.ejs", {
                 user: req.user,
                 errors: [e.message],
-                filter: dataFilter
+                filter: dataFilter,
+                examine: {},
+                page:'edit'
             });
         })
     }
@@ -175,7 +187,7 @@ router.get('/create', function(req, res, next) {
                 filter: []
             };
 
-        arrPromise.push(webService.createSideBarFilter(req, 2).then(function(dataFilter) {
+        arrPromise.push(webService.createSideBarFilter(req, 1).then(function(dataFilter) {
             resultData.filter = dataFilter;
             if (resultData.filter.error.length > 0) {
                 str_errors = str_errors.concat(resultData.filter.error);
@@ -188,13 +200,17 @@ router.get('/create', function(req, res, next) {
                     user: req.user,
                     errors: str_errors,
                     filter: resultData.filter,
-                    moment: moment
+                    moment: moment,
+                    page:'create',
+                    examine:{}
                 });
             }).catch(err => {
                 res.render("examine/create.ejs", {
                     user: req.user,
                     errors: [err],
-                    filter: resultData.filter
+                    filter: resultData.filter,
+                    page:'create',
+                    examine: {}
                 });
             });
         });
@@ -204,7 +220,8 @@ router.get('/create', function(req, res, next) {
                 user: req.user,
                 errors: [e.message],
                 filter: dataFilter,
-                title: e.message,
+                page:'create',
+                examine:{}
             });
         })
     }
@@ -256,6 +273,7 @@ router.post('/create', function(req, res, next) {
                 cus_cseomong:           req.body.cus_cseomong,
                 active_mode_of_living:  req.body.active_mode_of_living,
                 department_id:          req.user.department_id,
+                status:                 1,
                 created_by:             req.user.id
             };
         
@@ -274,29 +292,37 @@ router.post('/create', function(req, res, next) {
             return;
         } else {
             parameter.cus_birthday = parameter.cus_birthday.split("-").reverse().join("-");
-            webService.addRecordTable( parameter, 'examine').then(responseData =>{
-                if(!responseData.success){
-                    resultData.message = responseData.message;
-                    logService.create(req, responseData.message);
+            webService.createCountId(req.user.hospital_id).then(success =>{
+                if(success.success && success.id_count){
+                    parameter['count_id'] = success.id_count;
+                    webService.addRecordTable( parameter, 'examine').then(responseData =>{
+                        if(!responseData.success){
+                            resultData.message = responseData.message;
+                            logService.create(req, responseData.message);
+                        }else{
+                            resultData.success = true;
+                            resultData.message = "Lưu phiếu khám thành công!";
+                        }
+                        res.json(resultData);
+                    });
                 }else{
-                    resultData.success = true;
-                    resultData.message = "Lưu phiếu khám thành công!";
+                    res.json(resultData);
+                    return;
                 }
-                res.json(resultData);
             });
             // Them khach hang vao database
+            let paramCustomer = {
+                cus_name:      parameter.cus_name,
+                cus_phone:     parameter.cus_phone,
+                cus_email:     parameter.cus_email,
+                cus_gender:    parameter.cus_gender,
+                cus_birthday:  parameter.cus_birthday,
+                cus_address:   parameter.cus_address,
+                department_id: parameter.department_id 
+            };
             if(parameter.cus_phone){
                 let sqlFindCustomer = 'SELECT * FROM customer WHERE cus_phone = ?';
                 webService.getListTable(sqlFindCustomer ,[parameter.cus_phone]).then(responseData1 =>{
-                    let paramCustomer = {
-                        cus_name:      parameter.cus_name,
-                        cus_phone:     parameter.cus_phone,
-                        cus_email:     parameter.cus_email,
-                        cus_gender:    parameter.cus_gender,
-                        cus_birthday:  parameter.cus_birthday,
-                        cus_address:   parameter.cus_address,
-                        department_id: parameter.department_id 
-                    };
                     if(responseData1.data && responseData1.data.length > 0){
                         let customerData = responseData1.data;
                         if(paramCustomer.cus_name !== customerData.cus_name || paramCustomer.cus_gender !== customerData.cus_gender || paramCustomer.cus_birthday !== customerData.cus_birthday){
@@ -336,6 +362,92 @@ router.post('/create', function(req, res, next) {
                     }
                 });
             }
+            return;
+        }
+    } catch (e) {
+        logService.create(req, e.message).then(function() {
+            resultData.message = e.message;
+            res.json(resultData);
+        });
+    }
+});
+
+router.post('/edit/:id', function(req, res, next) {
+    var resultData = {
+        success: false,
+        message: "",
+        data: ''
+    };
+    try {
+        if (!req.user) {
+            resultData.message = "Vui lòng đăng nhập lại để thực hiện chức năng này!";
+            res.json(resultData);
+            return;
+        }
+        console.log("edit", req.body);
+        var str_errors   = [],
+            parameter    = {
+                cus_name:               req.body.cus_name,
+                cus_phone:              req.body.cus_phone,
+                cus_email:              req.body.cus_email,
+                cus_gender:             req.body.cus_gender,
+                cus_birthday:           req.body.cus_birthday,
+                cus_address:            req.body.cus_address,
+                diagnostic:             req.body.diagnostic,
+                cus_length:             req.body.cus_length,
+                cus_cntc:               req.body.cus_cntc,
+                cus_cnht:               req.body.cus_cnht,
+                cus_bmi:                req.body.cus_bmi,
+                clinical_examination:   req.body.clinical_examination,
+                erythrocytes:           req.body.erythrocytes,
+                cus_bc:                 req.body.cus_bc,
+                cus_tc:                 req.body.cus_tc,
+                cus_albumin:            req.body.cus_albumin,
+                cus_nakcl:              req.body.cus_nakcl,
+                cus_astaltggt:          req.body.cus_astaltggt,
+                cus_urecreatinin:       req.body.cus_urecreatinin,
+                cus_bilirubin:          req.body.cus_bilirubin,
+                exa_note:               req.body.exa_note,
+                cus_fat:                req.body.cus_fat,
+                cus_water:              req.body.cus_water,
+                cus_visceral_fat:       req.body.cus_visceral_fat,
+                cus_bone_weight:        req.body.cus_bone_weight,
+                cus_chcb:               req.body.cus_chcb,
+                cus_waist:              req.body.cus_waist,
+                cus_butt:               req.body.cus_butt,
+                cus_cseomong:           req.body.cus_cseomong,
+                active_mode_of_living:  req.body.active_mode_of_living,
+                department_id:          req.user.department_id,
+                status:                 1,
+                created_by:             req.user.id
+            };
+        
+        if(!parameter.cus_name){
+            str_errors.push("Thiếu họ tên!");
+        }
+        if(!parameter.cus_gender){
+            str_errors.push("Thiếu giới tính!");
+        }
+        if(!parameter.cus_birthday){
+            str_errors.push("Thiếu ngày sinh!");
+        }
+        if (str_errors.length > 0) {
+            resultData.message = str_errors.toString();
+            res.json(resultData);
+            return;
+        } else {
+            parameter.cus_birthday = parameter.cus_birthday.split("-").reverse().join("-");
+
+            webService.updateRecordTable( parameter, {id:req.params.id},'examine').then(responseData =>{
+                if(!responseData.success){
+                    resultData.message = responseData.message;
+                    logService.create(req, responseData.message);
+                }else{
+                    resultData.success = true;
+                    resultData.message = "Lưu phiếu khám thành công!";
+                }
+                res.json(resultData);
+            });
             return;
         }
     } catch (e) {

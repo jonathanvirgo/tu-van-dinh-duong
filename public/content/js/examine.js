@@ -1,6 +1,8 @@
 let dataExamine = {
     tab: 1,
-    examine: {}
+    examine: {},
+    page: 'create',
+    id_examine: ''
 };
 
 const numberFormat = new Intl.NumberFormat();
@@ -77,9 +79,12 @@ function saveExamine(){
         let loading         = $("#loading-page");
         changeTabExamine(dataExamine.tab);
         console.log("saveExamine", dataExamine.examine);
+        let url = '/examine/create';
+        if(dataExamine.page == 'edit')  url = '/examine/edit/' + dataExamine.id_examine;
+        console.log("saveExamine", url);
         $.ajax({
             type: 'POST',
-            url: '/examine/create',
+            url: url,
             data: dataExamine.examine,
             beforeSend: function() {
                 loading.show();

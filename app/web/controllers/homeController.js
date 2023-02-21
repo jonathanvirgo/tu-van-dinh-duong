@@ -4,23 +4,20 @@ var express         = require('express'),
     request         = require('request'),
     url             = require('url'),
     logService      = require('../../admin/models/logModel'),
-    webService      = require('./../models/webModel');
+    webService      = require('./../models/webModel'),
+    examineService  = require('./../models/examineModel');
 
 router.get('/', function(req, res) {
     try {
         if (!req.user) {
             return res.redirect('/user/login');
         }
-        webService.createSideBarFilter(req, 3, 5).then(function(filter){
+        webService.createSideBarFilter(req, 0, 5).then(function(filter){
             var str_errors   = filter.error,
                 datesRange   = getDatesRangeArray(filter.search.fromdate, filter.search.todate),
-                websites     = [],
                 arrPromise   = [],
-                pageview     = [],
-                listArticle  = [],
-                listBooking  = [],
-                countBooking = 0,
-                countArticle = 0,
+                listExamine  = [],
+                countExamine = 0,
                 chartNews    = {
                     datetime:[],
                     label: [],
@@ -30,33 +27,54 @@ router.get('/', function(req, res) {
                     max_pageview: 0
                 },
                 statsByStatus = {
-                    post_2: 0,
-                    post_1: 0,
                     post1: 0,
                     post2: 0,
                     post3: 0,
-                    post4: 0,
-                    post5: 0,
-                    post6: 0,
-                    post7: 0
+                    post4: 0
                 };
+            arrPromise.push(new Promise(function (resolve, reject) {
+                examineService.countAllExamine({search: filter.search, filter: false}, function (err, result, fields) {
+                    if (err) {
+                        return logService.create(req, err).then(function(){
+                            str_errors.push(err.sqlMessage);
+                            resolve();
+                        });
+                    }
+                    if (result !== undefined) {
+                        countExamine = result[0].count;
+                    }
+                    resolve();
+                });
+            }));
+
+            arrPromise.push(new Promise(function (resolve, reject) {
+                examineService.getAllExamine({search: filter.search, filter: false}, function (err, result, fields) {
+                    if (err) {
+                        return logService.create(req, err).then(function(){
+                            str_errors.push(err.sqlMessage);
+                            resolve();
+                        });
+                    }
+                    if (result !== undefined) {
+                        listExamine = result;
+                    }
+                    resolve();
+                });
+            }));
 
             return new Promise(function (resolve, reject) {
+                console.log("abc", webService.getExamineStatusOption());
                 Promise.all(arrPromise).then(function () {
                     res.render('home/index.ejs', { 
                         user: req.user,
                         errors: str_errors,
-                        listArticle: listArticle,
-                        countArticle: countArticle,
-                        listBooking: listBooking,
-                        countBooking: countBooking,
+                        listExamine: listExamine,
+                        countExamine: countExamine,
                         moment: moment,
                         webService: webService,
                         filter: filter,
                         chartNews: chartNews,
-                        statsByStatus: statsByStatus,
-                        websites: websites,
-                        article_status: webService.getBookingStatusOption(2)
+                        statsByStatus: statsByStatus
                     });
                 }).catch(err => {
                     res.render("home/index.ejs", {
@@ -68,7 +86,7 @@ router.get('/', function(req, res) {
             });
         });
     } catch (e) {
-        webService.createSideBarFilter(req, 1).then(function(dataFilter) {
+        webService.createSideBarFilter(req, 0).then(function(dataFilter) {
             res.render("home/index.ejs", {
                 user: req.user,
                 errors: [e.message],
@@ -148,7 +166,7 @@ router.get('/search', function(req, res) {
                             paginatorBooking.prevPage    = filter.requestUri + '&paging_type=2&page=' + (paginatorBooking.page - 1);
                         }
                     }
-                    res.render('search/index.ejs', { 
+                    res.render('home/index.ejs', { 
                         user: req.user,
                         errors: str_errors,
                         listArticle: listArticle,
@@ -160,7 +178,7 @@ router.get('/search', function(req, res) {
                         paginatorArticle: paginatorArticle
                     });
                 }).catch(err => {
-                    res.render("search/index.ejs", {
+                    res.render("home/index.ejs", {
                         user: req.user,
                         errors: [err],
                         filter: filter,
@@ -169,7 +187,7 @@ router.get('/search', function(req, res) {
             });
         });
     } catch (e) {
-        webService.createSideBarFilter(req, 1).then(function(dataFilter) {
+        webService.createSideBarFilter(req, 0).then(function(dataFilter) {
             res.render("search/index.ejs", {
                 user: req.user,
                 errors: [e.message]
@@ -183,7 +201,7 @@ router.get('/lien-he', function(req, res) {
         if (!req.user) {
             return res.redirect('/user/login');
         }
-        webService.createSideBarFilter(req, 2).then(function(filter){
+        webService.createSideBarFilter(req, 0).then(function(filter){
             var str_errors   = filter.error,
                 arrPromise   = [];
 

@@ -34,8 +34,9 @@ module.exports = function(passport) {
                     detailUser.email      = resUser[0].email;
                     detailUser.full_name  = resUser[0].full_name;
                     detailUser.phone      = resUser[0].phone;
-                    detailUser.department_id = resUser[0].department_id;
+                    detailUser.department_id   = resUser[0].department_id;
                     detailUser.department_name = resUser[0].department_name;
+                    detailUser.hospital_id     = resUser[0].hospital_id;
                     detailUser.hospital_name   = resUser[0].hospital_name;
                 }
                 resolve();

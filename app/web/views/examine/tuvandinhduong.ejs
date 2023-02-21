@@ -5,7 +5,7 @@
             <label class="col-form-label col-md-auto fw-bold mt-2 form-label-large" for="cus_fat">Tỉ lệ mỡ</label>
             <div class="col-form-body col-md">
                 <div class="form-control-has-addon">
-                    <input type="text" name="cus_fat" class="form-control form-control-title" id="cus_fat" placeholder="Tỉ lệ mỡ">
+                    <input type="text" name="cus_fat" class="form-control form-control-title" id="cus_fat" placeholder="Tỉ lệ mỡ" value="<%= examine.cus_fat%>">
                     <button class="btn form-control-addon btn-link p-0 min-h-auto" type="button" onclick="clearInput('#cus_fat')">
                         <svg class="iconsvg-close">
                             <use xlink:href="/public/content/images/sprite.svg#close"></use>
@@ -18,7 +18,7 @@
             <label class="col-form-label col-md-auto fw-bold mt-2" for="cus_water">Tỉ lệ nước</label>
             <div class="col-form-body col-md">
                 <div class="form-control-has-addon">
-                    <input type="text" name="cus_water" class="form-control form-control-title" id="cus_water" placeholder="Tỉ lệ nước">
+                    <input type="text" name="cus_water" class="form-control form-control-title" id="cus_water" placeholder="Tỉ lệ nước" value="<%= examine.cus_water%>">
                     <button class="btn form-control-addon btn-link p-0 min-h-auto" type="button" onclick="clearInput('#cus_water')">
                         <svg class="iconsvg-close">
                             <use xlink:href="/public/content/images/sprite.svg#close"></use>
@@ -31,7 +31,7 @@
             <label class="col-form-label col-md-auto fw-bold mt-2" for="cus_visceral_fat">Mỡ nội tạng</label>
             <div class="col-form-body col-md">
                 <div class="form-control-has-addon">
-                    <input type="text" name="cus_visceral_fat" class="form-control form-control-title" id="cus_visceral_fat" placeholder="Mỡ nội tạng">
+                    <input type="text" name="cus_visceral_fat" class="form-control form-control-title" id="cus_visceral_fat" placeholder="Mỡ nội tạng" value="<%= examine.cus_visceral_fat%>">
                     <button class="btn form-control-addon btn-link p-0 min-h-auto" type="button" onclick="clearInput('#cus_visceral_fat')">
                         <svg class="iconsvg-close">
                             <use xlink:href="/public/content/images/sprite.svg#close"></use>
@@ -44,7 +44,7 @@
             <label class="col-form-label col-md-auto fw-bold mt-2" for="cus_bone_weight">Cân nặng xương</label>
             <div class="col-form-body col-md">
                 <div class="form-control-has-addon">
-                    <input type="text" name="cus_bone_weight" class="form-control form-control-title" id="cus_bone_weight" placeholder="Cân nặng xương">
+                    <input type="text" name="cus_bone_weight" class="form-control form-control-title" id="cus_bone_weight" placeholder="Cân nặng xương" value="<%= examine.cus_bone_weight%>">
                     <button class="btn form-control-addon btn-link p-0 min-h-auto" type="button" onclick="clearInput('#cus_bone_weight')">
                         <svg class="iconsvg-close">
                             <use xlink:href="/public/content/images/sprite.svg#close"></use>
@@ -59,7 +59,7 @@
             <label class="col-form-label col-md-auto fw-bold mt-2 form-label-large" for="cus_chcb">CHCB (kcal)</label>
             <div class="col-form-body col-md">
                 <div class="form-control-has-addon">
-                    <input type="text" name="cus_chcb" class="form-control form-control-title" id="cus_chcb" placeholder="CHCB (kcal)">
+                    <input type="text" name="cus_chcb" class="form-control form-control-title" id="cus_chcb" placeholder="CHCB (kcal)" value="<%= examine.cus_chcb%>">
                     <button class="btn form-control-addon btn-link p-0 min-h-auto" type="button" onclick="clearInput('#cus_chcb')">
                         <svg class="iconsvg-close">
                             <use xlink:href="/public/content/images/sprite.svg#close"></use>
@@ -72,7 +72,7 @@
             <label class="col-form-label col-md-auto fw-bold mt-2" for="cus_waist">Vòng eo</label>
             <div class="col-form-body col-md">
                 <div class="form-control-has-addon">
-                    <input type="text" name="cus_waist" class="form-control form-control-title" id="cus_waist" placeholder="Vòng eo">
+                    <input type="text" name="cus_waist" class="form-control form-control-title" id="cus_waist" placeholder="Vòng eo" value="<%= examine.cus_waist%>">
                     <button class="btn form-control-addon btn-link p-0 min-h-auto" type="button" onclick="clearInput('#cus_waist')">
                         <svg class="iconsvg-close">
                             <use xlink:href="/public/content/images/sprite.svg#close"></use>
@@ -85,7 +85,7 @@
             <label class="col-form-label col-md-auto fw-bold mt-2" for="cus_butt">Vòng mông</label>
             <div class="col-form-body col-md">
                 <div class="form-control-has-addon">
-                    <input type="text" name="cus_butt" class="form-control form-control-title" id="cus_butt" placeholder="Vòng mông">
+                    <input type="text" name="cus_butt" class="form-control form-control-title" id="cus_butt" placeholder="Vòng mông" value="<%= examine.cus_butt%>">
                     <button class="btn form-control-addon btn-link p-0 min-h-auto" type="button" onclick="clearInput('#cus_butt')">
                         <svg class="iconsvg-close">
                             <use xlink:href="/public/content/images/sprite.svg#close"></use>
@@ -98,7 +98,7 @@
             <label class="col-form-label col-md-auto fw-bold mt-2" for="cus_cseomong">Cs eo/mông</label>
             <div class="col-form-body col-md">
                 <div class="form-control-has-addon">
-                    <input type="text" name="cus_cseomong" class="form-control form-control-title" id="cus_cseomong" placeholder="Cs eo/mông">
+                    <input type="text" name="cus_cseomong" class="form-control form-control-title" id="cus_cseomong" placeholder="Cs eo/mông" value="<%= examine.cus_cseomong%>">
                     <button class="btn form-control-addon btn-link p-0 min-h-auto" type="button" onclick="clearInput('#cus_cseomong')">
                         <svg class="iconsvg-close">
                             <use xlink:href="/public/content/images/sprite.svg#close"></use>
@@ -145,7 +145,7 @@
     <div class="row">
         <div class="col-form-body col-md">
             <div class="form-control-has-addon">
-                <textarea class="form-control" id="active_mode_of_living" placeholder="Chế độ vận động sinh hoạt" name="active_mode_of_living"></textarea>
+                <textarea class="form-control" id="active_mode_of_living" placeholder="Chế độ vận động sinh hoạt" name="active_mode_of_living"><%= examine.active_mode_of_living%></textarea>
                 <button class="btn form-control-addon btn-link p-0 min-h-auto" type="button" onclick="clearInput('#active_mode_of_living')">
                     <svg class="iconsvg-close">
                     <use xlink:href="/public/content/images/sprite.svg#close"></use>

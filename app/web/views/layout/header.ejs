@@ -15,7 +15,24 @@
       </div>
       <form action="/search" method="get" id="search_filter">
         <div class="row">
-          <div class="search-body">
+          <div id="hospital_filter" class="col-lg-auto">
+            <div id="hospital_select"></div>
+          </div>
+          <div class="col-lg-auto">
+            <div id="status_filter">
+              <div id="status_select"></div>
+            </div>
+          </div>
+          <div class="col-lg-auto">
+            <div class="flatpickr flatpickr-range" data-options='{"mode":"range"}' data-plugin="flatpickr" id="header-flatpickr" data-parent="#header-flatpickr">
+              <% if (!filter.search.fromdate){%>
+              <input class="form-control" id="sfilter_date" type="text" placeholder="Thời gian" value="" data-input="data-input" aria-label="Thời gian" />
+              <%} else {%>
+              <input class="form-control" id="sfilter_date" type="text" placeholder="Thời gian" value="<%=filter.search.fromdate%> - <%=filter.search.todate%>" data-input="data-input" aria-label="Thời gian" />
+              <%}%>
+            </div>
+          </div>
+          <div class="col-lg">
             <div class="search">
               <input class="form-control search-input" id="sfilter_keyword" name="keyword" type="text" placeholder="Nhập từ khoá tìm kiếm" aria-label="Nhập từ khoá tìm kiếm" value="<%=filter.search.keyword%>"" />
               <button class="btn search-btn" type="submit">
@@ -62,6 +79,40 @@
   </div>
 </header>
 <script type="text/javascript">
+  VirtualSelect.init({
+    ele: '#hospital_select',
+    options: <%- JSON.stringify(filter.hospitals) %>,
+    dropboxWrapper: '#hospital_filter',
+    placeholder: 'Bệnh viện',
+    search: false,
+    multiple: true,
+    additionalClasses: 'vscomp-status website-status',
+    showDropboxAsPopup: false,
+    selectAllText: 'Chọn tất cả',
+    optionsSelectedText: 'Lựa chọn',
+    allOptionsSelectedText: 'Tất cả',
+    <% if(filter.search.hospital_ids != ''){%>
+    selectedValue: <%- JSON.stringify(filter.hospitalIds) %>
+    <%}%>
+  });
+
+  VirtualSelect.init({
+    ele: '#status_select',
+    options: <%- JSON.stringify(filter.listStatus.data) %>,
+    dropboxWrapper: '#status_filter',
+    placeholder: 'Trạng thái',
+    search: false,
+    multiple: true,
+    additionalClasses: 'vscomp-status website-status',
+    showDropboxAsPopup: false,
+    selectAllText: 'Chọn tất cả',
+    optionsSelectedText: 'Lựa chọn',
+    allOptionsSelectedText: 'Tất cả',
+    <% if(filter.search.status_ids != ''){%>
+      selectedValue: <%- JSON.stringify(filter.statusIds) %>
+    <%}%>
+  });
+
   $(document).ready(function () {
     $("#search_filter #sfilter_keyword").keyup(function() {
       if(parseInt($("#search_filter #sfilter_keyword").val()) !== ""){

@@ -7,7 +7,7 @@
             </label>
             <div class="col-form-body col-md">
                 <div class="form-control-has-addon">
-                    <input type="text" name="cus_name" class="form-control form-control-title" id="cus_name" placeholder="Họ và tên">
+                    <input type="text" name="cus_name" class="form-control form-control-title" id="cus_name" placeholder="Họ và tên" value="<%= examine.cus_name%>">
                     <button class="btn form-control-addon btn-link p-0 min-h-auto" type="button" onclick="clearInput('#cus_name')">
                         <svg class="iconsvg-close">
                             <use xlink:href="/public/content/images/sprite.svg#close"></use>
@@ -22,7 +22,7 @@
             </label>
             <div class="col-form-body col-md">
                 <div class="form-control-has-addon">
-                    <input type="text" name="cus_phone" class="form-control form-control-title" id="cus_phone" placeholder="Tìm kiếm theo số điện thoại">
+                    <input type="text" name="cus_phone" class="form-control form-control-title" id="cus_phone" placeholder="Tìm kiếm theo số điện thoại" value="<%= examine.cus_phone%>">
                     <button class="btn form-control-addon btn-link p-0 min-h-auto" type="button" onclick="clearInput('#cus_phone')">
                         <svg class="iconsvg-close">
                             <use xlink:href="/public/content/images/sprite.svg#close"></use>
@@ -41,9 +41,9 @@
                 <div class="form-control-has-addon">
                     <select class="form-select" name="cus_gender" id="cus_gender" data-plugin="select2" data-placeholder="Giới tính" data-minimum-results-for-search="Infinity">
                         <option></option>
-                        <option value="1">Nam</option>
-                        <option value="0">Nữ</option>
-                        <option value="0">Khác</option>
+                        <option value="1" <%=examine.cus_gender == '1' ? 'selected' : ''%>>Nam</option>
+                        <option value="0" <%=examine.cus_gender == '0' ? 'selected' : ''%>>Nữ</option>
+                        <option value="2" <%=examine.cus_gender == '2' ? 'selected' : ''%>>Khác</option>
                       </select>
                 </div>
             </div>
@@ -55,7 +55,7 @@
                 </label>
                 <div class="col-form-body col-md">
                     <div class="form-control-has-addon">
-                        <input type="text" name="cus_birthday" class="form-control form-control-title p-1" id="cus_birthday" placeholder="Ngày sinh">
+                        <input type="text" name="cus_birthday" class="form-control form-control-title p-1" id="cus_birthday" placeholder="Ngày sinh" value="<%=moment(examine.cus_birthday).format('DD-MM-YYYY')%>">
                     </div>
                 </div>
             </div>
@@ -81,7 +81,7 @@
             </label>
             <div class="col-form-body col-md">
                 <div class="form-control-has-addon">
-                    <input type="text" name="cus_email" class="form-control form-control-title" id="cus_email" placeholder="Email">
+                    <input type="text" name="cus_email" class="form-control form-control-title" id="cus_email" placeholder="Email" value="<%= examine.cus_email%>">
                     <button class="btn form-control-addon btn-link p-0 min-h-auto" type="button" onclick="clearInput('#cus_email')">
                         <svg class="iconsvg-close">
                             <use xlink:href="/public/content/images/sprite.svg#close"></use>
@@ -97,7 +97,7 @@
 	  </label>
 	  <div class="col-form-body col-md">
         <div class="form-control-has-addon">
-            <textarea class="form-control" id="cus_address" placeholder="Nhập địa chỉ" name="cus_address"></textarea>
+            <textarea class="form-control" id="cus_address" placeholder="Nhập địa chỉ" name="cus_address"><%= examine.cus_address%></textarea>
             <button class="btn form-control-addon btn-link p-0 min-h-auto" type="button" onclick="clearInput('#cus_address')">
                 <svg class="iconsvg-close">
                 <use xlink:href="/public/content/images/sprite.svg#close"></use>
@@ -112,7 +112,7 @@
         </label>
         <div class="col-form-body col-md">
           <div class="form-control-has-addon">
-              <textarea class="form-control" id="diagnostic" name="diagnostic" placeholder="Nhập chuẩn đoán"></textarea>
+              <textarea class="form-control" id="diagnostic" name="diagnostic" placeholder="Nhập chuẩn đoán"><%= examine.diagnostic%></textarea>
               <button class="btn form-control-addon btn-link p-0 min-h-auto" type="button" onclick="clearInput('#diagnostic')">
                   <svg class="iconsvg-close">
                   <use xlink:href="/public/content/images/sprite.svg#close"></use>
@@ -126,7 +126,7 @@
             <label class="col-form-label col-md-auto fw-bold mt-2" for="cus_length">Cao (m)</label>
             <div class="col-form-body col-md">
                 <div class="form-control-has-addon">
-                    <input type="text" name="cus_length" class="form-control form-control-title" id="cus_length" placeholder="Chiều cao">
+                    <input type="text" name="cus_length" class="form-control form-control-title" id="cus_length" placeholder="Chiều cao" value="<%= examine.cus_length%>">
                     <button class="btn form-control-addon btn-link p-0 min-h-auto" type="button" onclick="clearInput('#cus_length')">
                         <svg class="iconsvg-close">
                             <use xlink:href="/public/content/images/sprite.svg#close"></use>
@@ -139,7 +139,7 @@
             <label class="col-form-label col-md-auto fw-bold mt-2" for="cus_cntc">CNTC (kg)</label>
             <div class="col-form-body col-md">
                 <div class="form-control-has-addon">
-                    <input type="text" name="cus_cntc" class="form-control form-control-title" id="cus_cntc" placeholder="CNTC (kg)">
+                    <input type="text" name="cus_cntc" class="form-control form-control-title" id="cus_cntc" placeholder="CNTC (kg)" value="<%= examine.cus_cntc%>">
                     <button class="btn form-control-addon btn-link p-0 min-h-auto" type="button" onclick="clearInput('#cus_cntc')">
                         <svg class="iconsvg-close">
                             <use xlink:href="/public/content/images/sprite.svg#close"></use>
@@ -152,7 +152,7 @@
             <label class="col-form-label col-md-auto fw-bold mt-2" for="cus_cnht">CNHT (kg)</label>
             <div class="col-form-body col-md">
                 <div class="form-control-has-addon">
-                    <input type="text" name="cus_cnht" class="form-control form-control-title" id="cus_cnht" placeholder="CNHT (kg)">
+                    <input type="text" name="cus_cnht" class="form-control form-control-title" id="cus_cnht" placeholder="CNHT (kg)" value="<%= examine.cus_cnht%>">
                     <button class="btn form-control-addon btn-link p-0 min-h-auto" type="button" onclick="clearInput('#cus_cnht')">
                         <svg class="iconsvg-close">
                             <use xlink:href="/public/content/images/sprite.svg#close"></use>
@@ -165,7 +165,7 @@
             <label class="col-form-label col-md-auto fw-bold mt-2" for="cus_bmi">BMI</label>
             <div class="col-form-body col-md">
                 <div class="form-control-has-addon">
-                    <input type="text" name="cus_bmi" class="form-control form-control-title" id="cus_bmi" placeholder="BMI">
+                    <input type="text" name="cus_bmi" class="form-control form-control-title" id="cus_bmi" placeholder="BMI" value="<%= examine.cus_bmi%>">
                     <button class="btn form-control-addon btn-link p-0 min-h-auto" type="button" onclick="clearInput('#cus_bmi')">
                         <svg class="iconsvg-close">
                             <use xlink:href="/public/content/images/sprite.svg#close"></use>
@@ -179,7 +179,7 @@
     <div class="row">
         <div class="col-form-body col-md">
             <div class="form-control-has-addon">
-                <textarea class="form-control" id="clinical_examination" placeholder="Thông tin khám lâm sàng" name="clinical_examination"></textarea>
+                <textarea class="form-control" id="clinical_examination" placeholder="Thông tin khám lâm sàng" name="clinical_examination"><%= examine.clinical_examination%></textarea>
                 <button class="btn form-control-addon btn-link p-0 min-h-auto" type="button" onclick="clearInput('#clinical_examination')">
                     <svg class="iconsvg-close">
                     <use xlink:href="/public/content/images/sprite.svg#close"></use>
@@ -194,7 +194,7 @@
             <label class="col-form-label col-md-auto fw-bold mt-2 form-label-large" for="erythrocytes">Hồng cầu (T/L)</label>
             <div class="col-form-body col-md">
                 <div class="form-control-has-addon">
-                    <input type="text" name="erythrocytes" class="form-control form-control-title" id="erythrocytes" placeholder="Hồng cầu">
+                    <input type="text" name="erythrocytes" class="form-control form-control-title" id="erythrocytes" placeholder="Hồng cầu" value="<%= examine.erythrocytes%>">
                     <button class="btn form-control-addon btn-link p-0 min-h-auto" type="button" onclick="clearInput('#erythrocytes')">
                         <svg class="iconsvg-close">
                             <use xlink:href="/public/content/images/sprite.svg#close"></use>
@@ -207,7 +207,7 @@
             <label class="col-form-label col-md-auto fw-bold mt-2" for="cus_bc">BC (G/L)</label>
             <div class="col-form-body col-md">
                 <div class="form-control-has-addon">
-                    <input type="text" name="cus_bc" class="form-control form-control-title" id="cus_bc" placeholder="BC (G/L)">
+                    <input type="text" name="cus_bc" class="form-control form-control-title" id="cus_bc" placeholder="BC (G/L)" value="<%= examine.cus_bc%>">
                     <button class="btn form-control-addon btn-link p-0 min-h-auto" type="button" onclick="clearInput('#cus_bc')">
                         <svg class="iconsvg-close">
                             <use xlink:href="/public/content/images/sprite.svg#close"></use>
@@ -220,7 +220,7 @@
             <label class="col-form-label col-md-auto fw-bold mt-2" for="cus_tc">TC (T/L)</label>
             <div class="col-form-body col-md">
                 <div class="form-control-has-addon">
-                    <input type="text" name="cus_tc" class="form-control form-control-title" id="cus_tc" placeholder="TC (T/L)">
+                    <input type="text" name="cus_tc" class="form-control form-control-title" id="cus_tc" placeholder="TC (T/L)" value="<%= examine.cus_tc%>">
                     <button class="btn form-control-addon btn-link p-0 min-h-auto" type="button" onclick="clearInput('#cus_tc')">
                         <svg class="iconsvg-close">
                             <use xlink:href="/public/content/images/sprite.svg#close"></use>
@@ -235,7 +235,7 @@
             <label class="col-form-label col-md-auto fw-bold mt-2 form-label-large" for="cus_albumin">Albumin (G/L)</label>
             <div class="col-form-body col-md">
                 <div class="form-control-has-addon">
-                    <input type="text" name="cus_albumin" class="form-control form-control-title" id="cus_albumin" placeholder="Albumin (G/L)">
+                    <input type="text" name="cus_albumin" class="form-control form-control-title" id="cus_albumin" placeholder="Albumin (G/L)" value="<%= examine.cus_albumin%>">
                     <button class="btn form-control-addon btn-link p-0 min-h-auto" type="button" onclick="clearInput('#cus_albumin')">
                         <svg class="iconsvg-close">
                             <use xlink:href="/public/content/images/sprite.svg#close"></use>
@@ -248,7 +248,7 @@
             <label class="col-form-label col-md-auto fw-bold mt-2" for="cus_nakcl">Na+/K+/Cl-</label>
             <div class="col-form-body col-md">
                 <div class="form-control-has-addon">
-                    <input type="text" name="cus_nakcl" class="form-control form-control-title" id="cus_nakcl" placeholder="Na+/K+/Cl-">
+                    <input type="text" name="cus_nakcl" class="form-control form-control-title" id="cus_nakcl" placeholder="Na+/K+/Cl-" value="<%= examine.cus_nakcl%>">
                     <button class="btn form-control-addon btn-link p-0 min-h-auto" type="button" onclick="clearInput('#cus_nakcl')">
                         <svg class="iconsvg-close">
                             <use xlink:href="/public/content/images/sprite.svg#close"></use>
@@ -263,7 +263,7 @@
             <label class="col-form-label col-md-auto fw-bold mt-2 form-label-large" for="cus_astaltggt">AST/ALT/GGT (U/L)</label>
             <div class="col-form-body col-md">
                 <div class="form-control-has-addon">
-                    <input type="text" name="cus_astaltggt" class="form-control form-control-title" id="cus_astaltggt" placeholder="AST/ALT/GGT">
+                    <input type="text" name="cus_astaltggt" class="form-control form-control-title" id="cus_astaltggt" placeholder="AST/ALT/GGT" value="<%= examine.cus_astaltggt%>">
                     <button class="btn form-control-addon btn-link p-0 min-h-auto" type="button" onclick="clearInput('#cus_astaltggt')">
                         <svg class="iconsvg-close">
                             <use xlink:href="/public/content/images/sprite.svg#close"></use>
@@ -276,7 +276,7 @@
             <label class="col-form-label col-md-auto fw-bold mt-2" for="cus_urecreatinin">Ure/Creatinin</label>
             <div class="col-form-body col-md">
                 <div class="form-control-has-addon">
-                    <input type="text" name="cus_urecreatinin" class="form-control form-control-title" id="cus_urecreatinin" placeholder="Ure/Creatinin">
+                    <input type="text" name="cus_urecreatinin" class="form-control form-control-title" id="cus_urecreatinin" placeholder="Ure/Creatinin" value="<%= examine.cus_urecreatinin%>">
                     <button class="btn form-control-addon btn-link p-0 min-h-auto" type="button" onclick="clearInput('#cus_urecreatinin')">
                         <svg class="iconsvg-close">
                             <use xlink:href="/public/content/images/sprite.svg#close"></use>
@@ -291,7 +291,7 @@
             <label class="col-form-label col-md-auto fw-bold mt-2 form-label-large" for="cus_bilirubin">Bilirubin TP/TT</label>
             <div class="col-form-body col-md">
                 <div class="form-control-has-addon">
-                    <input type="text" name="cus_bilirubin" class="form-control form-control-title" id="cus_bilirubin" placeholder="Bilirubin TP/TT">
+                    <input type="text" name="cus_bilirubin" class="form-control form-control-title" id="cus_bilirubin" placeholder="Bilirubin TP/TT" value="<%= examine.cus_bilirubin%>">
                     <button class="btn form-control-addon btn-link p-0 min-h-auto" type="button" onclick="clearInput('#cus_bilirubin')">
                         <svg class="iconsvg-close">
                             <use xlink:href="/public/content/images/sprite.svg#close"></use>
@@ -304,7 +304,7 @@
     <div class="row">
         <div class="col-form-body col-md">
             <div class="form-control-has-addon">
-                <textarea class="form-control" id="exa_note" placeholder="Ghi chú" name="exa_note"></textarea>
+                <textarea class="form-control" id="exa_note" placeholder="Ghi chú" name="exa_note"><%= examine.exa_note%></textarea>
                 <button class="btn form-control-addon btn-link p-0 min-h-auto" type="button" onclick="clearInput('#exa_note')">
                     <svg class="iconsvg-close">
                     <use xlink:href="/public/content/images/sprite.svg#close"></use>

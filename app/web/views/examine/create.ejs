@@ -64,6 +64,12 @@
                 </div>
               </div>
             </div>
+            <script>
+              $(document).ready(function() {
+                dataExamine.page = "<%=page%>";
+                dataExamine.id_examine = "<%=examine.id%>";
+              });
+            </script>
             <% } %>
          </div>
           <%- include('../layout/footer', { footer_class: ""}) %>

@@ -155,7 +155,7 @@ let webService = {
             webService.addToLogService(err, "webService createFormToken");
         }
     },
-    createSideBarFilter: function(req, type = 1, perPage = 10) {
+    createSideBarFilter: function(req, type, perPage = 10) {
         try {
             var query       = url.parse(req.url, true).query,
                 page        = isNaN(parseInt(query.page)) ? 1 : (parseInt(query.page) < 1 ? 1 : parseInt(query.page)),
@@ -169,14 +169,21 @@ let webService = {
                         todate: "",
                         keyword: query.keyword == undefined ? "" : query.keyword,
                         status_ids: query.status_ids == undefined ? "" : query.status_ids,
+                        hospital_ids: query.hospital_ids == undefined ? "" : query.hospital_ids,
                         order_by: query.order_by == undefined ? 1 : parseInt(query.order_by),
                         created_by: 0,
-                        role_ids: []
+                        role_ids: [],
+                        department_id: req.user.department_id,
+                        hospital_id: req.user.hospital_id,
+                        user_mail: req.user.email,
+                        user_phone: req.user.phone
                     },
                     requestUri: "",
-                    siteIds: [],
+                    hospitalIds: [],
                     statusIds: [],
                     error: [],
+                    hospitals: [],
+                    listStatus: webService.getExamineStatusOption()
                 };
 
             if(req.user){
@@ -656,28 +663,24 @@ let webService = {
             });
         });
     },
-    getBookingStatusOption: function(type = 1) {
+    getExamineStatusOption: function() {
         try {
             var result = {
-                value: [0,1,2,3,4,-1],
+                value: [1,2,3,4],
                 data: []
             };
-    
-            if (type != 1) {
-                result.value = [-2,5,1,2,6,7,3,4,-1];
-            }
             for (var i = 0; i < result.value.length; i++) {
                 result.data.push({
-                    label: '<span class="badge badge-'+webService.bookingStatusClass(result.value[i]).name+'">'+ webService.bookingStatusClass(result.value[i]).value +'</span>',
+                    label: '<span class="badge badge-'+webService.examineStatusClass(result.value[i]).name+'">'+ webService.examineStatusClass(result.value[i]).value +'</span>',
                     value: result.value[i]
                 });
             }
             return result;
         } catch (error) {
-            webService.addToLogService(err, "webService getBookingStatusOption");
+            webService.addToLogService(err, "webService getExamineStatusOption");
         }
     },
-    bookingStatusClass: function(status) {
+    examineStatusClass: function(status) {
         try {
             var color   = '',
                 result  = {
@@ -704,7 +707,7 @@ let webService = {
             }
             return result;
         } catch (error) {
-            webService.addToLogService(err, "webService bookingStatusClass");
+            webService.addToLogService(err, "webService examineStatusClass");
         }
     },
     addLogMail: function(result, param, is_send, sent_tries, type) {
@@ -724,32 +727,33 @@ let webService = {
             });
         });
     },
-    createCountId: function() {
+    createCountId: function(hospital_id) {
         return new Promise(function(resolve, reject) {
             let date = moment().format('DDMMYY');
             let id   = '';
-            let sqlIdCount = 'SELECT id_count FROM examine ORDER BY id DESC LIMIT 1';
-            webService.getListTable(sqlIdCount, []).then(success => {
+            let sqlIdCount = 'SELECT count_id FROM examine INNER JOIN department ON department.id = examine.department_id INNER JOIN hospital ON hospital.id = department.hospital_id WHERE hospital.id = ? ORDER BY examine.id DESC LIMIT 1';
+            webService.getListTable(sqlIdCount, [hospital_id]).then(success => {
+                console.log("sqlIdCount", success);
                 if(success.success) {
                     if (success.data.length == 0) {
-                        id = 'PK001' + date;
+                        id = '001' + String(hospital_id).padStart(2, '0') + date;
                     } else {
-                        if (success.data[0] && success.data[0].id_count) {
-                            let id_count = success.data[0].id_count;
+                        if (success.data[0] && success.data[0].count_id) {
+                            let id_count = success.data[0].count_id;
                             if (String(id_count).length >= 10) {
                                 checkDate = id_count.slice(-6);
                                 if (checkDate == date) {
-                                    let number = parseInt((id_count.slice(0, id_count.length - 6)).substring(2));
+                                    let number = parseInt((id_count.slice(0, id_count.length - 8)));
                                     number += 1;
-                                    id = "PK" + String(number).padStart(3, '0') + date;
+                                    id = String(number).padStart(3, '0') + String(hospital_id).padStart(2, '0') + date;
                                 } else {
-                                    id = 'PK001' + date;
+                                    id = '001' + String(hospital_id).padStart(2, '0') + date;
                                 }
                             } else {
-                                id = 'PK001' + date;
+                                id = '001' + String(hospital_id).padStart(2, '0') + date;
                             }
                         } else {
-                            id = 'PK001' + date;
+                            id = '001' + String(hospital_id).padStart(2, '0') + date;
                         }
                     }
                     resolve({success: true, id_count : id});

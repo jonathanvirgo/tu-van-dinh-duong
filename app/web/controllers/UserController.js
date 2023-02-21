@@ -211,7 +211,7 @@ router.get('/profile', function(req, res) {
         if (!req.user) {
             return res.redirect('/user/login');
         }
-        webService.createSideBarFilter(req, 2).then(function(filter){
+        webService.createSideBarFilter(req, 0).then(function(filter){
             var str_errors   = filter.error,
                 arrPromise   = [],
                 pr_user      = [];
@@ -249,7 +249,7 @@ router.get('/profile', function(req, res) {
             });
         });
     } catch (e) {
-        webService.createSideBarFilter(req, 1).then(function(dataFilter) {
+        webService.createSideBarFilter(req, 0).then(function(dataFilter) {
             res.render("user/profile.ejs", {
                 user: req.user,
                 errors: [e.message],

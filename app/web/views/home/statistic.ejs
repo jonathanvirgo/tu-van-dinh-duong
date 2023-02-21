@@ -1,37 +1,6 @@
 <form action="/" method="get" id="dashboard_filter">
 <div class="statistic_body">
   <div class="box-body">
-    <div class="dashboard_search">
-      <div class="row flex-grow-1">
-        <div class="col-md-auto">
-          <div id="website_filter">
-            <div id="website_select"></div>
-          </div>
-        </div>
-        <div class="col-md-auto">
-          <div id="status_filter">
-            <div id="status_select"></div>
-          </div>
-        </div>
-        <div class="col-md-auto">
-          <div class="statistic_search">
-            <div class="flatpickr flatpickr-range" data-options='{"mode":"range"}' data-plugin="flatpickr">
-              <% if (!filter.search.fromdate){%>
-              <input class="form-control" id="sfilter_date" type="text" placeholder="Thời gian" value="" data-input="data-input" aria-label="Thời gian" />
-              <%} else {%>
-              <input class="form-control" id="sfilter_date" type="text" placeholder="Thời gian" value="<%=filter.search.fromdate%> - <%=filter.search.todate%>" data-input="data-input" aria-label="Thời gian" />
-              <%}%>
-           </div>
-            <a onclick="statistic_search()" class="btn btn-danger sidebar-btn-booking">
-              <svg class="iconsvg-search">
-                <use xlink:href="/public/content/images/sprite.svg#search"></use>
-              </svg>
-              Thống kê
-            </a>
-          </div>
-        </div>
-    </div>
-    </div>
     <div class="row">
       <div class="col-xl-4">
         <div class="box box-stat">
@@ -45,8 +14,8 @@
                     <use xlink:href="/public/content/images/sprite.svg#arrow-right-circle"></use>
                   </svg>
                   <div class="stat-number">
-                    <a title="Gửi duyệt" href="/article?status_ids=5">
-                      <%=statsByStatus.post5%>
+                    <a title="Tiếp nhận" href="/article?status_ids=1">
+                      <%=statsByStatus.post1%>
                     </a>
                   </div>
                 </div>
@@ -60,8 +29,8 @@
                     <use xlink:href="/public/content/images/sprite.svg#hourglass"></use>
                   </svg>
                   <div class="stat-number">
-                    <a title="Chờ duyệt" href="/article?status_ids=1">
-                      <%=statsByStatus.post1%>
+                    <a title="Đang khám" href="/article?status_ids=2">
+                      <%=statsByStatus.post2%>
                     </a>
                   </div>
                 </div>
@@ -75,8 +44,8 @@
                     <use xlink:href="/public/content/images/sprite.svg#checkmark-circle"></use>
                   </svg>
                   <div class="stat-number">
-                    <a title="Đã duyệt" href="/article?status_ids=2">
-                      <%=statsByStatus.post2%>
+                    <a title="Hoàn thành" href="/article?status_ids=3">
+                      <%=statsByStatus.post3%>
                     </a>
                   </div>
                 </div>
@@ -90,8 +59,8 @@
                     <use xlink:href="/public/content/images/sprite.svg#x-mark-circle"></use>
                   </svg>
                   <div class="stat-number">
-                    <a title="Đã hủy" href="/article?status_ids=-1">
-                      <%=statsByStatus.post_1%>
+                    <a title="Đã hủy" href="/article?status_ids=4">
+                      <%=statsByStatus.post_4%>
                     </a>
                   </div>
                 </div>
@@ -102,7 +71,7 @@
       </div>
       <div class="col-xl-8">
         <div class="box h-100">
-          <h2 class="box-title">Biểu đồ pageview và số lượng khám</h2>
+          <h2 class="box-title">Biểu đồ số lượng khám</h2>
           <div class="box-body box-chart-body">
             <div class="box-chart text-center">
               <div id="myChartByDate" class="chart--container"></div>
@@ -146,21 +115,6 @@
                     minValue: 0,
                     step: 10
                   },
-                  scaleY2: {
-                    guide: {
-                      visible: false
-                    },
-                    label: {
-                      text: 'Số lượng Pageviews',
-                      fontSize: '13px',
-                      fontWeight: 'normal',
-                      color: '#818181',
-                      fontAngle: 270
-                    },
-                    maxValue: pageview['max_pageview'],
-                    minValue: 0,
-                    step: 10
-                  },
                   crosshairX: {
                     lineColor: '#424242',
                     lineGapSize: '4px',
@@ -196,21 +150,3 @@
   </div>
 </div>
 </form>
-<script type="text/javascript">
-  VirtualSelect.init({
-    ele: '#status_select',
-    options: <%- JSON.stringify(article_status.data) %>,
-    dropboxWrapper: '#status_filter',
-    placeholder: 'Trạng thái',
-    search: false,
-    multiple: true,
-    additionalClasses: 'vscomp-status website-status',
-    showDropboxAsPopup: false,
-    selectAllText: 'Chọn tất cả',
-    optionsSelectedText: 'Lựa chọn',
-    allOptionsSelectedText: 'Tất cả',
-    <% if(filter.search.status_ids != ''){%>
-    selectedValue: <%- JSON.stringify(filter.statusIds) %>
-    <%}%>
-  });
-</script>
