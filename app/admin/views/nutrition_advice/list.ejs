@@ -1,6 +1,6 @@
 <html lang="en">
   <head>
-    <title>Danh sách khoa</title>
+    <title>Danh sách lời khuyên</title>
     <%- include('../shared/head') %>
   </head>
   <body class="hold-transition sidebar-mini layout-fixed control-sidebar-slide-open">
@@ -9,10 +9,10 @@
       <div class="content-wrapper">
         <div class="content-header clearfix">
           <h1 class="float-left">
-            Danh sách khoa
+            Danh sách lời khuyên
           </h1>
           <div class="float-right">
-            <a href="/admin/department/create" class="btn btn-primary">
+            <a href="/admin/nutrition-advice/create" class="btn btn-primary">
                 <i class="fas fa-plus-square"></i> Thêm mới
             </a>
           </div>
@@ -55,16 +55,16 @@
                 </div>
                 <div class="card card-default">
                   <div class="card-body">
-                    <table class="table table-bordered table-hover table-striped dataTable" width=100% id="department-grid">
+                    <table class="table table-bordered table-hover table-striped dataTable" width=100% id="data-grid">
                     </table>
                     <script type="text/javascript">
                         $(document).ready(function() {
                             var loading = $("#loading-page");
-                            $("#department-grid").DataTable({
+                            $("#data-grid").DataTable({
                                 processing: !0,
                                 serverSide: !0,
                                 ajax: {
-                                    url: "/admin/department/list",
+                                    url: "/admin/nutrition-advice/list",
                                     type: "POST",
                                     dataType: "json",
                                     dataSrc: function(response){
@@ -117,7 +117,7 @@
                                     name: "refresh",
                                     text: '<i class="fas fa-sync-alt" style="padding-left: 5px"><\/i>',
                                     action: function() {
-                                        updateTable("#department-grid", !1)
+                                        updateTable("#data-grid", !1)
                                     }
                                 }],
                                 dom: "<'row'<'col-md-12't>><'row margin-t-5'<'col-lg-5 col-xs-12'<'float-lg-left'p>><'col-lg-3 col-xs-12'<'text-center'l>><'col-lg-3 col-xs-12'<'float-lg-right text-center'i>><'col-lg-1 col-xs-12'<'float-lg-right text-center data-tables-refresh'B>>>",
@@ -131,38 +131,129 @@
                                     data: "name"
                                 }, 
                                 {
-                                    title: "Phone",
+                                    title: "Glucid nên dùng",
                                     visible: !0,
                                     searchable: !1,
                                     render: function(n) {
                                         return escapeHtml(n)
                                     },
-                                    data: "phone"
+                                    data: "glucid_should_use"
                                 },
                                 {
-                                    title: "Bệnh viện",
+                                    title: "Glucid hạn chế",
                                     visible: !0,
                                     searchable: !1,
                                     render: function(n) {
                                         return escapeHtml(n)
                                     },
-                                    data: "hospital_name"
-                                },{
+                                    data: "glucid_limited_use"
+                                },
+                                {
+                                    title: "Glucid cấm",
+                                    visible: !0,
+                                    searchable: !1,
+                                    render: function(n) {
+                                        return escapeHtml(n)
+                                    },
+                                    data: "glucid_should_not_use"
+                                },
+                                {
+                                    title: "Protein nên dùng",
+                                    visible: !0,
+                                    searchable: !1,
+                                    render: function(n) {
+                                        return escapeHtml(n)
+                                    },
+                                    data: "protein_should_use"
+                                },
+                                {
+                                    title: "Protein hạn chế",
+                                    visible: !0,
+                                    searchable: !1,
+                                    render: function(n) {
+                                        return escapeHtml(n)
+                                    },
+                                    data: "protein_limited_use"
+                                },
+                                {
+                                    title: "Protein cấm",
+                                    visible: !0,
+                                    searchable: !1,
+                                    render: function(n) {
+                                        return escapeHtml(n)
+                                    },
+                                    data: "protein_should_not_use"
+                                },
+                                {
+                                    title: "Lipid nên dùng",
+                                    visible: !0,
+                                    searchable: !1,
+                                    render: function(n) {
+                                        return escapeHtml(n)
+                                    },
+                                    data: "lipid_should_use"
+                                },
+                                {
+                                    title: "Lipid hạn chế",
+                                    visible: !0,
+                                    searchable: !1,
+                                    render: function(n) {
+                                        return escapeHtml(n)
+                                    },
+                                    data: "lipid_limited_use"
+                                },
+                                {
+                                    title: "Lipid cấm",
+                                    visible: !0,
+                                    searchable: !1,
+                                    render: function(n) {
+                                        return escapeHtml(n)
+                                    },
+                                    data: "lipid_should_not_use"
+                                },
+                                {
+                                    title: "VTM & CK nên dùng",
+                                    visible: !0,
+                                    searchable: !1,
+                                    render: function(n) {
+                                        return escapeHtml(n)
+                                    },
+                                    data: "vitamin_ck_should_use"
+                                },
+                                {
+                                    title: "VTM & CK hạn chế",
+                                    visible: !0,
+                                    searchable: !1,
+                                    render: function(n) {
+                                        return escapeHtml(n)
+                                    },
+                                    data: "vitamin_ck_limited_use"
+                                },
+                                {
+                                    title: "VTM & CK cấm",
+                                    visible: !0,
+                                    searchable: !1,
+                                    render: function(n) {
+                                        return escapeHtml(n)
+                                    },
+                                    data: "vitamin_ck_should_not_use"
+                                },
+                                {
                                     title: "Sửa",
                                     width: "100",
                                     visible: !0,
                                     searchable: !1,
                                     className: "button-column",
                                     render: function(n, t, i, r) {
-                                        return '<a class="btn btn-default" href="/admin/department/edit/' + n + '"><i class="fas fa-pencil-alt"><\/i> Sửa<\/a>'
+                                        return '<a class="btn btn-default" href="/admin/nutrition-advice/edit/' + n + '"><i class="fas fa-pencil-alt"><\/i> Sửa<\/a>'
                                     },
                                     data: "id"
                                 }]
                             });
                             $("#search-button").click(function() {
-                                return $("#department-grid").DataTable().ajax.reload();
+                                return $("#data-grid").DataTable().ajax.reload();
                             });
-                            $("#department-grid").DataTable().columns.adjust();
+                            $("#data-grid").DataTable().columns.adjust();
                         })
                     </script>
                   </div>

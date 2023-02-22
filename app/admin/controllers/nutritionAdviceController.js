@@ -49,18 +49,18 @@ router.get('/edit/:id', function (req, res) {
         if (!req.user.isAdmin) {
             throw new Error(notice_admin);
         }
-        modelService.getFoodTypeById(req.params.id, function (err, result, fields) {
+        modelService.getNutritionAdviceById(req.params.id, function (err, result, fields) {
             if (err) {
                 adminService.addToLog(req, res, err);
                 return;
             }
             if(result[0] == undefined){
-                adminService.addToLog(req, res, 'Không tìm thấy thuốc nào có id=' + req.params.id);
+                adminService.addToLog(req, res, 'Không tìm thấy lời khuyên nào có id=' + req.params.id);
                 return;
             }
             res.render(viewPage("edit"), {
                 user: req.user,
-                foodType: result[0],
+                nutritionAdvice: result[0],
                 errors: []
             });
         });
@@ -223,7 +223,7 @@ router.post('/list', function (req, res, next) {
 
         resultMessage.draw = req.body.draw;
         arrPromise.push(new Promise(function (resolve, reject) {
-            modelService.countAllDepartment(parameter, function (err, result, fields) {
+            modelService.countAllNutritionAdvice(parameter, function (err, result, fields) {
                 if (err) {
                     return logService.create(req, err).then(function(){
                         resultMessage.error = err.sqlMessage;
@@ -239,7 +239,7 @@ router.post('/list', function (req, res, next) {
         }));
 
         arrPromise.push(new Promise(function (resolve, reject) {
-            modelService.getAllDepartment(parameter, function (err, result, fields) {
+            modelService.getAllNutritionAdvice(parameter, function (err, result, fields) {
                 if (err) {
                     return logService.create(req, err).then(function(){
                         resultMessage.error = err.sqlMessage;
@@ -257,40 +257,6 @@ router.post('/list', function (req, res, next) {
             Promise.all(arrPromise).then(function () {
                 res.send(resultMessage);
             });
-        });
-    } catch (e) {
-        logService.create(req, e.message).then(function(){
-            resultMessage.error = e.message;
-            res.send(resultMessage);
-        });
-    }
-});
-
-router.get('/list-follow-hospital', function (req, res, next) {
-    var resultMessage = {
-        "data": [],
-        "error": ""
-    };
-    try {
-        if (!req.user) {
-            return res.redirect('/user/login');
-        }
-        if (!req.user.isAdmin) {
-            throw new Error(notice_admin);
-        }
-        var hospital_id = req.query.hos_id;
-
-        modelService.getAllDepartmentByHospital(hospital_id, function (err, result, fields) {
-            if (err) {
-                return logService.create(req, err).then(function(){
-                    resultMessage.error = err.sqlMessage;
-                });
-            }
-            if (result !== undefined) {
-                resultMessage.data = result;
-            }
-            console.log(result);
-            res.send(result);
         });
     } catch (e) {
         logService.create(req, e.message).then(function(){

@@ -1,51 +1,119 @@
 ﻿<div class="form-group row">
   <div class="col-md-3">
     <div class="label-wrapper">
-      <label class="col-form-label flex-center">Tên khoa</label>
+      <label class="col-form-label flex-center">Tên lời khuyên dinh dưỡng</label>
     </div>
   </div>
   <div class="col-md-9">
     <div class="input-group input-group-required">
-      <input class="form-control text-box single-line" id="department_name" name="department_name" type="text" value="<%=department.name%>">
+      <input class="form-control text-box single-line" name="name" type="text" value="<%=nutritionAdvice.name%>">
       <div class="input-group-btn"><span class="required">*</span></div>
     </div>
   </div>
 </div>
-<div class="form-group row">
-  <div class="col-md-3">
-    <div class="label-wrapper flex-center">
-      <label class="col-form-label">Bệnh viện</label>
-    </div>
+<div class="row">
+  <div class="col-3">
+    <label class="col-form-label">Nhóm thực phẩm</label>
   </div>
-  <div class="col-md-9">
-    <div class="input-group-append input-group-required">
-      <div class="input-group">
-        <select id="hospital_id" name="hospital_id">
-          <% if (hospital.length > 0){%>
-            <% for (i = 0;i < hospital.length;i++){%>
-              <option <%=(hospital[i].id == department.hospital_id) ? 'selected' : ''%> value="<%=hospital[i].id%>"><%=hospital[i].name%></option>
-            <%}%>
-          <%}%>
-        </select>
-        <script>
-          $("#hospital_id").kendoDropDownList({
-            enable: true
-          });
-          </script>
-      </div>
-      <div class="input-group-btn"><span class="required">*</span></div>
-    </div>
+  <div class="col-3">
+    <label class="col-form-label flex-center">Thực phẩm nên dùng</label>
+  </div>
+  <div class="col-3">
+    <label class="col-form-label flex-center">Thực phẩm hạn chế dùng</label>
+  </div>
+  <div class="col-3">
+    <label class="col-form-label flex-center">Thực phẩm không nên dùng</label>
   </div>
 </div>
-<div class="form-group row">
-  <div class="col-md-3">
-    <div class="label-wrapper flex-center">
-      <label class="col-form-label">Số điện thoại</label>
-    </div>
+<div class="row">
+  <div class="col-3">
+    <label class="col-form-label">Nhóm glucid</label>
   </div>
-  <div class="col-md-9">
+  <div class="col-3">
+    <!-- Nên dùng -->
     <div class="input-group input-group-required">
-      <input class="form-control text-box single-line" id="department_phone" name="department_phone" type="text" value="<%=department.phone%>">
+      <textarea class="form-control text-box single-line" name="glucid_should_use"><%=nutritionAdvice.glucid_should_use%></textarea>
+    </div>
+  </div>
+  <div class="col-3">
+    <!-- Hạn chế dùng -->
+    <div class="input-group input-group-required">
+      <textarea class="form-control text-box single-line" name="glucid_limited_use"><%=nutritionAdvice.glucid_limited_use%></textarea>
+    </div>
+  </div>
+  <div class="col-3">
+    <!-- Không nên dùng -->
+    <div class="input-group input-group-required">
+      <textarea class="form-control text-box single-line" name="glucid_should_not_use"><%=nutritionAdvice.glucid_should_not_use%></textarea>
+    </div>
+  </div>
+</div>
+<div class="row">
+  <div class="col-3">
+    <label class="col-form-label">Nhóm protein</label>
+  </div>
+  <div class="col-3">
+    <!-- Nên dùng -->
+    <div class="input-group input-group-required">
+      <textarea class="form-control text-box single-line" name="protein_should_use"><%=nutritionAdvice.protein_should_use%></textarea>
+    </div>
+  </div>
+  <div class="col-3">
+    <!-- Hạn chế dùng -->
+    <div class="input-group input-group-required">
+      <textarea class="form-control text-box single-line" name="protein_limited_use"><%=nutritionAdvice.protein_limited_use%></textarea>
+    </div>
+  </div>
+  <div class="col-3">
+    <!-- Không nên dùng -->
+    <div class="input-group input-group-required">
+      <textarea class="form-control text-box single-line" name="protein_should_not_use"><%=nutritionAdvice.protein_should_not_use%></textarea>
+    </div>
+  </div>
+</div>
+<div class="row">
+  <div class="col-3">
+    <label class="col-form-label">Nhóm lipid</label>
+  </div>
+  <div class="col-3">
+    <!-- Nên dùng -->
+    <div class="input-group input-group-required">
+      <textarea class="form-control text-box single-line" name="lipid_should_use"><%=nutritionAdvice.lipid_should_use%></textarea>
+    </div>
+  </div>
+  <div class="col-3">
+    <!-- Hạn chế dùng -->
+    <div class="input-group input-group-required">
+      <textarea class="form-control text-box single-line" name="lipid_limited_use"><%=nutritionAdvice.lipid_limited_use%></textarea>
+    </div>
+  </div>
+  <div class="col-3">
+    <!-- Không nên dùng -->
+    <div class="input-group input-group-required">
+      <textarea class="form-control text-box single-line" name="lipid_should_not_use"><%=nutritionAdvice.lipid_should_not_use%></textarea>
+    </div>
+  </div>
+</div>
+<div class="row">
+  <div class="col-3">
+    <label class="col-form-label">Nhóm VTM & CK</label>
+  </div>
+  <div class="col-3">
+    <!-- Nên dùng -->
+    <div class="input-group input-group-required">
+      <textarea class="form-control text-box single-line" name="vitamin_ck_should_use"><%=nutritionAdvice.vitamin_ck_should_use%></textarea>
+    </div>
+  </div>
+  <div class="col-3">
+    <!-- Hạn chế dùng -->
+    <div class="input-group input-group-required">
+      <textarea class="form-control text-box single-line" name="vitamin_ck_limited_use"><%=nutritionAdvice.vitamin_ck_limited_use%></textarea>
+    </div>
+  </div>
+  <div class="col-3">
+    <!-- Không nên dùng -->
+    <div class="input-group input-group-required">
+      <textarea class="form-control text-box single-line" name="vitamin_ck_should_not_use"><%=nutritionAdvice.vitamin_ck_should_not_use%></textarea>
     </div>
   </div>
 </div>
