@@ -1,12 +1,12 @@
 ﻿var express         = require('express'),
     router          = express.Router(),
     path            = require('path'),
-    returnUrl       = "/admin/department",
+    returnUrl       = "/admin/food-info",
     notice_admin    = "Tài khoản của bạn không có quyền truy cập!",
     logService      = require('../models/logModel'),
     adminService    = require('../models/adminModel'),
-    modelService    = require('../models/departmentModel'),
-    hospitalService = require('../models/hospitalModel'); 
+    modelService    = require('../models/foodInfoModel'),
+    foodTypeService = require('../models/foodTypeModel'); 
 
 router.get('/', function (req, res, next) {
     try {
@@ -32,15 +32,15 @@ router.get('/create', function (req, res, next) {
         if (!req.user.isAdmin) {
             throw new Error(notice_admin);
         }
-        hospitalService.getAllHospital(function (err, result, fields) {
+        foodTypeService.getAllFoodType(function (err, result, fields) {
             if (err) {
                 adminService.addToLog(req, res, err);
                 return;
             }
             res.render(viewPage("create"), {
                 user: req.user,
-                department: [],
-                hospital:result,
+                foodInfo: [],
+                foodType:result,
                 errors: []
             });
          });
@@ -58,11 +58,11 @@ router.get('/edit/:id', function (req, res) {
             throw new Error(notice_admin);
         }
         let arrPromise = [],
-            hospital   = [],
-            department = {};
+            foodType   = [],
+            foodInfo = {};
 
         arrPromise.push(new Promise(function (resolve, reject) {
-            hospitalService.getAllHospital(function (err, result, fields) {
+            foodTypeService.getAllFoodType(function (err, result, fields) {
                 if (err) {
                     return logService.create(req, err).then(function(log_id){
                         str_error.push(err.sqlMessage);
@@ -70,13 +70,13 @@ router.get('/edit/:id', function (req, res) {
                     });
                 }
                 if (result !== undefined) {
-                    hospital = result;
+                    foodType = result;
                 }
                 resolve();
             });
         }));
         arrPromise.push(new Promise(function (resolve, reject) {
-            modelService.getDepartmentById(req.params.id, function (err, result, fields) {
+            modelService.getFoodInfoById(req.params.id, function (err, result, fields) {
                 if (err) {
                     return logService.create(req, err).then(function(log_id){
                         str_error.push(err.sqlMessage);
@@ -84,7 +84,7 @@ router.get('/edit/:id', function (req, res) {
                     });
                 }
                 if (result[0] !== undefined) {
-                    department = result[0]
+                    foodInfo = result[0];
                 }
                 resolve();
             });
@@ -92,11 +92,11 @@ router.get('/edit/:id', function (req, res) {
 
         return new Promise(function (resolve, reject) {
             Promise.all(arrPromise).then(function () {
-                if (department) {
+                if (foodInfo) {
                     res.render(viewPage("edit"), {
                         user: req.user,
-                        department: department,
-                        hospital: hospital,
+                        foodInfo: foodInfo,
+                        foodType:foodType,
                         errors: []
                     });
                 } else {
@@ -120,22 +120,31 @@ router.post('/create', function (req, res, next) {
         var str_error  = [],
             btn_action = req.body.save != undefined ? req.body.save : req.body.saveContinue,
             parameter  = {
-                name: req.body.department_name,
-                hospital_id: req.body.hospital_id ? req.body.hospital_id : null,
-                phone: req.body.department_phone ? req.body.department_phone : ''
+                name: req.body.name,
+                food_type_id: req.body.food_type_id ? req.body.food_type_id : null,
+                weight: isNaN(parseInt(req.body.weight)) ? null : req.body.weight,
+                energy: isNaN(parseInt(req.body.energy)) ? null : req.body.energy,
+                protein: isNaN(parseFloat(req.body.protein)) ? null : req.body.protein,
+                animal_protein: isNaN(parseFloat(req.body.animal_protein)) ? null : req.body.animal_protein,
+                lipid: isNaN(parseFloat(req.body.lipid)) ? null : req.body.lipid,
+                unanimal_lipid: isNaN(parseFloat(req.body.unanimal_lipid)) ? null : req.body.unanimal_lipid,
+                carbohydrate: isNaN(parseFloat(req.body.carbohydrate)) ? null : req.body.carbohydrate
             };
-            
+        console.log("create", parameter);
         if(parameter.name == ''){
-            str_error.push("Thiếu tên khoa!");
+            str_error.push("Thiếu tên thực phẩm!");
         }
-        if(!parameter.hospital_id){
-            str_error.push("Chưa chọn bệnh viện!");
+        if(!parameter.food_type_id){
+            str_error.push("Chưa chọn loại thực phẩm!");
+        }
+        if(!parameter.weight){
+            str_error.push("Thiếu khối lượng thực phẩm!");
         }
         if(str_error.length > 0){
             res.render(viewPage("create"), {
                 user: req.user,
-                department: parameter,
-                hospital:[],
+                foodInfo: parameter,
+                foodType:[],
                 errors: str_error
             });
         } else {
@@ -172,22 +181,31 @@ router.post('/edit/:id', function (req, res, next) {
             btn_action = req.body.save != undefined ? req.body.save : req.body.saveContinue,
             parameter  = {
                 id: parseInt(req.params.id),
-                name: req.body.department_name,
-                hospital_id: req.body.hospital_id ? req.body.hospital_id : null,
-                phone: req.body.department_phone ? req.body.department_phone : ''
+                name: req.body.name,
+                food_type_id: req.body.food_type_id ? req.body.food_type_id : null,
+                weight: isNaN(parseInt(req.body.weight)) ? null : req.body.weight,
+                energy: isNaN(parseInt(req.body.energy)) ? null : req.body.energy,
+                protein: isNaN(parseFloat(req.body.protein)) ? null : req.body.protein,
+                animal_protein: isNaN(parseFloat(req.body.animal_protein)) ? null : req.body.animal_protein,
+                lipid: isNaN(parseFloat(req.body.lipid)) ? null : req.body.lipid,
+                unanimal_lipid: isNaN(parseFloat(req.body.unanimal_lipid)) ? null : req.body.unanimal_lipid,
+                carbohydrate: isNaN(parseFloat(req.body.carbohydrate)) ? null : req.body.carbohydrate
             };
-            
-        if(parameter.name == ''){
-            str_error.push("Thiếu tên bệnh viện!");
-        }
-        if(!parameter.hospital_id){
-            str_error.push("Chưa chọn bệnh viện!");
-        }
+            console.log("parameter", parameter);
+            if(parameter.name == ''){
+                str_error.push("Thiếu tên thực phẩm!");
+            }
+            if(!parameter.food_type_id){
+                str_error.push("Chưa chọn loại thực phẩm!");
+            }
+            if(!parameter.weight){
+                str_error.push("Thiếu khối lượng thực phẩm!");
+            }
         if(str_error.length > 0){
             res.render(viewPage("edit"), {
                 user: req.user,
-                department: parameter,
-                hospital:[],
+                foodInfo: parameter,
+                foodType:[],
                 errors: str_error
             });
         } else {
@@ -230,7 +248,7 @@ router.post('/delete/:id', function (req, res, next) {
             if(affectedRow > 0){
                 res.redirect(returnUrl); 
             } else {
-                adminService.addToLog(req, res, 'Không tìm thấy khoa nào có id=' + req.params.id);
+                adminService.addToLog(req, res, 'Không tìm thấy role có role_id=' + req.params.id);
             }
         })
     } catch (e) {
@@ -263,7 +281,7 @@ router.post('/list', function (req, res, next) {
 
         resultMessage.draw = req.body.draw;
         arrPromise.push(new Promise(function (resolve, reject) {
-            modelService.countAllDepartment(parameter, function (err, result, fields) {
+            modelService.countAllFoodInfo(parameter, function (err, result, fields) {
                 if (err) {
                     return logService.create(req, err).then(function(){
                         resultMessage.error = err.sqlMessage;
@@ -279,7 +297,7 @@ router.post('/list', function (req, res, next) {
         }));
 
         arrPromise.push(new Promise(function (resolve, reject) {
-            modelService.getAllDepartment(parameter, function (err, result, fields) {
+            modelService.getAllFoodInfo(parameter, function (err, result, fields) {
                 if (err) {
                     return logService.create(req, err).then(function(){
                         resultMessage.error = err.sqlMessage;
@@ -306,41 +324,8 @@ router.post('/list', function (req, res, next) {
     }
 });
 
-router.get('/list-follow-hospital', function (req, res, next) {
-    var resultMessage = {
-        "data": [],
-        "error": ""
-    };
-    try {
-        if (!req.user) {
-            return res.redirect('/user/login');
-        }
-        if (!req.user.isAdmin) {
-            throw new Error(notice_admin);
-        }
-        var hospital_id = req.query.hos_id;
-
-        modelService.getAllDepartmentByHospital(hospital_id, function (err, result, fields) {
-            if (err) {
-                return logService.create(req, err).then(function(){
-                    resultMessage.error = err.sqlMessage;
-                });
-            }
-            if (result !== undefined) {
-                resultMessage.data = result;
-            }
-            res.send(result);
-        });
-    } catch (e) {
-        logService.create(req, e.message).then(function(){
-            resultMessage.error = e.message;
-            res.send(resultMessage);
-        });
-    }
-});
-
 function viewPage(name) {
-    return path.resolve(__dirname, "../views/department/" + name + ".ejs");
+    return path.resolve(__dirname, "../views/food_info/" + name + ".ejs");
 }
 
 module.exports = router;

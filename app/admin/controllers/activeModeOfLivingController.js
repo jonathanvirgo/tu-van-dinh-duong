@@ -1,12 +1,11 @@
 ﻿var express         = require('express'),
     router          = express.Router(),
     path            = require('path'),
-    returnUrl       = "/admin/department",
+    returnUrl       = "/admin/active-mode-of-living",
     notice_admin    = "Tài khoản của bạn không có quyền truy cập!",
     logService      = require('../models/logModel'),
     adminService    = require('../models/adminModel'),
-    modelService    = require('../models/departmentModel'),
-    hospitalService = require('../models/hospitalModel'); 
+    modelService    = require('../models/activeModeOfLivingModel'); 
 
 router.get('/', function (req, res, next) {
     try {
@@ -32,18 +31,11 @@ router.get('/create', function (req, res, next) {
         if (!req.user.isAdmin) {
             throw new Error(notice_admin);
         }
-        hospitalService.getAllHospital(function (err, result, fields) {
-            if (err) {
-                adminService.addToLog(req, res, err);
-                return;
-            }
-            res.render(viewPage("create"), {
-                user: req.user,
-                department: [],
-                hospital:result,
-                errors: []
-            });
-         });
+        res.render(viewPage("create"), {
+            user: req.user,
+            detail: [],
+            errors: []
+        });
     } catch (e) {
         adminService.addToLog(req, res, e.message);
     }
@@ -57,53 +49,21 @@ router.get('/edit/:id', function (req, res) {
         if (!req.user.isAdmin) {
             throw new Error(notice_admin);
         }
-        let arrPromise = [],
-            hospital   = [],
-            department = {};
-
-        arrPromise.push(new Promise(function (resolve, reject) {
-            hospitalService.getAllHospital(function (err, result, fields) {
-                if (err) {
-                    return logService.create(req, err).then(function(log_id){
-                        str_error.push(err.sqlMessage);
-                        resolve();
-                    });
-                }
-                if (result !== undefined) {
-                    hospital = result;
-                }
-                resolve();
+        modelService.getActiveModeById(req.params.id, function (err, result, fields) {
+            if (err) {
+                adminService.addToLog(req, res, err);
+                return;
+            }
+            if(result[0] == undefined){
+                adminService.addToLog(req, res, 'Không tìm thấy chế độ vận động nào có id=' + req.params.id);
+                return;
+            }
+            res.render(viewPage("edit"), {
+                user: req.user,
+                detail: result[0],
+                errors: []
             });
-        }));
-        arrPromise.push(new Promise(function (resolve, reject) {
-            modelService.getDepartmentById(req.params.id, function (err, result, fields) {
-                if (err) {
-                    return logService.create(req, err).then(function(log_id){
-                        str_error.push(err.sqlMessage);
-                        resolve();
-                    });
-                }
-                if (result[0] !== undefined) {
-                    department = result[0]
-                }
-                resolve();
-            });
-        }));
-
-        return new Promise(function (resolve, reject) {
-            Promise.all(arrPromise).then(function () {
-                if (department) {
-                    res.render(viewPage("edit"), {
-                        user: req.user,
-                        department: department,
-                        hospital: hospital,
-                        errors: []
-                    });
-                } else {
-                    adminService.addToLog(req, res, 'Không tìm thấy khoa nào có id=' + req.params.id);
-                }
-            });
-        });
+        })
     } catch (e) {
         adminService.addToLog(req, res, e.message);
     }
@@ -120,22 +80,20 @@ router.post('/create', function (req, res, next) {
         var str_error  = [],
             btn_action = req.body.save != undefined ? req.body.save : req.body.saveContinue,
             parameter  = {
-                name: req.body.department_name,
-                hospital_id: req.body.hospital_id ? req.body.hospital_id : null,
-                phone: req.body.department_phone ? req.body.department_phone : ''
+                name: req.body.name,
+                detail: req.body.detail
             };
             
         if(parameter.name == ''){
-            str_error.push("Thiếu tên khoa!");
+            str_error.push("Thiếu tên chế độ vận động!");
         }
-        if(!parameter.hospital_id){
-            str_error.push("Chưa chọn bệnh viện!");
+        if(!parameter.detail){
+            str_error.push("Thiếu chi tiết chế độ vận động!");
         }
         if(str_error.length > 0){
             res.render(viewPage("create"), {
                 user: req.user,
-                department: parameter,
-                hospital:[],
+                detail: parameter,
                 errors: str_error
             });
         } else {
@@ -172,22 +130,20 @@ router.post('/edit/:id', function (req, res, next) {
             btn_action = req.body.save != undefined ? req.body.save : req.body.saveContinue,
             parameter  = {
                 id: parseInt(req.params.id),
-                name: req.body.department_name,
-                hospital_id: req.body.hospital_id ? req.body.hospital_id : null,
-                phone: req.body.department_phone ? req.body.department_phone : ''
+                name: req.body.name,
+                detail: req.body.detail
             };
             
         if(parameter.name == ''){
-            str_error.push("Thiếu tên bệnh viện!");
+            str_error.push("Thiếu tên chế độ vận động!");
         }
-        if(!parameter.hospital_id){
-            str_error.push("Chưa chọn bệnh viện!");
+        if(!parameter.detail){
+            str_error.push("Thiếu chi tiết chế độ vận động!");
         }
         if(str_error.length > 0){
             res.render(viewPage("edit"), {
                 user: req.user,
-                department: parameter,
-                hospital:[],
+                detail: parameter,
                 errors: str_error
             });
         } else {
@@ -230,7 +186,7 @@ router.post('/delete/:id', function (req, res, next) {
             if(affectedRow > 0){
                 res.redirect(returnUrl); 
             } else {
-                adminService.addToLog(req, res, 'Không tìm thấy khoa nào có id=' + req.params.id);
+                adminService.addToLog(req, res, 'Không tìm thấy chế độ vận động nào có id=' + req.params.id);
             }
         })
     } catch (e) {
@@ -263,7 +219,7 @@ router.post('/list', function (req, res, next) {
 
         resultMessage.draw = req.body.draw;
         arrPromise.push(new Promise(function (resolve, reject) {
-            modelService.countAllDepartment(parameter, function (err, result, fields) {
+            modelService.countAllActiveMode(parameter, function (err, result, fields) {
                 if (err) {
                     return logService.create(req, err).then(function(){
                         resultMessage.error = err.sqlMessage;
@@ -279,7 +235,7 @@ router.post('/list', function (req, res, next) {
         }));
 
         arrPromise.push(new Promise(function (resolve, reject) {
-            modelService.getAllDepartment(parameter, function (err, result, fields) {
+            modelService.getAllActiveMode(parameter, function (err, result, fields) {
                 if (err) {
                     return logService.create(req, err).then(function(){
                         resultMessage.error = err.sqlMessage;
@@ -306,41 +262,8 @@ router.post('/list', function (req, res, next) {
     }
 });
 
-router.get('/list-follow-hospital', function (req, res, next) {
-    var resultMessage = {
-        "data": [],
-        "error": ""
-    };
-    try {
-        if (!req.user) {
-            return res.redirect('/user/login');
-        }
-        if (!req.user.isAdmin) {
-            throw new Error(notice_admin);
-        }
-        var hospital_id = req.query.hos_id;
-
-        modelService.getAllDepartmentByHospital(hospital_id, function (err, result, fields) {
-            if (err) {
-                return logService.create(req, err).then(function(){
-                    resultMessage.error = err.sqlMessage;
-                });
-            }
-            if (result !== undefined) {
-                resultMessage.data = result;
-            }
-            res.send(result);
-        });
-    } catch (e) {
-        logService.create(req, e.message).then(function(){
-            resultMessage.error = e.message;
-            res.send(resultMessage);
-        });
-    }
-});
-
 function viewPage(name) {
-    return path.resolve(__dirname, "../views/department/" + name + ".ejs");
+    return path.resolve(__dirname, "../views/active_mode_of_living/" + name + ".ejs");
 }
 
 module.exports = router;

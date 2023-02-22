@@ -1,7 +1,7 @@
 var db      = require('../../config/db'),
 webService  = require('../../web/models/webModel');
 
-let roleService = {
+let hospitaService = {
     create: function (parameter, callback) {
         db.get().getConnection(function (err, connection) {
             try {
@@ -32,12 +32,12 @@ let roleService = {
             }
         });
     },
-    delete: function (role_id, callback) {
+    delete: function (id, callback) {
         db.get().getConnection(function (err, connection) {
             try {
                 if (err) return callback(err);
                 var sql   = 'DELETE FROM hospital WHERE id=?';
-                var query = connection.query(sql, [role_id], function (err, results, fields) {
+                var query = connection.query(sql, [id], function (err, results, fields) {
                     connection.release();
                     if (err) return callback(err);
                     callback(null, results, fields);
@@ -63,7 +63,7 @@ let roleService = {
                     callback(null, results, fields);
                 });
             } catch (error) {
-                webService.addToLogService(error, 'hospitalModel countAllRole');
+                webService.addToLogService(error, 'hospitalModel countAllHospital');
             }
         });
     },
@@ -85,7 +85,7 @@ let roleService = {
                     callback(null, results, fields);
                 });
             } catch (error) {
-                webService.addToLogService(error, 'hospitalModel getAllRole');
+                webService.addToLogService(error, 'hospitalModel getAllHospitalFromParam');
             }
         });
     },
@@ -100,7 +100,7 @@ let roleService = {
                     callback(null, results, fields);
                 });
             } catch (error) {
-                webService.addToLogService(error, 'hospitalModel getRoleById');
+                webService.addToLogService(error, 'hospitalModel getHospitalById');
             }
         });
     },
@@ -117,10 +117,10 @@ let roleService = {
                     callback(null, results, fields);
                 });
             } catch (error) {
-                webService.addToLogService(error, 'hospitalModel getAllRole');
+                webService.addToLogService(error, 'hospitalModel getAllHospital');
             }
         });
     },
 }
 
-module.exports = roleService;
+module.exports = hospitaService;

@@ -1,0 +1,55 @@
+﻿<html lang="en">
+<head>
+    <title>Thêm mới loại thực phẩm</title>
+  <%- include('../shared/head') %>
+</head>
+<body class="sidebar-mini layout-fixed control-sidebar-slide-open">
+  <div class="wrapper">
+    <%- include('../shared/menu',{user: user}) %>
+    <div class="content-wrapper">
+        <% if (errors.length >0){%>
+        <div class="alert alert-danger alert-dismissable">
+          <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+          <ul>
+          <% for (i = 0;i < errors.length;i++){%>
+            <li><%=errors[i]%></li>
+          <%}%>
+          </ul>
+        </div>
+        <%}%>
+        <form action="/admin/food-type/create" id="food-type-form" method="post" novalidate="novalidate">
+            <div class="content-header clearfix">
+              <h1 class="float-left">Thêm mới loại thực phẩm
+                <small> 
+                  <i class="fas fa-arrow-circle-left"></i> 
+                  <a href="/admin/food-type">Danh sách loại thực phẩm</a> 
+                </small>
+              </h1>
+              <div class="float-right">
+                <button type="submit" name="save" class="btn btn-primary" value="save"> 
+                  <i class="far fa-save"></i> Lưu 
+                </button>
+                <button type="submit" name="saveContinue" class="btn btn-primary" value="saveContinue"> 
+                  <i class="far fa-save"></i> Lưu và tiếp tục sửa 
+                </button>
+              </div>
+            </div>
+            <section class="content">
+              <div class="container-fluid">
+                <div class="form-horizontal">
+                  <div class="cards-group">
+                    <div class="card card-default">
+                      <div class="card-body">
+                        <%- include('../food_type/_createorupdate',{foodType:foodType}) %>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </section>
+        </form>
+    </div>
+    <%- include('../shared/footer') %>
+  </div>
+</body>
+</html>

@@ -25,6 +25,13 @@ var admin_error    = require('./app/admin/controllers/errorController');
 var admin_log      = require('./app/admin/controllers/logController');
 var admin_hospital    = require('./app/admin/controllers/hospitalController');
 var admin_department  = require('./app/admin/controllers/departmentController');
+var admin_active_mode_of_living  = require('./app/admin/controllers/activeModeOfLivingController');
+var admin_nutrition_advice  = require('./app/admin/controllers/nutritionAdviceController');
+var admin_medicine  = require('./app/admin/controllers/medicineController');
+var admin_alternative_food  = require('./app/admin/controllers/alternativeFoodController');
+var admin_food_type  = require('./app/admin/controllers/foodTypeController');
+var admin_food_info  = require('./app/admin/controllers/foodInfoController');
+var admin_menu_time  = require('./app/admin/controllers/menuTimeController');
 
 require('./app/config/passport')(passport);
 
@@ -80,6 +87,13 @@ app.use('/admin/error', admin_error);
 app.use('/admin/log', admin_log);
 app.use('/admin/hospital', admin_hospital);
 app.use('/admin/department', admin_department);
+app.use('/admin/active-mode-of-living', admin_active_mode_of_living);
+app.use('/admin/nutrition-advice', admin_nutrition_advice);
+app.use('/admin/medicine', admin_medicine);
+app.use('/admin/alternative-food', admin_alternative_food);
+app.use('/admin/food-type', admin_food_type);
+app.use('/admin/food-info', admin_food_info);
+app.use('/admin/menu-time', admin_menu_time);
 
 app.get('/robots.txt', function (req, res) {
   res.type('text/plain');

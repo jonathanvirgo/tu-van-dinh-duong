@@ -1,6 +1,6 @@
 ﻿<html lang="en">
 <head>
-    <title>Sửa khoa</title>
+    <title>Sửa thuốc</title>
   <%- include('../shared/head') %>
 </head>
 <body class="sidebar-mini layout-fixed control-sidebar-slide-open">
@@ -17,12 +17,12 @@
           </ul>
         </div>
         <%}%>
-      <form action="/admin/department/edit/<%=department.id%>" id="department-form" method="post" novalidate="novalidate">
+      <form action="/admin/medicine/edit/<%=medicine.id%>" id="medicine-form" method="post" novalidate="novalidate">
         <div class="content-header clearfix">
-          <h1 class="float-left">Sửa khoa - <%= department.name %> 
+          <h1 class="float-left">Sửa thuốc - <%= medicine.name %> 
             <small> 
               <i class="fas fa-arrow-circle-left"></i> 
-              <a href="/admin/department">Trở lại danh sách khoa</a> 
+              <a href="/admin/medicine">Trở lại danh sách thuốc</a> 
             </small>
           </h1>
           <div class="float-right">
@@ -43,7 +43,7 @@
               <div class="cards-group">
                 <div class="card card-default">
                   <div class="card-body">
-                    <%- include('../department/_createorupdate',{department:department}) %>
+                    <%- include('../medicine/_createorupdate',{medicine:medicine}) %>
                   </div>
                 </div>
               </div>
@@ -60,7 +60,7 @@
                 <span aria-hidden="true">×</span>
               </button>
             </div>
-            <form action="/admin/department/delete/<%=department.id%>" method="post">
+            <form action="/admin/medicine/delete/<%=medicine.id%>" method="post">
               <div class="form-horizontal">
                 <div class="modal-body">Bạn có chắc chắn muốn xóa mục này không?</div>
                 <div class="modal-footer">

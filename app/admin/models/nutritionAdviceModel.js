@@ -1,7 +1,7 @@
 var db      = require('../../config/db'),
 webService  = require('../../web/models/webModel');
 
-let departmentService = {
+let roleService = {
     create: function (parameter, callback) {
         db.get().getConnection(function (err, connection) {
             try {
@@ -32,12 +32,12 @@ let departmentService = {
             }
         });
     },
-    delete: function (id, callback) {
+    delete: function (role_id, callback) {
         db.get().getConnection(function (err, connection) {
             try {
                 if (err) return callback(err);
                 var sql   = 'DELETE FROM department WHERE id=?';
-                var query = connection.query(sql, [id], function (err, results, fields) {
+                var query = connection.query(sql, [role_id], function (err, results, fields) {
                     connection.release();
                     if (err) return callback(err);
                     callback(null, results, fields);
@@ -122,4 +122,4 @@ let departmentService = {
     },
 }
 
-module.exports = departmentService;
+module.exports = roleService;

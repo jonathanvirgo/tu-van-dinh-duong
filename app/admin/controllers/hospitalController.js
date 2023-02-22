@@ -152,7 +152,7 @@ router.post('/edit/:id', function (req, res, next) {
                     if (btn_action == "save") {
                         res.redirect(returnUrl);
                     } else {
-                        res.redirect(returnUrl + '/edit/' + parameter.role_id);
+                        res.redirect(returnUrl + '/edit/' + parameter.id);
                     }
                 } else {
                     adminService.addToLog(req, res, 'Dữ liệu trả về không xác định!');
@@ -182,7 +182,7 @@ router.post('/delete/:id', function (req, res, next) {
             if(affectedRow > 0){
                 res.redirect(returnUrl); 
             } else {
-                adminService.addToLog(req, res, 'Không tìm thấy role có role_id=' + req.params.id);
+                adminService.addToLog(req, res, 'Không tìm thấy bệnh viện nào có id=' + req.params.id);
             }
         })
     } catch (e) {

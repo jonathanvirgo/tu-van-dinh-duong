@@ -1,19 +1,19 @@
 var db      = require('../../config/db'),
 webService  = require('../../web/models/webModel');
 
-let departmentService = {
+let foodInfoService = {
     create: function (parameter, callback) {
         db.get().getConnection(function (err, connection) {
             try {
                 if (err) return callback(err);
-                var sql   = "INSERT INTO department (name,hospital_id,phone) VALUES (?,?,?)";
-                var query = connection.query(sql, [parameter.name,parameter.hospital_id,parameter.phone], function (err, results, fields) {
+                var sql   = "INSERT INTO food_info (name,food_type_id,weight,energy,protein,animal_protein,lipid,unanimal_lipid,carbohydrate,created_at) VALUES (?,?,?,?,?,?,?,?,?,CURRENT_TIMESTAMP)";
+                var query = connection.query(sql, [parameter.name,parameter.food_type_id,parameter.weight,parameter.energy,parameter.protein,parameter.animal_protein,parameter.lipid,parameter.unanimal_lipid,parameter.carbohydrate], function (err, results, fields) {
                     connection.release();
                     if (err) return callback(err);
                     callback(null, results, fields);
                 });
             } catch (error) {
-                webService.addToLogService(error, 'departmentModel create');
+                webService.addToLogService(error, 'foodInfoModel create');
             }
         });
     },
@@ -21,38 +21,38 @@ let departmentService = {
         db.get().getConnection(function (err, connection) {
             try {
                 if (err) return callback(err);
-                var sql   = 'UPDATE department SET name = ?, hospital_id = ?, phone = ? WHERE id=?';
-                var query = connection.query(sql, [parameter.name,parameter.hospital_id,parameter.phone, parameter.id], function (err, results, fields) {
+                var sql   = 'UPDATE food_info SET name = ?, food_type_id = ?, weight = ?, energy = ?, protein = ?, animal_protein = ?, lipid = ?, unanimal_lipid = ?, carbohydrate = ? WHERE id=?';
+                var query = connection.query(sql, [parameter.name,parameter.food_type_id,parameter.weight,parameter.energy,parameter.protein,parameter.animal_protein,parameter.lipid,parameter.unanimal_lipid,parameter.carbohydrate, parameter.id], function (err, results, fields) {
                     connection.release();
                     if (err) return callback(err);
                     callback(null, results, fields);
                 });
             } catch (error) {
-                webService.addToLogService(error, 'departmentModel update');
+                webService.addToLogService(error, 'foodInfoModel update');
             }
         });
     },
-    delete: function (id, callback) {
+    delete: function (role_id, callback) {
         db.get().getConnection(function (err, connection) {
             try {
                 if (err) return callback(err);
-                var sql   = 'DELETE FROM department WHERE id=?';
-                var query = connection.query(sql, [id], function (err, results, fields) {
+                var sql   = 'DELETE FROM food_info WHERE id=?';
+                var query = connection.query(sql, [role_id], function (err, results, fields) {
                     connection.release();
                     if (err) return callback(err);
                     callback(null, results, fields);
                 });
             } catch (error) {
-                webService.addToLogService(error, 'departmentModel delete');
+                webService.addToLogService(error, 'foodInfoModel delete');
             }
         });
     },
-    countAllDepartment: function (parameter, callback) {
+    countAllFoodInfo: function (parameter, callback) {
         db.get().getConnection(function (err, connection) {
             try {
                 if (err) return callback(err);
                 var paraSQL = [];
-                var sql     = 'SELECT COUNT(*) AS count FROM department WHERE id > 0';
+                var sql     = 'SELECT COUNT(*) AS count FROM food_info WHERE id > 0';
                 if (parameter.search_name != "") {
                     sql += " AND name LIKE ?";
                     paraSQL.push("%" + parameter.search_name + "%");
@@ -63,63 +63,63 @@ let departmentService = {
                     callback(null, results, fields);
                 });
             } catch (error) {
-                webService.addToLogService(error, 'departmentModel countAllDepartment');
+                webService.addToLogService(error, 'foodInfoModel countAllFoodInfo');
             }
         });
     },
-    getAllDepartment: function (parameter, callback) {
+    getAllFoodInfo: function (parameter, callback) {
         db.get().getConnection(function (err, connection) {
             try {
                 if (err) return callback(err);
                 var paraSQL = [];
-                var sql     = 'SELECT department.*, hospital.name AS hospital_name FROM department INNER JOIN hospital ON department.hospital_id = hospital.id WHERE department.id > 0';
+                var sql     = 'SELECT food_info.*, food_type.name AS food_type_name FROM food_info INNER JOIN food_type ON food_info.food_type_id = food_type.id WHERE food_info.id > 0';
                 
                 if (parameter.search_name != "") {
-                    sql += " AND department.name LIKE ?";
+                    sql += " AND food_info.name LIKE ?";
                     paraSQL.push("%" + parameter.search_name + "%");
                 }
-                sql += " ORDER BY department.id DESC LIMIT " + parameter.skip + "," + parameter.take;
+                sql += " ORDER BY food_info.id DESC LIMIT " + parameter.skip + "," + parameter.take;
                 var query = connection.query(sql, paraSQL, function (err, results, fields) {
                     connection.release();
                     if (err) return callback(err);
                     callback(null, results, fields);
                 });
             } catch (error) {
-                webService.addToLogService(error, 'departmentModel getAllDepartment');
+                webService.addToLogService(error, 'foodInfoModel getAllFoodInfo');
             }
         });
     },
-    getDepartmentById: function (role_id, callback) {
+    getFoodInfoById: function (role_id, callback) {
         db.get().getConnection(function (err, connection) {
             try {
                 if (err) return callback(err);
-                var sql   = 'SELECT * FROM department WHERE id = ?';
+                var sql   = 'SELECT * FROM food_info WHERE id = ?';
                 var query = connection.query(sql, [role_id], function (err, results, fields) {
                     connection.release();
                     if (err) return callback(err);
                     callback(null, results, fields);
                 });
             } catch (error) {
-                webService.addToLogService(error, 'departmentModel getDepartmentById');
+                webService.addToLogService(error, 'foodInfoModel getFoodInfoById');
             }
         });
     },
-    getAllDepartmentByHospital: function (id_hospital, callback) {
+    getAllFoodInfoByFoodType: function (id_food_type, callback) {
         db.get().getConnection(function (err, connection) {
             try {
                 if (err) return callback(err);
-                var sql     = 'SELECT id, name FROM department WHERE hospital_id = ?';
+                var sql     = 'SELECT id, name FROM food_info WHERE food_type_id = ?';
                 
-                var query = connection.query(sql, [id_hospital], function (err, results, fields) {
+                var query = connection.query(sql, [id_food_type], function (err, results, fields) {
                     connection.release();
                     if (err) return callback(err);
                     callback(null, results, fields);
                 });
             } catch (error) {
-                webService.addToLogService(error, 'departmentModel getAllDepartmentByHospital');
+                webService.addToLogService(error, 'foodInfoModel getAllFoodInfoByFoodType');
             }
         });
     },
 }
 
-module.exports = departmentService;
+module.exports = foodInfoService;

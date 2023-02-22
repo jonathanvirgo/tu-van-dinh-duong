@@ -1,6 +1,6 @@
 ﻿<html lang="en">
 <head>
-    <title>Sửa khoa</title>
+    <title>Sửa bệnh viện</title>
   <%- include('../shared/head') %>
 </head>
 <body class="sidebar-mini layout-fixed control-sidebar-slide-open">
@@ -19,10 +19,10 @@
         <%}%>
       <form action="/admin/department/edit/<%=department.id%>" id="department-form" method="post" novalidate="novalidate">
         <div class="content-header clearfix">
-          <h1 class="float-left">Sửa khoa - <%= department.name %> 
+          <h1 class="float-left">Sửa bệnh viện - <%= department.name %> 
             <small> 
               <i class="fas fa-arrow-circle-left"></i> 
-              <a href="/admin/department">Trở lại danh sách khoa</a> 
+              <a href="/admin/department">Trở lại danh sách bệnh viện</a> 
             </small>
           </h1>
           <div class="float-right">
@@ -60,7 +60,7 @@
                 <span aria-hidden="true">×</span>
               </button>
             </div>
-            <form action="/admin/department/delete/<%=department.id%>" method="post">
+            <form action="/admin/hospital/delete/<%=hospital.id%>" method="post">
               <div class="form-horizontal">
                 <div class="modal-body">Bạn có chắc chắn muốn xóa mục này không?</div>
                 <div class="modal-footer">

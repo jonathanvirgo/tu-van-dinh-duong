@@ -1,11 +1,11 @@
 ﻿var express         = require('express'),
     router          = express.Router(),
     path            = require('path'),
-    returnUrl       = "/admin/department",
+    returnUrl       = "/admin/menu-time",
     notice_admin    = "Tài khoản của bạn không có quyền truy cập!",
     logService      = require('../models/logModel'),
     adminService    = require('../models/adminModel'),
-    modelService    = require('../models/departmentModel'),
+    modelService    = require('../models/menuTimeModel'),
     hospitalService = require('../models/hospitalModel'); 
 
 router.get('/', function (req, res, next) {
@@ -95,8 +95,8 @@ router.get('/edit/:id', function (req, res) {
                 if (department) {
                     res.render(viewPage("edit"), {
                         user: req.user,
-                        department: department,
-                        hospital: hospital,
+                        department: result[0],
+                        hospital:[],
                         errors: []
                     });
                 } else {
@@ -200,7 +200,7 @@ router.post('/edit/:id', function (req, res, next) {
                     if (btn_action == "save") {
                         res.redirect(returnUrl);
                     } else {
-                        res.redirect(returnUrl + '/edit/' + parameter.id);
+                        res.redirect(returnUrl + '/edit/' + parameter.role_id);
                     }
                 } else {
                     adminService.addToLog(req, res, 'Dữ liệu trả về không xác định!');
@@ -230,7 +230,7 @@ router.post('/delete/:id', function (req, res, next) {
             if(affectedRow > 0){
                 res.redirect(returnUrl); 
             } else {
-                adminService.addToLog(req, res, 'Không tìm thấy khoa nào có id=' + req.params.id);
+                adminService.addToLog(req, res, 'Không tìm thấy role có role_id=' + req.params.id);
             }
         })
     } catch (e) {
@@ -329,6 +329,7 @@ router.get('/list-follow-hospital', function (req, res, next) {
             if (result !== undefined) {
                 resultMessage.data = result;
             }
+            console.log(result);
             res.send(result);
         });
     } catch (e) {
@@ -340,7 +341,7 @@ router.get('/list-follow-hospital', function (req, res, next) {
 });
 
 function viewPage(name) {
-    return path.resolve(__dirname, "../views/department/" + name + ".ejs");
+    return path.resolve(__dirname, "../views/menu_time/" + name + ".ejs");
 }
 
 module.exports = router;

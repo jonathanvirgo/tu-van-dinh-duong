@@ -1,0 +1,123 @@
+﻿<div class="form-group row">
+  <div class="col-md-3">
+    <div class="label-wrapper">
+      <label class="col-form-label flex-center">Tên thực phẩm</label>
+    </div>
+  </div>
+  <div class="col-md-9">
+    <div class="input-group input-group-required">
+      <input class="form-control text-box single-line" name="name" type="text" value="<%=foodInfo.name%>">
+      <div class="input-group-btn"><span class="required">*</span></div>
+    </div>
+  </div>
+</div>
+<div class="form-group row">
+  <div class="col-md-3">
+    <div class="label-wrapper flex-center">
+      <label class="col-form-label">Loại thực phẩm</label>
+    </div>
+  </div>
+  <div class="col-md-9">
+    <div class="input-group-append input-group-required">
+      <div class="input-group">
+        <select id="food_type_id" name="food_type_id">
+          <% if (foodType.length > 0){%>
+            <% for (i = 0;i < foodType.length;i++){%>
+              <option <%=(foodType[i].id == foodInfo.food_type_id) ? 'selected' : ''%> value="<%=foodType[i].id%>"><%=foodType[i].name%></option>
+            <%}%>
+          <%}%>
+        </select>
+        <script>
+          $("#food_type_id").kendoDropDownList({
+            enable: true
+          });
+          </script>
+      </div>
+      <div class="input-group-btn"><span class="required">*</span></div>
+    </div>
+  </div>
+</div>
+<div class="form-group row">
+  <div class="col-md-3">
+    <div class="label-wrapper flex-center">
+      <label class="col-form-label">Weight</label>
+    </div>
+  </div>
+  <div class="col-md-9">
+    <div class="input-group input-group-required">
+      <input class="form-control text-box single-line" name="weight" type="number" value="<%=foodInfo.weight%>">
+    </div>
+  </div>
+</div>
+<div class="form-group row">
+  <div class="col-md-3">
+    <div class="label-wrapper flex-center">
+      <label class="col-form-label">Energy</label>
+    </div>
+  </div>
+  <div class="col-md-9">
+    <div class="input-group input-group-required">
+      <input class="form-control text-box single-line" name="energy" type="number" value="<%=foodInfo.energy%>">
+    </div>
+  </div>
+</div>
+<div class="form-group row">
+  <div class="col-md-3">
+    <div class="label-wrapper flex-center">
+      <label class="col-form-label">Protein</label>
+    </div>
+  </div>
+  <div class="col-md-9">
+    <div class="input-group input-group-required">
+      <input class="form-control text-box single-line" name="protein" type="text" value="<%=foodInfo.protein%>">
+    </div>
+  </div>
+</div>
+<div class="form-group row">
+  <div class="col-md-3">
+    <div class="label-wrapper flex-center">
+      <label class="col-form-label">Animal Protein</label>
+    </div>
+  </div>
+  <div class="col-md-9">
+    <div class="input-group input-group-required">
+      <input class="form-control text-box single-line" name="animal_protein" type="text" value="<%=foodInfo.animal_protein%>">
+    </div>
+  </div>
+</div>
+<div class="form-group row">
+  <div class="col-md-3">
+    <div class="label-wrapper flex-center">
+      <label class="col-form-label">Lipid</label>
+    </div>
+  </div>
+  <div class="col-md-9">
+    <div class="input-group input-group-required">
+      <input class="form-control text-box single-line" name="lipid" type="text" value="<%=foodInfo.lipid%>">
+    </div>
+  </div>
+</div>
+<div class="form-group row">
+  <div class="col-md-3">
+    <div class="label-wrapper flex-center">
+      <label class="col-form-label">Unanimal Lipid</label>
+    </div>
+  </div>
+  <div class="col-md-9">
+    <div class="input-group input-group-required">
+      <input class="form-control text-box single-line" name="unanimal_lipid" type="text" value="<%=foodInfo.unanimal_lipid%>">
+    </div>
+  </div>
+</div>
+<div class="form-group row">
+  <div class="col-md-3">
+    <div class="label-wrapper flex-center">
+      <label class="col-form-label">Carbohydrate</label>
+    </div>
+  </div>
+  <div class="col-md-9">
+    <div class="input-group input-group-required">
+      <input class="form-control text-box single-line" name="carbohydrate" type="text" value="<%=foodInfo.carbohydrate%>">
+    </div>
+  </div>
+</div>
