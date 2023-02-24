@@ -29,90 +29,101 @@
    <div class="sidebar">
       <nav class="mt-2">
          <ul id="admin-menu" class="nav nav-pills nav-sidebar flex-column nav-legacy" data-widget="treeview" role="menu">
-            <li class="nav-item">
-               <a href="/admin" class="nav-link active">
-                  <i class="nav-icon fas fa-desktop"></i>
-                  <p>Trang tổng quan</p>
-               </a>
-            </li>
-            <li class="nav-item">
-               <a href="/admin/role" class="nav-link">
-                  <i class="nav-icon fas fa-cubes"></i>
-                  <p>Quản lý quyền</p>
-               </a>
-            </li>
-            <li class="nav-item">
-               <a href="/admin/user" class="nav-link">
-                  <i class="nav-icon fas fa-user"></i>
-                  <p>Quản lý người dùng</p>
-               </a>
-            </li>
-            <li class="nav-item">
-               <a href="/admin/hospital" class="nav-link">
-                  <i class="nav-icon fas fa-user"></i>
-                  <p>Quản lý bệnh viện</p>
-               </a>
-            </li>
-            <li class="nav-item">
-               <a href="/admin/department" class="nav-link">
-                  <i class="nav-icon fas fa-user"></i>
-                  <p>Quản lý khoa</p>
-               </a>
-            </li>
-            <li class="nav-item">
-               <a href="/admin/medicine" class="nav-link">
-                  <i class="nav-icon fas fa-user"></i>
-                  <p>Quản lý thuốc</p>
-               </a>
-            </li>
-            <li class="nav-item">
-               <a href="/admin/active-mode-of-living" class="nav-link">
-                  <i class="nav-icon fas fa-user"></i>
-                  <p>Chế độ vận động</p>
-               </a>
-            </li>
-            <li class="nav-item">
-               <a href="/admin/nutrition-advice" class="nav-link">
-                  <i class="nav-icon fas fa-user"></i>
-                  <p>Lời khuyên dinh dưỡng</p>
-               </a>
-            </li>
-            <li class="nav-item">
-               <a href="/admin/menu-time" class="nav-link">
-                  <i class="nav-icon fas fa-user"></i>
-                  <p>Thời gian thực đơn</p>
-               </a>
-            </li>
-            <li class="nav-item">
-               <a href="/admin/alternative-food" class="nav-link">
-                  <i class="nav-icon fas fa-user"></i>
-                  <p>Thực phẩm thay thế</p>
-               </a>
-            </li>
-            <li class="nav-item">
-               <a href="/admin/food-type" class="nav-link">
-                  <i class="nav-icon fas fa-user"></i>
-                  <p>Loại thực phẩm</p>
-               </a>
-            </li>
-            <li class="nav-item">
-               <a href="/admin/food-info" class="nav-link">
-                  <i class="nav-icon fas fa-user"></i>
-                  <p>Thông tin thực phẩm</p>
-               </a>
-            </li>
-            <li class="nav-item">
-               <a href="/admin/log" class="nav-link">
-                  <i class="nav-icon fas fa-cube"></i>
-                  <p>Nhật ký hoạt động</p>
-               </a>
-            </li>
-            <li class="nav-item">
-               <a href="/admin/setting" class="nav-link">
-                  <i class="nav-icon fas fa-cogs"></i>
-                  <p>Cài đặt</p>
-               </a>
-            </li>
+            <% if(user){%>
+               <li class="nav-item">
+                  <a href="/admin" class="nav-link active">
+                     <i class="nav-icon fas fa-desktop"></i>
+                     <p>Trang tổng quan</p>
+                  </a>
+               </li>
+               <!-- Admin hoặc hệ thống -->
+               <% if (user.role_id.includes(1) || user.role_id.includes(3)){%>
+                  <li class="nav-item">
+                     <a href="/admin/role" class="nav-link">
+                        <i class="nav-icon fas fa-cubes"></i>
+                        <p>Quản lý quyền</p>
+                     </a>
+                  </li>
+                  <li class="nav-item">
+                     <a href="/admin/user" class="nav-link">
+                        <i class="nav-icon fas fa-user"></i>
+                        <p>Quản lý người dùng</p>
+                     </a>
+                  </li>
+                  <li class="nav-item">
+                     <a href="/admin/hospital" class="nav-link">
+                        <i class="nav-icon fas fa-user"></i>
+                        <p>Quản lý bệnh viện</p>
+                     </a>
+                  </li>
+                  <li class="nav-item">
+                     <a href="/admin/log" class="nav-link">
+                        <i class="nav-icon fas fa-cube"></i>
+                        <p>Nhật ký hoạt động</p>
+                     </a>
+                  </li>
+                  <li class="nav-item">
+                     <a href="/admin/setting" class="nav-link">
+                        <i class="nav-icon fas fa-cogs"></i>
+                        <p>Cài đặt</p>
+                     </a>
+                  </li>
+                  <!-- Quản lý bệnh viện -->
+                  <% if (user.role_id.includes(5) || user.role_id.includes(1) || user.role_id.includes(3)){%>
+                     <li class="nav-item">
+                        <a href="/admin/department" class="nav-link">
+                           <i class="nav-icon fas fa-user"></i>
+                           <p>Quản lý khoa</p>
+                        </a>
+                     </li>
+                     <!-- Bác sĩ -->
+                     <% if (user.role_id.includes(4) || user.role_id.includes(5) || user.role_id.includes(1) || user.role_id.includes(3)){%>
+                        <li class="nav-item">
+                           <a href="/admin/medicine" class="nav-link">
+                              <i class="nav-icon fas fa-user"></i>
+                              <p>Quản lý thuốc</p>
+                           </a>
+                        </li>
+                        <li class="nav-item">
+                           <a href="/admin/active-mode-of-living" class="nav-link">
+                              <i class="nav-icon fas fa-user"></i>
+                              <p>Chế độ vận động</p>
+                           </a>
+                        </li>
+                        <li class="nav-item">
+                           <a href="/admin/nutrition-advice" class="nav-link">
+                              <i class="nav-icon fas fa-user"></i>
+                              <p>Lời khuyên dinh dưỡng</p>
+                           </a>
+                        </li>
+                        <li class="nav-item">
+                           <a href="/admin/medical-test" class="nav-link">
+                              <i class="nav-icon fas fa-user"></i>
+                              <p>Chỉ định xét nghiệm</p>
+                           </a>
+                        </li>
+                        <li class="nav-item">
+                           <a href="/admin/alternative-food" class="nav-link">
+                              <i class="nav-icon fas fa-user"></i>
+                              <p>Thực phẩm thay thế</p>
+                           </a>
+                        </li>
+                        <li class="nav-item">
+                           <a href="/admin/food-type" class="nav-link">
+                              <i class="nav-icon fas fa-user"></i>
+                              <p>Loại thực phẩm</p>
+                           </a>
+                        </li>
+                        <li class="nav-item">
+                           <a href="/admin/food-info" class="nav-link">
+                              <i class="nav-icon fas fa-user"></i>
+                              <p>Thông tin thực phẩm</p>
+                           </a>
+                        </li>
+                     <% } %>
+                  <% } %>
+               <% } %>
+            <% } %>
          </ul>
       </nav>
    </div>

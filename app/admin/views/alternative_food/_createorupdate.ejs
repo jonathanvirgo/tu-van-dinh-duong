@@ -1,51 +1,37 @@
 ﻿<div class="form-group row">
   <div class="col-md-3">
     <div class="label-wrapper">
-      <label class="col-form-label flex-center">Tên khoa</label>
+      <label class="col-form-label flex-center">Tên thực phẩm thay thế</label>
     </div>
   </div>
   <div class="col-md-9">
     <div class="input-group input-group-required">
-      <input class="form-control text-box single-line" id="department_name" name="department_name" type="text" value="<%=department.name%>">
+      <input class="form-control text-box single-line" name="name" type="text" placeholder="Dùng để tìm kiếm" value="<%=alternativeFood.name%>">
       <div class="input-group-btn"><span class="required">*</span></div>
     </div>
   </div>
 </div>
 <div class="form-group row">
   <div class="col-md-3">
-    <div class="label-wrapper flex-center">
-      <label class="col-form-label">Bệnh viện</label>
+    <div class="label-wrapper">
+      <label class="col-form-label flex-center">Thực phẩm</label>
     </div>
   </div>
   <div class="col-md-9">
-    <div class="input-group-append input-group-required">
-      <div class="input-group">
-        <select id="hospital_id" name="hospital_id">
-          <% if (hospital.length > 0){%>
-            <% for (i = 0;i < hospital.length;i++){%>
-              <option <%=(hospital[i].id == department.hospital_id) ? 'selected' : ''%> value="<%=hospital[i].id%>"><%=hospital[i].name%></option>
-            <%}%>
-          <%}%>
-        </select>
-        <script>
-          $("#hospital_id").kendoDropDownList({
-            enable: true
-          });
-          </script>
-      </div>
-      <div class="input-group-btn"><span class="required">*</span></div>
+    <div class="input-group input-group-required">
+      <input class="form-control text-box single-line" name="food_main" type="text" value="<%=alternativeFood.food_main%>">
     </div>
   </div>
 </div>
 <div class="form-group row">
   <div class="col-md-3">
     <div class="label-wrapper flex-center">
-      <label class="col-form-label">Số điện thoại</label>
+      <label class="col-form-label">Thực phẩm thay thế</label>
     </div>
   </div>
   <div class="col-md-9">
     <div class="input-group input-group-required">
-      <input class="form-control text-box single-line" id="department_phone" name="department_phone" type="text" value="<%=department.phone%>">
+      <input class="form-control text-box single-line" name="food_replace" type="text" value="<%=alternativeFood.food_replace%>">
     </div>
   </div>
 </div>

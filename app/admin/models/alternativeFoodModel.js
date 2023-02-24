@@ -1,19 +1,19 @@
 var db      = require('../../config/db'),
 webService  = require('../../web/models/webModel');
 
-let roleService = {
+let alternativeFoodService = {
     create: function (parameter, callback) {
         db.get().getConnection(function (err, connection) {
             try {
                 if (err) return callback(err);
-                var sql   = "INSERT INTO department (name,hospital_id,phone) VALUES (?,?,?)";
-                var query = connection.query(sql, [parameter.name,parameter.hospital_id,parameter.phone], function (err, results, fields) {
+                var sql   = "INSERT INTO alternative_food (name,food_main,food_replace,hospital_id,department_id,created_by) VALUES (?,?,?,?,?,?)";
+                var query = connection.query(sql, [parameter.name,parameter.food_main,parameter.food_replace,parameter.hospital_id,parameter.department_id,parameter.created_by], function (err, results, fields) {
                     connection.release();
                     if (err) return callback(err);
                     callback(null, results, fields);
                 });
             } catch (error) {
-                webService.addToLogService(error, 'departmentModel create');
+                webService.addToLogService(error, 'alternativeFoodService create');
             }
         });
     },
@@ -21,14 +21,14 @@ let roleService = {
         db.get().getConnection(function (err, connection) {
             try {
                 if (err) return callback(err);
-                var sql   = 'UPDATE department SET name = ?, hospital_id = ?, phone = ? WHERE id=?';
-                var query = connection.query(sql, [parameter.name,parameter.hospital_id,parameter.phone, parameter.id], function (err, results, fields) {
+                var sql   = 'UPDATE alternative_food SET name = ?, food_main = ?, food_replace = ?, hospital_id = ?, department_id = ?, created_by = ? WHERE id=?';
+                var query = connection.query(sql, [parameter.name,parameter.food_main,parameter.food_replace, parameter.hospital_id, parameter.department_id, parameter.created_by, parameter.id], function (err, results, fields) {
                     connection.release();
                     if (err) return callback(err);
                     callback(null, results, fields);
                 });
             } catch (error) {
-                webService.addToLogService(error, 'departmentModel update');
+                webService.addToLogService(error, 'alternativeFoodService update');
             }
         });
     },
@@ -36,90 +36,98 @@ let roleService = {
         db.get().getConnection(function (err, connection) {
             try {
                 if (err) return callback(err);
-                var sql   = 'DELETE FROM department WHERE id=?';
+                var sql   = 'DELETE FROM alternative_food WHERE id=?';
                 var query = connection.query(sql, [role_id], function (err, results, fields) {
                     connection.release();
                     if (err) return callback(err);
                     callback(null, results, fields);
                 });
             } catch (error) {
-                webService.addToLogService(error, 'departmentModel delete');
+                webService.addToLogService(error, 'alternativeFoodService delete');
             }
         });
     },
-    countAllDepartment: function (parameter, callback) {
+    countAllAlternativeFood: function (parameter, callback) {
         db.get().getConnection(function (err, connection) {
             try {
                 if (err) return callback(err);
                 var paraSQL = [];
-                var sql     = 'SELECT COUNT(*) AS count FROM department WHERE id > 0';
+                var sql     = 'SELECT COUNT(*) AS count FROM alternative_food WHERE id > 0';
                 if (parameter.search_name != "") {
                     sql += " AND name LIKE ?";
                     paraSQL.push("%" + parameter.search_name + "%");
                 }
+                //Không phải Administrator thì load các bản ghi theo khoa viện
+                if (!parameter.role_ids.includes(1) && !parameter.role_ids.includes(3)){
+                    //Nếu là quản lý load theo viện
+                    if(parameter.role_ids.includes(5)){
+                        sql += " AND hospital_id = ?";
+                        paraSQL.push(parameter.hospital_id);
+                    }else if(parameter.role_ids.includes(4)){
+                        //Nếu là bác sĩ load theo khoa
+                        sql += " AND department_id = ?";
+                        paraSQL.push(parameter.department_id);
+                    }
+                }
                 var query = connection.query(sql, paraSQL, function (err, results, fields) {
                     connection.release();
                     if (err) return callback(err);
                     callback(null, results, fields);
                 });
             } catch (error) {
-                webService.addToLogService(error, 'departmentModel countAllDepartment');
+                webService.addToLogService(error, 'alternativeFoodService countAllAlternativeFood');
             }
         });
     },
-    getAllDepartment: function (parameter, callback) {
+    getAllAlternativeFood: function (parameter, callback) {
         db.get().getConnection(function (err, connection) {
             try {
                 if (err) return callback(err);
                 var paraSQL = [];
-                var sql     = 'SELECT department.*, hospital.name AS hospital_name FROM department INNER JOIN hospital ON department.hospital_id = hospital.id WHERE department.id > 0';
+                var sql     = 'SELECT * FROM alternative_food WHERE id > 0';
                 
                 if (parameter.search_name != "") {
-                    sql += " AND department.name LIKE ?";
+                    sql += " AND name LIKE ?";
                     paraSQL.push("%" + parameter.search_name + "%");
                 }
-                sql += " ORDER BY department.id DESC LIMIT " + parameter.skip + "," + parameter.take;
+                //Không phải Administrator thì load các bản ghi theo khoa viện
+                if (!parameter.role_ids.includes(1) && !parameter.role_ids.includes(3)){
+                    //Nếu là quản lý load theo viện
+                    if(parameter.role_ids.includes(5)){
+                        sql += " AND hospital_id = ?";
+                        paraSQL.push(parameter.hospital_id);
+                    }else if(parameter.role_ids.includes(4)){
+                        //Nếu là bác sĩ load theo khoa
+                        sql += " AND department_id = ?";
+                        paraSQL.push(parameter.department_id);
+                    }
+                }
+                sql += " ORDER BY id DESC LIMIT " + parameter.skip + "," + parameter.take;
                 var query = connection.query(sql, paraSQL, function (err, results, fields) {
                     connection.release();
                     if (err) return callback(err);
                     callback(null, results, fields);
                 });
             } catch (error) {
-                webService.addToLogService(error, 'departmentModel getAllDepartment');
+                webService.addToLogService(error, 'alternativeFoodService getAllAlternativeFood');
             }
         });
     },
-    getDepartmentById: function (role_id, callback) {
+    getAlternativeFoodById: function (role_id, callback) {
         db.get().getConnection(function (err, connection) {
             try {
                 if (err) return callback(err);
-                var sql   = 'SELECT * FROM department WHERE id = ?';
+                var sql   = 'SELECT * FROM alternative_food WHERE id = ?';
                 var query = connection.query(sql, [role_id], function (err, results, fields) {
                     connection.release();
                     if (err) return callback(err);
                     callback(null, results, fields);
                 });
             } catch (error) {
-                webService.addToLogService(error, 'departmentModel getDepartmentById');
+                webService.addToLogService(error, 'alternativeFoodService getAlternativeFoodById');
             }
         });
-    },
-    getAllDepartmentByHospital: function (id_hospital, callback) {
-        db.get().getConnection(function (err, connection) {
-            try {
-                if (err) return callback(err);
-                var sql     = 'SELECT id, name FROM department WHERE hospital_id = ?';
-                
-                var query = connection.query(sql, [id_hospital], function (err, results, fields) {
-                    connection.release();
-                    if (err) return callback(err);
-                    callback(null, results, fields);
-                });
-            } catch (error) {
-                webService.addToLogService(error, 'departmentModel getAllDepartmentByHospital');
-            }
-        });
-    },
+    }
 }
 
-module.exports = roleService;
+module.exports = alternativeFoodService;

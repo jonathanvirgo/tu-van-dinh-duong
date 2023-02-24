@@ -162,4 +162,10 @@ $(document).ready(function(){
         dateFormat: "d-m-Y",
         maxDate: "today"
     });
+    $("#nutrition_advice_id").on('select2:select', function(evt) {
+        console.log("nutrition_advice_id", evt);
+    });
+    $("#active_mode_of_living_id").on('select2:select', function(evt) {
+        console.log("active_mode_of_living_id", evt);
+    });
 });

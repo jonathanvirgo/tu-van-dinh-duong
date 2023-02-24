@@ -32,7 +32,7 @@ router.get('/create', function (req, res, next) {
         if (!req.user.isAdmin) {
             throw new Error(notice_admin);
         }
-        foodTypeService.getAllFoodType(function (err, result, fields) {
+        foodTypeService.getAllFoodType(req.user,function (err, result, fields) {
             if (err) {
                 adminService.addToLog(req, res, err);
                 return;
@@ -128,9 +128,11 @@ router.post('/create', function (req, res, next) {
                 animal_protein: isNaN(parseFloat(req.body.animal_protein)) ? null : req.body.animal_protein,
                 lipid: isNaN(parseFloat(req.body.lipid)) ? null : req.body.lipid,
                 unanimal_lipid: isNaN(parseFloat(req.body.unanimal_lipid)) ? null : req.body.unanimal_lipid,
-                carbohydrate: isNaN(parseFloat(req.body.carbohydrate)) ? null : req.body.carbohydrate
+                carbohydrate: isNaN(parseFloat(req.body.carbohydrate)) ? null : req.body.carbohydrate,
+                hospital_id: req.user.hospital_id,
+                department_id: req.user.department_id,
+                created_by: req.user.id 
             };
-        console.log("create", parameter);
         if(parameter.name == ''){
             str_error.push("Thiếu tên thực phẩm!");
         }
@@ -189,7 +191,10 @@ router.post('/edit/:id', function (req, res, next) {
                 animal_protein: isNaN(parseFloat(req.body.animal_protein)) ? null : req.body.animal_protein,
                 lipid: isNaN(parseFloat(req.body.lipid)) ? null : req.body.lipid,
                 unanimal_lipid: isNaN(parseFloat(req.body.unanimal_lipid)) ? null : req.body.unanimal_lipid,
-                carbohydrate: isNaN(parseFloat(req.body.carbohydrate)) ? null : req.body.carbohydrate
+                carbohydrate: isNaN(parseFloat(req.body.carbohydrate)) ? null : req.body.carbohydrate,
+                hospital_id: req.user.hospital_id,
+                department_id: req.user.department_id,
+                created_by: req.user.id 
             };
             console.log("parameter", parameter);
             if(parameter.name == ''){
@@ -276,7 +281,11 @@ router.post('/list', function (req, res, next) {
                 skip: isNaN(parseInt(req.body.start)) ? 0 : parseInt(req.body.start),
                 take: isNaN(parseInt(req.body.length)) ? 15 : parseInt(req.body.length),
                 search_name: req.body.search_name,
-                search_value: req.body.search_value
+                search_value: req.body.search_value,
+                hospital_id: req.user.hospital_id,
+                department_id: req.user.department_id,
+                created_by: req.user.id,
+                role_ids: req.user.role_id
             };
 
         resultMessage.draw = req.body.draw;

@@ -1,0 +1,36 @@
+﻿<div class="form-group row">
+  <div class="col-md-3">
+    <div class="label-wrapper">
+      <label class="col-form-label flex-center">Tên chỉ định</label>
+    </div>
+  </div>
+  <div class="col-md-9">
+    <div class="input-group input-group-required">
+      <input class="form-control text-box single-line" name="name" type="text" value="<%=medicalTest.name%>">
+      <div class="input-group-btn"><span class="required">*</span></div>
+    </div>
+  </div>
+</div>
+<div class="form-group row">
+  <div class="col-md-3">
+    <div class="label-wrapper">
+      <label class="col-form-label flex-center">Loại chỉ định</label>
+    </div>
+  </div>
+  <div class="col-md-9">
+    <div class="input-group-append input-group-required">
+      <div class="input-group">
+        <select id="medical_test_type" name="medical_test_type">
+          <option value="1" <%=medicalTest.type == 1 ? 'selected' : ''%> >Xét nghiệm sinh hóa</option>
+          <option value="2" <%=medicalTest.type == 2 ? 'selected' : ''%> >Xét nghiệm huyết học</option>
+        </select>
+        <script>
+          $("#medical_test_type").kendoDropDownList({
+            enable: true
+          });
+          </script>
+      </div>
+      <div class="input-group-btn"><span class="required">*</span></div>
+    </div>
+  </div>
+</div>

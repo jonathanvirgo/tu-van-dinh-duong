@@ -1,12 +1,11 @@
 ﻿var express         = require('express'),
     router          = express.Router(),
     path            = require('path'),
-    returnUrl       = "/admin/menu-time",
+    returnUrl       = "/admin/medical-test",
     notice_admin    = "Tài khoản của bạn không có quyền truy cập!",
     logService      = require('../models/logModel'),
     adminService    = require('../models/adminModel'),
-    modelService    = require('../models/menuTimeModel'),
-    hospitalService = require('../models/hospitalModel'); 
+    modelService    = require('../models/medicalTestModel'); 
 
 router.get('/', function (req, res, next) {
     try {
@@ -32,18 +31,11 @@ router.get('/create', function (req, res, next) {
         if (!req.user.isAdmin) {
             throw new Error(notice_admin);
         }
-        hospitalService.getAllHospital(function (err, result, fields) {
-            if (err) {
-                adminService.addToLog(req, res, err);
-                return;
-            }
-            res.render(viewPage("create"), {
-                user: req.user,
-                department: [],
-                hospital:result,
-                errors: []
-            });
-         });
+        res.render(viewPage("create"), {
+            user: req.user,
+            medicalTest: [],
+            errors: []
+        });
     } catch (e) {
         adminService.addToLog(req, res, e.message);
     }
@@ -57,53 +49,21 @@ router.get('/edit/:id', function (req, res) {
         if (!req.user.isAdmin) {
             throw new Error(notice_admin);
         }
-        let arrPromise = [],
-            hospital   = [],
-            department = {};
-
-        arrPromise.push(new Promise(function (resolve, reject) {
-            hospitalService.getAllHospital(function (err, result, fields) {
-                if (err) {
-                    return logService.create(req, err).then(function(log_id){
-                        str_error.push(err.sqlMessage);
-                        resolve();
-                    });
-                }
-                if (result !== undefined) {
-                    hospital = result;
-                }
-                resolve();
+        modelService.getMedicalTestById(req.params.id, function (err, result, fields) {
+            if (err) {
+                adminService.addToLog(req, res, err);
+                return;
+            }
+            if(result[0] == undefined){
+                adminService.addToLog(req, res, 'Không tìm thấy thực phẩm thay thế nào có id=' + req.params.id);
+                return;
+            }
+            res.render(viewPage("edit"), {
+                user: req.user,
+                medicalTest: result[0],
+                errors: []
             });
-        }));
-        arrPromise.push(new Promise(function (resolve, reject) {
-            modelService.getDepartmentById(req.params.id, function (err, result, fields) {
-                if (err) {
-                    return logService.create(req, err).then(function(log_id){
-                        str_error.push(err.sqlMessage);
-                        resolve();
-                    });
-                }
-                if (result[0] !== undefined) {
-                    department = result[0]
-                }
-                resolve();
-            });
-        }));
-
-        return new Promise(function (resolve, reject) {
-            Promise.all(arrPromise).then(function () {
-                if (department) {
-                    res.render(viewPage("edit"), {
-                        user: req.user,
-                        department: result[0],
-                        hospital:[],
-                        errors: []
-                    });
-                } else {
-                    adminService.addToLog(req, res, 'Không tìm thấy khoa nào có id=' + req.params.id);
-                }
-            });
-        });
+        })
     } catch (e) {
         adminService.addToLog(req, res, e.message);
     }
@@ -120,22 +80,24 @@ router.post('/create', function (req, res, next) {
         var str_error  = [],
             btn_action = req.body.save != undefined ? req.body.save : req.body.saveContinue,
             parameter  = {
-                name: req.body.department_name,
-                hospital_id: req.body.hospital_id ? req.body.hospital_id : null,
-                phone: req.body.department_phone ? req.body.department_phone : ''
+                name: req.body.name,
+                type: isNaN(parseInt(req.body.medical_test_type)) ? null : parseInt(req.body.medical_test_type),
+                department_id: req.user.department_id,
+                hospital_id: req.user.hospital_id,
+                created_by: req.user.id
             };
             
         if(parameter.name == ''){
-            str_error.push("Thiếu tên khoa!");
+            str_error.push("Thiếu tên chỉ định xét nghiệm!");
         }
-        if(!parameter.hospital_id){
-            str_error.push("Chưa chọn bệnh viện!");
+
+        if(!parameter.type){
+            str_error.push("Thiếu loại chỉ định!");
         }
         if(str_error.length > 0){
             res.render(viewPage("create"), {
                 user: req.user,
-                department: parameter,
-                hospital:[],
+                medicalTest: parameter,
                 errors: str_error
             });
         } else {
@@ -172,22 +134,23 @@ router.post('/edit/:id', function (req, res, next) {
             btn_action = req.body.save != undefined ? req.body.save : req.body.saveContinue,
             parameter  = {
                 id: parseInt(req.params.id),
-                name: req.body.department_name,
-                hospital_id: req.body.hospital_id ? req.body.hospital_id : null,
-                phone: req.body.department_phone ? req.body.department_phone : ''
+                name: req.body.name,
+                type: isNaN(parseInt(req.body.medical_test_type)) ? null : parseInt(req.body.medical_test_type),
+                department_id: req.user.department_id,
+                hospital_id: req.user.hospital_id,
+                created_by: req.user.id,
             };
-            
         if(parameter.name == ''){
-            str_error.push("Thiếu tên bệnh viện!");
+            str_error.push("Thiếu tên chỉ định xét nghiệm!");
         }
-        if(!parameter.hospital_id){
-            str_error.push("Chưa chọn bệnh viện!");
+
+        if(!parameter.type){
+            str_error.push("Thiếu loại chỉ định!");
         }
         if(str_error.length > 0){
             res.render(viewPage("edit"), {
                 user: req.user,
-                department: parameter,
-                hospital:[],
+                medicalTest: parameter,
                 errors: str_error
             });
         } else {
@@ -200,7 +163,7 @@ router.post('/edit/:id', function (req, res, next) {
                     if (btn_action == "save") {
                         res.redirect(returnUrl);
                     } else {
-                        res.redirect(returnUrl + '/edit/' + parameter.role_id);
+                        res.redirect(returnUrl + '/edit/' + parameter.id);
                     }
                 } else {
                     adminService.addToLog(req, res, 'Dữ liệu trả về không xác định!');
@@ -230,7 +193,7 @@ router.post('/delete/:id', function (req, res, next) {
             if(affectedRow > 0){
                 res.redirect(returnUrl); 
             } else {
-                adminService.addToLog(req, res, 'Không tìm thấy role có role_id=' + req.params.id);
+                adminService.addToLog(req, res, 'Không tìm thấy chỉ định xét nghiệm nào có id=' + req.params.id);
             }
         })
     } catch (e) {
@@ -258,12 +221,16 @@ router.post('/list', function (req, res, next) {
                 skip: isNaN(parseInt(req.body.start)) ? 0 : parseInt(req.body.start),
                 take: isNaN(parseInt(req.body.length)) ? 15 : parseInt(req.body.length),
                 search_name: req.body.search_name,
-                search_value: req.body.search_value
+                search_value: req.body.search_value,
+                department_id: req.user.department_id,
+                hospital_id: req.user.hospital_id,
+                created_by: req.user.id,
+                role_ids: req.user.role_id
             };
 
         resultMessage.draw = req.body.draw;
         arrPromise.push(new Promise(function (resolve, reject) {
-            modelService.countAllDepartment(parameter, function (err, result, fields) {
+            modelService.countAllMedicalTest(parameter, function (err, result, fields) {
                 if (err) {
                     return logService.create(req, err).then(function(){
                         resultMessage.error = err.sqlMessage;
@@ -279,7 +246,7 @@ router.post('/list', function (req, res, next) {
         }));
 
         arrPromise.push(new Promise(function (resolve, reject) {
-            modelService.getAllDepartment(parameter, function (err, result, fields) {
+            modelService.getAllMedicalTest(parameter, function (err, result, fields) {
                 if (err) {
                     return logService.create(req, err).then(function(){
                         resultMessage.error = err.sqlMessage;
@@ -306,42 +273,8 @@ router.post('/list', function (req, res, next) {
     }
 });
 
-router.get('/list-follow-hospital', function (req, res, next) {
-    var resultMessage = {
-        "data": [],
-        "error": ""
-    };
-    try {
-        if (!req.user) {
-            return res.redirect('/user/login');
-        }
-        if (!req.user.isAdmin) {
-            throw new Error(notice_admin);
-        }
-        var hospital_id = req.query.hos_id;
-
-        modelService.getAllDepartmentByHospital(hospital_id, function (err, result, fields) {
-            if (err) {
-                return logService.create(req, err).then(function(){
-                    resultMessage.error = err.sqlMessage;
-                });
-            }
-            if (result !== undefined) {
-                resultMessage.data = result;
-            }
-            console.log(result);
-            res.send(result);
-        });
-    } catch (e) {
-        logService.create(req, e.message).then(function(){
-            resultMessage.error = e.message;
-            res.send(resultMessage);
-        });
-    }
-});
-
 function viewPage(name) {
-    return path.resolve(__dirname, "../views/menu_time/" + name + ".ejs");
+    return path.resolve(__dirname, "../views/medical_test/" + name + ".ejs");
 }
 
 module.exports = router;

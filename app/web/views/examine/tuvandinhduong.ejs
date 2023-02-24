@@ -110,38 +110,96 @@
     </div>
     <h3 class="box-title-break">Lời khuyên dinh dưỡng</h3>
     <div class="row g-2 align-items-center">
+        <div class="col-6 col-md-6 d-flex">
+            <label class="col-form-label col-md-auto fw-bold mt-2" for="cus_butt">Chọn mẫu</label>
+            <div class="col-form-body col-md">
+                <div class="form-control-has-addon">
+                    <select class="form-select" name="nutrition_advice_id" id="nutrition_advice_id" data-plugin="select2" data-placeholder="Lời khuyên dinh dưỡng">
+                        <option></option>
+                        <% if(nutritionAdvice.length > 0){ %>
+                            <% for (let nu_advice of nutritionAdvice){ %>
+                                <option <%=nu_advice.id == examine.nutrition_advice_id ? 'selected' : ''%> value="<%= nu_advice.id %>"><%= nu_advice.name %></option>
+                            <%}%>   
+                        <%}%>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row g-2 align-items-center">
         <div class="row align-items-center">
-            <div class="col-6 col-md-3 fw-bold p-2">Nhóm TP</div>
+            <div class="col-6 col-md-2 fw-bold p-2">Nhóm TP</div>
             <div class="col-6 col-md-3 fw-bold p-2">TP nên dùng</div>
             <div class="col-6 col-md-3 fw-bold p-2">TP hạn chế dùng</div>
             <div class="col-6 col-md-3 fw-bold p-2">TP không nên dùng</div>
         </div>
         <div class="row align-items-center">
-            <div class="col-6 col-md-3 fw-bold p-2">Nhóm glucid</div>
-            <div class="col-6 col-md-3 p-2"></div>
-            <div class="col-6 col-md-3 p-2"></div>
-            <div class="col-6 col-md-3 p-2"></div>
+            <div class="col-6 col-md-2 fw-bold p-2">Nhóm glucid</div>
+            <div class="col-6 col-md-3 p-2">
+                <textarea class="form-control text-box single-line" id="glucid_should_use" name="glucid_should_use" onclick="clearInput('#glucid_should_use')"><%=examine.glucid_should_use%></textarea>
+            </div>
+            <div class="col-6 col-md-3 p-2">
+                <textarea class="form-control text-box single-line" id="glucid_limited_use" name="glucid_limited_use" onclick="clearInput('#glucid_limited_use')"><%=examine.glucid_limited_use%></textarea>
+            </div>
+            <div class="col-6 col-md-3 p-2">
+                <textarea class="form-control text-box single-line" id="glucid_should_not_use" name="glucid_should_not_use" onclick="clearInput('#glucid_should_not_use')"><%=examine.glucid_should_not_use%></textarea>
+            </div>
         </div>
         <div class="row align-items-center">
-            <div class="col-6 col-md-3 fw-bold p-2">Nhóm protein</div>
-            <div class="col-6 col-md-3 p-2"></div>
-            <div class="col-6 col-md-3 p-2"></div>
-            <div class="col-6 col-md-3 p-2"></div>
+            <div class="col-6 col-md-2 fw-bold p-2">Nhóm protein</div>
+            <div class="col-6 col-md-3 p-2">
+                <textarea class="form-control text-box single-line" name="protein_should_use" id="protein_should_use" onclick="clearInput('#protein_should_use')"><%=examine.protein_should_use%></textarea>
+            </div>
+            <div class="col-6 col-md-3 p-2">
+                <textarea class="form-control text-box single-line" name="protein_limited_use" id="protein_limited_use" onclick="clearInput('#protein_limited_use')"><%=examine.protein_limited_use%></textarea>
+            </div>
+            <div class="col-6 col-md-3 p-2">
+                <textarea class="form-control text-box single-line" name="protein_should_not_use" id="protein_should_not_use" onclick="clearInput('#protein_should_not_use')"><%=examine.protein_should_not_use%></textarea>
+            </div>
         </div>
         <div class="row align-items-center">
-            <div class="col-6 col-md-3 fw-bold p-2">Nhóm lipid</div>
-            <div class="col-6 col-md-3 p-2"></div>
-            <div class="col-6 col-md-3 p-2"></div>
-            <div class="col-6 col-md-3 p-2"></div>
+            <div class="col-6 col-md-2 fw-bold p-2">Nhóm lipid</div>
+            <div class="col-6 col-md-3 p-2">
+                <textarea class="form-control text-box single-line" name="lipid_should_use" id="lipid_should_use" onclick="clearInput('#lipid_should_use')"><%=examine.lipid_should_use%></textarea>
+            </div>
+            <div class="col-6 col-md-3 p-2">
+                <textarea class="form-control text-box single-line" name="lipid_limited_use" id="lipid_limited_use" onclick="clearInput('#lipid_limited_use')"><%=examine.lipid_limited_use%></textarea>
+            </div>
+            <div class="col-6 col-md-3 p-2">
+                <textarea class="form-control text-box single-line" name="lipid_should_not_use" id="lipid_should_not_use" onclick="clearInput('#lipid_should_not_use')"><%=examine.lipid_should_not_use%></textarea>
+            </div>
         </div>
         <div class="row align-items-center">
-            <div class="col-6 col-md-3 fw-bold p-2">Nhóm VTM & CK</div>
-            <div class="col-6 col-md-3 p-2"></div>
-            <div class="col-6 col-md-3 p-2"></div>
-            <div class="col-6 col-md-3 p-2"></div>
+            <div class="col-6 col-md-2 fw-bold p-2">Nhóm VTM & CK</div>
+            <div class="col-6 col-md-3 p-2">
+                <textarea class="form-control text-box single-line" name="vitamin_ck_should_use" id="vitamin_ck_should_use" onclick="clearInput('#vitamin_ck_should_use')"><%=examine.vitamin_ck_should_use%></textarea>
+            </div>
+            <div class="col-6 col-md-3 p-2">
+                <textarea class="form-control text-box single-line" name="vitamin_ck_limited_use" id="vitamin_ck_limited_use" onclick="clearInput('#vitamin_ck_limited_use')"><%=examine.vitamin_ck_limited_use%></textarea>
+            </div>
+            <div class="col-6 col-md-3 p-2">
+                <textarea class="form-control text-box single-line" name="vitamin_ck_should_not_use" id="vitamin_ck_should_not_use" onclick="clearInput('#vitamin_ck_should_not_use')"><%=examine.vitamin_ck_should_not_use%></textarea>
+            </div>
         </div>
     </div>
     <h3 class="box-title-break">Chế độ vận động sinh hoạt</h3>
+    <div class="row g-2 align-items-center">
+        <div class="col-6 col-md-6 d-flex">
+            <label class="col-form-label col-md-auto fw-bold mt-2" for="cus_butt">Chọn mẫu</label>
+            <div class="col-form-body col-md">
+                <div class="form-control-has-addon">
+                    <select class="form-select" name="active_mode_of_living_id" id="active_mode_of_living_id" data-plugin="select2" data-placeholder="Chế độ vận động sinh hoạt">
+                        <option></option>
+                        <% if(activeModeOfLiving.length > 0){ %>
+                            <% for (let ac_Moliving of nutritionAdvice){ %>
+                                <option <%=ac_Moliving.id == examine.active_mode_of_living_id ? 'selected' : ''%> value="<%= ac_Moliving.id %>"><%= ac_Moliving.name %></option>
+                            <%}%>   
+                        <%}%>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
     <div class="row">
         <div class="col-form-body col-md">
             <div class="form-control-has-addon">

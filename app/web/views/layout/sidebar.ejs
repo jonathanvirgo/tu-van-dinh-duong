@@ -25,7 +25,7 @@
           </a>
         </li>
       <% } %>
-      <% if (user.isAdmin == true){%>
+      <% if (user.isAdmin == true || !user.role_id.includes(2)){%>
       <li class="nav-item-btn">
         <a href="/admin" class="btn btn-primary sidebar-btn-post w-100">
           <svg class="iconsvg-edit">

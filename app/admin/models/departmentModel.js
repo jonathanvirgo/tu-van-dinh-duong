@@ -6,8 +6,8 @@ let departmentService = {
         db.get().getConnection(function (err, connection) {
             try {
                 if (err) return callback(err);
-                var sql   = "INSERT INTO department (name,hospital_id,phone) VALUES (?,?,?)";
-                var query = connection.query(sql, [parameter.name,parameter.hospital_id,parameter.phone], function (err, results, fields) {
+                var sql   = "INSERT INTO department (name,hospital_id,phone,created_by) VALUES (?,?,?,?)";
+                var query = connection.query(sql, [parameter.name,parameter.hospital_id,parameter.phone,parameter.created_by], function (err, results, fields) {
                     connection.release();
                     if (err) return callback(err);
                     callback(null, results, fields);
@@ -21,8 +21,8 @@ let departmentService = {
         db.get().getConnection(function (err, connection) {
             try {
                 if (err) return callback(err);
-                var sql   = 'UPDATE department SET name = ?, hospital_id = ?, phone = ? WHERE id=?';
-                var query = connection.query(sql, [parameter.name,parameter.hospital_id,parameter.phone, parameter.id], function (err, results, fields) {
+                var sql   = 'UPDATE department SET name = ?, hospital_id = ?, phone = ?, created_by = ? WHERE id=?';
+                var query = connection.query(sql, [parameter.name,parameter.hospital_id,parameter.phone, parameter.created_by, parameter.id], function (err, results, fields) {
                     connection.release();
                     if (err) return callback(err);
                     callback(null, results, fields);
@@ -57,6 +57,14 @@ let departmentService = {
                     sql += " AND name LIKE ?";
                     paraSQL.push("%" + parameter.search_name + "%");
                 }
+                //Không phải Administrator thì load các bản ghi theo khoa viện
+                if (!parameter.role_ids.includes(1) && !parameter.role_ids.includes(3)){
+                    //Nếu là quản lý load theo viện
+                    if(parameter.role_ids.includes(5)){
+                        sql += " AND hospital_id = ?";
+                        paraSQL.push(parameter.hospital_id);
+                    }
+                }
                 var query = connection.query(sql, paraSQL, function (err, results, fields) {
                     connection.release();
                     if (err) return callback(err);
@@ -77,6 +85,14 @@ let departmentService = {
                 if (parameter.search_name != "") {
                     sql += " AND department.name LIKE ?";
                     paraSQL.push("%" + parameter.search_name + "%");
+                }
+                //Không phải Administrator thì load các bản ghi theo khoa viện
+                if (!parameter.role_ids.includes(1) && !parameter.role_ids.includes(3)){
+                    //Nếu là quản lý load theo viện
+                    if(parameter.role_ids.includes(5)){
+                        sql += " AND hospital.id = ?";
+                        paraSQL.push(parameter.hospital_id);
+                    }
                 }
                 sql += " ORDER BY department.id DESC LIMIT " + parameter.skip + "," + parameter.take;
                 var query = connection.query(sql, paraSQL, function (err, results, fields) {

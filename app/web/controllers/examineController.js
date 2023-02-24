@@ -123,7 +123,7 @@ router.get('/edit/:id', function(req, res, next) {
                 if(detailExamine.data.length == 0){
                     str_errors.push("Không tìm thấy thông tin bài viết có mã #" + req.params.id);
                 }else{
-                    if (!req.user.role_id.includes(1) && !req.user.role_id.includes(2)){
+                    if (!req.user.role_id.includes(1) && !req.user.role_id.includes(3)){
                         //Nếu là quản lý xem toàn viện
                         if(req.user.role_id.includes(5) && req.user.hospital_id !== detailExamine.data[0].hospital_id){
                             str_errors.push("Bạn không có quyền truy cập thông tin bài #" + req.params.id);
@@ -186,6 +186,13 @@ router.get('/create', function(req, res, next) {
             resultData = {
                 filter: []
             };
+
+        arrPromise.push(webService.createSideBarFilter(req, 1).then(function(dataFilter) {
+            resultData.filter = dataFilter;
+            if (resultData.filter.error.length > 0) {
+                str_errors = str_errors.concat(resultData.filter.error);
+            }
+        }));
 
         arrPromise.push(webService.createSideBarFilter(req, 1).then(function(dataFilter) {
             resultData.filter = dataFilter;
@@ -272,6 +279,20 @@ router.post('/create', function(req, res, next) {
                 cus_butt:               req.body.cus_butt,
                 cus_cseomong:           req.body.cus_cseomong,
                 active_mode_of_living:  req.body.active_mode_of_living,
+                glucid_should_use:      req.body.glucid_should_use,
+                glucid_limited_use:     req.body.glucid_limited_use,
+                glucid_should_not_use:  req.body.glucid_should_not_use,
+                protein_should_use:     req.body.protein_should_use,
+                protein_limited_use:    req.body.protein_limited_use,
+                protein_should_not_use: req.body.protein_should_not_use,
+                lipid_should_use:       req.body.lipid_should_use,
+                lipid_limited_use:      req.body.lipid_limited_use,
+                lipid_should_not_use:   req.body.lipid_should_not_use,
+                vitamin_ck_should_use:  req.body.vitamin_ck_should_use,
+                vitamin_ck_limited_use: req.body.vitamin_ck_limited_use,
+                vitamin_ck_should_not_use: req.body.vitamin_ck_should_not_use,
+                nutrition_advice_id:    req.body.nutrition_advice_id,
+                active_mode_of_living_id: req.body.active_mode_of_living_id,
                 department_id:          req.user.department_id,
                 status:                 1,
                 created_by:             req.user.id
@@ -417,9 +438,20 @@ router.post('/edit/:id', function(req, res, next) {
                 cus_butt:               req.body.cus_butt,
                 cus_cseomong:           req.body.cus_cseomong,
                 active_mode_of_living:  req.body.active_mode_of_living,
-                department_id:          req.user.department_id,
-                status:                 1,
-                created_by:             req.user.id
+                glucid_should_use:      req.body.glucid_should_use,
+                glucid_limited_use:     req.body.glucid_limited_use,
+                glucid_should_not_use:  req.body.glucid_should_not_use,
+                protein_should_use:     req.body.protein_should_use,
+                protein_limited_use:    req.body.protein_limited_use,
+                protein_should_not_use: req.body.protein_should_not_use,
+                lipid_should_use:       req.body.lipid_should_use,
+                lipid_limited_use:      req.body.lipid_limited_use,
+                lipid_should_not_use:   req.body.lipid_should_not_use,
+                vitamin_ck_should_use:  req.body.vitamin_ck_should_use,
+                vitamin_ck_limited_use: req.body.vitamin_ck_limited_use,
+                vitamin_ck_should_not_use: req.body.vitamin_ck_should_not_use,
+                nutrition_advice_id:    req.body.nutrition_advice_id,
+                active_mode_of_living_id: req.body.active_mode_of_living_id
             };
         
         if(!parameter.cus_name){

@@ -1,19 +1,19 @@
 var db      = require('../../config/db'),
 webService  = require('../../web/models/webModel');
 
-let foodInfoService = {
+let medicalTestService = {
     create: function (parameter, callback) {
         db.get().getConnection(function (err, connection) {
             try {
                 if (err) return callback(err);
-                var sql   = "INSERT INTO food_info (name,food_type_id,weight,energy,protein,animal_protein,lipid,unanimal_lipid,carbohydrate,created_at,hospital_id,department_id,created_by) VALUES (?,?,?,?,?,?,?,?,?,CURRENT_TIMESTAMP,?,?,?)";
-                var query = connection.query(sql, [parameter.name,parameter.food_type_id,parameter.weight,parameter.energy,parameter.protein,parameter.animal_protein,parameter.lipid,parameter.unanimal_lipid,parameter.carbohydrate,parameter.hospital_id,parameter.department_id,parameter.created_by], function (err, results, fields) {
+                var sql   = "INSERT INTO medical_test (name,type,hospital_id,department_id,created_by) VALUES (?,?,?,?,?)";
+                var query = connection.query(sql, [parameter.name,parameter.type,parameter.hospital_id,parameter.department_id,parameter.created_by], function (err, results, fields) {
                     connection.release();
                     if (err) return callback(err);
                     callback(null, results, fields);
                 });
             } catch (error) {
-                webService.addToLogService(error, 'foodInfoModel create');
+                webService.addToLogService(error, 'medicalTestService create');
             }
         });
     },
@@ -21,38 +21,38 @@ let foodInfoService = {
         db.get().getConnection(function (err, connection) {
             try {
                 if (err) return callback(err);
-                var sql   = 'UPDATE food_info SET name = ?, food_type_id = ?, weight = ?, energy = ?, protein = ?, animal_protein = ?, lipid = ?, unanimal_lipid = ?, carbohydrate = ?, hospital_id = ?, department_id = ?, created_by = ? WHERE id=?';
-                var query = connection.query(sql, [parameter.name,parameter.food_type_id,parameter.weight,parameter.energy,parameter.protein,parameter.animal_protein,parameter.lipid,parameter.unanimal_lipid,parameter.carbohydrate,parameter.hospital_id,parameter.department_id,parameter.created_by, parameter.id], function (err, results, fields) {
+                var sql   = 'UPDATE medical_test SET name = ?, type = ?, hospital_id = ?, department_id = ?, created_by = ? WHERE id=?';
+                var query = connection.query(sql, [parameter.name,parameter.type, parameter.hospital_id, parameter.department_id, parameter.created_by, parameter.id], function (err, results, fields) {
                     connection.release();
                     if (err) return callback(err);
                     callback(null, results, fields);
                 });
             } catch (error) {
-                webService.addToLogService(error, 'foodInfoModel update');
+                webService.addToLogService(error, 'medicalTestService update');
             }
         });
     },
-    delete: function (role_id, callback) {
+    delete: function (id, callback) {
         db.get().getConnection(function (err, connection) {
             try {
                 if (err) return callback(err);
-                var sql   = 'DELETE FROM food_info WHERE id=?';
-                var query = connection.query(sql, [role_id], function (err, results, fields) {
+                var sql   = 'DELETE FROM medical_test WHERE id=?';
+                var query = connection.query(sql, [id], function (err, results, fields) {
                     connection.release();
                     if (err) return callback(err);
                     callback(null, results, fields);
                 });
             } catch (error) {
-                webService.addToLogService(error, 'foodInfoModel delete');
+                webService.addToLogService(error, 'medicalTestService delete');
             }
         });
     },
-    countAllFoodInfo: function (parameter, callback) {
+    countAllMedicalTest: function (parameter, callback) {
         db.get().getConnection(function (err, connection) {
             try {
                 if (err) return callback(err);
                 var paraSQL = [];
-                var sql     = 'SELECT COUNT(*) AS count FROM food_info WHERE id > 0';
+                var sql     = 'SELECT COUNT(*) AS count FROM medical_test WHERE id > 0';
                 if (parameter.search_name != "") {
                     sql += " AND name LIKE ?";
                     paraSQL.push("%" + parameter.search_name + "%");
@@ -75,19 +75,19 @@ let foodInfoService = {
                     callback(null, results, fields);
                 });
             } catch (error) {
-                webService.addToLogService(error, 'foodInfoModel countAllFoodInfo');
+                webService.addToLogService(error, 'medicalTestService countAllMedicalTest');
             }
         });
     },
-    getAllFoodInfo: function (parameter, callback) {
+    getAllMedicalTest: function (parameter, callback) {
         db.get().getConnection(function (err, connection) {
             try {
                 if (err) return callback(err);
                 var paraSQL = [];
-                var sql     = 'SELECT food_info.*, food_type.name AS food_type_name FROM food_info INNER JOIN food_type ON food_info.food_type_id = food_type.id WHERE food_info.id > 0';
+                var sql     = 'SELECT * FROM medical_test WHERE id > 0';
                 
                 if (parameter.search_name != "") {
-                    sql += " AND food_info.name LIKE ?";
+                    sql += " AND name LIKE ?";
                     paraSQL.push("%" + parameter.search_name + "%");
                 }
                 //Không phải Administrator thì load các bản ghi theo khoa viện
@@ -102,48 +102,32 @@ let foodInfoService = {
                         paraSQL.push(parameter.department_id);
                     }
                 }
-                sql += " ORDER BY food_info.id DESC LIMIT " + parameter.skip + "," + parameter.take;
+                sql += " ORDER BY id DESC LIMIT " + parameter.skip + "," + parameter.take;
                 var query = connection.query(sql, paraSQL, function (err, results, fields) {
                     connection.release();
                     if (err) return callback(err);
                     callback(null, results, fields);
                 });
             } catch (error) {
-                webService.addToLogService(error, 'foodInfoModel getAllFoodInfo');
+                webService.addToLogService(error, 'medicalTestService getAllMedicalTest');
             }
         });
     },
-    getFoodInfoById: function (role_id, callback) {
+    getMedicalTestById: function (id, callback) {
         db.get().getConnection(function (err, connection) {
             try {
                 if (err) return callback(err);
-                var sql   = 'SELECT * FROM food_info WHERE id = ?';
-                var query = connection.query(sql, [role_id], function (err, results, fields) {
+                var sql   = 'SELECT * FROM medical_test WHERE id = ?';
+                var query = connection.query(sql, [id], function (err, results, fields) {
                     connection.release();
                     if (err) return callback(err);
                     callback(null, results, fields);
                 });
             } catch (error) {
-                webService.addToLogService(error, 'foodInfoModel getFoodInfoById');
+                webService.addToLogService(error, 'medicalTestService getMedicalTestById');
             }
         });
-    },
-    getAllFoodInfoByFoodType: function (id_food_type, callback) {
-        db.get().getConnection(function (err, connection) {
-            try {
-                if (err) return callback(err);
-                var sql     = 'SELECT id, name FROM food_info WHERE food_type_id = ?';
-                
-                var query = connection.query(sql, [id_food_type], function (err, results, fields) {
-                    connection.release();
-                    if (err) return callback(err);
-                    callback(null, results, fields);
-                });
-            } catch (error) {
-                webService.addToLogService(error, 'foodInfoModel getAllFoodInfoByFoodType');
-            }
-        });
-    },
+    }
 }
 
-module.exports = foodInfoService;
+module.exports = medicalTestService;

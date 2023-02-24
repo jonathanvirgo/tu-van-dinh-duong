@@ -33,10 +33,10 @@ let examineService = {
                 }
             }
             //Không phải Administrator thì load các bản ghi theo khoa viện
-            if (!search.role_ids.includes(1) && !search.role_ids.includes(2)){
+            if (!search.role_ids.includes(1) && !search.role_ids.includes(3)){
                 //Nếu là quản lý load theo viện
                 if(search.role_ids.includes(5)){
-                    sql += " AND hospital_id = ?";
+                    sql += " AND examine.hospital_id = ?";
                     paraSQL.push(search.hospital_id);
                 }else if(search.role_ids.includes(4)){
                     //Nếu là bác sĩ load theo khoa
@@ -90,10 +90,10 @@ let examineService = {
                 }
             }
             //Không phải Administrator thì load các bản ghi theo khoa viện
-            if (!search.role_ids.includes(1) && !search.role_ids.includes(2)){
+            if (!search.role_ids.includes(1) && !search.role_ids.includes(3)){
                 //Nếu là quản lý load theo viện
                 if(search.role_ids.includes(5)){
-                    sql += " AND hospital_id = ?";
+                    sql += " AND examine.hospital_id = ?";
                     paraSQL.push(search.hospital_id);
                 }else if(search.role_ids.includes(4)){
                     //Nếu là bác sĩ load theo khoa

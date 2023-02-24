@@ -6,8 +6,8 @@ let activeModeOfLivingService = {
         db.get().getConnection(function (err, connection) {
             try {
                 if (err) return callback(err);
-                var sql   = "INSERT INTO active_mode_of_living (name,detail) VALUES (?,?)";
-                var query = connection.query(sql, [parameter.name,parameter.detail], function (err, results, fields) {
+                var sql   = "INSERT INTO active_mode_of_living (name,detail,hospital_id,department_id,created_by) VALUES (?,?,?,?,?)";
+                var query = connection.query(sql, [parameter.name,parameter.detail,parameter.hospital_id,parameter.department_id,parameter.created_by], function (err, results, fields) {
                     connection.release();
                     if (err) return callback(err);
                     callback(null, results, fields);
@@ -21,8 +21,8 @@ let activeModeOfLivingService = {
         db.get().getConnection(function (err, connection) {
             try {
                 if (err) return callback(err);
-                var sql   = 'UPDATE active_mode_of_living SET name = ?, detail = ? WHERE id=?';
-                var query = connection.query(sql, [parameter.name,parameter.detail, parameter.id], function (err, results, fields) {
+                var sql   = 'UPDATE active_mode_of_living SET name = ?, detail = ?, hospital_id = ?, department_id = ?, created_by = ? WHERE id=?';
+                var query = connection.query(sql, [parameter.name,parameter.detail, parameter.hospital_id, parameter.department_id, parameter.created_by, parameter.id], function (err, results, fields) {
                     connection.release();
                     if (err) return callback(err);
                     callback(null, results, fields);
@@ -57,6 +57,18 @@ let activeModeOfLivingService = {
                     sql += " AND name LIKE ?";
                     paraSQL.push("%" + parameter.search_name + "%");
                 }
+                //Không phải Administrator thì load các bản ghi theo khoa viện
+                if (!parameter.role_ids.includes(1) && !parameter.role_ids.includes(3)){
+                    //Nếu là quản lý load theo viện
+                    if(parameter.role_ids.includes(5)){
+                        sql += " AND hospital_id = ?";
+                        paraSQL.push(parameter.hospital_id);
+                    }else if(parameter.role_ids.includes(4)){
+                        //Nếu là bác sĩ load theo khoa
+                        sql += " AND department_id = ?";
+                        paraSQL.push(parameter.department_id);
+                    }
+                }
                 var query = connection.query(sql, paraSQL, function (err, results, fields) {
                     connection.release();
                     if (err) return callback(err);
@@ -77,6 +89,18 @@ let activeModeOfLivingService = {
                 if (parameter.search_name != "") {
                     sql += " AND name LIKE ?";
                     paraSQL.push("%" + parameter.search_name + "%");
+                }
+                //Không phải Administrator thì load các bản ghi theo khoa viện
+                if (!parameter.role_ids.includes(1) && !parameter.role_ids.includes(3)){
+                    //Nếu là quản lý load theo viện
+                    if(parameter.role_ids.includes(5)){
+                        sql += " AND hospital_id = ?";
+                        paraSQL.push(parameter.hospital_id);
+                    }else if(parameter.role_ids.includes(4)){
+                        //Nếu là bác sĩ load theo khoa
+                        sql += " AND department_id = ?";
+                        paraSQL.push(parameter.department_id);
+                    }
                 }
                 sql += " ORDER BY id DESC LIMIT " + parameter.skip + "," + parameter.take;
                 var query = connection.query(sql, paraSQL, function (err, results, fields) {

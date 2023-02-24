@@ -122,7 +122,8 @@ router.post('/create', function (req, res, next) {
             parameter  = {
                 name: req.body.department_name,
                 hospital_id: req.body.hospital_id ? req.body.hospital_id : null,
-                phone: req.body.department_phone ? req.body.department_phone : ''
+                phone: req.body.department_phone ? req.body.department_phone : '',
+                created_by: req.user.id
             };
             
         if(parameter.name == ''){
@@ -174,7 +175,8 @@ router.post('/edit/:id', function (req, res, next) {
                 id: parseInt(req.params.id),
                 name: req.body.department_name,
                 hospital_id: req.body.hospital_id ? req.body.hospital_id : null,
-                phone: req.body.department_phone ? req.body.department_phone : ''
+                phone: req.body.department_phone ? req.body.department_phone : '',
+                created_by: req.user.id
             };
             
         if(parameter.name == ''){
@@ -258,7 +260,8 @@ router.post('/list', function (req, res, next) {
                 skip: isNaN(parseInt(req.body.start)) ? 0 : parseInt(req.body.start),
                 take: isNaN(parseInt(req.body.length)) ? 15 : parseInt(req.body.length),
                 search_name: req.body.search_name,
-                search_value: req.body.search_value
+                search_value: req.body.search_value,
+                role_ids: req.user.role_id
             };
 
         resultMessage.draw = req.body.draw;
