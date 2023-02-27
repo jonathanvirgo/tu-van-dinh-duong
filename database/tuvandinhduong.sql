@@ -22,12 +22,18 @@ CREATE TABLE `active_mode_of_living` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL,
   `detail` longtext NOT NULL,
-  `created_at` timestamp NULL DEFAULT NULL ON UPDATE current_timestamp(),
+  `department_id` int(11) DEFAULT NULL,
+  `hospital_id` int(11) DEFAULT NULL,
+  `created_by` int(11) DEFAULT NULL,
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp(),
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4;
 
 /*Data for the table `active_mode_of_living` */
+
+insert  into `active_mode_of_living`(`id`,`name`,`detail`,`department_id`,`hospital_id`,`created_by`,`updated_at`) values 
+(2,'Bạch Mai','test 3',NULL,NULL,NULL,'2023-02-22 14:07:27'),
+(3,' Nguyễn quốc đạt','1',3,1,12,'2023-02-27 15:36:39');
 
 /*Table structure for table `alternative_food` */
 
@@ -35,15 +41,15 @@ DROP TABLE IF EXISTS `alternative_food`;
 
 CREATE TABLE `alternative_food` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `food_info_id` int(11) NOT NULL,
-  `weight_food_info` int(11) NOT NULL,
-  `food_info_unit` varchar(255) DEFAULT NULL,
-  `food_info_id_replace` int(11) NOT NULL,
-  `food_info_unit_replace` varchar(255) DEFAULT NULL,
-  `weight_food_info_replace` int(11) NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `food_main` longtext DEFAULT NULL,
+  `food_replace` longtext DEFAULT NULL,
+  `hospital_id` int(11) DEFAULT NULL,
+  `department_id` int(11) DEFAULT NULL,
+  `created_by` int(11) DEFAULT NULL,
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp(),
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4;
 
 /*Data for the table `alternative_food` */
 
@@ -60,6 +66,7 @@ CREATE TABLE `customer` (
   `cus_birthday` date DEFAULT NULL,
   `cus_address` varchar(1024) DEFAULT NULL,
   `department_id` int(11) DEFAULT NULL,
+  `hospital_id` int(11) DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp(),
   PRIMARY KEY (`id`),
@@ -68,11 +75,11 @@ CREATE TABLE `customer` (
 
 /*Data for the table `customer` */
 
-insert  into `customer`(`id`,`cus_name`,`cus_email`,`cus_phone`,`cus_gender`,`cus_birthday`,`cus_address`,`department_id`,`created_at`,`updated_at`) values 
-(1,'Nguyễn Quốc Đat','','0989402893',1,'0000-00-00','24 Trâu Quỳ Gia lâm Hà nội',2,NULL,'2023-02-20 15:03:42'),
-(2,'Nguyễn Phương Linh','','0941926837',0,'2020-10-15','24 Trâu Quỳ  - Gia Lâm - Hà Nội',2,'2023-02-20 15:20:14','2023-02-20 15:20:14'),
-(3,'Bài test 2','qdatvirgo@gmail.com','Bài test 2',0,'2023-02-06','24 Trâu Quỳ Gia Lâm Hà Nội',2,'2023-02-21 17:16:37','2023-02-21 17:16:37'),
-(4,'Bài test 4','','',1,'2023-02-21','',2,'2023-02-21 17:20:14','2023-02-21 17:20:14');
+insert  into `customer`(`id`,`cus_name`,`cus_email`,`cus_phone`,`cus_gender`,`cus_birthday`,`cus_address`,`department_id`,`hospital_id`,`created_at`,`updated_at`) values 
+(1,'Nguyễn Quốc Đat','','0989402893',1,'0000-00-00','24 Trâu Quỳ Gia lâm Hà nội',2,NULL,NULL,'2023-02-20 15:03:42'),
+(2,'Nguyễn Phương Linh','','0941926837',0,'2020-10-15','24 Trâu Quỳ  - Gia Lâm - Hà Nội',2,NULL,'2023-02-20 15:20:14','2023-02-20 15:20:14'),
+(3,'Bài test 2','qdatvirgo@gmail.com','Bài test 2',0,'2023-02-06','24 Trâu Quỳ Gia Lâm Hà Nội',2,NULL,'2023-02-21 17:16:37','2023-02-21 17:16:37'),
+(4,'Bài test 4','','',1,'2023-02-21','',2,NULL,'2023-02-21 17:20:14','2023-02-21 17:20:14');
 
 /*Table structure for table `department` */
 
@@ -83,14 +90,15 @@ CREATE TABLE `department` (
   `name` varchar(255) DEFAULT NULL,
   `hospital_id` int(11) NOT NULL,
   `phone` varchar(255) DEFAULT NULL,
+  `created_by` int(11) DEFAULT NULL,
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp(),
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4;
 
 /*Data for the table `department` */
 
-insert  into `department`(`id`,`name`,`hospital_id`,`phone`,`updated_at`) values 
-(2,'Khoa dinh dưỡng',1,'','2023-02-16 14:04:14');
+insert  into `department`(`id`,`name`,`hospital_id`,`phone`,`created_by`,`updated_at`) values 
+(3,'Khoa dinh dưỡng',1,'',NULL,'2023-02-22 15:55:01');
 
 /*Table structure for table `examine` */
 
@@ -129,25 +137,40 @@ CREATE TABLE `examine` (
   `cus_butt` varchar(255) DEFAULT NULL,
   `cus_cseomong` varchar(255) DEFAULT NULL,
   `active_mode_of_living` longtext DEFAULT NULL COMMENT 'che do van dong sinh hoat',
+  `hospital_id` int(11) DEFAULT NULL,
   `department_id` int(11) DEFAULT NULL,
   `status` int(11) DEFAULT NULL COMMENT '1 tiep nhan 2 dang kham 3 hoan thanh 4 da huy',
+  `glucid_should_use` text DEFAULT NULL,
+  `glucid_limited_use` text DEFAULT NULL,
+  `glucid_should_not_use` text DEFAULT NULL,
+  `protein_should_use` text DEFAULT NULL,
+  `protein_limited_use` text DEFAULT NULL,
+  `protein_should_not_use` text DEFAULT NULL,
+  `lipid_should_use` text DEFAULT NULL,
+  `lipid_limited_use` text DEFAULT NULL,
+  `lipid_should_not_use` text DEFAULT NULL,
+  `vitamin_ck_should_use` text DEFAULT NULL,
+  `vitamin_ck_limited_use` text DEFAULT NULL,
+  `vitamin_ck_should_not_use` text DEFAULT NULL,
+  `nutrition_advice_id` int(11) DEFAULT NULL,
+  `active_mode_of_living_id` int(11) DEFAULT NULL,
   `created_by` int(11) DEFAULT NULL,
-  `created_at` timestamp NULL DEFAULT NULL ON UPDATE current_timestamp(),
+  `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp(),
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4;
 
 /*Data for the table `examine` */
 
-insert  into `examine`(`id`,`count_id`,`cus_name`,`cus_phone`,`cus_email`,`cus_gender`,`cus_birthday`,`cus_address`,`diagnostic`,`cus_length`,`cus_cntc`,`cus_cnht`,`cus_bmi`,`clinical_examination`,`erythrocytes`,`cus_bc`,`cus_tc`,`cus_albumin`,`cus_nakcl`,`cus_astaltggt`,`cus_urecreatinin`,`cus_bilirubin`,`exa_note`,`cus_fat`,`cus_water`,`cus_visceral_fat`,`cus_bone_weight`,`cus_chcb`,`cus_waist`,`cus_butt`,`cus_cseomong`,`active_mode_of_living`,`department_id`,`status`,`created_by`,`created_at`,`updated_at`) values 
-(1,'1','Nguyễn Quốc Đạt','0989402893','',1,'1990-08-31','24 Trâu Quỳ - Gia Lâm - Hà Nội','','0','0','0','0','','0','0','0','0','0','0','0','0','0',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,2,1,NULL,'2023-02-21 15:02:25','2023-02-20 14:56:34'),
-(2,'2','Nguyễn Quốc Đat','0989402893','',1,'1990-08-31','24 Trâu Quỳ Gia lâm Hà nội','','0','0','0','0','','0','0','0','0','0','0','0','0','0',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,2,1,NULL,'2023-02-21 15:02:26','2023-02-20 15:03:42'),
-(3,'3','Nguyễn Phương Linh','0941926837','',0,'2020-10-15','24 Trâu Quỳ  - Gia Lâm - Hà Nội','','0','0','0','0','','0','0','0','0','0','0','0','0','0',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,2,1,NULL,'2023-02-21 15:02:30','2023-02-20 15:20:14'),
-(4,'00101210223','Bài test 1','0989402893','qdatvirgo@gmail.com',1,'1990-08-31','24 Trâu Quỳ GIa Lâm Hà Nội','test 1 ','0','0','0','0','','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','',2,1,6,'2023-02-21 17:09:41','2023-02-21 17:09:41'),
-(5,'00101210223','Bài test 2','Bài test 2','qdatvirgo@gmail.com',0,'2023-02-06','24 Trâu Quỳ Gia Lâm Hà Nội','test 2','','','','','','','','','','','','','','',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,2,1,6,'2023-02-21 17:16:37','2023-02-21 17:16:37'),
-(6,'00101210223','Bài test 3','0989402893','',1,'2023-02-21','','','','','','','','','','','','','','','','',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,2,1,6,'2023-02-21 17:18:14','2023-02-21 17:18:14'),
-(7,'00101210223','Bài test 4','','',1,'2023-02-21','','','','','','','','','','','','','','','','',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,2,1,6,'2023-02-21 17:20:14','2023-02-21 17:20:14'),
-(8,'00201210223','Bài test 51','','',0,'2023-02-21','','','','','','','','','','','','','','','','',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,2,1,6,'2023-02-21 17:32:23','2023-02-21 17:21:43');
+insert  into `examine`(`id`,`count_id`,`cus_name`,`cus_phone`,`cus_email`,`cus_gender`,`cus_birthday`,`cus_address`,`diagnostic`,`cus_length`,`cus_cntc`,`cus_cnht`,`cus_bmi`,`clinical_examination`,`erythrocytes`,`cus_bc`,`cus_tc`,`cus_albumin`,`cus_nakcl`,`cus_astaltggt`,`cus_urecreatinin`,`cus_bilirubin`,`exa_note`,`cus_fat`,`cus_water`,`cus_visceral_fat`,`cus_bone_weight`,`cus_chcb`,`cus_waist`,`cus_butt`,`cus_cseomong`,`active_mode_of_living`,`hospital_id`,`department_id`,`status`,`glucid_should_use`,`glucid_limited_use`,`glucid_should_not_use`,`protein_should_use`,`protein_limited_use`,`protein_should_not_use`,`lipid_should_use`,`lipid_limited_use`,`lipid_should_not_use`,`vitamin_ck_should_use`,`vitamin_ck_limited_use`,`vitamin_ck_should_not_use`,`nutrition_advice_id`,`active_mode_of_living_id`,`created_by`,`created_at`,`updated_at`) values 
+(1,'1','Nguyễn Quốc Đạt','0989402893','',1,'1990-08-31','24 Trâu Quỳ - Gia Lâm - Hà Nội','','0','0','0','0','','0','0','0','0','0','0','0','0','0',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,2,1,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'2023-02-21 15:02:25','2023-02-20 14:56:34'),
+(2,'2','Nguyễn Quốc Đat','0989402893','',1,'1990-08-31','24 Trâu Quỳ Gia lâm Hà nội','','0','0','0','0','','0','0','0','0','0','0','0','0','0',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,2,1,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'2023-02-21 15:02:26','2023-02-20 15:03:42'),
+(3,'3','Nguyễn Phương Linh','0941926837','',0,'2020-10-15','24 Trâu Quỳ  - Gia Lâm - Hà Nội','','0','0','0','0','','0','0','0','0','0','0','0','0','0',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,2,1,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'2023-02-21 15:02:30','2023-02-20 15:20:14'),
+(4,'00101210223','Bài test 1','0989402893','qdatvirgo@gmail.com',1,'1990-08-31','24 Trâu Quỳ GIa Lâm Hà Nội','test 1 ','0','0','0','0','','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','',NULL,2,1,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,6,'2023-02-21 17:09:41','2023-02-21 17:09:41'),
+(5,'00101210223','Bài test 2','Bài test 2','qdatvirgo@gmail.com',0,'2023-02-06','24 Trâu Quỳ Gia Lâm Hà Nội','test 2','','','','','','','','','','','','','','',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,2,1,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,6,'2023-02-21 17:16:37','2023-02-21 17:16:37'),
+(6,'00101210223','Bài test 3','0989402893','',1,'2023-02-21','','','','','','','','','','','','','','','','',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,2,1,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,6,'2023-02-21 17:18:14','2023-02-21 17:18:14'),
+(7,'00101210223','Bài test 4','','',1,'2023-02-21','','','','','','','','','','','','','','','','',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,2,1,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,6,'2023-02-21 17:20:14','2023-02-21 17:20:14'),
+(8,'00201210223','Bài test 51','','',0,'2023-02-21','','','','','','','','','','','','','','','','',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,2,1,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,6,'2023-02-21 17:32:23','2023-02-21 17:21:43');
 
 /*Table structure for table `food_info` */
 
@@ -159,17 +182,39 @@ CREATE TABLE `food_info` (
   `name` varchar(255) NOT NULL,
   `weight` int(11) DEFAULT 100 COMMENT 'g',
   `energy` int(11) DEFAULT NULL COMMENT 'kcal',
-  `protein` float DEFAULT NULL COMMENT 'g',
-  `animal_protein` float DEFAULT NULL COMMENT 'g',
-  `lipid` float DEFAULT NULL COMMENT 'g',
-  `unanimal_lipid` float DEFAULT NULL COMMENT 'g',
-  `carbohydrate` float DEFAULT NULL COMMENT 'g',
-  `created_at` timestamp NULL DEFAULT NULL ON UPDATE current_timestamp(),
+  `protein` varchar(255) DEFAULT NULL COMMENT 'g',
+  `animal_protein` varchar(255) DEFAULT NULL COMMENT 'g',
+  `lipid` varchar(255) DEFAULT NULL COMMENT 'g',
+  `unanimal_lipid` varchar(255) DEFAULT NULL COMMENT 'g',
+  `carbohydrate` varchar(255) DEFAULT NULL COMMENT 'g',
+  `hospital_id` int(11) DEFAULT NULL,
+  `department_id` int(11) DEFAULT NULL,
+  `created_by` int(11) DEFAULT NULL,
+  `created_at` varchar(255) DEFAULT NULL,
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp(),
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4;
 
 /*Data for the table `food_info` */
+
+/*Table structure for table `food_type` */
+
+DROP TABLE IF EXISTS `food_type`;
+
+CREATE TABLE `food_type` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) DEFAULT NULL,
+  `hospital_id` int(11) DEFAULT NULL,
+  `department_id` int(11) DEFAULT NULL,
+  `created_by` int(11) DEFAULT NULL,
+  `updated_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4;
+
+/*Data for the table `food_type` */
+
+insert  into `food_type`(`id`,`name`,`hospital_id`,`department_id`,`created_by`,`updated_at`) values 
+(2,' Nguyễn quốc đạt',NULL,NULL,NULL,'2023-02-22 16:21:56');
 
 /*Table structure for table `hospital` */
 
@@ -233,12 +278,30 @@ CREATE TABLE `log_mail` (
   `type` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 /*Data for the table `log_mail` */
 
 insert  into `log_mail`(`id`,`result`,`param`,`is_send`,`sent_tries`,`type`,`created_at`) values 
-(1,'{\"success\":true,\"messageId\":\"<1bec51fb-3921-a255-6c95-ea03c8eb53b3@localhost>\",\"message\":\"Successful\"}','{\"email\":\"qdatvirgo@gmail.com\",\"link_active\":\"http://localhost:3000/user/activeaccount/e8e91b7cb05eafbb84a6afb28aacca726c418715\"}',1,0,'mail_signup','2023-02-15 14:25:22');
+(1,'{\"success\":true,\"messageId\":\"<1bec51fb-3921-a255-6c95-ea03c8eb53b3@localhost>\",\"message\":\"Successful\"}','{\"email\":\"qdatvirgo@gmail.com\",\"link_active\":\"http://localhost:3000/user/activeaccount/e8e91b7cb05eafbb84a6afb28aacca726c418715\"}',1,0,'mail_signup','2023-02-15 14:25:22'),
+(2,'{\"success\":true,\"messageId\":\"<6622803e-87d3-04f2-e44c-f9d041e33282@localhost>\",\"message\":\"Successful\"}','{\"email\":\"qdatvirgo@gmail.com\",\"link_active\":\"http://localhost:3000/user/activeaccount/9357908a4f781ebdeb4c43e1c5fd53754d9d5d8a\"}',1,0,'mail_signup','2023-02-27 15:35:10');
+
+/*Table structure for table `medical_test` */
+
+DROP TABLE IF EXISTS `medical_test`;
+
+CREATE TABLE `medical_test` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) DEFAULT NULL,
+  `type` tinyint(1) DEFAULT 1 COMMENT '1 sinh hoa 2 huyet hoc',
+  `hospital_id` int(11) DEFAULT NULL,
+  `department_id` int(11) DEFAULT NULL,
+  `created_by` int(11) DEFAULT NULL,
+  `updated_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4;
+
+/*Data for the table `medical_test` */
 
 /*Table structure for table `medicine` */
 
@@ -249,10 +312,12 @@ CREATE TABLE `medicine` (
   `name` varchar(1024) NOT NULL,
   `unit` varchar(255) NOT NULL,
   `description` longtext DEFAULT NULL,
-  `created_at` timestamp NULL DEFAULT NULL ON UPDATE current_timestamp(),
+  `hospital_id` int(11) DEFAULT NULL,
+  `department_id` int(11) DEFAULT NULL,
+  `created_by` int(11) DEFAULT NULL,
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp(),
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4;
 
 /*Data for the table `medicine` */
 
@@ -263,42 +328,17 @@ DROP TABLE IF EXISTS `menu`;
 CREATE TABLE `menu` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(255) DEFAULT NULL,
+  `note` longtext DEFAULT NULL,
+  `food_replace` longtext DEFAULT NULL,
+  `detail` longtext DEFAULT NULL,
+  `hospital_id` int(11) DEFAULT NULL,
+  `department_id` int(11) DEFAULT NULL,
+  `created_by` int(11) DEFAULT NULL,
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp(),
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 /*Data for the table `menu` */
-
-/*Table structure for table `menu_detail` */
-
-DROP TABLE IF EXISTS `menu_detail`;
-
-CREATE TABLE `menu_detail` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `menu_id` int(11) NOT NULL,
-  `menu_time_id` int(11) NOT NULL,
-  `food_info_id` int(11) DEFAULT NULL,
-  `food_weight` int(11) DEFAULT NULL,
-  `dainty_name` varchar(255) DEFAULT NULL,
-  `type` tinyint(4) DEFAULT 0 COMMENT '0 detail 1 dainty_name',
-  `updated_at` timestamp NOT NULL DEFAULT current_timestamp(),
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
-/*Data for the table `menu_detail` */
-
-/*Table structure for table `menu_time` */
-
-DROP TABLE IF EXISTS `menu_time`;
-
-CREATE TABLE `menu_time` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `time` varchar(255) NOT NULL,
-  `updated_at` timestamp NOT NULL DEFAULT current_timestamp(),
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
-/*Data for the table `menu_time` */
 
 /*Table structure for table `nutrition_advice` */
 
@@ -319,28 +359,19 @@ CREATE TABLE `nutrition_advice` (
   `vitamin_ck_limited_use` varchar(1024) DEFAULT NULL,
   `vitamin_ck_should_use` varchar(1024) DEFAULT NULL,
   `vitamin_ck_should_not_use` varchar(1024) DEFAULT NULL,
+  `hospital_id` int(11) DEFAULT NULL,
+  `department_id` int(11) DEFAULT NULL,
+  `created_by` int(11) DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL ON UPDATE current_timestamp(),
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp(),
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4;
 
 /*Data for the table `nutrition_advice` */
 
-/*Table structure for table `prescription` */
-
-DROP TABLE IF EXISTS `prescription`;
-
-CREATE TABLE `prescription` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `examine_id` bigint(20) NOT NULL,
-  `medicine_id` bigint(20) NOT NULL,
-  `quantity` bigint(20) NOT NULL,
-  `created_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
-  `updated_at` timestamp NOT NULL DEFAULT current_timestamp(),
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
-/*Data for the table `prescription` */
+insert  into `nutrition_advice`(`id`,`name`,`glucid_limited_use`,`glucid_should_use`,`glucid_should_not_use`,`protein_limited_use`,`protein_should_use`,`protein_should_not_use`,`lipid_limited_use`,`lipid_should_use`,`lipid_should_not_use`,`vitamin_ck_limited_use`,`vitamin_ck_should_use`,`vitamin_ck_should_not_use`,`hospital_id`,`department_id`,`created_by`,`created_at`,`updated_at`) values 
+(1,' Nguyễn quốc đạt','test 2','test 1','test 3','','test 4','','','','','','','',NULL,NULL,NULL,'2023-02-23 11:31:19','2023-02-23 11:26:46'),
+(2,'Bạch Mai','test 2','test 1','','','','','','','','','','',1,3,12,'2023-02-27 15:36:51','2023-02-27 15:36:51');
 
 /*Table structure for table `role` */
 
@@ -373,10 +404,7 @@ CREATE TABLE `role_user` (
 /*Data for the table `role_user` */
 
 insert  into `role_user`(`role_id`,`user_id`) values 
-(1,1),
-(2,4),
-(2,5),
-(1,6);
+(1,12);
 
 /*Table structure for table `setting` */
 
@@ -418,17 +446,17 @@ CREATE TABLE `user` (
   `last_ip` varchar(40) DEFAULT '127.0.0.1',
   `last_login` timestamp NULL DEFAULT current_timestamp(),
   `department_id` int(11) DEFAULT NULL,
+  `hospital_id` int(11) DEFAULT NULL,
   `create_on` timestamp NULL DEFAULT current_timestamp(),
   PRIMARY KEY (`id`),
   UNIQUE KEY `email` (`email`),
   UNIQUE KEY `phone` (`phone`)
-) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8;
 
 /*Data for the table `user` */
 
-insert  into `user`(`id`,`user_id`,`name`,`full_name`,`password`,`email`,`phone`,`gender`,`birthday`,`address`,`activePasswordToken`,`resetPasswordToken`,`resetPasswordExpires`,`active`,`last_ip`,`last_login`,`department_id`,`create_on`) values 
-(6,0,'qdatvirgo@gmail.com','','8f3633d9970f51a509728be61fb9ee213ea6999e0867c7b67a5ca9005d70d07072fbe003c2ad867483b75427a71542764a9d6a8f58accd6605bbc10cd9a74b93','qdatvirgo@gmail.com','9738781040',1,'1990-08-31','2641 Euclid Avenue',NULL,NULL,NULL,1,NULL,'2023-02-15 14:25:20',2,'2023-02-15 14:25:20'),
-(11,0,'qdatvirgo@gmail.com','','8f3633d9970f51a509728be61fb9ee213ea6999e0867c7b67a5ca9005d70d07072fbe003c2ad867483b75427a71542764a9d6a8f58accd6605bbc10cd9a74b93','qdatvirgo1@gmail.com','9738781041',1,'1990-08-31','2641 Euclid Avenue',NULL,NULL,NULL,1,NULL,'2023-02-15 14:25:20',2,'2023-02-15 14:25:20');
+insert  into `user`(`id`,`user_id`,`name`,`full_name`,`password`,`email`,`phone`,`gender`,`birthday`,`address`,`activePasswordToken`,`resetPasswordToken`,`resetPasswordExpires`,`active`,`last_ip`,`last_login`,`department_id`,`hospital_id`,`create_on`) values 
+(12,0,'qdatvirgo@gmail.com','Nguyễn Quốc Đạt','8f3633d9970f51a509728be61fb9ee213ea6999e0867c7b67a5ca9005d70d07072fbe003c2ad867483b75427a71542764a9d6a8f58accd6605bbc10cd9a74b93','qdatvirgo@gmail.com','0989402893',1,'1990-08-31','2641 Euclid Avenue','9357908a4f781ebdeb4c43e1c5fd53754d9d5d8a',NULL,'2023-02-27 16:35:07',1,NULL,'2023-02-27 15:35:07',3,1,'2023-02-27 15:35:07');
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
