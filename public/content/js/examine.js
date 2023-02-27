@@ -2,7 +2,9 @@ let dataExamine = {
     tab: 1,
     examine: {},
     page: 'create',
-    id_examine: ''
+    id_examine: '',
+    nutritionAdviceList: [],
+    activeModeOfLivingList: []
 };
 
 const numberFormat = new Intl.NumberFormat();
@@ -145,6 +147,18 @@ function changeTabExamine(tab){
             dataExamine.examine['cus_butt'] = $('#cus_butt').val();
             dataExamine.examine['cus_cseomong'] = $('#cus_cseomong').val();
             dataExamine.examine['active_mode_of_living'] = $('#active_mode_of_living').val();
+            dataExamine.examine['glucid_should_use'] = $('#glucid_should_use').val();
+            dataExamine.examine['glucid_limited_use'] = $('#glucid_limited_use').val();
+            dataExamine.examine['glucid_should_not_use'] = $('#glucid_should_not_use').val();
+            dataExamine.examine['protein_should_use'] = $('#protein_should_use').val();
+            dataExamine.examine['protein_limited_use'] = $('#protein_limited_use').val();
+            dataExamine.examine['protein_should_not_use'] = $('#protein_should_not_use').val();
+            dataExamine.examine['lipid_should_use'] = $('#lipid_should_use').val();
+            dataExamine.examine['lipid_limited_use'] = $('#lipid_limited_use').val();
+            dataExamine.examine['lipid_should_not_use'] = $('#lipid_should_not_use').val();
+            dataExamine.examine['vitamin_ck_should_use'] = $('#vitamin_ck_should_use').val();
+            dataExamine.examine['vitamin_ck_limited_use'] = $('#vitamin_ck_limited_use').val();
+            dataExamine.examine['vitamin_ck_should_not_use'] = $('#vitamin_ck_should_not_use').val();
             break;
         case 3:
             break;
@@ -157,15 +171,65 @@ function changeTabExamine(tab){
     dataExamine.tab = tab;
 }
 
+function diff_years(dt2, dt1) 
+ {
+    let diff =(dt2.getTime() - dt1.getTime()) / 1000;
+    diff /= (60 * 60 * 24);
+    return Math.floor(Math.abs(diff/365.25));
+ }
+
+ function caculateYearOld(selectedDates, dateStr, instance){
+    let cus_birthday = new Date(dateStr.split("-").reverse().join("-"));
+    let now = new Date();
+    let yearOld = diff_years(now, cus_birthday);
+    if(yearOld > 0){
+        $('#cus_age').val(yearOld);
+    }
+ }
+
 $(document).ready(function(){
     $("#cus_birthday").flatpickr({
         dateFormat: "d-m-Y",
-        maxDate: "today"
+        maxDate: "today",
+        onChange: function(selectedDates, dateStr, instance) {
+            caculateYearOld(selectedDates, dateStr, instance);
+        },
+        onReady: function(selectedDates, dateStr, instance) {
+            caculateYearOld(selectedDates, dateStr, instance);
+        }
     });
     $("#nutrition_advice_id").on('select2:select', function(evt) {
-        console.log("nutrition_advice_id", evt);
+        if(dataExamine.nutritionAdviceList.length > 0){
+            for(let item of dataExamine.nutritionAdviceList){
+                if(evt.params.data.id == item.id){
+                    $("#glucid_should_use").text(item.glucid_should_use);
+                    $("#glucid_limited_use").text(item.glucid_limited_use);
+                    $("#glucid_should_not_use").text(item.glucid_should_not_use);
+
+                    $("#protein_should_use").text(item.protein_should_use);
+                    $("#protein_limited_use").text(item.protein_limited_use);
+                    $("#protein_should_not_use").text(item.protein_should_not_use);
+
+                    $("#lipid_should_use").text(item.lipid_should_use);
+                    $("#lipid_limited_use").text(item.lipid_limited_use);
+                    $("#lipid_should_not_use").text(item.lipid_should_not_use);
+
+                    $("#vitamin_ck_should_use").text(item.vitamin_ck_should_use);
+                    $("#vitamin_ck_limited_use").text(item.vitamin_ck_limited_use);
+                    $("#vitamin_ck_should_not_use").text(item.vitamin_ck_should_not_use);
+                    break;
+                }
+            }
+        }
     });
     $("#active_mode_of_living_id").on('select2:select', function(evt) {
-        console.log("active_mode_of_living_id", evt);
+        if(dataExamine.activeModeOfLivingList.length > 0){
+            for(let item of dataExamine.activeModeOfLivingList){
+                if(evt.params.data.id == item.id){      
+                    $("#active_mode_of_living").text(item.detail);
+                    break;
+                }
+            }
+        }
     });
 });

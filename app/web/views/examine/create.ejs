@@ -68,6 +68,8 @@
               $(document).ready(function() {
                 dataExamine.page = "<%=page%>";
                 dataExamine.id_examine = "<%=examine.id%>";
+                dataExamine.nutritionAdviceList = <%-JSON.stringify(nutritionAdvice) %>;
+                dataExamine.activeModeOfLivingList = <%-JSON.stringify(activeModeOfLiving) %>;
               });
             </script>
             <% } %>

@@ -52,7 +52,7 @@ let userService = {
         db.get().getConnection(function (err, connection) {
             try {
                 if (err) return callback(err);
-                var sql     = 'UPDATE user SET user_id = ?, name = ?, full_name = ?,password = ?,email = ?, phone = ?, gender = ?, birthday = ?, address = ?, department_id = ?, last_ip = ?, active = ? WHERE id=?';
+                var sql     = 'UPDATE user SET user_id = ?, name = ?, full_name = ?,password = ?,email = ?, phone = ?, gender = ?, birthday = ?, address = ?,hospital_id = ?, department_id = ?, last_ip = ?, active = ? WHERE id=?';
                 var paraSQL = [
                     parameter.user_id,
                     parameter.name,
@@ -63,6 +63,7 @@ let userService = {
                     parameter.gender,
                     parameter.birthday,
                     parameter.address,
+                    parameter.hospital_id,
                     parameter.department_id,
                     parameter.last_ip,
                     parameter.active,
@@ -70,7 +71,7 @@ let userService = {
                 ];
                 
                 if(parameter.password == ''){
-                    sql     = 'UPDATE user SET user_id = ?, name = ?, full_name = ?,email = ?, phone = ?, gender = ?, birthday = ?, address = ?, department_id = ?, last_ip = ?, active = ? WHERE id=?';
+                    sql     = 'UPDATE user SET user_id = ?, name = ?, full_name = ?,email = ?, phone = ?, gender = ?, birthday = ?, address = ?,hospital_id = ?, department_id = ?, last_ip = ?, active = ? WHERE id=?';
                     paraSQL = [
                         parameter.user_id,
                         parameter.name,
@@ -80,6 +81,7 @@ let userService = {
                         parameter.gender,
                         parameter.birthday,
                         parameter.address,
+                        parameter.hospital_id,
                         parameter.department_id,
                         parameter.last_ip,
                         parameter.active,
@@ -140,6 +142,14 @@ let userService = {
                 if (parameter.search_role_ids != "" && parameter.search_role_ids != "0") {
                     sql += " AND id in (SELECT user_id FROM role_user WHERE role_id in(?))";
                     paraSQL.push(parameter.search_role_ids);
+                }
+                //Không phải Administrator thì load các bản ghi theo khoa viện
+                if (!parameter.role_ids.includes(1) && !parameter.role_ids.includes(3)){
+                    //Nếu là quản lý load theo viện
+                    if(parameter.role_ids.includes(5)){
+                        sql += " AND hospital_id = ?";
+                        paraSQL.push(parameter.hospital_id);
+                    }
                 }
         
                 var query = connection.query(sql, paraSQL, function (err, results, fields) {

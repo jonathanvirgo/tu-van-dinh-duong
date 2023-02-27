@@ -191,7 +191,7 @@
                     <select class="form-select" name="active_mode_of_living_id" id="active_mode_of_living_id" data-plugin="select2" data-placeholder="Chế độ vận động sinh hoạt">
                         <option></option>
                         <% if(activeModeOfLiving.length > 0){ %>
-                            <% for (let ac_Moliving of nutritionAdvice){ %>
+                            <% for (let ac_Moliving of activeModeOfLiving){ %>
                                 <option <%=ac_Moliving.id == examine.active_mode_of_living_id ? 'selected' : ''%> value="<%= ac_Moliving.id %>"><%= ac_Moliving.name %></option>
                             <%}%>   
                         <%}%>

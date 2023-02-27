@@ -110,7 +110,9 @@ router.get('/edit/:id', function(req, res, next) {
             str_errors       = [],
             resultData       = {
                 filter: [],
-                detailExamine: {}
+                detailExamine: {},
+                nutritionAdvice: [],
+                activeModeOfLiving: []
             };
         arrPromise.push(webService.createSideBarFilter(req, 1).then(function(dataFilter) {
             resultData.filter = dataFilter;
@@ -118,6 +120,25 @@ router.get('/edit/:id', function(req, res, next) {
                 str_errors = str_errors.concat(resultData.filter.error);
             }
         }));
+
+        let sqlNutritionAdviceList = 'SELECT * FROM nutrition_advice WHERE created_by = ?';
+        arrPromise.push(webService.getListTable(sqlNutritionAdviceList, [req.user.id]).then(responseData =>{
+            if(responseData.success){
+                nutritionAdvice = responseData.data;
+            }else{
+                str_errors.push(responseData.message);
+            }
+        }));
+
+        let sqlactiveModeOfLivingList = 'SELECT * FROM active_mode_of_living WHERE created_by = ?';
+        arrPromise.push(webService.getListTable(sqlactiveModeOfLivingList, [req.user.id]).then(responseData1 =>{
+            if(responseData1.success){
+                activeModeOfLiving = responseData1.data;
+            }else{
+                str_errors.push(responseData1.message);
+            }
+        }));
+
         arrPromise.push(examineService.getDetailExamineById(req.params.id).then(function(detailExamine) {
             if (detailExamine.success) {
                 if(detailExamine.data.length == 0){
@@ -151,6 +172,8 @@ router.get('/edit/:id', function(req, res, next) {
                     errors: str_errors,
                     filter: resultData.filter,
                     examine: resultData.detailExamine,
+                    activeModeOfLiving: activeModeOfLiving,
+                    nutritionAdvice: nutritionAdvice,
                     page:'edit'
                 });
             }).catch(err => {
@@ -159,6 +182,8 @@ router.get('/edit/:id', function(req, res, next) {
                     errors: [err],
                     filter: resultData.filter,
                     examine: {},
+                    activeModeOfLiving:[],
+                    nutritionAdvice: [],
                     page:'edit'
                 });
             });
@@ -170,6 +195,8 @@ router.get('/edit/:id', function(req, res, next) {
                 errors: [e.message],
                 filter: dataFilter,
                 examine: {},
+                activeModeOfLiving:[],
+                nutritionAdvice: [],
                 page:'edit'
             });
         })
@@ -184,7 +211,9 @@ router.get('/create', function(req, res, next) {
         var str_errors = [],
             arrPromise = [],
             resultData = {
-                filter: []
+                filter: [],
+                nutritionAdvice: [],
+                activeModeOfLiving: []
             };
 
         arrPromise.push(webService.createSideBarFilter(req, 1).then(function(dataFilter) {
@@ -193,14 +222,23 @@ router.get('/create', function(req, res, next) {
                 str_errors = str_errors.concat(resultData.filter.error);
             }
         }));
-
-        arrPromise.push(webService.createSideBarFilter(req, 1).then(function(dataFilter) {
-            resultData.filter = dataFilter;
-            if (resultData.filter.error.length > 0) {
-                str_errors = str_errors.concat(resultData.filter.error);
+        let sqlNutritionAdviceList = 'SELECT * FROM nutrition_advice WHERE created_by = ?';
+        arrPromise.push(webService.getListTable(sqlNutritionAdviceList, [req.user.id]).then(responseData =>{
+            if(responseData.success){
+                nutritionAdvice = responseData.data;
+            }else{
+                str_errors.push(responseData.message);
             }
         }));
 
+        let sqlactiveModeOfLivingList = 'SELECT * FROM active_mode_of_living WHERE created_by = ?';
+        arrPromise.push(webService.getListTable(sqlactiveModeOfLivingList, [req.user.id]).then(responseData1 =>{
+            if(responseData1.success){
+                activeModeOfLiving = responseData1.data;
+            }else{
+                str_errors.push(responseData1.message);
+            }
+        }));
         return new Promise(function(resolve, reject) {
             Promise.all(arrPromise).then(function() {
                 res.render("examine/create.ejs", {
@@ -209,7 +247,9 @@ router.get('/create', function(req, res, next) {
                     filter: resultData.filter,
                     moment: moment,
                     page:'create',
-                    examine:{}
+                    examine:{},
+                    activeModeOfLiving: activeModeOfLiving,
+                    nutritionAdvice: nutritionAdvice
                 });
             }).catch(err => {
                 res.render("examine/create.ejs", {
@@ -217,7 +257,9 @@ router.get('/create', function(req, res, next) {
                     errors: [err],
                     filter: resultData.filter,
                     page:'create',
-                    examine: {}
+                    examine: {},
+                    activeModeOfLiving:[],
+                    nutritionAdvice: []
                 });
             });
         });
@@ -228,7 +270,9 @@ router.get('/create', function(req, res, next) {
                 errors: [e.message],
                 filter: dataFilter,
                 page:'create',
-                examine:{}
+                examine:{},
+                activeModeOfLiving:[],
+                nutritionAdvice: []
             });
         })
     }

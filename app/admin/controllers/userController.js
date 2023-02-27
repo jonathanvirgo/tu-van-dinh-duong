@@ -209,22 +209,24 @@ function validatorUser(req, parameter, selected_role_ids, userId = 0){
         if (!validator.matches(parameter.name, "^[a-zA-Z0-9_@\.\-]*$")) {
             str_error.push('Tên truy cập của bạn không hợp lệ!');
         } else {
-            arrPromise.push(new Promise(function (resolve, reject) {
-                modelService.countUserByName({name: parameter.name, user_id: userId}, function (err, result, fields) {
-                    if (err) {
-                        return logService.create(req, err).then(function(log_id){
-                            str_error.push(err.sqlMessage);
-                            resolve();
-                        });
-                    }
-                    if (result !== undefined) {
-                        if(result[0].count > 0){
-                            str_error.push('Tên truy cập của bạn đã được sử dụng!');
+            if(!parameter.isUpdate){
+                arrPromise.push(new Promise(function (resolve, reject) {
+                    modelService.countUserByName({name: parameter.name, user_id: userId}, function (err, result, fields) {
+                        if (err) {
+                            return logService.create(req, err).then(function(log_id){
+                                str_error.push(err.sqlMessage);
+                                resolve();
+                            });
                         }
-                    }
-                    resolve();
-                })
-            }));
+                        if (result !== undefined) {
+                            if(result[0].count > 0){
+                                str_error.push('Tên truy cập của bạn đã được sử dụng!');
+                            }
+                        }
+                        resolve();
+                    })
+                }));
+            }
         }
     }
     if(parameter.email == ''){
@@ -233,22 +235,24 @@ function validatorUser(req, parameter, selected_role_ids, userId = 0){
         if(!validator.isEmail(req.body.email)){
             str_error.push('Email bạn sử dụng không hợp lệ!');
         } else {
-            arrPromise.push(new Promise(function (resolve, reject) {
-                modelService.countUserByEmail({name: parameter.email, user_id: userId}, function (err, result, fields) {
-                    if (err) {
-                        return logService.create(req, err).then(function(log_id){
-                            str_error.push(err.sqlMessage);
-                            resolve();
-                        });
-                    }
-                    if (result !== undefined) {
-                        if(result[0].count > 0){
-                            str_error.push('Tài khoản email của bạn đã được sử dụng!');
+            if(!parameter.isUpdate){
+                arrPromise.push(new Promise(function (resolve, reject) {
+                    modelService.countUserByEmail({name: parameter.email, user_id: userId}, function (err, result, fields) {
+                        if (err) {
+                            return logService.create(req, err).then(function(log_id){
+                                str_error.push(err.sqlMessage);
+                                resolve();
+                            });
                         }
-                    }
-                    resolve();
-                })
-            }));
+                        if (result !== undefined) {
+                            if(result[0].count > 0){
+                                str_error.push('Tài khoản email của bạn đã được sử dụng!');
+                            }
+                        }
+                        resolve();
+                    })
+                }));
+            }
         }
     }
     if(userId == 0 && parameter.password == ''){
@@ -293,7 +297,8 @@ router.post('/create', function (req, res, next) {
                 address: req.body.address,
                 activePasswordToken: "",
                 resetPasswordExpires: new Date(Date.now() + 3600000),
-                active: active
+                active: active,
+                isUpdate: false
             };
         
         arrPromise.push(new Promise(function (resolve, reject) {
@@ -410,7 +415,9 @@ router.post('/edit/:id', function (req, res, next) {
                 birthday: adminService.parseDay(req.body.birthday),
                 address: req.body.address,
                 department_id: req.body.department_id,
-                active: active
+                hospital_id: req.body.hospital_id,
+                active: active,
+                isUpdate: true
             };
         arrPromise.push(new Promise(function (resolve, reject) {
             modelService.getUserById(parameter.id, function (err, result, fields) {
@@ -568,7 +575,8 @@ router.post('/list', function (req, res, next) {
                 search_name: req.body.search_name,
                 search_email: req.body.search_email,
                 search_active: req.body.search_active,
-                search_role_ids: req.body.search_role_ids
+                search_role_ids: req.body.search_role_ids,
+                role_ids: req.user.role_id
             };
 
         resultMessage.draw = req.body.draw;
