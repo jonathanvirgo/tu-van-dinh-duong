@@ -112,7 +112,9 @@ router.get('/edit/:id', function(req, res, next) {
                 filter: [],
                 detailExamine: {},
                 nutritionAdvice: [],
-                activeModeOfLiving: []
+                activeModeOfLiving: [],
+                medicine: [],
+                medicalTest: []
             };
         arrPromise.push(webService.createSideBarFilter(req, 1).then(function(dataFilter) {
             resultData.filter = dataFilter;
@@ -124,7 +126,7 @@ router.get('/edit/:id', function(req, res, next) {
         let sqlNutritionAdviceList = 'SELECT * FROM nutrition_advice WHERE created_by = ?';
         arrPromise.push(webService.getListTable(sqlNutritionAdviceList, [req.user.id]).then(responseData =>{
             if(responseData.success){
-                nutritionAdvice = responseData.data;
+                resultData.nutritionAdvice = responseData.data;
             }else{
                 str_errors.push(responseData.message);
             }
@@ -133,7 +135,7 @@ router.get('/edit/:id', function(req, res, next) {
         let sqlactiveModeOfLivingList = 'SELECT * FROM active_mode_of_living WHERE created_by = ?';
         arrPromise.push(webService.getListTable(sqlactiveModeOfLivingList, [req.user.id]).then(responseData1 =>{
             if(responseData1.success){
-                activeModeOfLiving = responseData1.data;
+                resultData.activeModeOfLiving = responseData1.data;
             }else{
                 str_errors.push(responseData1.message);
             }
@@ -164,6 +166,24 @@ router.get('/edit/:id', function(req, res, next) {
             }
         }));
 
+        let sqlMedicine = 'SELECT * FROM medicine WHERE hospital_id = ?';
+        arrPromise.push(webService.getListTable(sqlMedicine, [req.user.hospital_id]).then(responseData2 =>{
+            if(responseData2.success){
+                resultData.medicine = responseData2.data;
+            }else{
+                str_errors.push(responseData2.message);
+            }
+        }));
+
+        let sqlMedicalTest = 'SELECT * FROM medical_test WHERE hospital_id = ?';
+        arrPromise.push(webService.getListTable(sqlMedicalTest, [req.user.hospital_id]).then(responseData3 =>{
+            if(responseData3.success){
+                resultData.medicalTest = responseData3.data;
+            }else{
+                str_errors.push(responseData3.message);
+            }
+        }));
+
         return new Promise(function(resolve, reject) {
             Promise.all(arrPromise).then(function() {
                 res.render("examine/create.ejs", {
@@ -172,8 +192,12 @@ router.get('/edit/:id', function(req, res, next) {
                     errors: str_errors,
                     filter: resultData.filter,
                     examine: resultData.detailExamine,
-                    activeModeOfLiving: activeModeOfLiving,
-                    nutritionAdvice: nutritionAdvice,
+                    activeModeOfLiving: resultData.activeModeOfLiving,
+                    nutritionAdvice: resultData.nutritionAdvice,
+                    medicine: resultData.medicine,
+                    medicalTest: resultData.medicalTest,
+                    medicalTestExamine: JSON.parse(resultData.detailExamine.medical_test ? resultData.detailExamine.medical_test : '[]'),
+                    prescriptionExamine: JSON.parse(resultData.detailExamine.prescription),
                     page:'edit'
                 });
             }).catch(err => {
@@ -184,6 +208,10 @@ router.get('/edit/:id', function(req, res, next) {
                     examine: {},
                     activeModeOfLiving:[],
                     nutritionAdvice: [],
+                    medicine: [],
+                    medicalTest: [],
+                    medicalTestExamine: [],
+                    prescriptionExamine: [],
                     page:'edit'
                 });
             });
@@ -197,6 +225,10 @@ router.get('/edit/:id', function(req, res, next) {
                 examine: {},
                 activeModeOfLiving:[],
                 nutritionAdvice: [],
+                medicine: [],
+                medicalTest: [],
+                medicalTestExamine: [],
+                prescriptionExamine: [],
                 page:'edit'
             });
         })
@@ -213,7 +245,9 @@ router.get('/create', function(req, res, next) {
             resultData = {
                 filter: [],
                 nutritionAdvice: [],
-                activeModeOfLiving: []
+                activeModeOfLiving: [],
+                medicine: [],
+                medicalTest: []
             };
 
         arrPromise.push(webService.createSideBarFilter(req, 1).then(function(dataFilter) {
@@ -225,7 +259,7 @@ router.get('/create', function(req, res, next) {
         let sqlNutritionAdviceList = 'SELECT * FROM nutrition_advice WHERE created_by = ?';
         arrPromise.push(webService.getListTable(sqlNutritionAdviceList, [req.user.id]).then(responseData =>{
             if(responseData.success){
-                nutritionAdvice = responseData.data;
+                resultData.nutritionAdvice = responseData.data;
             }else{
                 str_errors.push(responseData.message);
             }
@@ -234,11 +268,30 @@ router.get('/create', function(req, res, next) {
         let sqlactiveModeOfLivingList = 'SELECT * FROM active_mode_of_living WHERE created_by = ?';
         arrPromise.push(webService.getListTable(sqlactiveModeOfLivingList, [req.user.id]).then(responseData1 =>{
             if(responseData1.success){
-                activeModeOfLiving = responseData1.data;
+                resultData.activeModeOfLiving = responseData1.data;
             }else{
                 str_errors.push(responseData1.message);
             }
         }));
+
+        let sqlMedicine = 'SELECT * FROM medicine WHERE hospital_id = ?';
+        arrPromise.push(webService.getListTable(sqlMedicine, [req.user.hospital_id]).then(responseData2 =>{
+            if(responseData2.success){
+                resultData.medicine = responseData2.data;
+            }else{
+                str_errors.push(responseData2.message);
+            }
+        }));
+
+        let sqlMedicalTest = 'SELECT * FROM medical_test WHERE hospital_id = ?';
+        arrPromise.push(webService.getListTable(sqlMedicalTest, [req.user.hospital_id]).then(responseData3 =>{
+            if(responseData3.success){
+                resultData.medicalTest = responseData3.data;
+            }else{
+                str_errors.push(responseData3.message);
+            }
+        }));
+        
         return new Promise(function(resolve, reject) {
             Promise.all(arrPromise).then(function() {
                 res.render("examine/create.ejs", {
@@ -248,8 +301,12 @@ router.get('/create', function(req, res, next) {
                     moment: moment,
                     page:'create',
                     examine:{},
-                    activeModeOfLiving: activeModeOfLiving,
-                    nutritionAdvice: nutritionAdvice
+                    activeModeOfLiving: resultData.activeModeOfLiving,
+                    nutritionAdvice: resultData.nutritionAdvice,
+                    medicine: resultData.medicine,
+                    medicalTest: resultData.medicalTest,
+                    medicalTestExamine: [],
+                    prescriptionExamine: []
                 });
             }).catch(err => {
                 res.render("examine/create.ejs", {
@@ -259,7 +316,11 @@ router.get('/create', function(req, res, next) {
                     page:'create',
                     examine: {},
                     activeModeOfLiving:[],
-                    nutritionAdvice: []
+                    nutritionAdvice: [],
+                    medicine: [],
+                    medicalTest: [],
+                    medicalTestExamine:[],
+                    prescriptionExamine: []
                 });
             });
         });
@@ -272,7 +333,11 @@ router.get('/create', function(req, res, next) {
                 page:'create',
                 examine:{},
                 activeModeOfLiving:[],
-                nutritionAdvice: []
+                nutritionAdvice: [],
+                medicine: [],
+                medicalTest: [],
+                medicalTestExamine:[],
+                prescriptionExamine: []
             });
         })
     }
@@ -337,7 +402,10 @@ router.post('/create', function(req, res, next) {
                 vitamin_ck_should_not_use: req.body.vitamin_ck_should_not_use,
                 nutrition_advice_id:    req.body.nutrition_advice_id,
                 active_mode_of_living_id: req.body.active_mode_of_living_id,
+                medical_test:           req.body.medical_test,       
+                prescription:           req.body.prescription,
                 department_id:          req.user.department_id,
+                hospital_id:            req.user.hospital_id,
                 status:                 1,
                 created_by:             req.user.id
             };
@@ -495,7 +563,9 @@ router.post('/edit/:id', function(req, res, next) {
                 vitamin_ck_limited_use: req.body.vitamin_ck_limited_use,
                 vitamin_ck_should_not_use: req.body.vitamin_ck_should_not_use,
                 nutrition_advice_id:    req.body.nutrition_advice_id,
-                active_mode_of_living_id: req.body.active_mode_of_living_id
+                active_mode_of_living_id: req.body.active_mode_of_living_id,
+                medical_test:           req.body.medical_test,
+                prescription:           req.body.prescription
             };
         
         if(!parameter.cus_name){

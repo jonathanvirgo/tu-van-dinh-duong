@@ -1,21 +1,105 @@
 <form id="kham_form" class="form-horizontal">
     <h3 class="box-title-break">Tư vấn thực phẩm bổ xung</h3>
     <div class="row g-2 align-items-center">
-        <div class="col-12 col-md-6 d-flex">
-            <label class="col-form-label col-md-auto fw-bold mt-2" for="form-tieude">Tên thuốc
-                <span class="text-danger">*</span>
-            </label>
-            <div class="col-form-body col-md">
-                <div class="form-control-has-addon">
-                    <input type="text" name="title" class="form-control form-control-title" id="art_title" placeholder="Họ và tên">
-                    <button class="btn form-control-addon btn-link p-0 min-h-auto" type="button" onclick="clearInput('#art_title')">
-                        <svg class="iconsvg-close">
-                            <use xlink:href="/public/content/images/sprite.svg#close"></use>
-                        </svg>
-                    </button>
-                </div>
-            </div>
+      <div class="col-12 col-md-6 d-flex">
+        <label class="col-form-label col-md-auto fw-bold mt-2" for="medicine_id">Tên thuốc
+            <span class="text-danger">*</span>
+        </label>
+        <div class="col-form-body col-md">
+          <div class="form-control-has-addon">
+            <select class="form-select" id="medicine_id" data-plugin="select2" data-placeholder="Chọn loại thuốc">
+              <option></option>
+              <% if(medicine.length > 0){ %>
+                <% for (let me of medicine){ %>
+                  <option value="<%= me.id %>"><%= me.name %></option>
+                <%}%>   
+              <%}%>
+            </select>
+          </div>
         </div>
+      </div>
+      <div class="col-12 col-md-3 d-flex">
+        <label class="col-form-label col-md-auto fw-bold mt-2" for="total_medinice">Số lượng
+            <span class="text-danger">*</span>
+        </label>
+        <div class="col-form-body col-md">
+          <div class="form-control-has-addon">
+            <input type="number" class="form-control form-control-title p-1" id="total_medinice" placeholder="Số lượng">
+            <button class="btn form-control-addon btn-link p-0 min-h-auto" type="button" onclick="clearInput('#total_medinice')">
+                <svg class="iconsvg-close">
+                    <use xlink:href="/public/content/images/sprite.svg#close"></use>
+                </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+      <div class="col-12 col-md-3 d-flex">
+        <label class="col-form-label col-md-auto fw-bold mt-2" for="unit_medinice">ĐVT
+          <span class="text-danger">*</span>
+        </label>
+        <div class="col-form-body col-md">
+          <div class="form-control-has-addon">
+            <input type="text" class="form-control form-control-title p-1" id="unit_medinice" placeholder="Đơn vị tính">
+            <button class="btn form-control-addon btn-link p-0 min-h-auto" type="button" onclick="clearInput('#unit_medinice')">
+              <svg class="iconsvg-close">
+                  <use xlink:href="/public/content/images/sprite.svg#close"></use>
+              </svg>
+          </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row g-2 align-items-center">
+      <div class="col-12 d-flex">
+        <label class="col-form-label col-md-auto fw-bold mt-2" for="use_medinice">Cách sử dụng
+          <span class="text-danger">*</span>
+        </label>
+        <div class="col-form-body col-md">
+          <div class="input-group">
+            <input type="text" class="form-control form-control-title p-1" id="use_medinice" placeholder="Cách sử dụng">
+            <button class="btn btn-primary" type="button" onclick="addMedicine()">Thêm</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row g-2 align-items-center">
+      <div class="table-responsive-xl table-responsive-flush mb-4" style="width: 100%;display: none;" id="tb_prescription">
+        <div class="table-responsive-inner"></div>
+        <table class="table-1 table table-pe-x-3 mb-0 align-middle table-ds-booking">
+          <thead>
+            <tr>
+              <td>STT</td>
+              <td class="table-sort">
+                <span>Tên thuốc</span>
+              </td>
+              <td class="table-sort">
+                <span>HDSD</span>
+              </td>
+              <td class="table-sort">
+                <span>Số lượng</span>
+              </td>
+              <td class="table-sort">
+                <span>Đơn vị tính</span>
+              </td>
+              <td class="table-sort w-1">Hành động</td>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- <tr>
+              <td>1</td>
+              <td class="min-w-150px fw-14px">Paracetamon</td>
+              <td class="min-w-150px fs-13px">2 viên 1 ngày </td>
+              <td class="fw-14px text-red">1</td>
+              <td class="fs-13px text-primary">Viên</td>
+              <td>
+                <div class="flex-center-x gap-10px" style="position: relative;">
+                  <button class="btn btn-action"></button>
+                <div>
+              </td>
+            </tr> -->
+          </tbody>
+        </table>
+      </div>
     </div>
     <div class="row g-2 justify-content-center mt-0">
         <div class="col-6 col-md-auto">

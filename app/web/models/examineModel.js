@@ -10,8 +10,8 @@ let examineService = {
             var paraSQL = [];
             var search  = parameter.search;
             var sql     = `SELECT COUNT(*) AS count, hospital.id AS hospital_id FROM examine
-                            INNER JOIN department ON examine.department_id = department.id
-                            INNER JOIN hospital ON department.hospital_id = hospital.id`;
+                            LEFT JOIN department ON examine.department_id = department.id
+                            LEFT JOIN hospital ON examine.hospital_id = hospital.id`;
             
             if(parameter.filter){
                 if (search.keyword !== "") {
@@ -54,6 +54,7 @@ let examineService = {
                 if (err) return callback(err);
                 callback(null, results, fields);
             });
+            console.log("count", query.sql);
         });
     },
     getAllExamine: function(parameter, callback) {
@@ -63,8 +64,9 @@ let examineService = {
             var search      = parameter.search;
             var order_by    = "examine.created_at DESC";
             var sql         = `SELECT examine.*, hospital.id AS hospital_id FROM examine
-                                INNER JOIN department ON examine.department_id = department.id
-                                INNER JOIN hospital ON department.hospital_id = hospital.id`;
+                                LEFT JOIN department ON examine.department_id = department.id
+                                LEFT JOIN hospital ON examine.hospital_id = hospital.id`;
+
             if (search.order_by == 0) {
                 
             } else if (search.order_by == 1) {
@@ -115,6 +117,7 @@ let examineService = {
                 if (err) return callback(err);
                 callback(null, results, fields);
             });
+            console.log("list", query.sql);
         });
     },
     getExamineGroupByDate: function(parameter, callback) {

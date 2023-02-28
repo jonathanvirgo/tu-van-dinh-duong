@@ -4,7 +4,12 @@ let dataExamine = {
     page: 'create',
     id_examine: '',
     nutritionAdviceList: [],
-    activeModeOfLivingList: []
+    activeModeOfLivingList: [],
+    medicineList: [],
+    prescription: [],
+    medicalTest: [],
+    id_prescription: 1,
+    prescriptionExamine: []
 };
 
 const numberFormat = new Intl.NumberFormat();
@@ -163,8 +168,10 @@ function changeTabExamine(tab){
         case 3:
             break;
         case 4:
+            dataExamine.examine['prescription'] = JSON.stringify(dataExamine.prescription);
             break;
         case 5:
+            dataExamine.examine['medical_test'] = JSON.stringify(dataExamine.medicalTest);
             break;
         default: break;
     }
@@ -186,6 +193,125 @@ function diff_years(dt2, dt1)
         $('#cus_age').val(yearOld);
     }
  }
+
+ function addMedicine(){
+    let medicine_id = parseInt($('#medicine_id').val());
+    let medicine_name = $('#medicine_id').find(':selected').text();
+    if(!medicine_id){
+        displayError('Chưa chọn thuốc!');
+        return;
+    }
+    let medicine_total = $('#total_medinice').val();
+    if(!medicine_total){
+        displayError('Thiếu số lượng!');
+        return;
+    }
+    let medicine_unit = $('#unit_medinice').val();
+    let medicine_note = $('#use_medinice').val();
+    let prescriptionItem = {
+        stt: dataExamine.id_prescription++,
+        name: medicine_name,
+        id: medicine_id,
+        total: medicine_total,
+        unit: medicine_unit,
+        note: medicine_note
+    }
+    dataExamine.prescription.push(prescriptionItem);
+    if(dataExamine.prescription.length > 0){
+        $("#tb_prescription").show();
+    }else{
+        $("#tb_prescription").hide();
+    }
+    addHtmlPrescription(prescriptionItem);
+ }
+
+ function addHtmlPrescription(prescriptionItem){
+    console.log("addHtmlPrescription", prescriptionItem);
+    
+    let tr = document.createElement("tr");
+    $(tr).attr('id', 'tr_' + prescriptionItem.id);
+
+    let td1  = document.createElement("td");
+    let td2  = document.createElement("td");
+    let td3  = document.createElement("td");
+    let td4  = document.createElement("td");
+    let td5  = document.createElement("td");
+    let td6  = document.createElement("td");
+
+    $(td2).attr({class:'min-w-150px fw-14px'});
+    $(td3).attr({class:'min-w-150px fs-13px'});
+    $(td4).attr({class:'fw-14px text-red'});
+    $(td5).attr({class:'fs-13px text-primary'});
+
+    let button1 = document.createElement("button");
+    let button2 = document.createElement("button");
+    let div = document.createElement("div");
+    $(div).attr({class: 'flex-center-x gap-10px'});
+    var svgElem1 = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    $(svgElem1).attr({class:'iconsvg-send'});
+	useElem1 = document.createElementNS('http://www.w3.org/2000/svg', 'use');
+    useElem1.setAttributeNS('http://www.w3.org/1999/xlink', 'xlink:href', '/public/content/images/sprite.svg#edit-2');
+    svgElem1.append(useElem1);
+
+    var svgElem2 = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    $(svgElem2).attr({class:'iconsvg-trash'});
+	useElem2 = document.createElementNS('http://www.w3.org/2000/svg', 'use');
+    useElem2.setAttributeNS('http://www.w3.org/1999/xlink', 'xlink:href', '/public/content/images/sprite.svg#trash');
+    svgElem2.append(useElem2);
+
+    button1.appendChild(svgElem1);
+    button2.appendChild(svgElem2);
+
+    button1.dataset.id = prescriptionItem.id;
+    button2.dataset.id = prescriptionItem.id;
+    $(button1).attr({class:'btn btn-action btn-action-edit',type:'button'});
+    $(button2).attr({class:'btn btn-action btn-action-cancel',type:'button'});
+    
+    $(td1).text(prescriptionItem.stt);
+    $(td2).text(prescriptionItem.name);
+    $(td3).text(prescriptionItem.note);
+    $(td4).text(prescriptionItem.total);
+    $(td5).text(prescriptionItem.unit);
+    div.append(button1);
+    div.append(button2);
+    td6.append(div);
+    tr.append(td1);
+    tr.append(td2);
+    tr.append(td3);
+    tr.append(td4);
+    tr.append(td5);
+    tr.append(td6);
+    
+    $('#tb_prescription table tbody').append(tr);
+ }
+
+// xóa phần từ trong mảng
+function removeItemArray(arr, val) {
+    var j = 0;
+    for (var i = 0, l = arr.length; i < l; i++) {
+      if (arr[i] !== val) {
+        arr[j++] = arr[i];
+      }
+    }
+    arr.length = j;
+}
+
+function getMedicalTest(id){
+    if(id){
+        let isChecked = $(id).is(':checked');
+        let id_medical_test = parseInt($(id).val());
+        console.log(isChecked, id_medical_test);
+        if(isChecked){
+            if(!dataExamine.medicalTest.includes(id_medical_test)){
+                dataExamine.medicalTest.push(id_medical_test);
+            };
+        }else{
+            if(dataExamine.medicalTest.includes(id_medical_test)){
+                removeItemArray(dataExamine.medicalTest, id_medical_test);
+            };
+        }
+    }
+}
 
 $(document).ready(function(){
     $("#cus_birthday").flatpickr({
@@ -232,4 +358,26 @@ $(document).ready(function(){
             }
         }
     });
+
+    $("#medicine_id").on('select2:select', function(evt) {
+        console.log(dataExamine, evt.params.data.id);
+        if(dataExamine.medicineList.length > 0){
+            for(let item of dataExamine.medicineList){
+                if(evt.params.data.id == item.id){      
+                    $("#unit_medinice").val(item.unit);
+                    $("#use_medinice").val(item.description);
+                    break;
+                }
+            }
+        }
+    });
+    
+    for(let item of dataExamine.prescriptionExamine){
+        if(dataExamine.prescriptionExamine.length > 0){
+            $("#tb_prescription").show();
+        }else{
+            $("#tb_prescription").hide();
+        }
+        addHtmlPrescription(item);
+    }
 });
