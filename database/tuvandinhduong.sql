@@ -355,6 +355,29 @@ CREATE TABLE `menu` (
 
 /*Data for the table `menu` */
 
+/*Table structure for table `menu_time` */
+
+DROP TABLE IF EXISTS `menu_time`;
+
+CREATE TABLE `menu_time` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `time` varchar(255) NOT NULL,
+  `created_by` int(11) DEFAULT NULL,
+  `hospital_id` int(11) DEFAULT NULL,
+  `department_id` int(11) DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4;
+
+/*Data for the table `menu_time` */
+
+insert  into `menu_time`(`id`,`time`,`created_by`,`hospital_id`,`department_id`,`created_at`,`updated_at`) values 
+(3,'6h - 7h',12,1,3,NULL,'2023-03-01 11:39:58'),
+(4,'11h - 12h',12,1,3,NULL,'2023-03-01 11:40:07'),
+(5,'15h',12,1,3,NULL,'2023-03-01 11:40:13'),
+(6,'17h - 18h',12,1,3,NULL,'2023-03-01 11:40:22');
+
 /*Table structure for table `nutrition_advice` */
 
 DROP TABLE IF EXISTS `nutrition_advice`;

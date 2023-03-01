@@ -197,7 +197,7 @@ router.get('/edit/:id', function(req, res, next) {
                     medicine: resultData.medicine,
                     medicalTest: resultData.medicalTest,
                     medicalTestExamine: JSON.parse(resultData.detailExamine.medical_test ? resultData.detailExamine.medical_test : '[]'),
-                    prescriptionExamine: JSON.parse(resultData.detailExamine.prescription),
+                    prescriptionExamine: JSON.parse(resultData.detailExamine.prescription ? resultData.detailExamine.prescription : '[]'),
                     page:'edit'
                 });
             }).catch(err => {

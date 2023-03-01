@@ -76,6 +76,12 @@
                            <p>Quản lý khoa</p>
                         </a>
                      </li>
+                     <li class="nav-item">
+                        <a href="/admin/medical-test" class="nav-link">
+                           <i class="nav-icon fas fa-user"></i>
+                           <p>Chỉ định xét nghiệm</p>
+                        </a>
+                     </li>
                      <!-- Bác sĩ -->
                      <% if (user.role_id.includes(4) || user.role_id.includes(5) || user.role_id.includes(1) || user.role_id.includes(3)){%>
                         <li class="nav-item">
@@ -97,9 +103,9 @@
                            </a>
                         </li>
                         <li class="nav-item">
-                           <a href="/admin/medical-test" class="nav-link">
+                           <a href="/admin/menu-time" class="nav-link">
                               <i class="nav-icon fas fa-user"></i>
-                              <p>Chỉ định xét nghiệm</p>
+                              <p>Quản lý giờ ăn</p>
                            </a>
                         </li>
                         <li class="nav-item">

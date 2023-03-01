@@ -32,6 +32,7 @@ var admin_alternative_food  = require('./app/admin/controllers/alternativeFoodCo
 var admin_food_type  = require('./app/admin/controllers/foodTypeController');
 var admin_food_info  = require('./app/admin/controllers/foodInfoController');
 var admin_medical_test  = require('./app/admin/controllers/medicalTestController');
+var admin_menu_time  = require('./app/admin/controllers/menuTimeController');
 
 require('./app/config/passport')(passport);
 
@@ -94,6 +95,7 @@ app.use('/admin/alternative-food', admin_alternative_food);
 app.use('/admin/food-type', admin_food_type);
 app.use('/admin/food-info', admin_food_info);
 app.use('/admin/medical-test', admin_medical_test);
+app.use('/admin/menu-time', admin_menu_time);
 
 app.get('/robots.txt', function (req, res) {
   res.type('text/plain');
