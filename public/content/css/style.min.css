@@ -14401,13 +14401,13 @@ span.flatpickr-weekday {
     --table-flush: var(--modal-padding-x);
   }
 }
-.table-1 {
+.table-1, .table-2 {
   --bs-table-border-color: #f1f5f9;
   --bs-table-cell-padding-x: 0.625rem;
   --bs-table-cell-padding-y: 0.625rem;
   --bs-border-color: var(--bs-table-border-color);
 }
-.table-1 > thead {
+.table-1 > thead,.table-2 > thead {
   background-color: #f8fafc;
   vertical-align: inherit;
 }
@@ -14422,17 +14422,26 @@ span.flatpickr-weekday {
   height: 3.625rem;
   white-space: nowrap;
 }
+.table-2 > thead td,
+.table-2 > thead th {
+  --bs-table-border-color: #e6ecf2;
+  border-bottom: 1px solid var(--bs-table-border-color);
+  border-top: 1px solid var(--bs-table-border-color);
+  color: #566171;
+  font-weight: 700;
+  white-space: nowrap;
+}
 .modal .table-1 > thead td,
 .modal .table-1 > thead th {
   height: 3.125rem;
 }
-.table-1 > tbody + tbody:before {
+.table-1 > tbody + tbody:before,.table-2 > tbody + tbody:before {
   content: "";
   display: block;
   height: 1.5rem;
   pointer-events: none;
 }
-.table-1 .btn-action {
+.table-1 .btn-action, .table-2 .btn-action {
   font-size: 1.166875rem;
 }
 .paginate {

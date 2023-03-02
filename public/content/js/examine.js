@@ -313,6 +313,17 @@ function getMedicalTest(id){
     }
 }
 
+function addPrescriptionEdit(){
+    for(let item of dataExamine.prescriptionExamine){
+        if(dataExamine.prescriptionExamine.length > 0){
+            $("#tb_prescription").show();
+        }else{
+            $("#tb_prescription").hide();
+        }
+        addHtmlPrescription(item);
+    }
+}
+
 $(document).ready(function(){
     $("#cus_birthday").flatpickr({
         dateFormat: "d-m-Y",
@@ -371,13 +382,4 @@ $(document).ready(function(){
             }
         }
     });
-    
-    for(let item of dataExamine.prescriptionExamine){
-        if(dataExamine.prescriptionExamine.length > 0){
-            $("#tb_prescription").show();
-        }else{
-            $("#tb_prescription").hide();
-        }
-        addHtmlPrescription(item);
-    }
 });
