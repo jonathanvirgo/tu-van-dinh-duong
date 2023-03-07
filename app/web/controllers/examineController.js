@@ -636,7 +636,7 @@ router.get('/suggest/food-name', function(req, res, next){
     var resultData = {
         success: false,
         message: "",
-        data: ''
+        data: []
     };
     try {
         if (!req.user) {
@@ -644,17 +644,19 @@ router.get('/suggest/food-name', function(req, res, next){
             res.json(resultData);
             return;
         }
-        let sqlFoodName = 'SELECT * FROM food_info WHERE created_by = ?';
-        arrPromise.push(webService.getListTable(sqlFoodName, [req.user.id]).then(responseData =>{
+        console.log("suggest/food-name", req.body, req.query, req.params);
+        let sqlFoodName = 'SELECT * FROM food_info WHERE created_by = ? AND name LIKE ?';
+        webService.getListTable(sqlFoodName, [req.user.id, '%' + req.query.term + '%']).then(responseData =>{
             if(responseData.success && responseData.data.length > 0){
                 resultData.message = "Thành công";
                 resultData.success = true;
                 resultData.data = responseData.data;
             }else{
                 resultData.message = "Tải dữ liệu thất bại!"
+                resultData.data = [];
             }
             res.json(resultData);
-        }));
+        });
     } catch (error) {
         logService.create(req, e.message).then(function() {
             resultData.message = e.message;

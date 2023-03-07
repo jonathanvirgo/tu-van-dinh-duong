@@ -123,14 +123,14 @@ let foodTypeService = {
             try {
                 if (err) return callback(err);
                 var paraSQL = [];
-                var sql     = 'SELECT * FROM food_type ORDER BY id WHERE id > 0';
+                var sql     = 'SELECT * FROM food_type WHERE id > 0 ORDER BY id';
                 //Không phải Administrator thì load các bản ghi theo khoa viện
-                if (!parameter.role_ids.includes(1) && !parameter.role_ids.includes(3)){
+                if (!parameter.role_id.includes(1) && !parameter.role_id.includes(3)){
                     //Nếu là quản lý load theo viện
-                    if(parameter.role_ids.includes(5)){
+                    if(parameter.role_id.includes(5)){
                         sql += " AND hospital_id = ?";
                         paraSQL.push(parameter.hospital_id);
-                    }else if(parameter.role_ids.includes(4)){
+                    }else if(parameter.role_id.includes(4)){
                         //Nếu là bác sĩ load theo khoa
                         sql += " AND department_id = ?";
                         paraSQL.push(parameter.department_id);
@@ -141,6 +141,7 @@ let foodTypeService = {
                     if (err) return callback(err);
                     callback(null, results, fields);
                 });
+                console.log("getAllFoodType", query.sql);
             } catch (error) {
                 webService.addToLogService(error, 'foodTypeModel getAllFoodType');
                 return callback(error);

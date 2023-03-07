@@ -10,7 +10,8 @@ let dataExamine = {
     medicalTest: [],
     id_prescription: 1,
     prescriptionExamine: [],
-    listMenu: [{id:1, name:"Thực đơn 1"},{id:2, name:"Thực đơn 2"},{id:3, name:"Thực đơn 3"}]
+    listMenu: [{id:1, name:"Thực đơn 1"},{id:2, name:"Thực đơn 2"},{id:3, name:"Thực đơn 3"}],
+    foodNameListSearch: []
 };
 
 const numberFormat = new Intl.NumberFormat();
@@ -325,7 +326,7 @@ function addPrescriptionEdit(){
     }
 }
 
-function generateFoodName(id, isSearch = false){
+function generateFoodName(id){
     $('#' + id).select2({
         minimumInputLength: 3,
         language: {
@@ -343,34 +344,37 @@ function generateFoodName(id, isSearch = false){
             return markup;
         },
         placeholder: 'Chọn thực phẩm',
-        // allowClear: true,
+        allowClear: true,
         ajax: {
             url: function (params) {
-                return '/examine/sugget/food-name?keyword=' + params.term
+                return '/examine/suggest/food-name'
             },
             delay: 1000,
             dataType: 'json',
             processResults: function (data) {
-                if(data){
-                    displayMessage("Tải dữ liệu thành công!");
-                    return { 
-                        results: $.map(data, function (item) {
-                            return {
-                                text: item.name,
-                                id: item.id,
-                                weight: item.weight,
-                                energy: item.energy,
-                                protein: item.protein,
-                                animal_protein: item.animal_protein,
-                                lipid: item.lipid,
-                                unanimal_lipid: item.unanimal_lipid,
-                                carbohydrate: item.carbohydrate
-                            }
-                        })
-                    };
-                }else{
-                    displayError("Tải dữ liệu thất bại! Vui lòng thử lại!");
+                if(data.success){
+                    dataExamine.foodNameListSearch = data.data;
+                    // for(let item of data.data){
+                    //     if(dataExamine.foodNameListSearch.findIndex(s => s.id == item.id) == -1){
+                    //         dataExamine.foodNameListSearch.push(item);
+                    //     }
+                    // }
                 }
+                return { 
+                    results: $.map(data.data, function (item) {
+                        return {
+                            text: item.name,
+                            id: item.id,
+                            weight: item.weight,
+                            energy: item.energy,
+                            protein: item.protein,
+                            animal_protein: item.animal_protein,
+                            lipid: item.lipid,
+                            unanimal_lipid: item.unanimal_lipid,
+                            carbohydrate: item.carbohydrate
+                        }
+                    })
+                };
             }
         }
     });
@@ -387,6 +391,7 @@ $(document).ready(function(){
             caculateYearOld(selectedDates, dateStr, instance);
         }
     });
+
     $("#nutrition_advice_id").on('select2:select', function(evt) {
         if(dataExamine.nutritionAdviceList.length > 0){
             for(let item of dataExamine.nutritionAdviceList){
@@ -411,6 +416,7 @@ $(document).ready(function(){
             }
         }
     });
+
     $("#active_mode_of_living_id").on('select2:select', function(evt) {
         if(dataExamine.activeModeOfLivingList.length > 0){
             for(let item of dataExamine.activeModeOfLivingList){
@@ -423,12 +429,23 @@ $(document).ready(function(){
     });
 
     $("#medicine_id").on('select2:select', function(evt) {
-        console.log(dataExamine, evt.params.data.id);
         if(dataExamine.medicineList.length > 0){
             for(let item of dataExamine.medicineList){
                 if(evt.params.data.id == item.id){      
                     $("#unit_medinice").val(item.unit);
                     $("#use_medinice").val(item.description);
+                    break;
+                }
+            }
+        }
+    });
+
+    $("#food_name").on('select2:select', function(evt) {
+        if(dataExamine.foodNameListSearch.length > 0){
+            for(let item of dataExamine.foodNameListSearch){
+                if(evt.params.data.id == item.id){      
+                    $("#total_food").val(item.weight);
+                    $("#kcal_food").val(item.energy);
                     break;
                 }
             }

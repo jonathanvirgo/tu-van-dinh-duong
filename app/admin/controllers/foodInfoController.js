@@ -32,7 +32,7 @@ router.get('/create', function (req, res, next) {
         if (!req.user.isAdmin) {
             throw new Error(notice_admin);
         }
-        foodTypeService.getAllFoodType(req.user,function (err, result, fields) {
+        foodTypeService.getAllFoodType(req.user, function (err, result, fields) {
             if (err) {
                 adminService.addToLog(req, res, err);
                 return;
@@ -62,7 +62,7 @@ router.get('/edit/:id', function (req, res) {
             foodInfo = {};
 
         arrPromise.push(new Promise(function (resolve, reject) {
-            foodTypeService.getAllFoodType(function (err, result, fields) {
+            foodTypeService.getAllFoodType(req.user, function (err, result, fields) {
                 if (err) {
                     return logService.create(req, err).then(function(responseData){
                         if(responseData.message) str_error.push(responseData.message);
