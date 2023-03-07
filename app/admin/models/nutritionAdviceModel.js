@@ -31,6 +31,7 @@ let nutritionAdviceService = {
                 });
             } catch (error) {
                 webService.addToLogService(error, 'nutritionAdviceService create');
+                return callback(error);
             }
         });
     },
@@ -64,6 +65,7 @@ let nutritionAdviceService = {
                 });
             } catch (error) {
                 webService.addToLogService(error, 'nutritionAdviceService update');
+                return callback(error);
             }
         });
     },
@@ -79,6 +81,7 @@ let nutritionAdviceService = {
                 });
             } catch (error) {
                 webService.addToLogService(error, 'nutritionAdviceService delete');
+                return callback(error);
             }
         });
     },
@@ -111,6 +114,7 @@ let nutritionAdviceService = {
                 });
             } catch (error) {
                 webService.addToLogService(error, 'nutritionAdviceService countAllNutritionAdvice');
+                return callback(error);
             }
         });
     },
@@ -145,6 +149,7 @@ let nutritionAdviceService = {
                 });
             } catch (error) {
                 webService.addToLogService(error, 'nutritionAdviceService getAllNutritionAdvice');
+                return callback(error);
             }
         });
     },
@@ -160,6 +165,7 @@ let nutritionAdviceService = {
                 });
             } catch (error) {
                 webService.addToLogService(error, 'nutritionAdviceService getNutritionAdviceById');
+                return callback(error);
             }
         });
     }

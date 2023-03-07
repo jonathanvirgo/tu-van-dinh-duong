@@ -14,6 +14,7 @@ let settingService = {
                 });
             } catch (error) {
                 webService.addToLogService(error, 'settingService create');
+                return callback(error);
             }
         });
     },
@@ -29,6 +30,7 @@ let settingService = {
                 });
             } catch (error) {
                 webService.addToLogService(error, 'settingService update');
+                return callback(error);
             }
         });
     },
@@ -44,6 +46,7 @@ let settingService = {
                 });
             } catch (error) {
                 webService.addToLogService(error, 'settingService delete');
+                return callback(error);
             }
         });
     },
@@ -68,6 +71,7 @@ let settingService = {
                 });
             } catch (error) {
                 webService.addToLogService(error, 'settingService countAllSetting');
+                return callback(error);
             }
         });
     },
@@ -94,6 +98,7 @@ let settingService = {
                 });
             } catch (error) {
                 webService.addToLogService(error, 'settingService getAllSetting');
+                return callback(error);
             }
         });
     },
@@ -109,6 +114,7 @@ let settingService = {
                 });
             } catch (error) {
                 webService.addToLogService(error, 'settingService getSettingById');
+                return callback(error);
             }
         });
     },
@@ -124,6 +130,7 @@ let settingService = {
                 });
             } catch (error) {
                 webService.addToLogService(error, 'settingService getSettingBySystemName');
+                return callback(error);
             }
         });
     }

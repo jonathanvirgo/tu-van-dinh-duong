@@ -14,6 +14,7 @@ let departmentService = {
                 });
             } catch (error) {
                 webService.addToLogService(error, 'departmentModel create');
+                return callback(error);
             }
         });
     },
@@ -29,6 +30,7 @@ let departmentService = {
                 });
             } catch (error) {
                 webService.addToLogService(error, 'departmentModel update');
+                return callback(error);
             }
         });
     },
@@ -44,6 +46,7 @@ let departmentService = {
                 });
             } catch (error) {
                 webService.addToLogService(error, 'departmentModel delete');
+                return callback(error);
             }
         });
     },
@@ -72,6 +75,7 @@ let departmentService = {
                 });
             } catch (error) {
                 webService.addToLogService(error, 'departmentModel countAllDepartment');
+                return callback(error);
             }
         });
     },
@@ -102,6 +106,7 @@ let departmentService = {
                 });
             } catch (error) {
                 webService.addToLogService(error, 'departmentModel getAllDepartment');
+                return callback(error);
             }
         });
     },
@@ -117,6 +122,7 @@ let departmentService = {
                 });
             } catch (error) {
                 webService.addToLogService(error, 'departmentModel getDepartmentById');
+                return callback(error);
             }
         });
     },
@@ -133,6 +139,7 @@ let departmentService = {
                 });
             } catch (error) {
                 webService.addToLogService(error, 'departmentModel getAllDepartmentByHospital');
+                return callback(error);
             }
         });
     },

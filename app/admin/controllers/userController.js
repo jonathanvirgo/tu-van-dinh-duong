@@ -57,8 +57,9 @@ router.get('/create', function (req, res, next) {
         arrPromise.push(new Promise(function (resolve, reject) {
             hospitalService.getAllHospital(function (err, result, fields) {
                 if (err) {
-                    return logService.create(req, err).then(function(log_id){
-                        str_error.push(err.sqlMessage);
+                    return logService.create(req, err).then(function(responseData){
+                        if(responseData.message) str_error.push(responseData.message);
+                        else str_error.push(err.sqlMessage);
                         resolve();
                     });
                 }
@@ -71,8 +72,9 @@ router.get('/create', function (req, res, next) {
         arrPromise.push(new Promise(function (resolve, reject) {
             roleService.searchAllRole(function (err, result, fields) {
                 if (err) {
-                    return logService.create(req, err).then(function(log_id){
-                        str_error.push(err.sqlMessage);
+                    return logService.create(req, err).then(function(responseData){
+                        if(responseData.message) str_error.push(responseData.message);
+                        else str_error.push(err.sqlMessage);
                         resolve();
                     });
                 }
@@ -119,8 +121,9 @@ router.get('/edit/:id', function (req, res) {
         arrPromise.push(new Promise(function (resolve, reject) {
             roleService.searchAllRole(function (err, result, fields) {
                 if (err) {
-                    return logService.create(req, err).then(function(log_id){
-                        str_error.push(err.sqlMessage);
+                    return logService.create(req, err).then(function(responseData){
+                        if(responseData.message) str_error.push(responseData.message);
+                        else str_error.push(err.sqlMessage);
                         resolve();
                     });
                 }
@@ -134,8 +137,9 @@ router.get('/edit/:id', function (req, res) {
         arrPromise.push(new Promise(function (resolve, reject) {
             roleUserService.getRoleByUserId(req.params.id, function (err, result, fields) {
                 if (err) {
-                    return logService.create(req, err).then(function(log_id){
-                        str_error.push(err.sqlMessage);
+                    return logService.create(req, err).then(function(responseData){
+                        if(responseData.message) str_error.push(responseData.message);
+                        else str_error.push(err.sqlMessage);
                         resolve();
                     });
                 }
@@ -151,8 +155,9 @@ router.get('/edit/:id', function (req, res) {
         arrPromise.push(new Promise(function (resolve, reject) {
             modelService.getUserById(req.params.id, function (err, result, fields) {
                 if (err) {
-                    return logService.create(req, err).then(function(log_id){
-                        str_error.push(err.sqlMessage);
+                    return logService.create(req, err).then(function(responseData){
+                        if(responseData.message) str_error.push(responseData.message);
+                        else str_error.push(err.sqlMessage);
                         resolve();
                     });
                 }
@@ -165,8 +170,9 @@ router.get('/edit/:id', function (req, res) {
         arrPromise.push(new Promise(function (resolve, reject) {
             hospitalService.getAllHospital(function (err, result, fields) {
                 if (err) {
-                    return logService.create(req, err).then(function(log_id){
-                        str_error.push(err.sqlMessage);
+                    return logService.create(req, err).then(function(responseData){
+                        if(responseData.message) str_error.push(responseData.message);
+                        else str_error.push(err.sqlMessage);
                         resolve();
                     });
                 }
@@ -213,8 +219,9 @@ function validatorUser(req, parameter, selected_role_ids, userId = 0){
                 arrPromise.push(new Promise(function (resolve, reject) {
                     modelService.countUserByName({name: parameter.name, user_id: userId}, function (err, result, fields) {
                         if (err) {
-                            return logService.create(req, err).then(function(log_id){
-                                str_error.push(err.sqlMessage);
+                            return logService.create(req, err).then(function(responseData){
+                                if(responseData.message) str_error.push(responseData.message);
+                                else str_error.push(err.sqlMessage);
                                 resolve();
                             });
                         }
@@ -239,8 +246,9 @@ function validatorUser(req, parameter, selected_role_ids, userId = 0){
                 arrPromise.push(new Promise(function (resolve, reject) {
                     modelService.countUserByEmail({name: parameter.email, user_id: userId}, function (err, result, fields) {
                         if (err) {
-                            return logService.create(req, err).then(function(log_id){
-                                str_error.push(err.sqlMessage);
+                            return logService.create(req, err).then(function(responseData){
+                                if(responseData.message) str_error.push(responseData.message);
+                                else str_error.push(err.sqlMessage);
                                 resolve();
                             });
                         }
@@ -304,7 +312,7 @@ router.post('/create', function (req, res, next) {
         arrPromise.push(new Promise(function (resolve, reject) {
             roleService.searchAllRole(function (err, result, fields) {
                 if (err) {
-                    return logService.create(req, err).then(function(log_id){
+                    return logService.create(req, err).then(function(responseData){
                         resolve();
                     });
                 }
@@ -355,7 +363,7 @@ router.post('/create', function (req, res, next) {
                                     roleUserPromise.push(new Promise(function (resolve, reject) {
                                         roleUserService.create(itemRole, function (err, rsRole, fields) {
                                             if (err) {
-                                                return logService.create(req, err).then(function(){
+                                                return logService.create(req, err).then(function(responseData){
                                                     resolve();
                                                 });
                                             }
@@ -422,7 +430,7 @@ router.post('/edit/:id', function (req, res, next) {
         arrPromise.push(new Promise(function (resolve, reject) {
             modelService.getUserById(parameter.id, function (err, result, fields) {
                 if (err) {
-                    return logService.create(req, err).then(function(log_id){
+                    return logService.create(req, err).then(function(responseData){
                         resolve();
                     });
                 }
@@ -434,7 +442,7 @@ router.post('/edit/:id', function (req, res, next) {
         arrPromise.push(new Promise(function (resolve, reject) {
             roleService.searchAllRole(function (err, result, fields) {
                 if (err) {
-                    return logService.create(req, err).then(function(log_id){
+                    return logService.create(req, err).then(function(responseData){
                         resolve();
                     });
                 }
@@ -447,8 +455,9 @@ router.post('/edit/:id', function (req, res, next) {
         arrPromise.push(new Promise(function (resolve, reject) {
             hospitalService.getAllHospital(function (err, result, fields) {
                 if (err) {
-                    return logService.create(req, err).then(function(log_id){
-                        str_error.push(err.sqlMessage);
+                    return logService.create(req, err).then(function(responseData){
+                        if(responseData.message) str_error.push(responseData.message);
+                        else str_error.push(err.sqlMessage);
                         resolve();
                     });
                 }
@@ -491,7 +500,7 @@ router.post('/edit/:id', function (req, res, next) {
                             roleUserPromise.push(new Promise(function (resolve, reject) {
                                 modelService.update(parameter, function (err, result, fields) {
                                     if (err) {
-                                        return logService.create(req, err).then(function(){
+                                        return logService.create(req, err).then(function(responseData){
                                             resolve();
                                         });
                                     }
@@ -501,7 +510,7 @@ router.post('/edit/:id', function (req, res, next) {
                             roleUserPromise.push(new Promise(function (resolve, reject) {
                                 roleUserService.delete(parameter.id, function (err, result, fields) {
                                     if (err) {
-                                        return logService.create(req, err).then(function(){
+                                        return logService.create(req, err).then(function(responseData){
                                             resolve();
                                         });
                                     }
@@ -522,7 +531,7 @@ router.post('/edit/:id', function (req, res, next) {
                                         addRolePromise.push(new Promise(function (resolve, reject) {
                                             roleUserService.create(itemRole, function (err, result, fields) {
                                                 if (err) {
-                                                    return logService.create(req, err).then(function(){
+                                                    return logService.create(req, err).then(function(responseData){
                                                         resolve();
                                                     });
                                                 }
@@ -583,8 +592,9 @@ router.post('/list', function (req, res, next) {
         arrPromise.push(new Promise(function (resolve, reject) {
             modelService.countAllUser(parameter, function (err, result, fields) {
                 if (err) {
-                    return logService.create(req, err).then(function(){
-                        resultMessage.error = err.sqlMessage;
+                    return logService.create(req, err).then(function(responseData){
+                        if(responseData.message) resultMessage.error = responseData.message;
+                        else resultMessage.error = err.sqlMessage;
                         resolve();
                     });
                 }
@@ -599,8 +609,9 @@ router.post('/list', function (req, res, next) {
         arrPromise.push(new Promise(function (resolve, reject) {
             modelService.getAllUser(parameter, function (err, result, fields) {
                 if (err) {
-                    return logService.create(req, err).then(function(){
-                        resultMessage.error = err.sqlMessage;
+                    return logService.create(req, err).then(function(responseData){
+                        if(responseData.message) resultMessage.error = responseData.message;
+                        else resultMessage.error = err.sqlMessage;
                         resolve();
                     });
                 }

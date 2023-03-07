@@ -19,6 +19,7 @@ let roleUserService = {
                 });
             } catch (error) {
                 webService.addToLogService(error, 'roleUserService create');
+                return callback(error);
             }
         });
     },
@@ -34,6 +35,7 @@ let roleUserService = {
                 });
             } catch (error) {
                 webService.addToLogService(error, 'roleUserService delete');
+                return callback(error);
             }
         });
     },
@@ -49,6 +51,7 @@ let roleUserService = {
                 });
             } catch (error) {
                 webService.addToLogService(error, 'roleUserService getRoleByUserId');
+                return callback(error);
             }
         });
     }

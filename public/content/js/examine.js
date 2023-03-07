@@ -9,7 +9,8 @@ let dataExamine = {
     prescription: [],
     medicalTest: [],
     id_prescription: 1,
-    prescriptionExamine: []
+    prescriptionExamine: [],
+    listMenu: [{id:1, name:"Thực đơn 1"},{id:2, name:"Thực đơn 2"},{id:3, name:"Thực đơn 3"}]
 };
 
 const numberFormat = new Intl.NumberFormat();
@@ -322,6 +323,57 @@ function addPrescriptionEdit(){
         }
         addHtmlPrescription(item);
     }
+}
+
+function generateFoodName(id, isSearch = false){
+    $('#' + id).select2({
+        minimumInputLength: 3,
+        language: {
+            inputTooShort: function() {
+                return "Vui lòng nhập ít nhất 3 ký tự";
+            },
+            noResults: function(){
+               return "Không có kết quả được tìm thấy";
+            },
+            searching: function() {
+                return "Đang tìm kiếm...";
+            }
+        },
+        escapeMarkup: function (markup) {
+            return markup;
+        },
+        placeholder: 'Chọn thực phẩm',
+        // allowClear: true,
+        ajax: {
+            url: function (params) {
+                return '/examine/sugget/food-name?keyword=' + params.term
+            },
+            delay: 1000,
+            dataType: 'json',
+            processResults: function (data) {
+                if(data){
+                    displayMessage("Tải dữ liệu thành công!");
+                    return { 
+                        results: $.map(data, function (item) {
+                            return {
+                                text: item.name,
+                                id: item.id,
+                                weight: item.weight,
+                                energy: item.energy,
+                                protein: item.protein,
+                                animal_protein: item.animal_protein,
+                                lipid: item.lipid,
+                                unanimal_lipid: item.unanimal_lipid,
+                                carbohydrate: item.carbohydrate
+                            }
+                        })
+                    };
+                }else{
+                    displayError("Tải dữ liệu thất bại! Vui lòng thử lại!");
+                }
+            }
+        }
+    });
 }
 
 $(document).ready(function(){

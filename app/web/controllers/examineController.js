@@ -30,8 +30,9 @@ router.get('/', function(req, res) {
             arrPromise.push(new Promise(function (resolve, reject) {
                 examineService.countAllExamine({search: filter.search, filter: true}, function (err, result, fields) {
                     if (err) {
-                        return logService.create(req, err).then(function(){
-                            str_errors.push(err.sqlMessage);
+                        return logService.create(req, err).then(function(responseData){
+                            if(responseData.message) str_errors.push(responseData.message);
+                            else str_errors.push(err.sqlMessage);
                             resolve();
                         });
                     }
@@ -45,8 +46,9 @@ router.get('/', function(req, res) {
             arrPromise.push(new Promise(function (resolve, reject) {
                 examineService.getAllExamine({search: filter.search, filter: true}, function (err, result, fields) {
                     if (err) {
-                        return logService.create(req, err).then(function(){
-                            str_errors.push(err.sqlMessage);
+                        return logService.create(req, err).then(function(responseData){
+                            if(responseData.message) str_errors.push(responseData.message);
+                            else str_errors.push(err.sqlMessage);
                             resolve();
                         });
                     }
@@ -114,7 +116,8 @@ router.get('/edit/:id', function(req, res, next) {
                 nutritionAdvice: [],
                 activeModeOfLiving: [],
                 medicine: [],
-                medicalTest: []
+                medicalTest: [],
+                menuTime: []
             };
         arrPromise.push(webService.createSideBarFilter(req, 1).then(function(dataFilter) {
             resultData.filter = dataFilter;
@@ -184,6 +187,15 @@ router.get('/edit/:id', function(req, res, next) {
             }
         }));
 
+        let sqlMenuTime = 'SELECT * FROM menu_time WHERE hospital_id = ?';
+        arrPromise.push(webService.getListTable(sqlMenuTime, [req.user.hospital_id]).then(responseData4 =>{
+            if(responseData4.success){
+                resultData.menuTime = responseData4.data;
+            }else{
+                str_errors.push(responseData4.message);
+            }
+        }));
+
         return new Promise(function(resolve, reject) {
             Promise.all(arrPromise).then(function() {
                 res.render("examine/create.ejs", {
@@ -198,7 +210,8 @@ router.get('/edit/:id', function(req, res, next) {
                     medicalTest: resultData.medicalTest,
                     medicalTestExamine: JSON.parse(resultData.detailExamine.medical_test ? resultData.detailExamine.medical_test : '[]'),
                     prescriptionExamine: JSON.parse(resultData.detailExamine.prescription ? resultData.detailExamine.prescription : '[]'),
-                    page:'edit'
+                    page:'edit',
+                    menuTime: resultData.menuTime
                 });
             }).catch(err => {
                 res.render("examine/create.ejs", {
@@ -212,7 +225,8 @@ router.get('/edit/:id', function(req, res, next) {
                     medicalTest: [],
                     medicalTestExamine: [],
                     prescriptionExamine: [],
-                    page:'edit'
+                    page:'edit',
+                    menuTime:[]
                 });
             });
         });
@@ -229,7 +243,8 @@ router.get('/edit/:id', function(req, res, next) {
                 medicalTest: [],
                 medicalTestExamine: [],
                 prescriptionExamine: [],
-                page:'edit'
+                page:'edit',
+                menuTime:[]
             });
         })
     }
@@ -247,7 +262,8 @@ router.get('/create', function(req, res, next) {
                 nutritionAdvice: [],
                 activeModeOfLiving: [],
                 medicine: [],
-                medicalTest: []
+                medicalTest: [],
+                menuTime: []
             };
 
         arrPromise.push(webService.createSideBarFilter(req, 1).then(function(dataFilter) {
@@ -291,6 +307,15 @@ router.get('/create', function(req, res, next) {
                 str_errors.push(responseData3.message);
             }
         }));
+
+        let sqlMenuTime = 'SELECT * FROM menu_time WHERE hospital_id = ?';
+        arrPromise.push(webService.getListTable(sqlMenuTime, [req.user.hospital_id]).then(responseData4 =>{
+            if(responseData4.success){
+                resultData.menuTime = responseData4.data;
+            }else{
+                str_errors.push(responseData4.message);
+            }
+        }));
         
         return new Promise(function(resolve, reject) {
             Promise.all(arrPromise).then(function() {
@@ -306,7 +331,8 @@ router.get('/create', function(req, res, next) {
                     medicine: resultData.medicine,
                     medicalTest: resultData.medicalTest,
                     medicalTestExamine: [],
-                    prescriptionExamine: []
+                    prescriptionExamine: [],
+                    menuTime:resultData.menuTime
                 });
             }).catch(err => {
                 res.render("examine/create.ejs", {
@@ -320,7 +346,8 @@ router.get('/create', function(req, res, next) {
                     medicine: [],
                     medicalTest: [],
                     medicalTestExamine:[],
-                    prescriptionExamine: []
+                    prescriptionExamine: [],
+                    menuTime:[]
                 });
             });
         });
@@ -337,7 +364,8 @@ router.get('/create', function(req, res, next) {
                 medicine: [],
                 medicalTest: [],
                 medicalTestExamine:[],
-                prescriptionExamine: []
+                prescriptionExamine: [],
+                menuTime:[]
             });
         })
     }
@@ -428,7 +456,7 @@ router.post('/create', function(req, res, next) {
             webService.createCountId(req.user.hospital_id).then(success =>{
                 if(success.success && success.id_count){
                     parameter['count_id'] = success.id_count;
-                    webService.addRecordTable( parameter, 'examine').then(responseData =>{
+                    webService.addRecordTable( parameter, 'examine', true).then(responseData =>{
                         if(!responseData.success){
                             resultData.message = responseData.message;
                             logService.create(req, responseData.message);
@@ -472,7 +500,7 @@ router.post('/create', function(req, res, next) {
                         webService.getListTable(sqlFindCustomer ,[parameter.cus_name, parameter.cus_gender, parameter.cus_birthday]).then(responseData3=>{
                             if(responseData3.data && responseData3.data.length == 0){
                                 // neu khong co khach hang thi them moi
-                                webService.addRecordTable( paramCustomer, 'customer').then(responseData4 =>{
+                                webService.addRecordTable( paramCustomer, 'customer', true).then(responseData4 =>{
                                     if(!responseData4.success){
                                         logService.create(req, responseData4.message);
                                     }
@@ -487,7 +515,7 @@ router.post('/create', function(req, res, next) {
                 webService.getListTable(sqlFindCustomer ,[parameter.cus_name, parameter.cus_gender, parameter.cus_birthday]).then(responseData5=>{
                     if(responseData5.data && responseData5.data.length == 0){
                         // neu khong co khach hang thi them moi
-                        webService.addRecordTable( paramCustomer, 'customer').then(responseData6 =>{
+                        webService.addRecordTable( paramCustomer, 'customer', true).then(responseData6 =>{
                             if(!responseData6.success){
                                 logService.create(req, responseData6.message);
                             }
@@ -597,6 +625,37 @@ router.post('/edit/:id', function(req, res, next) {
             return;
         }
     } catch (e) {
+        logService.create(req, e.message).then(function() {
+            resultData.message = e.message;
+            res.json(resultData);
+        });
+    }
+});
+
+router.get('/suggest/food-name', function(req, res, next){
+    var resultData = {
+        success: false,
+        message: "",
+        data: ''
+    };
+    try {
+        if (!req.user) {
+            resultData.message = "Vui lòng đăng nhập lại để thực hiện chức năng này!";
+            res.json(resultData);
+            return;
+        }
+        let sqlFoodName = 'SELECT * FROM food_info WHERE created_by = ?';
+        arrPromise.push(webService.getListTable(sqlFoodName, [req.user.id]).then(responseData =>{
+            if(responseData.success && responseData.data.length > 0){
+                resultData.message = "Thành công";
+                resultData.success = true;
+                resultData.data = responseData.data;
+            }else{
+                resultData.message = "Tải dữ liệu thất bại!"
+            }
+            res.json(resultData);
+        }));
+    } catch (error) {
         logService.create(req, e.message).then(function() {
             resultData.message = e.message;
             res.json(resultData);

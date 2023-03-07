@@ -64,8 +64,9 @@ router.get('/edit/:id', function (req, res) {
         arrPromise.push(new Promise(function (resolve, reject) {
             foodTypeService.getAllFoodType(function (err, result, fields) {
                 if (err) {
-                    return logService.create(req, err).then(function(log_id){
-                        str_error.push(err.sqlMessage);
+                    return logService.create(req, err).then(function(responseData){
+                        if(responseData.message) str_error.push(responseData.message);
+                        else str_error.push(err.sqlMessage);
                         resolve();
                     });
                 }
@@ -78,8 +79,9 @@ router.get('/edit/:id', function (req, res) {
         arrPromise.push(new Promise(function (resolve, reject) {
             modelService.getFoodInfoById(req.params.id, function (err, result, fields) {
                 if (err) {
-                    return logService.create(req, err).then(function(log_id){
-                        str_error.push(err.sqlMessage);
+                    return logService.create(req, err).then(function(responseData){
+                        if(responseData.message) str_error.push(responseData.message);
+                        else str_error.push(err.sqlMessage);
                         resolve();
                     });
                 }
@@ -292,8 +294,9 @@ router.post('/list', function (req, res, next) {
         arrPromise.push(new Promise(function (resolve, reject) {
             modelService.countAllFoodInfo(parameter, function (err, result, fields) {
                 if (err) {
-                    return logService.create(req, err).then(function(){
-                        resultMessage.error = err.sqlMessage;
+                    return logService.create(req, err).then(function(responseData){
+                        if(responseData.message) resultMessage.error = responseData.message;
+                        else resultMessage.error = err.sqlMessage;
                         resolve();
                     });
                 }
@@ -308,8 +311,9 @@ router.post('/list', function (req, res, next) {
         arrPromise.push(new Promise(function (resolve, reject) {
             modelService.getAllFoodInfo(parameter, function (err, result, fields) {
                 if (err) {
-                    return logService.create(req, err).then(function(){
-                        resultMessage.error = err.sqlMessage;
+                    return logService.create(req, err).then(function(responseData){
+                        if(responseData.message) resultMessage.error = responseData.message;
+                        else resultMessage.error = err.sqlMessage;
                         resolve();
                     });
                 }

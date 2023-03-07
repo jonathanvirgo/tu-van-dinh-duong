@@ -14,6 +14,7 @@ let medicineService = {
                 });
             } catch (error) {
                 webService.addToLogService(error, 'medicineModel create');
+                return callback(error);
             }
         });
     },
@@ -29,6 +30,7 @@ let medicineService = {
                 });
             } catch (error) {
                 webService.addToLogService(error, 'medicineModel update');
+                return callback(error);
             }
         });
     },
@@ -44,6 +46,7 @@ let medicineService = {
                 });
             } catch (error) {
                 webService.addToLogService(error, 'medicineModel delete');
+                return callback(error);
             }
         });
     },
@@ -76,6 +79,7 @@ let medicineService = {
                 });
             } catch (error) {
                 webService.addToLogService(error, 'medicineModel countAllMedicine');
+                return callback(error);
             }
         });
     },
@@ -110,6 +114,7 @@ let medicineService = {
                 });
             } catch (error) {
                 webService.addToLogService(error, 'medicineModel getAllMedicine');
+                return callback(error);
             }
         });
     },
@@ -125,6 +130,7 @@ let medicineService = {
                 });
             } catch (error) {
                 webService.addToLogService(error, 'medicineModel getMedicineById');
+                return callback(error);
             }
         });
     }

@@ -35,8 +35,9 @@ router.get('/', function(req, res) {
             arrPromise.push(new Promise(function (resolve, reject) {
                 examineService.countAllExamine({search: filter.search, filter: false}, function (err, result, fields) {
                     if (err) {
-                        return logService.create(req, err).then(function(){
-                            str_errors.push(err.sqlMessage);
+                        return logService.create(req, err).then(function(responseData){
+                            if(responseData.message) str_errors.push(responseData.message);
+                            else str_errors.push(err.sqlMessage);
                             resolve();
                         });
                     }
@@ -50,8 +51,9 @@ router.get('/', function(req, res) {
             arrPromise.push(new Promise(function (resolve, reject) {
                 examineService.getAllExamine({search: filter.search, filter: false}, function (err, result, fields) {
                     if (err) {
-                        return logService.create(req, err).then(function(){
-                            str_errors.push(err.sqlMessage);
+                        return logService.create(req, err).then(function(responseData){
+                            if(responseData.message) str_errors.push(responseData.message);
+                            else str_errors.push(err.sqlMessage);
                             resolve();
                         });
                     }

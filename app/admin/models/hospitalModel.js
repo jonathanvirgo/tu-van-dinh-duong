@@ -14,6 +14,7 @@ let hospitaService = {
                 });
             } catch (error) {
                 webService.addToLogService(error, 'hospitalModel create');
+                return callback(error);
             }
         });
     },
@@ -29,6 +30,7 @@ let hospitaService = {
                 });
             } catch (error) {
                 webService.addToLogService(error, 'hospitalModel update');
+                return callback(error);
             }
         });
     },
@@ -44,6 +46,7 @@ let hospitaService = {
                 });
             } catch (error) {
                 webService.addToLogService(error, 'hospitalModel delete');
+                return callback(error);
             }
         });
     },
@@ -64,6 +67,7 @@ let hospitaService = {
                 });
             } catch (error) {
                 webService.addToLogService(error, 'hospitalModel countAllHospital');
+                return callback(error);
             }
         });
     },
@@ -86,6 +90,7 @@ let hospitaService = {
                 });
             } catch (error) {
                 webService.addToLogService(error, 'hospitalModel getAllHospitalFromParam');
+                return callback(error);
             }
         });
     },
@@ -101,6 +106,7 @@ let hospitaService = {
                 });
             } catch (error) {
                 webService.addToLogService(error, 'hospitalModel getHospitalById');
+                return callback(error);
             }
         });
     },
@@ -118,6 +124,7 @@ let hospitaService = {
                 });
             } catch (error) {
                 webService.addToLogService(error, 'hospitalModel getAllHospital');
+                return callback(error);
             }
         });
     },

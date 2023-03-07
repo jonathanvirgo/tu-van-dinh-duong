@@ -1,3 +1,5 @@
+const { response } = require('express');
+
 var md5             = require('md5'),
     request         = require('request'),
     url             = require('url'),
@@ -5,6 +7,7 @@ var md5             = require('md5'),
     jwt             = require('jsonwebtoken'),
     db              = require('../../config/db'),
     logService      = require('../../admin/models/logModel'),
+    crypto          = require('crypto'),
     jwtPrivateKey   = "4343636e4d354b45517159456534636d4e34344e4d4e50427371614575577451";
 
 let webService = {
@@ -38,6 +41,7 @@ let webService = {
             return str;
         } catch (error) {
             webService.addToLogService(error, "webService removeVietnameseTones");
+            return;
         }
     },
     parseDay: function(time) {
@@ -51,6 +55,7 @@ let webService = {
             return dateformat;
         } catch (error) {
             webService.addToLogService(error, "webService parseDay");
+            return;
         }
     },
     addDays: function(days) {
@@ -60,15 +65,26 @@ let webService = {
             return webService.parseDay(date);
         } catch (error) {
             webService.addToLogService(error, "webService addDays");
+            return;
         }
     },
-    addToLog: function(req, message) {
-        let message_err = message.message ? message.message : message;
-        return logService.create(req, message_err);
-    },
     addToLogService: function(message, page_url) {
-        let message_err = message.message ? message.message : message;
-        return logService.createFromParams(message_err, page_url)
+        try {
+            let short_message = '';
+            let full_message = '';
+            if (typeof message === "string") {
+                full_message = message;
+            } else if (message instanceof Error) {
+                full_message = JSON.stringify(message);
+                short_message = message.message ? message.message : '';
+            }else{
+                full_message = JSON.stringify(message);
+                short_message = message.sql ? message.sql : '';
+            }
+            webService.addRecordTable({short_message:short_message, full_message: full_message, page_url: page_url}, "log_err");
+        } catch (error) {
+            console.log("addToLogService catch", error);
+        }
     },
     getStringRandom: function(length) {
         try {
@@ -91,6 +107,7 @@ let webService = {
             });
         } catch (error) {
             webService.addToLogService(error, "webService fullUrl");
+            return;
         }
     },
     createHeaderToken: function() {
@@ -105,6 +122,7 @@ let webService = {
             });
         } catch (error) {
             webService.addToLogService(error, "webService createHeaderToken");
+            return;
         }
     },
     loginFormToken: function(username, password) {
@@ -120,6 +138,7 @@ let webService = {
             });
         } catch (error) {
             webService.addToLogService(error, "webService addDays");
+            return;
         }
     },
     readyToken: function(token) {
@@ -127,6 +146,7 @@ let webService = {
             return jwt.verify(token, jwtPrivateKey);
         } catch (err) {
             webService.addToLogService(err, "webService addDays");
+            return;
         }
     },
     createFormToken: function(parameter) {
@@ -153,6 +173,7 @@ let webService = {
             });
         } catch (error) {
             webService.addToLogService(err, "webService createFormToken");
+            return;
         }
     },
     createSideBarFilter: function(req, type, perPage = 10) {
@@ -207,6 +228,7 @@ let webService = {
             });
         } catch (error) {
             webService.addToLogService(err, "webService createSideBarFilter");
+            return;
         }
     },
     templateEmailNew: function(text_content, button) {
@@ -481,6 +503,7 @@ let webService = {
             return content_html;  
         } catch (error) {
             webService.addToLogService(err, "webService templateEmailNew");
+            return;
         }
     },
     countObjectSize: function(obj) {
@@ -492,6 +515,7 @@ let webService = {
             return size;
         } catch (error) {
             webService.addToLogService(err, "webService countObjectSize");
+            return;
         }
     },
     updateRecordTable: function(param, condition, table){
@@ -547,56 +571,61 @@ let webService = {
                     });
                 } catch (error) {
                     webService.addToLogService(err, "webService updateRecordTable");
+                    resolve({
+                        success: false,
+                        message: error
+                    });
                 }
             });
         });
     },
-    addRecordTable: function(param, table){
+    addRecordTable: function(param, table, isCreated_at = false){
         return new Promise((resolve, reject) => {
             db.get().getConnection(function(err, connection) {
-                try {
-                    if (err) {
+                if (err) {
+                    resolve({
+                        success: false,
+                        message: err
+                    });
+                }
+                //INSERT INTO pr_history_article(booking_id,name,path_cloud,type,version) VALUES (?,?,?,?,?)
+                let sql = 'INSERT INTO '+ table +'(';
+                let textVal = ') VALUES (';
+                if(isCreated_at){
+                    textVal = ',created_at) VALUES (';
+                }
+                let paramSql = [];
+                let j = 0;
+                for(var i in param){
+                    if(j == 0){
+                        sql += i ;
+                        textVal += '?';
+                        j = 1;
+                    }else{
+                        sql += ',' + i;
+                        textVal += ',?';
+                    }
+                    paramSql.push(param[i]);
+                }
+                let sqlQuery = sql + textVal + ')';
+                if(isCreated_at){
+                    sqlQuery = sql + textVal + ',CURRENT_TIMESTAMP)';
+                }
+                let query = connection.query(sqlQuery, paramSql, function(error, results, fields) {
+                    connection.release();
+                    if (error) {
                         resolve({
                             success: false,
-                            message: err
+                            message: error
                         });
                     }
-                    let sql = 'INSERT INTO '+ table +'(';
-                    let textVal = ') VALUES ('
-                    let paramSql = [];
-                    let j = 0;
-                    for(var i in param){
-                        if(j == 0){
-                            sql += i ;
-                            textVal += '?';
-                        }else if(j == (Object.keys(param).length - 1)){
-                            sql += ',' + i +',created_at';
-                            textVal += ',?';
-                        }else{
-                            sql += ',' + i;
-                            textVal += ',?';
-                        }
-                        j++;
-                        paramSql.push(param[i]);
-                    }
-                    
-                    let query = connection.query((sql + textVal + ',CURRENT_TIMESTAMP)'), paramSql, function(error, results, fields) {
-                        connection.release();
-                        if (error) {
-                            resolve({
-                                success: false,
-                                message: error
-                            });
-                        }
-                        resolve({
-                            success: true,
-                            message: "Successful",
-                            data: results
-                        });
+                    resolve({
+                        success: true,
+                        message: "Successful",
+                        data: results
                     });
-                } catch (error) {
-                    webService.addToLogService(err, "webService addRecordTable");
-                }
+                });
+                console.log("addRecordTable", query.sql);
             });
         })
     },
@@ -628,6 +657,10 @@ let webService = {
                     });
                 } catch (error) {
                     webService.addToLogService(err, "webService deleteRecordTable");
+                    resolve({
+                        success: false,
+                        message: error
+                    });
                 }
             });
         })
@@ -657,8 +690,13 @@ let webService = {
                             message: "Successful"
                         });
                     });
+                    console.log("getListTable", query.sql);
                 } catch (error) {
                     webService.addToLogService(err, "webService getListTable");
+                    resolve({
+                        success: false,
+                        message: error
+                    });
                 }
             });
         });
@@ -678,6 +716,7 @@ let webService = {
             return result;
         } catch (error) {
             webService.addToLogService(err, "webService getExamineStatusOption");
+            return;
         }
     },
     examineStatusClass: function(status) {
@@ -708,6 +747,7 @@ let webService = {
             return result;
         } catch (error) {
             webService.addToLogService(err, "webService examineStatusClass");
+            return;
         }
     },
     addLogMail: function(result, param, is_send, sent_tries, type) {
@@ -723,6 +763,7 @@ let webService = {
                     });
                 } catch (error) {
                     webService.addToLogService(err, "webService addLogMail");
+                    reject(error);
                 }
             });
         });
@@ -762,6 +803,20 @@ let webService = {
                 }
             });
         });
+    },
+    sha512: function(password, salt){
+        var hash = crypto.createHmac('sha512', salt);
+        hash.update(password);
+        var value = hash.digest('hex');
+        return {
+            salt:salt,
+            passwordHash:value
+        };
+    },
+    saltHashPassword: function(userpassword) {
+        var salt         = "salt!@#$%^&*())6";
+        var passwordData = webService.sha512(userpassword, salt);
+        return passwordData.passwordHash;
     }
 }
 

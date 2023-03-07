@@ -14,6 +14,7 @@ let medicalTestService = {
                 });
             } catch (error) {
                 webService.addToLogService(error, 'medicalTestService create');
+                return callback(error);
             }
         });
     },
@@ -29,6 +30,7 @@ let medicalTestService = {
                 });
             } catch (error) {
                 webService.addToLogService(error, 'medicalTestService update');
+                return callback(error);
             }
         });
     },
@@ -44,6 +46,7 @@ let medicalTestService = {
                 });
             } catch (error) {
                 webService.addToLogService(error, 'medicalTestService delete');
+                return callback(error);
             }
         });
     },
@@ -76,6 +79,7 @@ let medicalTestService = {
                 });
             } catch (error) {
                 webService.addToLogService(error, 'medicalTestService countAllMedicalTest');
+                return callback(error);
             }
         });
     },
@@ -110,6 +114,7 @@ let medicalTestService = {
                 });
             } catch (error) {
                 webService.addToLogService(error, 'medicalTestService getAllMedicalTest');
+                return callback(error);
             }
         });
     },
@@ -125,6 +130,7 @@ let medicalTestService = {
                 });
             } catch (error) {
                 webService.addToLogService(error, 'medicalTestService getMedicalTestById');
+                return callback(error);
             }
         });
     }

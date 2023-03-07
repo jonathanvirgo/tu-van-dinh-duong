@@ -9,6 +9,8 @@
                         <select class="form-select" id="menu_id" data-plugin="select2" data-placeholder="Chọn menu" style="width: 90%;">
                             <option></option>
                             <option value="1">Thực đơn 1</option>
+                            <option value="2">Thực đơn 2</option>
+                            <option value="3">Thực đơn 3</option>
                         </select>
                     </div>
                     <button class="btn btn-primary" type="button" onclick="addMenu()">Thêm Menu</button>
@@ -21,7 +23,11 @@
                 <div class="form-control-has-addon">
                     <select class="form-select" id="menuTime_id" data-plugin="select2" data-placeholder="Chọn giờ ăn">
                         <option></option>
-                        <option value="1">Thực đơn 1</option>
+                        <% if(menuTime.length > 0){ %>
+                            <% for (let mt of menuTime){ %>
+                                <option value="<%= mt.id %>"><%= mt.time %></option>
+                            <%}%>   
+                        <%}%>
                     </select>
                 </div>
             </div>

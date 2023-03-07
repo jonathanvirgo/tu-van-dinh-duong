@@ -1,7 +1,7 @@
 var db      = require('../../config/db'),
 webService  = require('../../web/models/webModel');
 
-let foodTypeService = {
+let menuTimeService = {
     create: function (parameter, callback) {
         db.get().getConnection(function (err, connection) {
             try {
@@ -13,7 +13,8 @@ let foodTypeService = {
                     callback(null, results, fields);
                 });
             } catch (error) {
-                webService.addToLogService(error, 'foodTypeModel create');
+                webService.addToLogService(error, 'menuTimeService create');
+                return callback(error);
             }
         });
     },
@@ -28,7 +29,8 @@ let foodTypeService = {
                     callback(null, results, fields);
                 });
             } catch (error) {
-                webService.addToLogService(error, 'foodTypeModel update');
+                webService.addToLogService(error, 'menuTimeService update');
+                return callback(error);
             }
         });
     },
@@ -43,7 +45,8 @@ let foodTypeService = {
                     callback(null, results, fields);
                 });
             } catch (error) {
-                webService.addToLogService(error, 'foodTypeModel delete');
+                webService.addToLogService(error, 'menuTimeService delete');
+                return callback(error);
             }
         });
     },
@@ -75,7 +78,8 @@ let foodTypeService = {
                     callback(null, results, fields);
                 });
             } catch (error) {
-                webService.addToLogService(error, 'foodTypeModel countAllFoodType');
+                webService.addToLogService(error, 'menuTimeService countAllMenuTime');
+                return callback(error);
             }
         });
     },
@@ -109,7 +113,8 @@ let foodTypeService = {
                     callback(null, results, fields);
                 });
             } catch (error) {
-                webService.addToLogService(error, 'foodTypeModel getAllFoodTypeFromParam');
+                webService.addToLogService(error, 'menuTimeService getAllMenuTime');
+                return callback(error);
             }
         });
     },
@@ -124,10 +129,11 @@ let foodTypeService = {
                     callback(null, results, fields);
                 });
             } catch (error) {
-                webService.addToLogService(error, 'foodTypeModel getFoodTypeById');
+                webService.addToLogService(error, 'menuTimeService getMenuTimeById');
+                return callback(error);
             }
         });
     }
 }
 
-module.exports = foodTypeService;
+module.exports = menuTimeService;

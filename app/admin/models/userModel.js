@@ -44,11 +44,11 @@ let userService = {
                     });
             } catch (error) {
                 webService.addToLogService(error, 'userService create');
+                return callback(error);
             }
         });
     },
     update: function (parameter, callback) {
-        console.log("update1", parameter);
         db.get().getConnection(function (err, connection) {
             try {
                 if (err) return callback(err);
@@ -94,9 +94,9 @@ let userService = {
                     if (err) return callback(err);
                     callback(null, results, fields);
                 });
-                console.log("update2", query.sql);
             } catch (error) {
                 webService.addToLogService(error, 'userService update');
+                return callback(error);
             }
         });
     },
@@ -115,6 +115,7 @@ let userService = {
                 });
             } catch (error) {
                 webService.addToLogService(error, 'userService getUserById');
+                return callback(error);
             }
         });
     },
@@ -159,6 +160,7 @@ let userService = {
                 });
             } catch (error) {
                 webService.addToLogService(error, 'userService countAllUser');
+                return callback(error);
             }
         });
     },
@@ -201,6 +203,7 @@ let userService = {
                 });
             } catch (error) {
                 webService.addToLogService(error, 'userService getAllUser');
+                return callback(error);
             }
         });
     },
@@ -219,6 +222,7 @@ let userService = {
                 });
             } catch (error) {
                 webService.addToLogService(error, 'userService countUserByEmail');
+                return callback(error);
             }
         });
     },
@@ -237,6 +241,7 @@ let userService = {
                 });
             } catch (error) {
                 webService.addToLogService(error, 'userService countUserByName');
+                return callback(error);
             }
         });
     },
@@ -252,6 +257,7 @@ let userService = {
                 });
             } catch (error) {
                 webService.addToLogService(error, 'userService getUserByName');
+                return callback(error);
             }
         });
     },
@@ -259,7 +265,7 @@ let userService = {
         return new Promise(function(resolve, reject) {
             db.get().getConnection(function(err, connection) {
                 try {
-                    if (err) return callback(err);
+                    if (err) reject(err);
                     var sql   = 'SELECT * FROM user WHERE name = ? AND password = ?';
                     var query = connection.query(sql, [name, password], function (err, results, fields) {
                         connection.release();
@@ -268,6 +274,7 @@ let userService = {
                     });
                 } catch (error) {
                     webService.addToLogService(error, 'userService getUser');
+                    reject(error);
                 }
             });
         });
@@ -291,24 +298,25 @@ let userService = {
                 });
             } catch (error) {
                 webService.addToLogService(error, 'userService activeaccount');
+                return callback(error);
             }
         });
     },
-    getUserByToken: function(token, expireDate) {
-        db.get().getConnection(function(err, connection) {
-            try {
-                if (err) return callback(err);
-                var sql   = 'SELECT * FROM user WHERE resetPasswordToken = ? && resetPasswordExpires > ?';
-                var query = connection.query(sql, [token,expireDate], function (err, results, fields) {
-                    connection.release();
-                    if (err) return callback(err);
-                    callback(null, results, fields);
-                });
-            } catch (error) {
-                webService.addToLogService(error, 'userService getUserByToken');
-            }
-        });
-    },
+    // getUserByToken: function(token, expireDate) {
+    //     db.get().getConnection(function(err, connection) {
+    //         try {
+    //             if (err) return callback(err);
+    //             var sql   = 'SELECT * FROM user WHERE resetPasswordToken = ? && resetPasswordExpires > ?';
+    //             var query = connection.query(sql, [token,expireDate], function (err, results, fields) {
+    //                 connection.release();
+    //                 if (err) return callback(err);
+    //                 callback(null, results, fields);
+    //             });
+    //         } catch (error) {
+    //             webService.addToLogService(error, 'userService getUserByToken');
+    //         }
+    //     });
+    // },
     getUserByActivePasswordToken: function(token, expireDate) {
         return new Promise(function(resolve, reject) {
             db.get().getConnection(function(err, connection) {
@@ -336,24 +344,28 @@ let userService = {
                     });
                 } catch (error) {
                     webService.addToLogService(error, 'userService getUserByActivePasswordToken');
+                    resolve({
+                        success: false,
+                        message: error
+                    });
                 }
             });
         })
     },
-    getUserByPhoneOrEmail: function(param, expireDate) {
-        db.get().getConnection(function(err, connection) {
-            try {
-                if (err) return callback(err);
-                var sql   = 'SELECT * FROM user WHERE phone = ? OR email = ?';
-                var query = connection.query(sql, [param.phone,param.email], function (err, results, fields) {
-                    connection.release();
-                    if (err) return callback(err);
-                    callback(null, results, fields);
-                });
-            } catch (error) {
-                webService.addToLogService(error, 'userService getUserByToken');
-            }
-        });
-    },
+    // getUserByPhoneOrEmail: function(param, expireDate) {
+    //     db.get().getConnection(function(err, connection) {
+    //         try {
+    //             if (err) return callback(err);
+    //             var sql   = 'SELECT * FROM user WHERE phone = ? OR email = ?';
+    //             var query = connection.query(sql, [param.phone,param.email], function (err, results, fields) {
+    //                 connection.release();
+    //                 if (err) return callback(err);
+    //                 callback(null, results, fields);
+    //             });
+    //         } catch (error) {
+    //             webService.addToLogService(error, 'userService getUserByPhoneOrEmail');
+    //         }
+    //     });
+    // },
 }
 module.exports = userService;

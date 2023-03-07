@@ -14,6 +14,7 @@ let alternativeFoodService = {
                 });
             } catch (error) {
                 webService.addToLogService(error, 'alternativeFoodService create');
+                return callback(error);
             }
         });
     },
@@ -29,6 +30,7 @@ let alternativeFoodService = {
                 });
             } catch (error) {
                 webService.addToLogService(error, 'alternativeFoodService update');
+                return callback(error);
             }
         });
     },
@@ -44,6 +46,7 @@ let alternativeFoodService = {
                 });
             } catch (error) {
                 webService.addToLogService(error, 'alternativeFoodService delete');
+                return callback(error);
             }
         });
     },
@@ -76,6 +79,7 @@ let alternativeFoodService = {
                 });
             } catch (error) {
                 webService.addToLogService(error, 'alternativeFoodService countAllAlternativeFood');
+                return callback(error);
             }
         });
     },
@@ -110,6 +114,7 @@ let alternativeFoodService = {
                 });
             } catch (error) {
                 webService.addToLogService(error, 'alternativeFoodService getAllAlternativeFood');
+                return callback(error);
             }
         });
     },
@@ -125,6 +130,7 @@ let alternativeFoodService = {
                 });
             } catch (error) {
                 webService.addToLogService(error, 'alternativeFoodService getAlternativeFoodById');
+                return callback(error);
             }
         });
     }

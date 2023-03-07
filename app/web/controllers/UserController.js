@@ -20,8 +20,8 @@ router.get('/login', function (req, res, next) {
 router.post('/login', function (req, res, next) {
     try {
         var str_error       = [];
-        var username   = req.body.login_username,
-            password   = req.body.login_password,
+        var username   = req.body.username,
+            password   = req.body.password,
             resultData = {
                 "status": false,
                 "message": ""
@@ -37,37 +37,40 @@ router.post('/login', function (req, res, next) {
             res.send(resultData);
             return;
         }
-        return new Promise((resolve, reject) => {
-            let sqlGetListRequest = 'SELECT * FROM user WHERE active = 1 AND ( phone = ? OR email = ?)';
-            webService.getListTable(sqlGetListRequest ,[username, username]).then(responseData =>{
-                if(!responseData.success){
-                    resultData.message = "Tên đăng nhập chưa được đăng ký"; 
-                    res.send(resultData);
-                    return;
-                }
-                if(responseData.data && responseData.data.length > 0){
-                    req.logIn(responseData.data[0], function (err) {
-                        if (err) {
-                            logService.create(req, err).then(function(){
-                                resultData.message = err;
-                                res.send(resultData);
-                            });
-                            return;
-                        }
-                        resultData.status  = true;
-                        resultData.message = "Đăng nhập thành công!";
-                        res.send(resultData);
+
+        let passwordData  = webService.saltHashPassword(password);
+        let sqlGetListRequest = 'SELECT * FROM user WHERE active = 1 AND ( phone = ? OR email = ?) AND password = ?';
+        webService.getListTable(sqlGetListRequest ,[username, username, passwordData]).then(responseData =>{
+            if(!responseData.success){
+                resultData.message = "Tên đăng nhập chưa được đăng ký"; 
+                res.send(resultData);
+                return;
+            }
+            console.log("login",responseData.data);
+            if(responseData.data && responseData.data.length > 0){
+                req.logIn(responseData.data[0], function (err) {
+                    if (err) {
+                        logService.create(req, err).then(function(responseData){
+                            if(responseData.message) resultData.message = responseData.message;
+                            else resultData.message = err.sqlMessage;
+                            res.send(resultData);
+                        });
                         return;
-                    });
-                }else{
-                    resultData.message = "Tài khoản không tồn tại hoặc chưa được kích hoạt! Vui lòng kiểm tra email để kích hoạt tài khoản"; 
+                    }
+                    resultData.status  = true;
+                    resultData.message = "Đăng nhập thành công!";
                     res.send(resultData);
                     return;
-                }
-            });
-        })
+                });
+            }else{
+                resultData.message = "Đăng nhập không thành công! Vui lòng kiểm tra username, mật khẩu hoặc mail kích hoạt tài khoản"; 
+                res.send(resultData);
+                return;
+            }
+        });
+
     } catch (error) {
-        logService.create(req, error.message).then(function() {
+        logService.create(req, error.message).then(function(responseData) {
             resultData.message = error.message;
             res.json(resultData);
         });
@@ -77,7 +80,7 @@ router.post('/login', function (req, res, next) {
 router.get('/logout', function (req, res, next) {
   req.logout(function(err) {
     if (err) {
-        logService.create(req, err).then(function(){
+        logService.create(req, err).then(function(responseData){
             
         });
         return;
@@ -169,7 +172,7 @@ router.post('/signup', function (req, res, next) {
 
             createUser(resultData, list_error, parameter, req, res);
         } catch (error) {
-            logService.create(req, error.message).then(function() {
+            logService.create(req, error.message).then(function(responseData) {
                 resultData.message = error.message;
                 res.send(resultData);
             });
@@ -219,8 +222,9 @@ router.get('/profile', function(req, res) {
             arrPromise.push(new Promise(function (resolve, reject) {
                 userService.getUserById(req.user.id, function (err, result, fields) {
                     if (err) {
-                        return logService.create(req, err).then(function(log_id){
-                            str_errors.push(err.sqlMessage);
+                        return logService.create(req, err).then(function(responseData){
+                            if(responseData.message) str_errors.push(responseData.message);
+                            else str_errors.push(err.sqlMessage);
                             resolve();
                         });
                     }
@@ -263,7 +267,7 @@ function createUser(resultData, list_error, parameter, req, res) {
     var passwordData  = adminService.sha512(parameter.password, adminService.salt()),
         pr_user       = {
             user_id: 0,
-            name: parameter.email ? parameter.email : parameter.phone,
+            name: parameter.email,
             full_name: parameter.full_name ? parameter.full_name : '',
             password: passwordData.passwordHash,
             email: parameter.email,
@@ -291,8 +295,9 @@ function createUser(resultData, list_error, parameter, req, res) {
                 pr_user.activePasswordToken  = buf.toString('hex');
                 userService.create(pr_user, function (err, reUser, fields) {
                     if (err) {
-                        logService.create(req, err).then(function(){
-                            resultData.message = err.sqlMessage;
+                        logService.create(req, err).then(function(responseData){
+                            if(responseData.message) resultData.message = responseData.message;
+                            else resultData.message = err.sqlMessage;
                             res.send(resultData);
                         });
                         return;
@@ -300,8 +305,9 @@ function createUser(resultData, list_error, parameter, req, res) {
                     if (reUser.insertId !== undefined) {    
                         roleUserService.create({user_id: reUser.insertId, role_id: 2}, function (err, rsRole, fields) {
                             if (err) {
-                                logService.create(req, err).then(function(){
-                                    resultData.message = err.sqlMessage;
+                                logService.create(req, err).then(function(responseData){
+                                    if(responseData.message) resultData.message = responseData.message;
+                                    else resultData.message = err.sqlMessage;
                                     res.send(resultData);
                                 });
                                 return;

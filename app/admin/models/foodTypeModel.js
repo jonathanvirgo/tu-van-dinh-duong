@@ -14,6 +14,7 @@ let foodTypeService = {
                 });
             } catch (error) {
                 webService.addToLogService(error, 'foodTypeModel create');
+                return callback(error);
             }
         });
     },
@@ -29,6 +30,7 @@ let foodTypeService = {
                 });
             } catch (error) {
                 webService.addToLogService(error, 'foodTypeModel update');
+                return callback(error);
             }
         });
     },
@@ -44,6 +46,7 @@ let foodTypeService = {
                 });
             } catch (error) {
                 webService.addToLogService(error, 'foodTypeModel delete');
+                return callback(error);
             }
         });
     },
@@ -76,6 +79,7 @@ let foodTypeService = {
                 });
             } catch (error) {
                 webService.addToLogService(error, 'foodTypeModel countAllFoodType');
+                return callback(error);
             }
         });
     },
@@ -110,6 +114,7 @@ let foodTypeService = {
                 });
             } catch (error) {
                 webService.addToLogService(error, 'foodTypeModel getAllFoodTypeFromParam');
+                return callback(error);
             }
         });
     },
@@ -138,6 +143,7 @@ let foodTypeService = {
                 });
             } catch (error) {
                 webService.addToLogService(error, 'foodTypeModel getAllFoodType');
+                return callback(error);
             }
         });
     },
@@ -153,6 +159,7 @@ let foodTypeService = {
                 });
             } catch (error) {
                 webService.addToLogService(error, 'foodTypeModel getFoodTypeById');
+                return callback(error);
             }
         });
     }

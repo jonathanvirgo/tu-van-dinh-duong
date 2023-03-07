@@ -232,8 +232,9 @@ router.post('/list', function (req, res, next) {
         arrPromise.push(new Promise(function (resolve, reject) {
             modelService.countAllMedicalTest(parameter, function (err, result, fields) {
                 if (err) {
-                    return logService.create(req, err).then(function(){
-                        resultMessage.error = err.sqlMessage;
+                    return logService.create(req, err).then(function(responseData){
+                        if(responseData.message) resultMessage.error = responseData.message;
+                        else resultMessage.error = err.sqlMessage;
                         resolve();
                     });
                 }
@@ -248,8 +249,9 @@ router.post('/list', function (req, res, next) {
         arrPromise.push(new Promise(function (resolve, reject) {
             modelService.getAllMedicalTest(parameter, function (err, result, fields) {
                 if (err) {
-                    return logService.create(req, err).then(function(){
-                        resultMessage.error = err.sqlMessage;
+                    return logService.create(req, err).then(function(responseData){
+                        if(responseData.message) resultMessage.error = responseData.message;
+                        else resultMessage.error = err.sqlMessage;
                         resolve();
                     });
                 }

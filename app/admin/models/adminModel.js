@@ -1,12 +1,35 @@
-let logService  = require('./logModel')
-    crypto      = require('crypto')
+let logService  = require('./logModel'),
+    crypto      = require('crypto'),
 	webService  = require('../../web/models/webModel');
 
 let adminService = {
 	addToLog: function(req, res, message) {
-	    return logService.create(req, message).then(function(log_id){
-            res.redirect('/admin/error/' + log_id);
-	    });
+		try {
+			var user_id = 0;
+			if (req.user) {
+				user_id = req.user.id;
+			}
+			let short_message = '';
+			let full_message = '';
+			if (typeof message === "string") {
+				full_message = message;
+			} else if (message instanceof Error) {
+				full_message = JSON.stringify(message);
+				short_message = message.message ? message.message : '';
+			}else{
+				full_message = JSON.stringify(message);
+				short_message = message.sql ? message.sql : '';
+			}
+			webService.addRecordTable({user_id:user_id,short_message:short_message, full_message: full_message, page_url: req.originalUrl,referrer_url:req.headers.referer}, "log_err").then(responseData =>{
+				if(responseData.success && responseData.data.insertId){
+					res.redirect('/admin/error/' + responseData.data.insertId);
+				}else{
+					res.redirect('/admin/error/');
+				}
+			});
+		} catch (error) {
+			console.log("addToLog catch", error);
+		}
 	},
 	parseDay: function(time) {
 		try {
@@ -19,6 +42,7 @@ let adminService = {
 			return dateformat;
 		} catch (error) {
 			webService.addToLogService(error, 'parseDay');
+			return;
 		}
     },
     sha512: function (password, salt) {
@@ -32,6 +56,7 @@ let adminService = {
 			};
 		} catch (error) {
 			webService.addToLogService(error, 'sha512');
+			return {};
 		}
 	},
 	salt: function () {

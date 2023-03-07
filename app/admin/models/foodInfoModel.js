@@ -14,6 +14,7 @@ let foodInfoService = {
                 });
             } catch (error) {
                 webService.addToLogService(error, 'foodInfoModel create');
+                return callback(error);
             }
         });
     },
@@ -29,6 +30,7 @@ let foodInfoService = {
                 });
             } catch (error) {
                 webService.addToLogService(error, 'foodInfoModel update');
+                return callback(error);
             }
         });
     },
@@ -44,6 +46,7 @@ let foodInfoService = {
                 });
             } catch (error) {
                 webService.addToLogService(error, 'foodInfoModel delete');
+                return callback(error);
             }
         });
     },
@@ -76,6 +79,7 @@ let foodInfoService = {
                 });
             } catch (error) {
                 webService.addToLogService(error, 'foodInfoModel countAllFoodInfo');
+                return callback(error);
             }
         });
     },
@@ -110,6 +114,7 @@ let foodInfoService = {
                 });
             } catch (error) {
                 webService.addToLogService(error, 'foodInfoModel getAllFoodInfo');
+                return callback(error);
             }
         });
     },
@@ -125,6 +130,7 @@ let foodInfoService = {
                 });
             } catch (error) {
                 webService.addToLogService(error, 'foodInfoModel getFoodInfoById');
+                return callback(error);
             }
         });
     },
@@ -141,6 +147,7 @@ let foodInfoService = {
                 });
             } catch (error) {
                 webService.addToLogService(error, 'foodInfoModel getAllFoodInfoByFoodType');
+                return callback(error);
             }
         });
     },

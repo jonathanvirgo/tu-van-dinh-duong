@@ -1,6 +1,5 @@
 let db           = require('../../config/db'),
-    adminService = require('./adminModel'),
-    webService  = require('../../web/models/webModel');
+    adminService = require('./adminModel');
 
 let logService = {
     create: function (req, message = '') {
@@ -8,14 +7,23 @@ let logService = {
             db.get().getConnection(function (err, connection) {
                 try {
                     if (err) {
-                        return resolve(0);
+                        return resolve({success:false});
                     }
                     var user_id = 0;
                     if (req.user) {
                         user_id = req.user.id;
                     }
-                    var short_message = message.sqlMessage != undefined ? message.sqlMessage : message;
-                    var full_message  = message.sql != undefined ? message.sql : '';
+                    var short_message = '';
+                    var full_message  = '';
+                    if (typeof message === "string") {
+                        full_message = message;
+                    } else if (message instanceof Error) {
+                        full_message = JSON.stringify(message);
+                        short_message = message.message ? message.message : '';
+                    }else{
+                        full_message = JSON.stringify(message);
+                        short_message = message.sql ? message.sql : '';
+                    }
                     var sql           = "INSERT INTO log_err(user_id,short_message,full_message,page_url,referrer_url) VALUES (?,?,?,?,?)";
                     var queryString   =  connection.query(sql, [
                             user_id,
@@ -27,12 +35,13 @@ let logService = {
                         function (error, results, fields) {
                         connection.release();
                         if (error) {
-                            return resolve(0);
+                            return resolve({success:false});
                         }
-                        resolve(results.insertId);
+                        resolve({insertId: results.insertId, message: short_message, success:true});
                     });
                 } catch (error) {
-                    webService.addToLogService(error, 'logModel create');
+                    let message_err = error.message ? error.message : error;
+                    logService.createFromParams(message_err, 'logModel create');
                 }
             });
         })
@@ -41,14 +50,22 @@ let logService = {
         return new Promise(function(resolve, reject) {
             db.get().getConnection(function (err, connection) {
                 try {
-                    
                     if (err) {
-                        return resolve(0);
+                        return resolve(err);
                     }
-                    let short_message = typeof(message) == 'string' ? message : (message.sqlMessage != undefined ? message.sqlMessage : '');
-                    let full_message  = (message && message.sql != undefined) ? message.sql : '';
+                    var short_message = '';
+                    var full_message  = '';
+                    if (typeof message === "string") {
+                        full_message = message;
+                    } else if (message instanceof Error) {
+                        full_message = JSON.stringify(message);
+                        short_message = message.message ? message.message : '';
+                    }else{
+                        full_message = JSON.stringify(message);
+                        short_message = message.sql ? message.sql : '';
+                    }
                     let sql           = "INSERT INTO log_err(short_message,full_message,page_url) VALUES (?,?,?)";
-                    connection.query(sql, [
+                    var query = connection.query(sql, [
                             short_message,
                             full_message,
                             page_url
@@ -56,12 +73,12 @@ let logService = {
                         function (error, results, fields) {
                         connection.release();
                         if (error) {
-                            resolve(0);
+                            resolve(error);
                         }
                         resolve(results.insertId);
                     });
                 } catch (error) {
-                    webService.addToLogService(error, 'logModel createFromParams');
+                    resolve(error);
                 }
             });
         })
@@ -77,7 +94,8 @@ let logService = {
                     callback(null, results, fields);
                 }); 
             } catch (error) {
-                webService.addToLogService(error, 'logModel delete');
+                let message_err = error.message ? error.message : error;
+                logService.createFromParams(message_err, 'logModel delete');
             }
         });
     },
@@ -92,7 +110,8 @@ let logService = {
                     callback(null, results, fields);
                 });
             } catch (error) {
-                webService.addToLogService(error, 'logModel deleteByIds');
+                let message_err = error.message ? error.message : error;
+                logService.createFromParams(message_err, 'logModel deleteByIds');
             }
         });
     },
@@ -107,7 +126,8 @@ let logService = {
                     callback(null, results, fields);
                 });
             } catch (error) {
-                webService.addToLogService(error, 'logModel deleteAll');
+                let message_err = error.message ? error.message : error;
+                logService.createFromParams(message_err, 'logModel deleteAll');
             }
         });
     },
@@ -136,7 +156,8 @@ let logService = {
                     callback(null, results, fields);
                 });
             } catch (error) {
-                webService.addToLogService(error, 'logModel countAllLog');
+                let message_err = error.message ? error.message : error;
+                logService.createFromParams(message_err, 'logModel countAllLog');
             }
         });
     },
@@ -167,7 +188,8 @@ let logService = {
                     callback(null, results, fields);
                 });
             } catch (error) {
-                webService.addToLogService(error, 'logModel getAllLog');
+                let message_err = error.message ? error.message : error;
+                logService.createFromParams(message_err, 'logModel getAllLog');
             }
         });
     },
@@ -182,7 +204,8 @@ let logService = {
                     callback(null, results, fields);
                 });
             } catch (error) {
-                webService.addToLogService(error, 'logModel getLogById');
+                let message_err = error.message ? error.message : error;
+                logService.createFromParams(message_err, 'logModel getLogById');
             }
         });
     }

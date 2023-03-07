@@ -14,6 +14,7 @@ let activeModeOfLivingService = {
                 });
             } catch (error) {
                 webService.addToLogService(error, 'activeModeOfLivingModel create');
+                return callback(error);
             }
         });
     },
@@ -29,6 +30,7 @@ let activeModeOfLivingService = {
                 });
             } catch (error) {
                 webService.addToLogService(error, 'activeModeOfLivingModel update');
+                return callback(error);
             }
         });
     },
@@ -44,6 +46,7 @@ let activeModeOfLivingService = {
                 });
             } catch (error) {
                 webService.addToLogService(error, 'activeModeOfLivingModel delete');
+                return callback(error);
             }
         });
     },
@@ -76,6 +79,7 @@ let activeModeOfLivingService = {
                 });
             } catch (error) {
                 webService.addToLogService(error, 'activeModeOfLivingModel countAllDepartment');
+                return callback(error);
             }
         });
     },
@@ -110,6 +114,7 @@ let activeModeOfLivingService = {
                 });
             } catch (error) {
                 webService.addToLogService(error, 'activeModeOfLivingModel getAllDepartment');
+                return callback(error);
             }
         });
     },
@@ -125,6 +130,7 @@ let activeModeOfLivingService = {
                 });
             } catch (error) {
                 webService.addToLogService(error, 'activeModeOfLivingModel getActiveModeById');
+                return callback(error);
             }
         });
     }

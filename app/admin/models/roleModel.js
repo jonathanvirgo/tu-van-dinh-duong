@@ -14,6 +14,7 @@ let roleService = {
                 });
             } catch (error) {
                 webService.addToLogService(error, 'roleModel create');
+                return callback(error);
             }
         });
     },
@@ -29,6 +30,7 @@ let roleService = {
                 });
             } catch (error) {
                 webService.addToLogService(error, 'roleModel update');
+                return callback(error);
             }
         });
     },
@@ -44,6 +46,7 @@ let roleService = {
                 });
             } catch (error) {
                 webService.addToLogService(error, 'roleModel delete');
+                return callback(error);
             }
         });
     },
@@ -64,6 +67,7 @@ let roleService = {
                 });
             } catch (error) {
                 webService.addToLogService(error, 'roleModel countAllRole');
+                return callback(error);
             }
         });
     },
@@ -86,6 +90,7 @@ let roleService = {
                 });
             } catch (error) {
                 webService.addToLogService(error, 'roleModel getAllRole');
+                return callback(error);
             }
         });
     },
@@ -101,6 +106,7 @@ let roleService = {
                 });
             } catch (error) {
                 webService.addToLogService(error, 'roleModel searchAllRole');
+                return callback(error);
             }
         });
     },
@@ -116,6 +122,7 @@ let roleService = {
                 });
             } catch (error) {
                 webService.addToLogService(error, 'roleModel getRoleById');
+                return callback(error);
             }
         });
     },
@@ -131,6 +138,7 @@ let roleService = {
                 });
             } catch (error) {
                 webService.addToLogService(error, 'roleModel getAllRoleNameByUserId');
+                return callback(error);
             }
         });
     }

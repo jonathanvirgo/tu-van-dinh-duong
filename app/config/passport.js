@@ -77,9 +77,11 @@ module.exports = function(passport) {
             passwordField: 'password',
             passReqToCallback: true
         }, function(req, username, password, done) {
-        userService.getUser(username, saltHashPassword(password)).then(function(user) {
+            console.log("getUser", username, password);
+        userService.getUser(username, webService.saltHashPassword(password)).then(function(user) {
+            console.log("passport.use",user);
             if (!user) {
-                return done(null, false);
+                return done(null, false, { message: 'Sai tên đăng nhập hoặc mật khẩu!' });
             } else {  
         		return done(null, user);
             }
@@ -87,20 +89,4 @@ module.exports = function(passport) {
             return done(err);
         });
     }))
-
-    var sha512 = function(password, salt){
-        var hash = crypto.createHmac('sha512', salt);
-        hash.update(password);
-        var value = hash.digest('hex');
-        return {
-            salt:salt,
-            passwordHash:value
-        };
-    }
-
-    function saltHashPassword(userpassword) {
-        var salt         = "salt!@#$%^&*())6";
-        var passwordData = sha512(userpassword, salt);
-        return passwordData.passwordHash;
-    }
 }

@@ -56,6 +56,10 @@ let mailService = {
                 });
             } catch (error) {
                 webService.addToLogService(error, 'mail_signup');
+                resolve({
+                    success: false,
+                    message: error
+                });
             }
         });
     }
