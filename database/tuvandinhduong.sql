@@ -71,7 +71,7 @@ CREATE TABLE `customer` (
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp(),
   PRIMARY KEY (`id`),
   UNIQUE KEY `phone` (`cus_phone`)
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4;
 
 /*Data for the table `customer` */
 
@@ -156,25 +156,27 @@ CREATE TABLE `examine` (
   `active_mode_of_living_id` int(11) DEFAULT NULL,
   `medical_test` text DEFAULT NULL,
   `prescription` longtext DEFAULT NULL,
+  `menu_example` longtext DEFAULT NULL,
   `created_by` int(11) DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp(),
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4;
 
 /*Data for the table `examine` */
 
-insert  into `examine`(`id`,`count_id`,`cus_name`,`cus_phone`,`cus_email`,`cus_gender`,`cus_birthday`,`cus_address`,`diagnostic`,`cus_length`,`cus_cntc`,`cus_cnht`,`cus_bmi`,`clinical_examination`,`erythrocytes`,`cus_bc`,`cus_tc`,`cus_albumin`,`cus_nakcl`,`cus_astaltggt`,`cus_urecreatinin`,`cus_bilirubin`,`exa_note`,`cus_fat`,`cus_water`,`cus_visceral_fat`,`cus_bone_weight`,`cus_chcb`,`cus_waist`,`cus_butt`,`cus_cseomong`,`active_mode_of_living`,`hospital_id`,`department_id`,`status`,`glucid_should_use`,`glucid_limited_use`,`glucid_should_not_use`,`protein_should_use`,`protein_limited_use`,`protein_should_not_use`,`lipid_should_use`,`lipid_limited_use`,`lipid_should_not_use`,`vitamin_ck_should_use`,`vitamin_ck_limited_use`,`vitamin_ck_should_not_use`,`nutrition_advice_id`,`active_mode_of_living_id`,`medical_test`,`prescription`,`created_by`,`created_at`,`updated_at`) values 
-(1,'1','Nguyễn Quốc Đạt','0989402893','',1,'1990-08-31','24 Trâu Quỳ - Gia Lâm - Hà Nội','','0','0','0','0','','0','0','0','0','0','0','0','0','0',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,1,3,1,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,6,'2023-02-21 15:02:25','2023-02-20 14:56:34'),
-(2,'2','Nguyễn Quốc Đat','0989402893','',1,'1990-08-31','24 Trâu Quỳ Gia lâm Hà nội','','0','0','0','0','','0','0','0','0','0','0','0','0','0',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,1,3,1,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,6,'2023-02-21 15:02:26','2023-02-20 15:03:42'),
-(3,'3','Nguyễn Phương Linh','0941926837','',0,'2020-10-15','24 Trâu Quỳ  - Gia Lâm - Hà Nội','','0','0','0','0','','0','0','0','0','0','0','0','0','0',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,1,3,1,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,6,'2023-02-21 15:02:30','2023-02-20 15:20:14'),
-(4,'00101210223','Bài test 1','0989402893','qdatvirgo@gmail.com',1,'1990-08-31','24 Trâu Quỳ GIa Lâm Hà Nội','test 1 ','0','0','0','0','','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','',1,3,1,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,6,'2023-02-21 17:09:41','2023-02-21 17:09:41'),
-(5,'00101210223','Bài test 2','Bài test 2','qdatvirgo@gmail.com',0,'2023-02-06','24 Trâu Quỳ Gia Lâm Hà Nội','test 2','','','','','','','','','','','','','','',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,1,3,1,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,6,'2023-02-21 17:16:37','2023-02-21 17:16:37'),
-(6,'00101210223','Bài test 3','0989402893','',1,'2023-02-21','','','','','','','','','','','','','','','','',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,1,3,1,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,6,'2023-02-21 17:18:14','2023-02-21 17:18:14'),
-(7,'00101210223','Bài test 4','','',1,'2023-02-21','','','','','','','','','','','','','','','','',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,1,3,1,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,6,'2023-02-21 17:20:14','2023-02-21 17:20:14'),
-(8,'00201210223','Bài test 51','','',0,'2023-02-21','','','','','','','','','','','','','','','','',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,1,3,1,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,6,'2023-02-21 17:32:23','2023-02-21 17:21:43'),
-(9,'00101280223','Bài test 1','','',0,'1990-02-28','','','','','','','','','','','','','','','','',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,1,3,1,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'[4,5]',NULL,12,'2023-02-28 15:51:03','2023-02-28 15:51:03'),
-(10,'00201280223','Bài test 51','','',0,'1990-02-14','','','','','','','','','','','','','','','','',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,1,3,1,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'[{\"stt\":1,\"name\":\" Nguyễn quốc đạt\",\"id\":2,\"total\":\"12\",\"unit\":\"viên\",\"note\":\"2 ngày 1 lần\"}]',12,'2023-02-28 18:01:51','2023-02-28 18:01:51');
+insert  into `examine`(`id`,`count_id`,`cus_name`,`cus_phone`,`cus_email`,`cus_gender`,`cus_birthday`,`cus_address`,`diagnostic`,`cus_length`,`cus_cntc`,`cus_cnht`,`cus_bmi`,`clinical_examination`,`erythrocytes`,`cus_bc`,`cus_tc`,`cus_albumin`,`cus_nakcl`,`cus_astaltggt`,`cus_urecreatinin`,`cus_bilirubin`,`exa_note`,`cus_fat`,`cus_water`,`cus_visceral_fat`,`cus_bone_weight`,`cus_chcb`,`cus_waist`,`cus_butt`,`cus_cseomong`,`active_mode_of_living`,`hospital_id`,`department_id`,`status`,`glucid_should_use`,`glucid_limited_use`,`glucid_should_not_use`,`protein_should_use`,`protein_limited_use`,`protein_should_not_use`,`lipid_should_use`,`lipid_limited_use`,`lipid_should_not_use`,`vitamin_ck_should_use`,`vitamin_ck_limited_use`,`vitamin_ck_should_not_use`,`nutrition_advice_id`,`active_mode_of_living_id`,`medical_test`,`prescription`,`menu_example`,`created_by`,`created_at`,`updated_at`) values 
+(1,'1','Nguyễn Quốc Đạt','0989402893','',1,'1990-08-31','24 Trâu Quỳ - Gia Lâm - Hà Nội','','0','0','0','0','','0','0','0','0','0','0','0','0','0',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,1,3,1,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,6,'2023-02-21 15:02:25','2023-02-20 14:56:34'),
+(2,'2','Nguyễn Quốc Đat','0989402893','',1,'1990-08-31','24 Trâu Quỳ Gia lâm Hà nội','','0','0','0','0','','0','0','0','0','0','0','0','0','0',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,1,3,1,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,6,'2023-02-21 15:02:26','2023-02-20 15:03:42'),
+(3,'3','Nguyễn Phương Linh','0941926837','',0,'2020-10-15','24 Trâu Quỳ  - Gia Lâm - Hà Nội','','0','0','0','0','','0','0','0','0','0','0','0','0','0',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,1,3,1,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,6,'2023-02-21 15:02:30','2023-02-20 15:20:14'),
+(4,'00101210223','Bài test 1','0989402893','qdatvirgo@gmail.com',1,'1990-08-31','24 Trâu Quỳ GIa Lâm Hà Nội','test 1 ','0','0','0','0','','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','',1,3,1,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,6,'2023-02-21 17:09:41','2023-02-21 17:09:41'),
+(5,'00101210223','Bài test 2','Bài test 2','qdatvirgo@gmail.com',0,'2023-02-06','24 Trâu Quỳ Gia Lâm Hà Nội','test 2','','','','','','','','','','','','','','',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,1,3,1,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,6,'2023-02-21 17:16:37','2023-02-21 17:16:37'),
+(6,'00101210223','Bài test 3','0989402893','',1,'2023-02-21','','','','','','','','','','','','','','','','',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,1,3,1,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,6,'2023-02-21 17:18:14','2023-02-21 17:18:14'),
+(7,'00101210223','Bài test 4','','',1,'2023-02-21','','','','','','','','','','','','','','','','',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,1,3,1,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,6,'2023-02-21 17:20:14','2023-02-21 17:20:14'),
+(8,'00201210223','Bài test 51','','',0,'2023-02-21','','','','','','','','','','','','','','','','',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,1,3,1,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,6,'2023-02-21 17:32:23','2023-02-21 17:21:43'),
+(9,'00101280223','Bài test 1','','',0,'1990-02-28','','','','','','','','','','','','','','','','',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,1,3,1,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'[4,5]',NULL,NULL,12,'2023-02-28 15:51:03','2023-02-28 15:51:03'),
+(10,'00201280223','Bài test 51','','',0,'1990-02-14','','','','','','','','','','','','','','','','',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,1,3,1,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'[{\"stt\":1,\"name\":\" Nguyễn quốc đạt\",\"id\":2,\"total\":\"12\",\"unit\":\"viên\",\"note\":\"2 ngày 1 lần\"}]',NULL,12,'2023-02-28 18:01:51','2023-02-28 18:01:51'),
+(11,'00101080323','Bài test 51','','',1,'2023-03-08','','','','','','','','','','','','','','','','',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,1,3,1,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'[{\"stt\":1,\"name\":\" Nguyễn quốc đạt\",\"id\":2,\"total\":\"10\",\"unit\":\"viên\",\"note\":\"2 ngày 1 lần\"}]',NULL,12,'2023-03-08 17:08:25','2023-03-08 17:08:25');
 
 /*Table structure for table `food_info` */
 
@@ -197,9 +199,14 @@ CREATE TABLE `food_info` (
   `created_at` varchar(255) DEFAULT NULL,
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp(),
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4;
 
 /*Data for the table `food_info` */
+
+insert  into `food_info`(`id`,`food_type_id`,`name`,`weight`,`energy`,`protein`,`animal_protein`,`lipid`,`unanimal_lipid`,`carbohydrate`,`hospital_id`,`department_id`,`created_by`,`created_at`,`updated_at`) values 
+(2,2,' Nguyễn quốc đạt',123,123,'123','123','123','123','123',1,3,12,'2023-03-07 10:46:12','2023-03-07 10:46:12'),
+(3,2,'test1',123,123,NULL,NULL,NULL,NULL,NULL,1,3,12,'2023-03-07 11:16:21','2023-03-07 11:16:21'),
+(4,2,'test 2',43345,345,'345',NULL,NULL,NULL,NULL,1,3,12,'2023-03-07 11:16:34','2023-03-07 11:16:34');
 
 /*Table structure for table `food_type` */
 
@@ -253,7 +260,7 @@ CREATE TABLE `log_err` (
   `last_ip` varchar(40) DEFAULT NULL,
   `create_on` timestamp NULL DEFAULT current_timestamp(),
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=42 DEFAULT CHARSET=utf8mb4;
 
 /*Data for the table `log_err` */
 
@@ -269,7 +276,30 @@ insert  into `log_err`(`id`,`user_id`,`short_message`,`full_message`,`page_url`,
 (15,6,'Unknown column \'examine.department_id\' in \'on clause\'','SELECT COUNT(*) AS count FROM examine\n                                NNER JOIN department ON examine.department_id = department.id\n                                INNER JOIN hospital ON department.hospital_id = hospital.id ORDER BY examine.created_at DESC LIMIT 0,10','/examine','http://localhost:3000/',NULL,'2023-02-20 16:56:50'),
 (16,6,'Duplicate entry \'\' for key \'phone\'','INSERT INTO customer(cus_name,cus_phone,cus_email,cus_gender,cus_birthday,cus_address,department_id,created_at) VALUES (\'Bài test 5\',\'\',\'\',\'0\',\'2023-02-21\',\'\',2,CURRENT_TIMESTAMP)','/examine/create','http://localhost:3000/examine/create',NULL,'2023-02-21 17:21:43'),
 (17,12,'Duplicate entry \'\' for key \'phone\'','INSERT INTO customer(cus_name,cus_phone,cus_email,cus_gender,cus_birthday,cus_address,department_id,created_at) VALUES (\'Bài test 1\',\'\',\'\',\'0\',\'1990-02-28\',\'\',3,CURRENT_TIMESTAMP)','/examine/create','http://localhost:3000/examine/create',NULL,'2023-02-28 15:51:03'),
-(18,12,'Duplicate entry \'\' for key \'phone\'','INSERT INTO customer(cus_name,cus_phone,cus_email,cus_gender,cus_birthday,cus_address,department_id,created_at) VALUES (\'Bài test 51\',\'\',\'\',\'0\',\'1990-02-14\',\'\',3,CURRENT_TIMESTAMP)','/examine/create','http://localhost:3000/examine/create',NULL,'2023-02-28 18:01:51');
+(18,12,'Duplicate entry \'\' for key \'phone\'','INSERT INTO customer(cus_name,cus_phone,cus_email,cus_gender,cus_birthday,cus_address,department_id,created_at) VALUES (\'Bài test 51\',\'\',\'\',\'0\',\'1990-02-14\',\'\',3,CURRENT_TIMESTAMP)','/examine/create','http://localhost:3000/examine/create',NULL,'2023-02-28 18:01:51'),
+(19,0,'Cannot read properties of undefined (reading \'includes\')','{}','foodTypeModel getAllFoodType',NULL,NULL,'2023-03-07 09:50:09'),
+(20,12,'Cannot read properties of undefined (reading \'includes\')','{}','/admin/food-info/create','http://localhost:3001/admin/food-info',NULL,'2023-03-07 09:50:09'),
+(21,0,'Cannot read properties of undefined (reading \'includes\')','{}','foodTypeModel getAllFoodType',NULL,NULL,'2023-03-07 09:54:01'),
+(22,12,'Cannot read properties of undefined (reading \'includes\')','{}','/admin/food-info/create','http://localhost:3001/admin/food-info',NULL,'2023-03-07 09:54:01'),
+(23,0,'Cannot read properties of undefined (reading \'includes\')','{}','foodTypeModel getAllFoodType',NULL,NULL,'2023-03-07 09:56:47'),
+(24,12,'Cannot read properties of undefined (reading \'includes\')','{}','/admin/food-info/create','http://localhost:3001/admin/food-info',NULL,'2023-03-07 09:56:47'),
+(25,0,'Cannot read properties of undefined (reading \'includes\')','{}','foodTypeModel getAllFoodType',NULL,NULL,'2023-03-07 09:58:44'),
+(26,12,'Cannot read properties of undefined (reading \'includes\')','{}','/admin/food-info/create','http://localhost:3001/admin/food-info',NULL,'2023-03-07 09:58:44'),
+(27,0,'Cannot read properties of undefined (reading \'includes\')','{}','foodTypeModel getAllFoodType',NULL,NULL,'2023-03-07 10:01:31'),
+(28,12,'Cannot read properties of undefined (reading \'includes\')','{}','/admin/food-info/create','http://localhost:3001/admin/food-info',NULL,'2023-03-07 10:01:31'),
+(29,0,'Cannot read properties of undefined (reading \'includes\')','{}','foodTypeModel getAllFoodType',NULL,NULL,'2023-03-07 10:02:16'),
+(30,12,'Cannot read properties of undefined (reading \'includes\')','{}','/admin/food-info/create','http://localhost:3001/admin/food-info',NULL,'2023-03-07 10:02:16'),
+(31,0,'Cannot read properties of undefined (reading \'includes\')','{}','foodTypeModel getAllFoodType',NULL,NULL,'2023-03-07 10:23:43'),
+(32,12,'Cannot read properties of undefined (reading \'includes\')','{}','/admin/food-info/create','http://localhost:3001/admin/food-info',NULL,'2023-03-07 10:23:43'),
+(33,0,'Cannot read properties of undefined (reading \'includes\')','{}','foodTypeModel getAllFoodType',NULL,NULL,'2023-03-07 10:25:32'),
+(34,12,'Cannot read properties of undefined (reading \'includes\')','{}','/admin/food-info/create','http://localhost:3001/admin/food-info',NULL,'2023-03-07 10:25:32'),
+(35,0,'Cannot read properties of undefined (reading \'includes\')','{}','foodTypeModel getAllFoodType',NULL,NULL,'2023-03-07 10:25:52'),
+(36,12,'Cannot read properties of undefined (reading \'includes\')','{}','/admin/food-info/create','http://localhost:3001/admin/food-info',NULL,'2023-03-07 10:25:52'),
+(37,0,'Cannot read properties of undefined (reading \'includes\')','{}','foodTypeModel getAllFoodType',NULL,NULL,'2023-03-07 10:35:22'),
+(38,12,'Cannot read properties of undefined (reading \'includes\')','{}','/admin/food-info/create','http://localhost:3001/admin/food-info',NULL,'2023-03-07 10:35:22'),
+(39,12,'ER_PARSE_ERROR: You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near \'WHERE id > 0\' at line 1','{\"code\":\"ER_PARSE_ERROR\",\"errno\":1064,\"sqlMessage\":\"You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near \'WHERE id > 0\' at line 1\",\"sqlState\":\"42000\",\"index\":0,\"sql\":\"SELECT * FROM food_type ORDER BY id WHERE id > 0\"}','/admin/food-info/create','http://localhost:3001/admin/food-info',NULL,'2023-03-07 10:43:21'),
+(40,12,'ER_PARSE_ERROR: You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near \'WHERE id > 0\' at line 1','{\"code\":\"ER_PARSE_ERROR\",\"errno\":1064,\"sqlMessage\":\"You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near \'WHERE id > 0\' at line 1\",\"sqlState\":\"42000\",\"index\":0,\"sql\":\"SELECT * FROM food_type ORDER BY id WHERE id > 0\"}','/admin/food-info/create','http://localhost:3001/admin/food-info',NULL,'2023-03-07 10:44:19'),
+(41,12,'ER_DUP_ENTRY: Duplicate entry \'\' for key \'phone\'','{\"code\":\"ER_DUP_ENTRY\",\"errno\":1062,\"sqlMessage\":\"Duplicate entry \'\' for key \'phone\'\",\"sqlState\":\"23000\",\"index\":0,\"sql\":\"INSERT INTO customer(cus_name,cus_phone,cus_email,cus_gender,cus_birthday,cus_address,department_id,created_at) VALUES (\'Bài test 51\',\'\',\'\',\'1\',\'2023-03-08\',\'\',3,CURRENT_TIMESTAMP)\"}','/examine/create','http://localhost:3001/examine/create',NULL,'2023-03-08 17:08:25');
 
 /*Table structure for table `log_mail` */
 

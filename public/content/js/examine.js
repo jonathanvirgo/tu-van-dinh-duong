@@ -10,8 +10,10 @@ let dataExamine = {
     medicalTest: [],
     id_prescription: 1,
     prescriptionExamine: [],
-    listMenu: [{id:1, name:"Thực đơn 1"},{id:2, name:"Thực đơn 2"},{id:3, name:"Thực đơn 3"}],
-    foodNameListSearch: []
+    // listMenu: [{id:1, name:"Thực đơn 1","detail":[]},{id:2, name:"Thực đơn 2","detail":[]},{id:3, name:"Thực đơn 3","detail":[]}],
+    foodNameListSearch: [],
+    listMenuTime: [],
+    menuExamine: []
 };
 
 const numberFormat = new Intl.NumberFormat();
@@ -120,6 +122,7 @@ function saveExamine(){
 }
 
 function changeTabExamine(tab){
+    console.log("changeTabExamine", tab);
     switch(dataExamine.tab){
         case 1:
             dataExamine.examine['cus_name'] = $('#cus_name').val();
@@ -380,6 +383,254 @@ function generateFoodName(id){
     });
 }
 
+function deleteFood(id_food, id_menu_time){
+    try {
+        console.log("deleteFood", id_food, id_menu_time);
+    } catch (error) {
+        
+    }
+}
+
+function changeWeightFood(id_food, id_menu_time){
+    try {
+        console.log("changeWeightFood", id_food, id_menu_time);
+    } catch (error) {
+        
+    }
+}
+
+function changeCourse(menuTime_id){
+    try {
+        let name_course = $('#menu_time_' + menuTime_id).find("input").val();
+        console.log("changeCourse", name_course);
+    } catch (error) {
+        
+    }
+}
+
+function generateMenuExamine(){
+    if(dataExamine.menuExamine && dataExamine.menuExamine.length == 0){
+        let menu = addMenuList();
+        dataExamine.menuExamine.push(menu);
+    }
+    for(let [i, item] of dataExamine.menuExamine.entries()){
+        let newOption = new Option(item.name, item.id, false, false);
+        if(i == (dataExamine.menuExamine.length - 1)){
+            $('#menu_id').append(newOption).trigger('change');
+        }else{
+            $('#menu_id').append(newOption);
+        }
+    }
+    generateTableMenu();
+}
+
+function addMenuList(){
+    let id = 1;
+    if(dataExamine.menuExamine.length > 0){
+        id = dataExamine.menuExamine[dataExamine.menuExamine.length - 1].id + 1;
+    }
+    let menu = {
+        id: id,
+        name: "Thực đơn " + id,
+        detail: []
+    }
+    for(let time of dataExamine.listMenuTime){
+        console.log("listMenuTime", time);
+        menu.detail.push({
+            "id": time.id, 
+            "name": time.name,
+            "name_course":'',
+            "listFood":[]
+        });
+    }
+    console.log("addMenuList",menu);
+    return menu;
+}
+
+function generateTableMenu(){
+    try {
+        let menu_id =parseInt($("#menu_id").val());
+        console.log("generateTableMenu", menu_id);
+        if(menu_id){
+            if(dataExamine.menuExamine.length > 0){
+                for(let menu of dataExamine.menuExamine){
+                    console.log("generateTableMenu",menu_id, menu.id);
+                    if(menu.id == menu_id){
+                        $('#name_menu').text(menu.name);
+                    }
+                    addTemplateListMenuTime(menu.detail);
+                }
+            }
+        }
+    } catch (error) {
+        
+    }
+}
+
+function addTemplateListMenuTime(listMenuTime){
+    try {
+        if(listMenuTime.length > 0){
+            for(let item of listMenuTime){
+                let menuTime = addTemplateMenuTime(item);
+                $("#tb_menu").find('tbody').append(menuTime);
+                if(item.listFood.length > 0){
+                    for(let food of item.listFood){
+                        let foodTemplate = addFoodTemplate(food, item.id);
+                        $("#tb_menu").find('tbody').append(foodTemplate);
+                    }
+                }
+            }
+        }
+    } catch (error) {
+        
+    }
+}
+
+function addMenu(){
+    try {
+        let menuNew = addMenuList();
+        dataExamine.menuExamine.push(menuNew);
+        let newOption = new Option(menuNew.name, menuNew.id, false, false);
+        $('#menu_id').append(newOption).trigger('change');
+    } catch (error) {
+        
+    }
+}
+
+function addFoodToMenu(){
+    try {
+        let menu_id = parseInt($('#menu_id').val());
+        if(menu_id && dataExamine.menuExamine.length > 0){
+            for(let item of dataExamine.menuExamine){
+                console.log("addFoodToMenu 1", menu_id);
+                if(menu_id == item.id){
+                    let menuTime_id = parseInt($('#menuTime_id').val());
+                    if(menuTime_id && item.detail.length > 0){
+                        for(let menuTime of item.detail){
+                            menuTime.name_course = $('#course').val();
+                            $('#menu_time_' + menuTime_id).find('input').val($('#course').val());
+                            if(menuTime_id == menuTime.id){
+                                let id = menuTime.listFood.length == 0 ? 1 : menuTime.listFood[menuTime.listFood.length - 1].id + 1;
+                                let food = {
+                                    "id": id,
+                                    "id_food": $('#food_name').val(),
+                                    "name": $('#food_name').find(':selected').text(),
+                                    "weight": $('#weight_food').val(),
+                                    "energy": $('#energy_food').val(),
+                                    "protein": $('#protein_food').val(),
+                                    "animal_protein": $('#animal_protein').val(),
+                                    "lipid": $('#lipid_food').val(),
+                                    "unanimal_lipid": $('#unanimal_lipid').val(),
+                                    "carbohydrate": $('#carbohydrate').val()
+                                }
+                                menuTime.listFood.push(food);
+                                console.log("addFoodToMenu", dataExamine.menuExamine);
+                                let foodTemplate = addFoodTemplate(food, menuTime_id);
+                                if(id == 1){
+                                    foodTemplate.insertAfter('#menu_time_' + menuTime_id);
+                                }else{
+                                    foodTemplate.insertAfter('#food_' + menuTime_id + "_" + (id - 1))
+                                }
+                                $('#menu_time_' + menuTime_id + ' td:first-child').attr('rowspan', (id + 1));
+                            }
+                        }
+                    }
+                    break;
+                }
+            }
+        }
+    } catch (error) {
+        
+    }
+}
+
+function addTemplateMenuTime(menuTime){
+    try {
+        let rowspan = menuTime.listFood.length + 1;
+        return menuTimeTemplate = $('<tr/>')
+            .attr("id", "menu_time_"+ menuTime.id)
+            .addClass("text-center")
+            .append($("<td/>")
+                .css({"writing-mode": "vertical-rl"})
+                .attr("rowspan", rowspan)
+                .text(menuTime.name)
+            )
+            .append($("<td/>")
+                .append($("<input/>")
+                    .attr({"type":"text", "value": menuTime.name_course})
+                    .addClass("form-control form-control-title p-1")
+                    .data( "menu_time_id",  menuTime.id)
+                    .change(function(){
+                        let id = $(this).data('menu_time_id');
+                        changeCourse(id);
+                    })
+                )
+                .attr("colspan", 3)
+            )
+            .append($("<td/>")
+                .attr("colspan", 6)
+            );
+    } catch (error) {
+        
+    }
+}
+
+function addFoodTemplate(food, menuTime_id){
+    try {
+        return foodTemplate = $('<tr/>')
+            .attr("id", "food_"+ menuTime_id + "_" + food.id)
+            .append($("<td/>")
+                .text(food.name)
+            )
+            .append($("<td/>")
+                .append($("<input/>")
+                    .attr({"type":"number", "value": food.weight})
+                    .addClass("form-control form-control-title p-1")
+                    .data( "food_id",  food.id)
+                    .data( "menu_time_id",  menuTime_id)
+                    .change(function(){
+                        let idFood = $(this).data('food_id');
+                        let idMenuTime = $(this).data('menu_time_id');
+                        changeWeightFood(idFood, idMenuTime);
+                    })
+                )
+            )
+            .append($("<td/>")
+                .text(food.energy)
+            )
+            .append($("<td/>")
+                .text(food.protein)
+            )
+            .append($("<td/>")
+                .text(food.animal_protein)
+            )
+            .append($("<td/>")
+                .text(food.lipid)
+            )
+            .append($("<td/>")
+                .text(food.unanimal_lipid)
+            )
+            .append($("<td/>")
+                .text(food.carbohydrate)
+            )
+            .append($("<td/>")
+                .append($(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512">
+                            <path d="M310.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L160 210.7 54.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L114.7 256 9.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L160 301.3 265.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L205.3 256 310.6 150.6z"/>
+                        </svg>`))
+                .css({"cursor": "pointer"})
+                .data( "food_id",  food.id)
+                .data( "menu_time_id",  menuTime_id)
+                .click(function(){
+                    let idFood = $(this).data('food_id');
+                    let idMenuTime = $(this).data('menu_time_id');
+                    deleteFood(idFood, idMenuTime);
+                })
+            );
+    } catch (error) {
+        
+    }
+}
+
 $(document).ready(function(){
     $("#cus_birthday").flatpickr({
         dateFormat: "d-m-Y",
@@ -444,8 +695,13 @@ $(document).ready(function(){
         if(dataExamine.foodNameListSearch.length > 0){
             for(let item of dataExamine.foodNameListSearch){
                 if(evt.params.data.id == item.id){      
-                    $("#total_food").val(item.weight);
-                    $("#kcal_food").val(item.energy);
+                    $("#weight_food").val(item.weight);
+                    $("#energy_food").val(item.energy);
+                    $("#protein_food").val(item.protein);
+                    $("#animal_protein").val(item.animal_protein);
+                    $("#lipid_food").val(item.lipid);
+                    $("#unanimal_lipid").val(item.unanimal_lipid);
+                    $("#carbohydrate").val(item.carbohydrate);
                     break;
                 }
             }

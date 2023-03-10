@@ -7,13 +7,10 @@
                 <div class="input-group">
                     <div style="flex-grow:1;">
                         <select class="form-select" id="menu_id" data-plugin="select2" data-placeholder="Chọn menu" style="width: 90%;">
-                            <option></option>
-                            <option value="1">Thực đơn 1</option>
-                            <option value="2">Thực đơn 2</option>
-                            <option value="3">Thực đơn 3</option>
+                    
                         </select>
                     </div>
-                    <button class="btn btn-primary" type="button" onclick="addMenu()">Thêm Menu</button>
+                    <button class="btn btn-primary" type="button" onclick="addMenu()">Thêm</button>
                 </div>
             </div>
         </div>
@@ -25,7 +22,7 @@
                         <option></option>
                         <% if(menuTime.length > 0){ %>
                             <% for (let mt of menuTime){ %>
-                                <option value="<%= mt.id %>"><%= mt.time %></option>
+                                <option value="<%= mt.id %>"><%= mt.name %></option>
                             <%}%>   
                         <%}%>
                     </select>
@@ -47,7 +44,7 @@
         </div>
     </div>
     <div class="row g-2 align-items-center">
-        <div class="col-12 col-md-6 d-flex">
+        <div class="col-12 col-md-3 d-flex">
             <label class="col-form-label col-md-auto fw-bold mt-2" for="food_name">Thực phẩm</label>
             <div class="col-form-body col-md">
                 <div class="form-control-has-addon">
@@ -58,24 +55,61 @@
             </div>
         </div>
         <div class="col-12 col-md-3 d-flex">
-            <label class="col-form-label col-md-auto fw-bold mt-2" for="total_food">Số lượng</label>
+            <label class="col-form-label col-md-auto fw-bold mt-2" for="weight_food">Khối lượng</label>
             <div class="col-form-body col-md">
-              <div class="form-control-has-addon">
-                <input type="number" class="form-control form-control-title p-1" id="total_food" placeholder="Số lượng">
-                <button class="btn form-control-addon btn-link p-0 min-h-auto" type="button" onclick="clearInput('#total_food')">
-                    <svg class="iconsvg-close">
-                        <use xlink:href="/public/content/images/sprite.svg#close"></use>
-                    </svg>
-                </button>
+              <div class="input-group">
+                <input type="number" class="form-control form-control-title p-1" id="weight_food" placeholder="Khối lượng">
+                <button class="btn btn-primary" type="button" onclick="addFoodToMenu()">Thêm</button>
               </div>
             </div>
         </div>
         <div class="col-12 col-md-3 d-flex">
-            <label class="col-form-label col-md-auto fw-bold mt-2" for="kcal_food">KCal</label>
+            <label class="col-form-label col-md-auto fw-bold mt-2" for="energy_food">Energy</label>
             <div class="col-form-body col-md">
-              <div class="input-group">
-                <input type="number" class="form-control form-control-title p-1" id="kcal_food" placeholder="Kcal" readonly>
-                <button class="btn btn-primary" type="button" onclick="addMenu()">Thêm Tp</button>
+              <div class="form-control-has-addon">
+                <input type="text" class="form-control form-control-title p-1" id="energy_food" placeholder="Energy" readonly>
+              </div>
+            </div>
+        </div>
+        <div class="col-12 col-md-3 d-flex">
+            <label class="col-form-label col-md-auto fw-bold mt-2" for="protein_food">Protein</label>
+            <div class="col-form-body col-md">
+              <div class="form-control-has-addon">
+                <input type="text" class="form-control form-control-title p-1" id="protein_food" placeholder="Protein" readonly>
+              </div>
+            </div>
+        </div>
+    </div>
+    <div class="row g-2 align-items-center">
+        <div class="col-12 col-md-3 d-flex">
+            <label class="col-form-label col-md-auto fw-bold mt-2" for="animal_protein">Animal Protein</label>
+            <div class="col-form-body col-md">
+                <div class="form-control-has-addon">
+                    <input type="text" class="form-control form-control-title p-1" id="animal_protein" placeholder="Animal Protein" readonly>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 col-md-3 d-flex">
+            <label class="col-form-label col-md-auto fw-bold mt-2" for="lipid_food">Lipid</label>
+            <div class="col-form-body col-md">
+              <div class="form-control-has-addon">
+                <input type="text" class="form-control form-control-title p-1" id="lipid_food" placeholder="Lipid" readonly>
+              </div>
+            </div>
+        </div>
+        <div class="col-12 col-md-3 d-flex">
+            <label class="col-form-label col-md-auto fw-bold mt-2" for="unanimal_lipid">Unanimal Lipid</label>
+            <div class="col-form-body col-md">
+              <div class="form-control-has-addon">
+                <input type="text" class="form-control form-control-title p-1" id="unanimal_lipid" placeholder="Unanimal Lipid" readonly>
+              </div>
+            </div>
+        </div>
+        <div class="col-12 col-md-3 d-flex">
+            <label class="col-form-label col-md-auto fw-bold mt-2" for="carbohydrate">Carbohydrate</label>
+            <div class="col-form-body col-md">
+              <div class="form-control-has-addon">
+                <input type="number" class="form-control form-control-title p-1" id="carbohydrate" placeholder="Carbohydrate" readonly>
               </div>
             </div>
         </div>
@@ -89,327 +123,343 @@
                     <td rowspan="2"> 
                         <span>Giờ ăn</span>
                     </td>
-                    <td colspan="3">
-                        <span>Thực đơn 1</span>
-                    </td>
-                    <td colspan="3">
-                        <span>Thực đơn 2</span>
-                    </td>
-                    <td colspan="3">
-                        <span>Thực đơn 3</span>
+                    <td colspan="9">
+                        <span id="name_menu"></span>
                     </td>
                 </tr>
                 <tr>
                     <td>Thực phẩm</td>
-                    <td>g</td>
-                    <td>kcal</td>
-                    <td>Thực phẩm</td>
-                    <td>g</td>
-                    <td>kcal</td>
-                    <td>Thực phẩm</td>
-                    <td>g</td>
-                    <td>kcal</td>
+                    <td>Weight(g)</td>
+                    <td>Energy(kcal)</td>
+                    <td>Protein(g)</td>
+                    <td>Animal Protein(g)</td>
+                    <td>Lipid(g)</td>
+                    <td>Unanimal Lipid(g)</td>
+                    <td>Carbohydrate(g)</td>
+                    <td style="min-width: 40px;"></td>
                 </tr>
             </thead>
             <tbody>
-                <tr class="text-center">
-                    <td style="writing-mode: vertical-rl;" rowspan="4">6h-7h</td>
-                    <td colspan="3">Bún thịt</td>
-                    <td colspan="3">Phở thịt</td>
-                    <td colspan="3">Xôi</td>
-                </tr>
-                <tr>
+                <!-- <tr class="text-center">
+                    <td style="writing-mode: vertical-rl;" rowspan="1">6h-7h</td>
+                    <td colspan="3"><input type="text" value="150" class="form-control form-control-title p-1" value="Cơm"></td>
+                    <td colspan="6"></td>
+                </tr> -->
+                <!-- <tr>
                     <td>Bún</td>
+                    <td><input type="number" value="150" class="form-control form-control-title p-1" onchange="changeWeightFood()"></td>
                     <td>150</td>
-                    <td>150</td>
-                    
                     <td>Bánh phở</td>
                     <td>150</td>
                     <td>150</td>
-                    
                     <td>Gạo nếp</td>
                     <td>110</td>
-                    <td>150</td>
-                    
-                </tr>
-                <tr>
-                    <td>Thịt lợn nạc</td>
-                    <td>30</td>
-                    <td>30</td>
-                    
-                    <td>Thịt gà nạc</td>
-                    <td>30</td>
-                    <td>30</td>
-                   
-                    <td>Thịt lợn băm</td>
-                    <td>20</td>
-                    <td>30</td>
-                    
-                </tr>
-                <tr>
-                    <td>Dầu thực vật</td>
-                    <td>5</td>
-                    <td>30</td>
-                    
-                    <td>Dầu thực vật</td>
-                    <td>5</td>
-                    <td>30</td>
-                   
-                    <td>Dưa chuột</td>
-                    <td>50</td>
-                    <td>30</td>
-                </tr>
-
-                <tr class="text-center">
-                    <td style="writing-mode: vertical-rl;" rowspan="8">11h-12h</td>
-                    <td colspan="3">Cơm</td>
-                    <td colspan="3">Cơm</td>
-                    <td colspan="3">Cơm</td>
-                </tr>
-                <tr>
-                    <td>Bún</td>
-                    <td>150</td>
-                    <td>150</td>
-                    
-                    <td>Bánh phở</td>
-                    <td>150</td>
-                    <td>150</td>
-                    
-                    <td>Gạo nếp</td>
-                    <td>110</td>
-                    <td>150</td>
-                    
-                </tr>
-                <tr>
-                    <td>Bún</td>
-                    <td>150</td>
-                    <td>150</td>
-                    
-                    <td>Bánh phở</td>
-                    <td>150</td>
-                    <td>150</td>
-                    
-                    <td>Gạo nếp</td>
-                    <td>110</td>
-                    <td>150</td>
-                   
-                </tr>
-                <tr>
-                    <td>Bún</td>
-                    <td>150</td>
-                    <td>150</td>
-                    
-                    <td>Bánh phở</td>
-                    <td>150</td>
-                    <td>150</td>
-                    
-                    <td>Gạo nếp</td>
-                    <td>110</td>
-                    <td>150</td>
-                    
-                </tr>
-                <tr>
-                    <td>Bún</td>
-                    <td>150</td>
-                    <td>150</td>
-                    
-                    <td>Bánh phở</td>
-                    <td>150</td>
-                    <td>150</td>
-                    
-                    <td>Gạo nếp</td>
-                    <td>110</td>
-                    <td>150</td>
-                    
-                </tr>
-                <tr>
-                    <td>Bún</td>
-                    <td>150</td>
-                    <td>150</td>
-                    
-                    <td>Bánh phở</td>
-                    <td>150</td>
-                    <td>150</td>
-                    
-                    <td>Gạo nếp</td>
-                    <td>110</td>
-                    <td>150</td>
-                    
-                </tr>
-                <tr>
-                    <td>Bún</td>
-                    <td>150</td>
-                    <td>150</td>
-                    
-                    <td>Bánh phở</td>
-                    <td>150</td>
-                    <td>150</td>
-                    
-                    <td>Gạo nếp</td>
-                    <td>110</td>
-                    <td>150</td>
-                   
-                </tr>
-                <tr>
-                    <td>Bún</td>
-                    <td>150</td>
-                    <td>150</td>
-                    
-                    <td>Bánh phở</td>
-                    <td>150</td>
-                    <td>150</td>
-                    
-                    <td>Gạo nếp</td>
-                    <td>110</td>
-                    <td>150</td>
-                   
-                </tr>
-                
-                <tr class="text-center">
-                    <td style="writing-mode: vertical-rl;" rowspan="3">15h</td>
-                    <td colspan="3">Điểm tâm</td>
-                    <td colspan="3">Điểm tâm</td>
-                    <td colspan="3">Điểm tâm</td>
-                </tr>
-                <tr>
-                    <td>Bún</td>
-                    <td>150</td>
-                    <td>150</td>
-                    
-                    <td>Bánh phở</td>
-                    <td>150</td>
-                    <td>150</td>
-                    
-                    <td>Gạo nếp</td>
-                    <td>110</td>
-                    <td>150</td>
-                   
-                </tr>
-                <tr>
-                    <td>Bún</td>
-                    <td>150</td>
-                    <td>150</td>
-                    
-                    <td>Bánh phở</td>
-                    <td>150</td>
-                    <td>150</td>
-                   
-                    <td>Gạo nếp</td>
-                    <td>110</td>
-                    <td>150</td>
-                    
-                </tr>
-                <tr class="text-center">
-                    <td style="writing-mode: vertical-rl;" rowspan="8">17h-18h</td>
-                    <td colspan="3">Cơm</td>
-                    <td colspan="3">Cơm</td>
-                    <td colspan="3">Cơm</td>
-                </tr>
-                <tr>
-                    <td>Bún</td>
-                    <td>150</td>
-                    <td>150</td>
-                    
-                    <td>Bánh phở</td>
-                    <td>150</td>
-                    <td>150</td>
-                   
-                    <td>Gạo nếp</td>
-                    <td>110</td>
-                    <td>150</td>
-                   
-                </tr>
-                <tr>
-                    <td>Bún</td>
-                    <td>150</td>
-                    <td>150</td>
-                    
-                    <td>Bánh phở</td>
-                    <td>150</td>
-                    <td>150</td>
-                   
-                    <td>Gạo nếp</td>
-                    <td>110</td>
-                    <td>150</td>
-                    
-                </tr>
-                <tr>
-                    <td>Bún</td>
-                    <td>150</td>
-                    <td>150</td>
-                    
-                    <td>Bánh phở</td>
-                    <td>150</td>
-                    <td>150</td>
-                  
-                    <td>Gạo nếp</td>
-                    <td>110</td>
-                    <td>150</td>
-                    
-                </tr>
-                <tr>
-                    <td>Bún</td>
-                    <td>150</td>
-                    <td>150</td>
-                    
-                    <td>Bánh phở</td>
-                    <td>150</td>
-                    <td>150</td>
-                   
-                    <td>Gạo nếp</td>
-                    <td>110</td>
-                    <td>150</td>
-                   
-                </tr>
-                <tr>
-                    <td>Bún</td>
-                    <td>150</td>
-                    <td>150</td>
-                   
-                    <td>Bánh phở</td>
-                    <td>150</td>
-                    <td>150</td>
-                    
-                    <td>Gạo nếp</td>
-                    <td>110</td>
-                    <td>150</td>
-                    
-                </tr>
-                <tr>
-                    <td>Bún</td>
-                    <td>150</td>
-                    <td>150</td>
-                    
-                    <td>Bánh phở</td>
-                    <td>150</td>
-                    <td>150</td>
-                   
-                    <td>Gạo nếp</td>
-                    <td>110</td>
-                    <td>150</td>
-                    
-                </tr>
-                <tr>
-                    <td>Bún</td>
-                    <td>150</td>
-                    <td>150</td>
-                    
-                    <td>Bánh phở</td>
-                    <td>150</td>
-                    <td>150</td>
-                    
-                    <td>Gạo nếp</td>
-                    <td>110</td>
-                    <td>150</td>
-                    <!-- <td>
+                    <td style="cursor: pointer;" onclick="deleteFood()">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512">
                             <path d="M310.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L160 210.7 54.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L114.7 256 9.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L160 301.3 265.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L205.3 256 310.6 150.6z"/>
                         </svg>
-                    </td> -->
+                    </td>
                 </tr>
+                <tr>
+                    <td>Thịt lợn nạc</td>
+                    <td><input type="number" value="150" class="form-control form-control-title p-1"></td>
+                    <td>30</td>
+                    <td>Thịt gà nạc</td>
+                    <td>30</td>
+                    <td>30</td>
+                    <td>Thịt lợn băm</td>
+                    <td>20</td>
+                    <td>
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512">
+                            <path d="M310.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L160 210.7 54.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L114.7 256 9.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L160 301.3 265.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L205.3 256 310.6 150.6z"/>
+                        </svg>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Dầu thực vật</td>
+                    <td><input type="number" value="150" class="form-control form-control-title p-1"></td>
+                    <td>30</td>
+                    <td>Dầu thực vật</td>
+                    <td>5</td>
+                    <td>30</td>
+                    <td>Dưa chuột</td>
+                    <td>50</td>
+                    <td>
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512">
+                            <path d="M310.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L160 210.7 54.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L114.7 256 9.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L160 301.3 265.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L205.3 256 310.6 150.6z"/>
+                        </svg>
+                    </td>
+                </tr> -->
+
+                <!-- <tr class="text-center">
+                    <td style="writing-mode: vertical-rl;" rowspan="1">11h-12h</td>
+                    <td colspan="3">Cơm</td>
+                    <td colspan="5"></td>
+                </tr> -->
+                <!-- <tr>
+                    <td>Bún</td>
+                    <td><input type="number" value="150" class="form-control form-control-title p-1"></td>
+                    <td>150</td>
+                    <td>Bánh phở</td>
+                    <td>150</td>
+                    <td>150</td>
+                    <td>Gạo nếp</td>
+                    <td>110</td>
+                    <td>
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512">
+                            <path d="M310.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L160 210.7 54.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L114.7 256 9.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L160 301.3 265.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L205.3 256 310.6 150.6z"/>
+                        </svg>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Bún</td>
+                    <td><input type="number" value="150" class="form-control form-control-title p-1"></td>
+                    <td>150</td>
+                    <td>Bánh phở</td>
+                    <td>150</td>
+                    <td>150</td>
+                    <td>Gạo nếp</td>
+                    <td>110</td>
+                    <td>
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512">
+                            <path d="M310.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L160 210.7 54.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L114.7 256 9.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L160 301.3 265.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L205.3 256 310.6 150.6z"/>
+                        </svg>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Bún</td>
+                    <td><input type="number" value="150" class="form-control form-control-title p-1"></td>
+                    <td>150</td>
+                    <td>Bánh phở</td>
+                    <td>150</td>
+                    <td>150</td>
+                    <td>Gạo nếp</td>
+                    <td>110</td>
+                    <td>
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512">
+                            <path d="M310.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L160 210.7 54.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L114.7 256 9.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L160 301.3 265.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L205.3 256 310.6 150.6z"/>
+                        </svg>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Bún</td>
+                    <td><input type="number" value="150" class="form-control form-control-title p-1"></td>
+                    <td>150</td>
+                    <td>Bánh phở</td>
+                    <td>150</td>
+                    <td>150</td>
+                    <td>Gạo nếp</td>
+                    <td>110</td>
+                    <td>
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512">
+                            <path d="M310.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L160 210.7 54.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L114.7 256 9.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L160 301.3 265.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L205.3 256 310.6 150.6z"/>
+                        </svg>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Bún</td>
+                    <td><input type="number" value="150" class="form-control form-control-title p-1"></td>
+                    <td>150</td>
+                    <td>Bánh phở</td>
+                    <td>150</td>
+                    <td>150</td>
+                    <td>Gạo nếp</td>
+                    <td>110</td>
+                    <td>
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512">
+                            <path d="M310.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L160 210.7 54.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L114.7 256 9.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L160 301.3 265.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L205.3 256 310.6 150.6z"/>
+                        </svg>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Bún</td>
+                    <td><input type="number" value="150" class="form-control form-control-title p-1"></td>
+                    <td>150</td>
+                    <td>Bánh phở</td>
+                    <td>150</td>
+                    <td>150</td>
+                    <td>Gạo nếp</td>
+                    <td>110</td>
+                    <td>
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512">
+                            <path d="M310.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L160 210.7 54.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L114.7 256 9.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L160 301.3 265.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L205.3 256 310.6 150.6z"/>
+                        </svg>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Bún</td>
+                    <td><input type="number" value="150" class="form-control form-control-title p-1"></td>
+                    <td>150</td>
+                    <td>Bánh phở</td>
+                    <td>150</td>
+                    <td>150</td>
+                    <td>Gạo nếp</td>
+                    <td>110</td>
+                    <td>
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512">
+                            <path d="M310.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L160 210.7 54.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L114.7 256 9.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L160 301.3 265.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L205.3 256 310.6 150.6z"/>
+                        </svg>
+                    </td>
+                </tr> -->
+                
+                <!-- <tr class="text-center">
+                    <td style="writing-mode: vertical-rl;" rowspan="1">15h</td>
+                    <td colspan="3"></td>
+                    <td colspan="5"></td>
+                </tr> -->
+                <!-- <tr>
+                    <td>Bún</td>
+                    <td><input type="number" value="150" class="form-control form-control-title p-1"></td>
+                    <td>150</td>
+                    <td>Bánh phở</td>
+                    <td>150</td>
+                    <td>150</td>
+                    <td>Gạo nếp</td>
+                    <td>110</td>
+                    <td>
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512">
+                            <path d="M310.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L160 210.7 54.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L114.7 256 9.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L160 301.3 265.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L205.3 256 310.6 150.6z"/>
+                        </svg>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Bún</td>
+                    <td><input type="number" value="150" class="form-control form-control-title p-1"></td>
+                    <td>150</td>
+                    <td>Bánh phở</td>
+                    <td>150</td>
+                    <td>150</td>
+                    <td>Gạo nếp</td>
+                    <td>110</td>
+                    <td>
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512">
+                            <path d="M310.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L160 210.7 54.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L114.7 256 9.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L160 301.3 265.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L205.3 256 310.6 150.6z"/>
+                        </svg>
+                    </td>
+                </tr> -->
+                <!-- <tr class="text-center">
+                    <td style="writing-mode: vertical-rl;" rowspan="1">17h-18h</td>
+                    <td colspan="3">Cơm</td>
+                    <td colspan="5"></td>
+                </tr> -->
+                <!-- <tr>
+                    <td>Bún</td>
+                    <td><input type="number" value="150" class="form-control form-control-title p-1"></td>
+                    <td>150</td>
+                    <td>Bánh phở</td>
+                    <td>150</td>
+                    <td>150</td>
+                    <td>Gạo nếp</td>
+                    <td>110</td>
+                    <td>
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512">
+                            <path d="M310.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L160 210.7 54.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L114.7 256 9.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L160 301.3 265.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L205.3 256 310.6 150.6z"/>
+                        </svg>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Bún</td>
+                    <td><input type="number" value="150" class="form-control form-control-title p-1"></td>
+                    <td>150</td>
+                    <td>Bánh phở</td>
+                    <td>150</td>
+                    <td>150</td>
+                    <td>Gạo nếp</td>
+                    <td>110</td>
+                    <td>
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512">
+                            <path d="M310.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L160 210.7 54.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L114.7 256 9.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L160 301.3 265.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L205.3 256 310.6 150.6z"/>
+                        </svg>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Bún</td>
+                    <td><input type="number" value="150" class="form-control form-control-title p-1"></td>
+                    <td>150</td>
+                    <td>Bánh phở</td>
+                    <td>150</td>
+                    <td>150</td>
+                    <td>Gạo nếp</td>
+                    <td>110</td>
+                    <td>
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512">
+                            <path d="M310.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L160 210.7 54.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L114.7 256 9.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L160 301.3 265.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L205.3 256 310.6 150.6z"/>
+                        </svg>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Bún</td>
+                    <td><input type="number" value="150" class="form-control form-control-title p-1"></td>
+                    <td>150</td>
+                    <td>Bánh phở</td>
+                    <td>150</td>
+                    <td>150</td>
+                    <td>Gạo nếp</td>
+                    <td>110</td>
+                    <td>
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512">
+                            <path d="M310.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L160 210.7 54.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L114.7 256 9.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L160 301.3 265.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L205.3 256 310.6 150.6z"/>
+                        </svg>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Bún</td>
+                    <td><input type="number" value="150" class="form-control form-control-title p-1"></td>
+                    <td>150</td>
+                    <td>Bánh phở</td>
+                    <td>150</td>
+                    <td>150</td>
+                    <td>Gạo nếp</td>
+                    <td>110</td>
+                    <td>
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512">
+                            <path d="M310.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L160 210.7 54.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L114.7 256 9.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L160 301.3 265.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L205.3 256 310.6 150.6z"/>
+                        </svg>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Bún</td>
+                    <td><input type="number" value="150" class="form-control form-control-title p-1"></td>
+                    <td>150</td>
+                    <td>Bánh phở</td>
+                    <td>150</td>
+                    <td>150</td>
+                    <td>Gạo nếp</td>
+                    <td>110</td>
+                    <td>
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512">
+                            <path d="M310.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L160 210.7 54.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L114.7 256 9.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L160 301.3 265.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L205.3 256 310.6 150.6z"/>
+                        </svg>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Bún</td>
+                    <td><input type="number" value="150" class="form-control form-control-title p-1"></td>
+                    <td>150</td>
+                    <td>Bánh phở</td>
+                    <td>150</td>
+                    <td>150</td>
+                    <td>Gạo nếp</td>
+                    <td>110</td>
+                    <td>
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512">
+                            <path d="M310.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L160 210.7 54.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L114.7 256 9.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L160 301.3 265.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L205.3 256 310.6 150.6z"/>
+                        </svg>
+                    </td>
+                </tr> -->
             </tbody>
             <tfoot>
-                
+                <tr>
+                    <td></td>
+                    <td colspan="2">Tổng số</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
             </tfoot>
         </table>
       </div>

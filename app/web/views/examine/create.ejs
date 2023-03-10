@@ -72,9 +72,11 @@
                 dataExamine.activeModeOfLivingList = <%-JSON.stringify(activeModeOfLiving) %>;
                 dataExamine.medicineList = <%-JSON.stringify(medicine) %>;
                 dataExamine.prescriptionExamine = <%-JSON.stringify(prescriptionExamine) %>;
-                dataExamine.menuTime = <%-JSON.stringify(menuTime) %>;
+                dataExamine.listMenuTime = <%-JSON.stringify(menuTime) %>;
+                dataExamine.menuExamine = <%-JSON.stringify(menuExamine) %>;
                 addPrescriptionEdit();
                 generateFoodName("food_name");
+                generateMenuExamine();
               });
             </script>
             <% } %>

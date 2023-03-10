@@ -210,6 +210,7 @@ router.get('/edit/:id', function(req, res, next) {
                     medicalTest: resultData.medicalTest,
                     medicalTestExamine: JSON.parse(resultData.detailExamine.medical_test ? resultData.detailExamine.medical_test : '[]'),
                     prescriptionExamine: JSON.parse(resultData.detailExamine.prescription ? resultData.detailExamine.prescription : '[]'),
+                    menuExamine: JSON.parse(resultData.detailExamine.menu_example ? resultData.detailExamine.menu_example : '[]'),
                     page:'edit',
                     menuTime: resultData.menuTime
                 });
@@ -308,7 +309,7 @@ router.get('/create', function(req, res, next) {
             }
         }));
 
-        let sqlMenuTime = 'SELECT * FROM menu_time WHERE hospital_id = ?';
+        let sqlMenuTime = 'SELECT id, time AS name FROM menu_time WHERE hospital_id = ?';
         arrPromise.push(webService.getListTable(sqlMenuTime, [req.user.hospital_id]).then(responseData4 =>{
             if(responseData4.success){
                 resultData.menuTime = responseData4.data;
@@ -332,6 +333,7 @@ router.get('/create', function(req, res, next) {
                     medicalTest: resultData.medicalTest,
                     medicalTestExamine: [],
                     prescriptionExamine: [],
+                    menuExamine: [],
                     menuTime:resultData.menuTime
                 });
             }).catch(err => {
@@ -347,7 +349,8 @@ router.get('/create', function(req, res, next) {
                     medicalTest: [],
                     medicalTestExamine:[],
                     prescriptionExamine: [],
-                    menuTime:[]
+                    menuTime:[],
+                    menuExamine: []
                 });
             });
         });
@@ -365,7 +368,8 @@ router.get('/create', function(req, res, next) {
                 medicalTest: [],
                 medicalTestExamine:[],
                 prescriptionExamine: [],
-                menuTime:[]
+                menuTime:[],
+                menuExamine: []
             });
         })
     }
