@@ -14403,8 +14403,8 @@ span.flatpickr-weekday {
 }
 .table-1, .table-2 {
   --bs-table-border-color: #f1f5f9;
-  --bs-table-cell-padding-x: 0.625rem;
-  --bs-table-cell-padding-y: 0.625rem;
+  /* --bs-table-cell-padding-x: 0.625rem;
+  --bs-table-cell-padding-y: 0.625rem; */
   --bs-border-color: var(--bs-table-border-color);
 }
 .table-1 > thead,.table-2 > thead {

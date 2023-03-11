@@ -187,7 +187,7 @@ router.get('/edit/:id', function(req, res, next) {
             }
         }));
 
-        let sqlMenuTime = 'SELECT * FROM menu_time WHERE hospital_id = ?';
+        let sqlMenuTime = 'SELECT id, time AS name FROM menu_time WHERE hospital_id = ?';
         arrPromise.push(webService.getListTable(sqlMenuTime, [req.user.hospital_id]).then(responseData4 =>{
             if(responseData4.success){
                 resultData.menuTime = responseData4.data;
@@ -434,7 +434,8 @@ router.post('/create', function(req, res, next) {
                 vitamin_ck_should_not_use: req.body.vitamin_ck_should_not_use,
                 nutrition_advice_id:    req.body.nutrition_advice_id,
                 active_mode_of_living_id: req.body.active_mode_of_living_id,
-                medical_test:           req.body.medical_test,       
+                medical_test:           req.body.medical_test,  
+                menu_example:           req.body.menu_example,  
                 prescription:           req.body.prescription,
                 department_id:          req.user.department_id,
                 hospital_id:            req.user.hospital_id,
@@ -597,7 +598,8 @@ router.post('/edit/:id', function(req, res, next) {
                 nutrition_advice_id:    req.body.nutrition_advice_id,
                 active_mode_of_living_id: req.body.active_mode_of_living_id,
                 medical_test:           req.body.medical_test,
-                prescription:           req.body.prescription
+                prescription:           req.body.prescription,
+                menu_example:           req.body.menu_example
             };
         
         if(!parameter.cus_name){

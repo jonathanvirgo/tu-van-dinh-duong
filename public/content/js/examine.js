@@ -105,7 +105,7 @@ function saveExamine(){
                 if (result.success) {
                     displayMessage('Lưu thành công');
                     setTimeout(()=>{
-                        returnList();
+                        // returnList();
                     }, 500);
                 } else {
                     displayError(result.message);
@@ -171,6 +171,7 @@ function changeTabExamine(tab){
             dataExamine.examine['vitamin_ck_should_not_use'] = $('#vitamin_ck_should_not_use').val();
             break;
         case 3:
+            dataExamine.examine['menu_example'] = JSON.stringify(dataExamine.menuExamine);
             break;
         case 4:
             dataExamine.examine['prescription'] = JSON.stringify(dataExamine.prescription);
@@ -301,6 +302,17 @@ function removeItemArray(arr, val) {
     arr.length = j;
 }
 
+// xóa phần từ object trong mảng bằng id
+function removeItemArrayByIdObject(arr, id) {
+    var j = 0;
+    for (var i = 0, l = arr.length; i < l; i++) {
+      if (arr[i].id !== id) {
+        arr[j++] = arr[i];
+      }
+    }
+    arr.length = j;
+}
+
 function getMedicalTest(id){
     if(id){
         let isChecked = $(id).is(':checked');
@@ -386,8 +398,24 @@ function generateFoodName(id){
 function deleteFood(id_food, id_menu_time){
     try {
         console.log("deleteFood", id_food, id_menu_time);
-    } catch (error) {
+        let menu_id = parseInt($('#menu_id').val());
+        for(let menu of dataExamine.menuExamine){
+            if(menu.id = menu_id){
+                for(let menu_time of menu.detail){
+                    if(menu_time.id == id_menu_time){
+                        removeItemArrayByIdObject(menu_time.listFood, id_food);
+                        break;
+                    }
+                }
+            }
+        }
+        $('#food_' + id_menu_time + "_" + id_food).remove();
+        console.log("rowspan", $('#menu_time_' + id_menu_time + ' td:first-child').attr("rowspan"));
+        let rowspan = $('#menu_time_' + id_menu_time + ' td:first-child').attr("rowspan");
         
+        $('#menu_time_' + id_menu_time + ' td:first-child').attr('rowspan', (rowspan - 1));
+    } catch (error) {
+        console.log("deleteFood error", error);
     }
 }
 
@@ -403,6 +431,17 @@ function changeCourse(menuTime_id){
     try {
         let name_course = $('#menu_time_' + menuTime_id).find("input").val();
         console.log("changeCourse", name_course);
+        let menu_id = parseInt($('#menu_id').val());
+        for(let menu of dataExamine.menuExamine){
+            if(menu_id == menu.id){
+                for(let item of menu.detail){
+                    if(menuTime_id == item.id){
+                        item.name_course = name_course;
+                        break;
+                    }
+                }
+            }
+        }
     } catch (error) {
         
     }
@@ -449,7 +488,7 @@ function addMenuList(){
 
 function generateTableMenu(){
     try {
-        let menu_id =parseInt($("#menu_id").val());
+        let menu_id = parseInt($("#menu_id").val());
         console.log("generateTableMenu", menu_id);
         if(menu_id){
             if(dataExamine.menuExamine.length > 0){
@@ -457,8 +496,9 @@ function generateTableMenu(){
                     console.log("generateTableMenu",menu_id, menu.id);
                     if(menu.id == menu_id){
                         $('#name_menu').text(menu.name);
+                        addTemplateListMenuTime(menu.detail);
+                        break;
                     }
-                    addTemplateListMenuTime(menu.detail);
                 }
             }
         }
@@ -505,35 +545,41 @@ function addFoodToMenu(){
                 console.log("addFoodToMenu 1", menu_id);
                 if(menu_id == item.id){
                     let menuTime_id = parseInt($('#menuTime_id').val());
-                    if(menuTime_id && item.detail.length > 0){
-                        for(let menuTime of item.detail){
-                            menuTime.name_course = $('#course').val();
-                            $('#menu_time_' + menuTime_id).find('input').val($('#course').val());
-                            if(menuTime_id == menuTime.id){
-                                let id = menuTime.listFood.length == 0 ? 1 : menuTime.listFood[menuTime.listFood.length - 1].id + 1;
-                                let food = {
-                                    "id": id,
-                                    "id_food": $('#food_name').val(),
-                                    "name": $('#food_name').find(':selected').text(),
-                                    "weight": $('#weight_food').val(),
-                                    "energy": $('#energy_food').val(),
-                                    "protein": $('#protein_food').val(),
-                                    "animal_protein": $('#animal_protein').val(),
-                                    "lipid": $('#lipid_food').val(),
-                                    "unanimal_lipid": $('#unanimal_lipid').val(),
-                                    "carbohydrate": $('#carbohydrate').val()
+                    if(menuTime_id){
+                        if(item.detail.length > 0){
+                            for(let menuTime of item.detail){
+                                menuTime.name_course = $('#course').val();
+                                $('#menu_time_' + menuTime_id).find('input').val($('#course').val());
+                                if(menuTime_id == menuTime.id){
+                                    let id = menuTime.listFood.length == 0 ? 1 : menuTime.listFood[menuTime.listFood.length - 1].id + 1;
+                                    let food = {
+                                        "id": id,
+                                        "id_food": $('#food_name').val(),
+                                        "name": $('#food_name').find(':selected').text(),
+                                        "weight": $('#weight_food').val(),
+                                        "energy": $('#energy_food').val(),
+                                        "protein": $('#protein_food').val(),
+                                        "animal_protein": $('#animal_protein').val(),
+                                        "lipid": $('#lipid_food').val(),
+                                        "unanimal_lipid": $('#unanimal_lipid').val(),
+                                        "carbohydrate": $('#carbohydrate').val()
+                                    }
+                                    menuTime.listFood.push(food);
+                                    console.log("addFoodToMenu", dataExamine.menuExamine);
+                                    let foodTemplate = addFoodTemplate(food, menuTime_id);
+                                    if(id == 1){
+                                        foodTemplate.insertAfter('#menu_time_' + menuTime_id);
+                                    }else{
+                                        foodTemplate.insertAfter('#food_' + menuTime_id + "_" + (id - 1))
+                                    }
+                                    $('#menu_time_' + menuTime_id + ' td:first-child').attr('rowspan', (id + 1));
                                 }
-                                menuTime.listFood.push(food);
-                                console.log("addFoodToMenu", dataExamine.menuExamine);
-                                let foodTemplate = addFoodTemplate(food, menuTime_id);
-                                if(id == 1){
-                                    foodTemplate.insertAfter('#menu_time_' + menuTime_id);
-                                }else{
-                                    foodTemplate.insertAfter('#food_' + menuTime_id + "_" + (id - 1))
-                                }
-                                $('#menu_time_' + menuTime_id + ' td:first-child').attr('rowspan', (id + 1));
                             }
+                        }else{
+                            displayError('Chưa có dữ liệu giờ ăn!');
                         }
+                    }else{
+                        displayError('Bạn chưa chọn giờ ăn!');
                     }
                     break;
                 }
@@ -559,6 +605,7 @@ function addTemplateMenuTime(menuTime){
                 .append($("<input/>")
                     .attr({"type":"text", "value": menuTime.name_course})
                     .addClass("form-control form-control-title p-1")
+                    .css({"text-align": "center"})
                     .data( "menu_time_id",  menuTime.id)
                     .change(function(){
                         let id = $(this).data('menu_time_id');
@@ -706,5 +753,10 @@ $(document).ready(function(){
                 }
             }
         }
+    });
+
+    $("#menu_id").on('select2:select', function(evt) {
+        $("tbody tr").remove();
+        generateTableMenu();
     });
 });
