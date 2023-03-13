@@ -29,6 +29,9 @@
                 <button type="submit" name="save" class="btn btn-primary" value="save"> 
                   <i class="far fa-save"></i> Lưu 
                 </button>
+                <button type="button" name="saveContinue" class="btn btn-primary" value="saveContinue" onclick="importFoodInfo()"> 
+                  <i class="fas fa-file-import"></i> Import Excel 
+                </button>
                 <button type="submit" name="saveContinue" class="btn btn-primary" value="saveContinue"> 
                   <i class="far fa-save"></i> Lưu và tiếp tục sửa 
                 </button>
@@ -48,6 +51,7 @@
               </div>
             </section>
         </form>
+        <input accept=".xls,.xlsx" type="file" id="file_input_food_info" style="width: 0px;height: 0px;overflow: hidden;" onchange="getFileFoodInfo()"/>
     </div>
     <%- include('../shared/footer') %>
   </div>

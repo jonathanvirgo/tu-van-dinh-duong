@@ -458,3 +458,26 @@ function syncFormatPRBooking(){
     }
   });
 }
+
+function importFoodInfo(){
+  try {
+    console.log("importFoodInfo");
+    $('#file_input_food_info').trigger('click');
+  } catch (error) {
+    console.log("importFoodInfo", error);
+  }
+}
+
+function getFileFoodInfo(){
+  try {
+    let dataFile = $('#file_input_food_info').prop('files');
+    console.log("getFileFoodInfo", dataFile);
+    readXlsxFile(dataFile[0]).then(function(rows) {
+      console.log("readXlsxFile", rows);
+      // `rows` is an array of rows
+      // each row being an array of cells.
+    })
+  } catch (error) {
+    console.log("getFileFoodInfo", error);
+  }
+}

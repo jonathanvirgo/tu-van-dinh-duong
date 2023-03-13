@@ -105,7 +105,7 @@ function saveExamine(){
                 if (result.success) {
                     displayMessage('Lưu thành công');
                     setTimeout(()=>{
-                        // returnList();
+                        returnList();
                     }, 500);
                 } else {
                     displayError(result.message);
@@ -419,9 +419,48 @@ function deleteFood(id_food, id_menu_time){
     }
 }
 
-function changeWeightFood(id_food, id_menu_time){
+function caculateFoodInfo(food, weight){
     try {
-        console.log("changeWeightFood", id_food, id_menu_time);
+        if(food && weight > 0){
+            food.energy = Math.round((food.energy * weight) / food.weight);
+            food.protein = Math.round((food.protein * weight) / food.weight);
+            food.animal_protein = Math.round((food.animal_protein * weight) / food.weight);
+            food.lipid = Math.round((food.lipid * weight) / food.weight);
+            food.unanimal_lipid = Math.round((food.unanimal_lipid * weight) / food.weight);
+            food.carbohydrate = Math.round((food.carbohydrate * weight) / food.weight);
+            food.weight = weight
+        }
+    } catch (error) {
+        
+    }
+}
+
+function changeWeightFood(id_food, menuTime_id, value){
+    try {
+        console.log("changeWeightFood", id_food, menuTime_id, value);
+        let menu_id = parseInt($('#menu_id').val());
+        for(let menu of dataExamine.menuExamine){
+            if(menu_id == menu.id){
+                for(let item of menu.detail){
+                    if(menuTime_id == item.id){
+                        for(let food of item.listFood){
+                            if(id_food == food.id){
+                                caculateFoodInfo(food, value);
+                                $("#food_"+ menuTime_id + "_" + food.id + "_energy").text(food.energy);
+                                $("#food_"+ menuTime_id + "_" + food.id + "_protein").text(food.protein);
+                                $("#food_"+ menuTime_id + "_" + food.id + "_animal_protein").text(food.animal_protein);
+                                $("#food_"+ menuTime_id + "_" + food.id + "_lipid").text(food.lipid);
+                                $("#food_"+ menuTime_id + "_" + food.id + "_unanimal_lipid").text(food.unanimal_lipid);
+                                $("#food_"+ menuTime_id + "_" + food.id + "_carbohydrate").text(food.carbohydrate);
+                                console.log("caculateFoodInfo", {...food});
+                                break;
+                            }
+                        }
+                        break;
+                    }
+                }
+            }
+        }
     } catch (error) {
         
     }
@@ -554,15 +593,15 @@ function addFoodToMenu(){
                                     let id = menuTime.listFood.length == 0 ? 1 : menuTime.listFood[menuTime.listFood.length - 1].id + 1;
                                     let food = {
                                         "id": id,
-                                        "id_food": $('#food_name').val(),
+                                        "id_food": parseInt($('#food_name').val()),
                                         "name": $('#food_name').find(':selected').text(),
-                                        "weight": $('#weight_food').val(),
-                                        "energy": $('#energy_food').val(),
-                                        "protein": $('#protein_food').val(),
-                                        "animal_protein": $('#animal_protein').val(),
-                                        "lipid": $('#lipid_food').val(),
-                                        "unanimal_lipid": $('#unanimal_lipid').val(),
-                                        "carbohydrate": $('#carbohydrate').val()
+                                        "weight": parseInt($('#weight_food').val()),
+                                        "energy": parseInt($('#energy_food').val()),
+                                        "protein": parseInt($('#protein_food').val()),
+                                        "animal_protein": parseInt($('#animal_protein').val()),
+                                        "lipid": parseInt($('#lipid_food').val()),
+                                        "unanimal_lipid": parseInt($('#unanimal_lipid').val()),
+                                        "carbohydrate": parseInt($('#carbohydrate').val())
                                     }
                                     menuTime.listFood.push(food);
                                     console.log("addFoodToMenu", dataExamine.menuExamine);
@@ -630,6 +669,7 @@ function addFoodTemplate(food, menuTime_id){
                 .text(food.name)
             )
             .append($("<td/>")
+                .attr("id", "food_"+ menuTime_id + "_" + food.id + "_weight")
                 .append($("<input/>")
                     .attr({"type":"number", "value": food.weight})
                     .addClass("form-control form-control-title p-1")
@@ -638,26 +678,33 @@ function addFoodTemplate(food, menuTime_id){
                     .change(function(){
                         let idFood = $(this).data('food_id');
                         let idMenuTime = $(this).data('menu_time_id');
-                        changeWeightFood(idFood, idMenuTime);
+                        let weight = $(this).val();
+                        changeWeightFood(idFood, idMenuTime, weight);
                     })
                 )
             )
             .append($("<td/>")
+                .attr("id", "food_"+ menuTime_id + "_" + food.id + "_energy")
                 .text(food.energy)
             )
             .append($("<td/>")
+                .attr("id", "food_"+ menuTime_id + "_" + food.id + "_protein")
                 .text(food.protein)
             )
             .append($("<td/>")
+                .attr("id", "food_"+ menuTime_id + "_" + food.id + "_animal_protein")
                 .text(food.animal_protein)
             )
             .append($("<td/>")
+                .attr("id", "food_"+ menuTime_id + "_" + food.id + "_lipid")
                 .text(food.lipid)
             )
             .append($("<td/>")
+                .attr("id", "food_"+ menuTime_id + "_" + food.id + "_unanimal_lipid")
                 .text(food.unanimal_lipid)
             )
             .append($("<td/>")
+                .attr("id", "food_"+ menuTime_id + "_" + food.id + "_carbohydrate")
                 .text(food.carbohydrate)
             )
             .append($("<td/>")
