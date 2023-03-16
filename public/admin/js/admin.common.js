@@ -468,14 +468,71 @@ function importFoodInfo(){
   }
 }
 
+// [
+  // 0: "[ Food Name ]"
+  // 1: "[Weight]"
+  // 2: "02.Energy"
+  // 3: "04.Protein"
+  // 4: "4a.Animal Protein"
+  // 5: "05.Lipid"
+  // 6: "5b.Unanimal Lipid"
+  // 7: "06.Carbohydrate"
+  // 8: "07.Fiber"
+  // 9: "08.Ash"
+  // 10: "09.Retinol"
+  // 11: "10.Caroten"
+  // 12: "11.Vit.B1"
+  // 13: "12.Vit.B2"
+  // 14: "13.Vit.PP"
+  // 15: "14.Vit.C"
+  // 16: "15.Ca"
+  // 17: "16.P"
+  // 18: "17.Fe"
+// ]
+
 function getFileFoodInfo(){
   try {
     let dataFile = $('#file_input_food_info').prop('files');
-    console.log("getFileFoodInfo", dataFile);
+    let dataFood = [];
+    let dataRemove = [];
+    let i = 0;
     readXlsxFile(dataFile[0]).then(function(rows) {
-      console.log("readXlsxFile", rows);
-      // `rows` is an array of rows
-      // each row being an array of cells.
+      for(let [index, item] of rows.entries()){
+        // nếu có tên và khối lượng là thực phẩm 0-19
+        if(typeof(item[0]) == "string"){
+          if(item[1] && typeof(item[1]) == "number"){
+            if((i - 1) >= 0) dataFood[(i-1)].detail.push(item);
+          }else if(!item[1] && !item[2] && !item[3] && !item[4] && !item[5] && !item[6] && !item[7] && !item[8] && !item[9] && !item[10] && !item[11] && !item[12] && !item[13] && !item[14] && !item[15] && !item[16] && !item[17] && !item[18]){
+            // nếu có tên và không có chỉ số là loại thực phẩm;
+            dataFood.push({id: i++, name: item[0], detail: []});
+          }else{
+            // Dữ liệu lỗi;
+            dataRemove.push(item);
+          }
+        }
+      }
+      console.log("dataFood", dataFood);
+      console.log("dataRemove", dataRemove);
+      var formData        = new FormData();
+      formData.append("data", JSON.stringify(dataFood))
+      $.ajax({
+        type: 'POST',
+        url: '/admin/food-info/import-from-excel',
+        processData: false,
+        contentType: false,
+        data: formData,
+        success: function(result) {
+          console.log(result);
+            if (result.success) {
+                displayMessage('Lưu thành công');
+                setTimeout(()=>{
+                    window.location.href = "/admin/food-info"
+                }, 500);
+            } else {
+                displayError(result.message);
+            }
+        }
+    });
     })
   } catch (error) {
     console.log("getFileFoodInfo", error);

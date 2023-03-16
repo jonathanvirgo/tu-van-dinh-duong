@@ -1,12 +1,14 @@
 ﻿var express         = require('express'),
     router          = express.Router(),
     path            = require('path'),
+    {IncomingForm}  = require("formidable"),
     returnUrl       = "/admin/food-info",
     notice_admin    = "Tài khoản của bạn không có quyền truy cập!",
     logService      = require('../models/logModel'),
     adminService    = require('../models/adminModel'),
     modelService    = require('../models/foodInfoModel'),
-    foodTypeService = require('../models/foodTypeModel'); 
+    foodTypeService = require('../models/foodTypeModel'),
+    webService      = require('../../web/models/webModel'); 
 
 router.get('/', function (req, res, next) {
     try {
@@ -333,6 +335,95 @@ router.post('/list', function (req, res, next) {
         logService.create(req, e.message).then(function(){
             resultMessage.error = e.message;
             res.send(resultMessage);
+        });
+    }
+});
+
+router.post('/import-from-excel', function (req, res, next) {
+    var resultData = {
+        success: false,
+        message: "",
+        data: ''
+    };
+    try {
+        if (!req.user) {
+            return res.redirect('/user/login');
+        }
+        if (!req.user.isAdmin) {
+            throw new Error(notice_admin);
+        }
+        var form    = new IncomingForm();
+        form.parse(req, function(err, fields, files) {
+            try {
+                let dataFood = JSON.parse(fields.data);
+                if(dataFood && dataFood.length > 0){
+                    for(let foodType of dataFood){
+                        let paramFoodType = {
+                            name: foodType.name,
+                            hospital_id: req.user.hospital_id,
+                            department_id: req.user.department_id,
+                            created_by: req.user.id
+                        }
+                        let sqlFoodType = "SELECT * FROM food_type WHERE `name` =  ? AND created_by = ?";
+                        webService.getListTable(sqlFoodType, [paramFoodType.name, paramFoodType.created_by]).then(responseData =>{
+                            if(responseData.success && responseData.data.length == 0){
+                                webService.addRecordTable(paramFoodType, 'food_type').then(responseData1 =>{
+                                    if(responseData1.success){
+                                        if(foodType.detail && foodType.detail.length > 0){
+                                            for(let food of foodType.detail){
+                                                let paramFood = {
+                                                    food_type_id: responseData1.data.insertId,
+                                                    name: food[0],
+                                                    weight: isNaN(parseInt(food[1])) ? null : parseInt(food[1]),
+                                                    energy: isNaN(parseInt(food[1])) ? null : parseInt(food[2]),
+                                                    protein: isNaN(parseFloat(food[3])) ? '' : food[3],
+                                                    animal_protein: isNaN(parseFloat(food[4])) ? '' : food[4],
+                                                    lipid: isNaN(parseFloat(food[5])) ? '' : food[5],
+                                                    unanimal_lipid: isNaN(parseFloat(food[6])) ? '' : food[6],
+                                                    carbohydrate: isNaN(parseFloat(food[7])) ? '' : food[7],
+                                                    fiber: isNaN(parseFloat(food[8])) ? '' : food[8],
+                                                    ash: isNaN(parseFloat(food[9])) ? '' : food[9],
+                                                    retinol: isNaN(parseFloat(food[10])) ? '' : food[10],
+                                                    caroten: isNaN(parseFloat(food[11])) ? '' : food[11],
+                                                    vitamin_b1: isNaN(parseFloat(food[12])) ? '' : food[12],
+                                                    vitamin_b2: isNaN(parseFloat(food[13])) ? '' : food[13],
+                                                    vitamin_pp: isNaN(parseFloat(food[14])) ? '' : food[14],
+                                                    vitamin_c: isNaN(parseFloat(food[15])) ? '' : food[15],
+                                                    canxi: isNaN(parseFloat(food[16])) ? '' : food[16],
+                                                    p: isNaN(parseFloat(food[17])) ? '' : food[17],
+                                                    fe: isNaN(parseFloat(food[18])) ? '' : food[18],
+                                                    hospital_id: req.user.hospital_id,
+                                                    department_id: req.user.department_id,
+                                                    created_by: req.user.id
+                                                };
+                                                let sqlFoodInfo = "SELECT * FROM food_info WHERE `name` =  ? AND created_by = ?";
+                                                webService.getListTable(sqlFoodInfo, [paramFood.name, paramFood.created_by]).then(responseData2 =>{
+                                                    if(responseData2.success && responseData2.data.length == 0){
+                                                        webService.addRecordTable(paramFood, 'food_info', true);
+                                                    }
+                                                });
+                                            }
+                                        }
+                                    }
+                                });
+                            }
+                        });
+                    }
+                    resultData.success = true;
+                }
+                res.json(resultData);
+            } catch (error) {
+                console.log(error);
+                resultData.message = typeof(error) == 'object' ? JSON.stringify(error) : error;
+                res.json(resultData);
+            }
+        });
+        
+    } catch (e) {
+        console.log("e", e);
+        logService.create(req, e.message).then(function(){
+            resultData.message = e.message;
+            res.send(resultData);
         });
     }
 });
