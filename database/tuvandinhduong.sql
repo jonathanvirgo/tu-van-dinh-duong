@@ -12,7 +12,7 @@ MySQL - 10.4.24-MariaDB : Database - tuvandinhduong
 /*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
-USE `tuvandinhduong`;
+USE `cppsgved_tuvandinhduong`;
 
 /*Table structure for table `active_mode_of_living` */
 
