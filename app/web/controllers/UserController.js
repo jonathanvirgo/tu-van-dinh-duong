@@ -5,13 +5,13 @@
     moment          = require('moment'),
     passport        = require('passport'),
     validator       = require("validator"),
-    webService      = require('./../models/webModel'),
+    webService      = require('../models/webModel'),
     adminService    = require('../../admin/models/adminModel'),
     logService      = require('../../admin/models/logModel'),
     userService     = require('../../admin/models/userModel'),
     roleUserService = require('../../admin/models/roleUsersModel'),
     settingService  = require('../../admin/models/settingModel'),
-    mailService     = require('./../service/sendMail');
+    mailService     = require('../service/sendMail');
 
 router.get('/login', function (req, res, next) {
     return res.render('user/login.ejs');
