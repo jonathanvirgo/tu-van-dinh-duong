@@ -9,8 +9,8 @@ var md5             = require('md5'),
     logService      = require('../../admin/models/logModel'),
     crypto          = require('crypto'),
     jwtPrivateKey   = "4343636e4d354b45517159456534636d4e34344e4d4e50427371614575577451";
-const docx = require("docx");
-const { AlignmentType, HeadingLevel, Paragraph, TabStopPosition, TabStopType, TextRun } = docx;
+    const docx = require("docx");
+    const { AlignmentType, HeadingLevel, Paragraph, TabStopPosition, TabStopType, TextRun } = docx;
 
 let webService = {
     removeVietnameseTones: function(str) {
@@ -942,6 +942,34 @@ let webService = {
                 }),
             ],
         });
+    },
+    // xóa phần từ trong mảng
+    removeItemArray: function(arr, val) {
+        var j = 0;
+        for (var i = 0, l = arr.length; i < l; i++) {
+        if (arr[i] !== val) {
+            arr[j++] = arr[i];
+        }
+        }
+        arr.length = j;
+    },
+    // xóa phần từ object trong mảng bằng id
+    removeItemArrayByIdObject: function(arr, id) {
+        var j = 0;
+        for (var i = 0, l = arr.length; i < l; i++) {
+        if (arr[i].id !== id) {
+            arr[j++] = arr[i];
+        }
+        }
+        arr.length = j;
+    },
+    // xóa phần từ trùng trong mảng
+    uniqueArray: function(arr){
+        try {
+            Array.from(new Set(arr));
+        } catch (error) {
+            
+        }
     }
 }
 

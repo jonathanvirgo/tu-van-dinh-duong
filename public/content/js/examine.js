@@ -121,6 +121,19 @@ function saveExamine(){
     }
 }
 
+function exportExamine(){
+    try {
+        changeTabExamine(dataExamine.tab);
+        console.log("exportExamine", dataExamine.examine);
+        var link = document.createElement('a');
+        link.href = '/export/examine?data=' + encodeURIComponent(JSON.stringify(dataExamine.examine));
+        link.click();
+        link.remove();
+    } catch (error) {
+        console.log("exportExamine 2", error);
+    }
+}
+
 function changeTabExamine(tab){
     console.log("changeTabExamine", tab);
     switch(dataExamine.tab){

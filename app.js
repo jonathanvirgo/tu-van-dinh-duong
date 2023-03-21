@@ -14,7 +14,7 @@ var home       = require('./app/web/controllers/homeController');
 var user       = require('./app/web/controllers/userController');
 var mail       = require('./app/web/controllers/sendMailController');
 var examine    = require('./app/web/controllers/examineController');
-var exportDoc       = require('./app/web/controllers/exportDocController');
+var exportDoc  = require('./app/web/controllers/exportDocController');
 var test       = require('./app/web/controllers/testController');
 
 //Admin
