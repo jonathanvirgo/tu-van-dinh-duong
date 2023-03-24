@@ -9,7 +9,6 @@ let dataExamine = {
     prescription: [],
     medicalTest: [],
     id_prescription: 1,
-    prescriptionExamine: [],
     // listMenu: [{id:1, name:"Thực đơn 1","detail":[]},{id:2, name:"Thực đơn 2","detail":[]},{id:3, name:"Thực đơn 3","detail":[]}],
     foodNameListSearch: [],
     listMenuTime: [],
@@ -123,7 +122,10 @@ function saveExamine(){
 
 function exportExamine(){
     try {
-        changeTabExamine(dataExamine.tab);
+        changeTabExamine(1);
+        changeTabExamine(2);
+        changeTabExamine(4);
+        changeTabExamine(1);
         console.log("exportExamine", dataExamine.examine);
         var link = document.createElement('a');
         link.href = '/export/examine?data=' + encodeURIComponent(JSON.stringify(dataExamine.examine));
@@ -135,7 +137,7 @@ function exportExamine(){
 }
 
 function changeTabExamine(tab){
-    console.log("changeTabExamine", tab);
+    console.log("changeTabExamine", tab, dataExamine.prescription);
     switch(dataExamine.tab){
         case 1:
             dataExamine.examine['cus_name'] = $('#cus_name').val();
@@ -188,6 +190,7 @@ function changeTabExamine(tab){
             break;
         case 4:
             dataExamine.examine['prescription'] = JSON.stringify(dataExamine.prescription);
+            console.log("change tab 4", dataExamine.examine['prescription']);
             break;
         case 5:
             dataExamine.examine['medical_test'] = JSON.stringify(dataExamine.medicalTest);
@@ -221,7 +224,7 @@ function diff_years(dt2, dt1)
         return;
     }
     let medicine_total = $('#total_medinice').val();
-    if(!medicine_total){
+    if(!medicine_total || medicine_total == 0){
         displayError('Thiếu số lượng!');
         return;
     }
@@ -344,8 +347,9 @@ function getMedicalTest(id){
 }
 
 function addPrescriptionEdit(){
-    for(let item of dataExamine.prescriptionExamine){
-        if(dataExamine.prescriptionExamine.length > 0){
+    console.log("addPrescriptionEdit", dataExamine.prescription);
+    for(let item of dataExamine.prescription){
+        if(dataExamine.prescription.length > 0){
             $("#tb_prescription").show();
         }else{
             $("#tb_prescription").hide();

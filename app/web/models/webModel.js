@@ -1,16 +1,11 @@
-const { response } = require('express');
-
 var md5             = require('md5'),
     request         = require('request'),
     url             = require('url'),
     moment          = require('moment'),
     jwt             = require('jsonwebtoken'),
     db              = require('../../config/db'),
-    logService      = require('../../admin/models/logModel'),
     crypto          = require('crypto'),
     jwtPrivateKey   = "4343636e4d354b45517159456534636d4e34344e4d4e50427371614575577451";
-    const docx = require("docx");
-    const { AlignmentType, HeadingLevel, Paragraph, TabStopPosition, TabStopType, TextRun } = docx;
 
 let webService = {
     removeVietnameseTones: function(str) {
@@ -820,156 +815,64 @@ let webService = {
         var passwordData = webService.sha512(userpassword, salt);
         return passwordData.passwordHash;
     },
-    getMonthFromInt: function(value) {
-        switch (value) {
-            case 1:
-                return "Jan";
-            case 2:
-                return "Feb";
-            case 3:
-                return "Mar";
-            case 4:
-                return "Apr";
-            case 5:
-                return "May";
-            case 6:
-                return "Jun";
-            case 7:
-                return "Jul";
-            case 8:
-                return "Aug";
-            case 9:
-                return "Sept";
-            case 10:
-                return "Oct";
-            case 11:
-                return "Nov";
-            case 12:
-                return "Dec";
-            default:
-                return "N/A";
-        }
-    },
-    createPositionDateText: function(startDate, endDate, isCurrent) {
-        const startDateText = webService.getMonthFromInt(startDate.month) + ". " + startDate.year;
-        const endDateText = isCurrent ? "Present" : `${webService.getMonthFromInt(endDate.month)}. ${endDate.year}`;
-
-        return `${startDateText} - ${endDateText}`;
-    },
-    createHeading: function(text) {
-        return new Paragraph({
-            text: text,
-            heading: HeadingLevel.HEADING_1,
-            thematicBreak: true,
-        });
-    },
-    createSubHeading: function(text) {
-        return new Paragraph({
-            text: text,
-            heading: HeadingLevel.HEADING_2,
-        });
-    },
-    createInstitutionHeader: function(institutionName, dateText) {
-        return new Paragraph({
-            tabStops: [
-                {
-                    type: TabStopType.RIGHT,
-                    position: TabStopPosition.MAX,
-                },
-            ],
-            children: [
-                new TextRun({
-                    text: institutionName,
-                    bold: true,
-                }),
-                new TextRun({
-                    text: `\t${dateText}`,
-                    bold: true,
-                }),
-            ],
-        });
-    },
-    createRoleText: function(roleText) {
-        return new Paragraph({
-            children: [
-                new TextRun({
-                    text: roleText,
-                    italics: true,
-                }),
-            ],
-        });
-    },
-    splitParagraphIntoBullets: function(text) {
-        return text.split("\n\n");
-    },
-    createInterests: function(interests) {
-        return new Paragraph({
-            children: [new TextRun(interests)],
-        });
-    },
-    createAchivementsList: function(achivements) {
-        return achivements.map(
-            (achievement) =>
-                new Paragraph({
-                    text: achievement.name,
-                    bullet: {
-                        level: 0,
-                    },
-                }),
-        );
-    },
-    createSkillList: function(skills) {
-        return new Paragraph({
-            children: [new TextRun(skills.map((skill) => skill.name).join(", ") + ".")],
-        });
-    },
-    createBullet: function(text) {
-        return new Paragraph({
-            text: text,
-            bullet: {
-                level: 0,
-            },
-        });
-    },
-    createContactInfo: function(phoneNumber, profileUrl, email) {
-        return new Paragraph({
-            alignment: AlignmentType.CENTER,
-            children: [
-                new TextRun(`Mobile: ${phoneNumber} | LinkedIn: ${profileUrl} | Email: ${email}`),
-                new TextRun({
-                    text: "Address: 58 Elm Avenue, Kent ME4 6ER, UK",
-                    break: 1,
-                }),
-            ],
-        });
-    },
     // xóa phần từ trong mảng
     removeItemArray: function(arr, val) {
-        var j = 0;
-        for (var i = 0, l = arr.length; i < l; i++) {
-        if (arr[i] !== val) {
-            arr[j++] = arr[i];
+        try {
+            var j = 0;
+            for (var i = 0, l = arr.length; i < l; i++) {
+                if (arr[i] !== val) {
+                    arr[j++] = arr[i];
+                }
+            }
+            arr.length = j;
+        } catch (error) {
+            webService.addToLogService(error, "webService removeItemArray");
+            return;
         }
-        }
-        arr.length = j;
     },
     // xóa phần từ object trong mảng bằng id
     removeItemArrayByIdObject: function(arr, id) {
-        var j = 0;
-        for (var i = 0, l = arr.length; i < l; i++) {
-        if (arr[i].id !== id) {
-            arr[j++] = arr[i];
+        try {
+            var j = 0;
+            for (var i = 0, l = arr.length; i < l; i++) {
+                if (arr[i].id !== id) {
+                    arr[j++] = arr[i];
+                }
+            }
+            arr.length = j;
+        } catch (error) {
+            webService.addToLogService(error, "webService removeItemArrayByIdObject");
+            return;
         }
-        }
-        arr.length = j;
     },
     // xóa phần từ trùng trong mảng
     uniqueArray: function(arr){
         try {
             Array.from(new Set(arr));
         } catch (error) {
-            
+            webService.addToLogService(error, "webService uniqueArray");
+            return; 
         }
+    },
+    //Tính tuổi từ năm sinh
+    caculateYearOld: function(dateStr){
+        try {
+            if(dateStr){
+                let cus_birthday = new Date(dateStr.split("-").reverse().join("-"));
+                let now = new Date();
+                return webService.diff_years(now, cus_birthday);
+            }else{
+                return 0
+            }
+        } catch (error) {
+            webService.addToLogService(error, "webService caculateYearOld");
+            return;
+        }
+    },
+    diff_years: function(dt2, dt1) {
+        let diff =(dt2.getTime() - dt1.getTime()) / 1000;
+        diff /= (60 * 60 * 24);
+        return Math.floor(Math.abs(diff/365.25));
     }
 }
 

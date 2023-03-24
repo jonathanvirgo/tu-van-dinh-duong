@@ -4,566 +4,699 @@ var express         = require('express'),
     moment          = require('moment');
 
 const docx = require("docx");
-const { AlignmentType, Document, HeadingLevel, Packer, Paragraph, TextRun, UnderlineType } = docx;
-
-const PHONE_NUMBER = "07534563401";
-const PROFILE_URL = "https://www.linkedin.com/in/dolan1";
-const EMAIL = "docx@com";
-
-
-const experiences = [
-    {
-        isCurrent: true,
-        summary: "Full-stack developer working with Angular and Java. Working for the iShares platform",
-        title: "Associate Software Developer",
-        startDate: {
-            month: 11,
-            year: 2017,
-        },
-        company: {
-            name: "BlackRock",
-        },
-    },
-    {
-        isCurrent: false,
-        summary:
-            "Full-stack developer working with Angular, Node and TypeScript. Working for the iShares platform. Emphasis on Dev-ops and developing the continous integration pipeline.",
-        title: "Software Developer",
-        endDate: {
-            month: 11,
-            year: 2017,
-        },
-        startDate: {
-            month: 10,
-            year: 2016,
-        },
-        company: {
-            name: "Torch Markets",
-        },
-    },
-    {
-        isCurrent: false,
-        summary:
-            "Used ASP.NET MVC 5 to produce a diversity data collection tool for the future of British television.\n\nUsed AngularJS and C# best practices. Technologies used include JavaScript, ASP.NET MVC 5, SQL, Oracle, SASS, Bootstrap, Grunt.",
-        title: "Software Developer",
-        endDate: {
-            month: 10,
-            year: 2016,
-        },
-        startDate: {
-            month: 3,
-            year: 2015,
-        },
-        company: {
-            name: "Soundmouse",
-        },
-    },
-    {
-        isCurrent: false,
-        summary:
-            "Develop web commerce platforms for constious high profile clients.\n\nCreated a log analysis web application with the Play Framework in Java, incorporating Test Driven Development. It asynchronously uploads and processes large (2 GB) log files, and outputs meaningful results in context with the problem. \n\nAnalysis  and  development  of  the payment system infrastructure and user accounts section to be used by several clients of the company such as Waitrose, Tally Weijl, DJ Sports, Debenhams, Ann Summers, John Lewis and others.\n\nTechnologies used include WebSphere Commerce, Java, JavaScript and JSP.",
-        title: "Java Developer",
-        endDate: {
-            month: 10,
-            year: 2014,
-        },
-        startDate: {
-            month: 3,
-            year: 2013,
-        },
-        company: {
-            name: "Soundmouse",
-        },
-    },
-];
-
-const education = [
-    {
-        degree: "Master of Science (MSc)",
-        fieldOfStudy: "Computer Science",
-        notes:
-            "Exam Results: 1st Class with Distinction, Dissertation: 1st Class with Distinction\n\nRelevant Courses: Java and C# Programming, Software Engineering, Artificial Intelligence, \nComputational Photography, Algorithmics, Architecture and Hardware.\n\nCreated a Windows 8 game in JavaScript for the dissertation. \n\nCreated an award-winning 3D stereoscopic game in C# using XNA.",
-        schoolName: "University College London",
-        startDate: {
-            year: 2012,
-        },
-        endDate: {
-            year: 2013,
-        },
-    },
-    {
-        degree: "Bachelor of Engineering (BEng)",
-        fieldOfStudy: "Material Science and Engineering",
-        notes:
-            "Exam Results: 2:1, Dissertation: 1st Class with Distinction\n\nRelevant courses: C Programming, Mathematics and Business for Engineers.",
-        schoolName: "Imperial College London",
-        startDate: {
-            year: 2009,
-        },
-        endDate: {
-            year: 2012,
-        },
-    },
-];
-
-const skills = [
-    {
-        name: "Angular",
-    },
-    {
-        name: "TypeScript",
-    },
-    {
-        name: "JavaScript",
-    },
-    {
-        name: "NodeJS",
-    },
-];
-
-const achievements = [
-    {
-        issuer: "Oracle",
-        name: "Oracle Certified Expert",
-    },
-];
-
-class DocumentCreator {
-    create([experiences, educations, skills, achivements]) {
-        const document = new Document({
-            sections: [{
-                children: [
-                    new Paragraph({
-                        text: "Dolan Miu",
-                        heading: HeadingLevel.TITLE,
-                    }),
-                    webService.createContactInfo(PHONE_NUMBER, PROFILE_URL, EMAIL),
-                    webService.createHeading("Education"),
-                    ...educations
-                        .map((education) => {
-                            const arr = [];
-                            arr.push(
-                                webService.createInstitutionHeader(education.schoolName, `${education.startDate.year} - ${education.endDate.year}`),
-                            );
-                            arr.push(webService.createRoleText(`${education.fieldOfStudy} - ${education.degree}`));
-
-                            const bulletPoints = webService.splitParagraphIntoBullets(education.notes);
-                            bulletPoints.forEach((bulletPoint) => {
-                                arr.push(webService.createBullet(bulletPoint));
-                            });
-
-                            return arr;
-                        })
-                        .reduce((prev, curr) => prev.concat(curr), []),
-                        webService.createHeading("Experience"),
-                    ...experiences
-                        .map((position) => {
-                            const arr = [];
-
-                            arr.push(
-                                webService.createInstitutionHeader(
-                                    position.company.name,
-                                    webService.createPositionDateText(position.startDate, position.endDate, position.isCurrent),
-                                ),
-                            );
-                            arr.push(webService.createRoleText(position.title));
-
-                            const bulletPoints = webService.splitParagraphIntoBullets(position.summary);
-
-                            bulletPoints.forEach((bulletPoint) => {
-                                arr.push(webService.createBullet(bulletPoint));
-                            });
-
-                            return arr;
-                        })
-                        .reduce((prev, curr) => prev.concat(curr), []),
-                        webService.createHeading("Skills, Achievements and Interests"),
-                        webService.createSubHeading("Skills"),
-                        webService.createSkillList(skills),
-                        webService.createSubHeading("Achievements"),
-                    ...webService.createAchivementsList(achivements),
-                    webService.createSubHeading("Interests"),
-                    webService.createInterests("Programming, Technology, Music Production, Web Design, 3D Modelling, Dancing."),
-                    webService.createHeading("References"),
-                    new Paragraph(
-                        "Dr. Dean Mohamedally Director of Postgraduate Studies Department of Computer Science, University College London Malet Place, Bloomsbury, London WC1E d.mohamedally@ucl.ac.uk",
-                    ),
-                    new Paragraph("More references upon request"),
-                    new Paragraph({
-                        text: "This CV was generated in real-time based on my Linked-In profile from my personal website www.dolan.bio.",
-                        alignment: AlignmentType.CENTER,
-                    }),
-                ],
-            }],
-        });
-        return document;
-    }
-}
-      
-
-router.get('/example1', async function(req, res, next){
-    try {
-        const documentCreator = new DocumentCreator();
-        const doc = documentCreator.create([experiences, education, skills, achievements]);
-    
-        const b64string = await Packer.toBase64String(doc);
-        
-        res.setHeader('Content-Disposition', 'attachment; filename=My Document.docx');
-        res.send(Buffer.from(b64string, 'base64'));
-    } catch (error) {
-        console.log(error);
-    }
-});
-
-router.get("/example2", async (req, res) => {
-    try {
-        const doc = new Document({
-            creator: "Clippy",
-            title: "Sample Document",
-            description: "A brief example of using docx",
-            styles: {
-                paragraphStyles: [
-                    {
-                        id: "Heading1",
-                        name: "Heading 1",
-                        basedOn: "Normal",
-                        next: "Normal",
-                        quickFormat: true,
-                        run: {
-                            size: 28,
-                            bold: true,
-                            italics: true,
-                            color: "#FF0000",
-                        },
-                        paragraph: {
-                            spacing: {
-                                after: 120,
-                            },
-                        },
-                    },
-                    {
-                        id: "Heading2",
-                        name: "Heading 2",
-                        basedOn: "Normal",
-                        next: "Normal",
-                        quickFormat: true,
-                        run: {
-                            size: 26,
-                            bold: true,
-                            underline: {
-                                type: UnderlineType.DOUBLE,
-                                color: "FF0000",
-                            },
-                        },
-                        paragraph: {
-                            spacing: {
-                                before: 240,
-                                after: 120,
-                            },
-                        },
-                    },
-                    {
-                        id: "aside",
-                        name: "Aside",
-                        basedOn: "Normal",
-                        next: "Normal",
-                        run: {
-                            color: "999999",
-                            italics: true,
-                        },
-                        paragraph: {
-                            indent: {
-                                left: 720,
-                            },
-                            spacing: {
-                                line: 276,
-                            },
-                        },
-                    },
-                    {
-                        id: "wellSpaced",
-                        name: "Well Spaced",
-                        basedOn: "Normal",
-                        quickFormat: true,
-                        paragraph: {
-                            spacing: { line: 276, before: 20 * 72 * 0.1, after: 20 * 72 * 0.05 },
-                        },
-                    },
-                    {
-                        id: "ListParagraph",
-                        name: "List Paragraph",
-                        basedOn: "Normal",
-                        quickFormat: true,
-                    },
-                ],
-            },
-            numbering: {
-                config: [
-                    {
-                        reference: "my-crazy-numbering",
-                        levels: [
-                            {
-                                level: 0,
-                                format: "lowerLetter",
-                                text: "%1)",
-                                alignment: AlignmentType.LEFT,
-                            },
-                        ],
-                    },
-                ],
-            },
-            sections: [{
-                children: [
-                    new Paragraph({
-                        text: "Test heading1, bold and italicized",
-                        heading: HeadingLevel.HEADING_1,
-                    }),
-                    new Paragraph("Some simple content"),
-                    new Paragraph({
-                        text: "Test heading2 with double red underline",
-                        heading: HeadingLevel.HEADING_2,
-                    }),
-                    new Paragraph({
-                        text: "Option1",
-                        numbering: {
-                            reference: "my-crazy-numbering",
-                            level: 0,
-                        },
-                    }),
-                    new Paragraph({
-                        text: "Option5 -- override 2 to 5",
-                        numbering: {
-                            reference: "my-crazy-numbering",
-                            level: 0,
-                        },
-                    }),
-                    new Paragraph({
-                        text: "Option3",
-                        numbering: {
-                            reference: "my-crazy-numbering",
-                            level: 0,
-                        },
-                    }),
-                    new Paragraph({
-                        children: [
-                            new TextRun({
-                                text: "Some monospaced content",
-                                font: {
-                                    name: "Monospace",
-                                },
-                            }),
-                        ],
-                    }),
-                    new Paragraph({
-                        text: "An aside, in light gray italics and indented",
-                        style: "aside",
-                    }),
-                    new Paragraph({
-                        text: "This is normal, but well-spaced text",
-                        style: "wellSpaced",
-                    }),
-                    new Paragraph({
-                        children: [
-                            new TextRun({
-                                text: "This is a bold run,",
-                                bold: true,
-                            }),
-                            new TextRun(" switching to normal "),
-                            new TextRun({
-                                text: "and then underlined ",
-                                underline: {},
-                            }),
-                            new TextRun({
-                                text: "and back to normal.",
-                            }),
-                        ],
-                    }),
-                ],
-            }],
-        });    
-        const b64string = await Packer.toBase64String(doc);
-        
-        res.setHeader('Content-Disposition', 'attachment; filename=My Document.docx');
-        res.send(Buffer.from(b64string, 'base64')); 
-    } catch (error) {
-        console.log("error", error);
-    }
-});
+const { AlignmentType, Document, HeadingLevel, Packer, Paragraph, TextRun, UnderlineType, Table, TableCell, TableRow, WidthType, BorderStyle} = docx;
 
 router.get("/examine", async (req, res) => {
     try {
-        console.log("examine", JSON.parse(req.query.data));
-        const doc = new Document({
-            creator: "Clippy",
-            title: "Sample Document",
-            description: "A brief example of using docx",
-            styles: {
-                paragraphStyles: [
-                    {
-                        id: "Heading1",
-                        name: "Heading 1",
-                        basedOn: "Normal",
-                        next: "Normal",
-                        quickFormat: true,
-                        run: {
-                            size: 28,
-                            bold: true,
-                            italics: true,
-                            color: "#FF0000",
-                        },
-                        paragraph: {
-                            spacing: {
-                                after: 120,
-                            },
-                        },
-                    },
-                    {
-                        id: "Heading2",
-                        name: "Heading 2",
-                        basedOn: "Normal",
-                        next: "Normal",
-                        quickFormat: true,
-                        run: {
-                            size: 26,
-                            bold: true,
-                            underline: {
-                                type: UnderlineType.DOUBLE,
-                                color: "FF0000",
-                            },
-                        },
-                        paragraph: {
-                            spacing: {
-                                before: 240,
-                                after: 120,
-                            },
-                        },
-                    },
-                    {
-                        id: "aside",
-                        name: "Aside",
-                        basedOn: "Normal",
-                        next: "Normal",
-                        run: {
-                            color: "999999",
-                            italics: true,
-                        },
-                        paragraph: {
-                            indent: {
-                                left: 720,
-                            },
-                            spacing: {
-                                line: 276,
-                            },
-                        },
-                    },
-                    {
-                        id: "wellSpaced",
-                        name: "Well Spaced",
-                        basedOn: "Normal",
-                        quickFormat: true,
-                        paragraph: {
-                            spacing: { line: 276, before: 20 * 72 * 0.1, after: 20 * 72 * 0.05 },
-                        },
-                    },
-                    {
-                        id: "ListParagraph",
-                        name: "List Paragraph",
-                        basedOn: "Normal",
-                        quickFormat: true,
-                    },
-                ],
-            },
-            numbering: {
-                config: [
-                    {
-                        reference: "my-crazy-numbering",
-                        levels: [
-                            {
-                                level: 0,
-                                format: "lowerLetter",
-                                text: "%1)",
-                                alignment: AlignmentType.LEFT,
-                            },
-                        ],
-                    },
-                ],
-            },
-            sections: [{
-                children: [
-                    new Paragraph({
-                        text: "Test heading1, bold and italicized",
-                        heading: HeadingLevel.HEADING_1,
-                    }),
-                    new Paragraph("Some simple content"),
-                    new Paragraph({
-                        text: "Test heading2 with double red underline",
-                        heading: HeadingLevel.HEADING_2,
-                    }),
-                    new Paragraph({
-                        text: "Option1",
-                        numbering: {
-                            reference: "my-crazy-numbering",
-                            level: 0,
-                        },
-                    }),
-                    new Paragraph({
-                        text: "Option5 -- override 2 to 5",
-                        numbering: {
-                            reference: "my-crazy-numbering",
-                            level: 0,
-                        },
-                    }),
-                    new Paragraph({
-                        text: "Option3",
-                        numbering: {
-                            reference: "my-crazy-numbering",
-                            level: 0,
-                        },
-                    }),
-                    new Paragraph({
-                        children: [
-                            new TextRun({
-                                text: "Some monospaced content",
-                                font: {
-                                    name: "Monospace",
-                                },
-                            }),
-                        ],
-                    }),
-                    new Paragraph({
-                        text: "An aside, in light gray italics and indented",
-                        style: "aside",
-                    }),
-                    new Paragraph({
-                        text: "This is normal, but well-spaced text",
-                        style: "wellSpaced",
-                    }),
-                    new Paragraph({
-                        children: [
-                            new TextRun({
-                                text: "This is a bold run,",
+        console.log("examine", JSON.parse(req.query.data), req.user);
+        if (!req.user) {
+            let message = "Vui lòng đăng nhập lại để thực hiện chức năng này!";
+            res.json(message);
+            return;
+        }
+        let now = moment();
+        let data = JSON.parse(req.query.data);
+        if(data){
+            let yearOld = webService.caculateYearOld(data.cus_birthday);
+            console.log("date", now.year(), now.month(), now.date());
+            let medicine = getMedicine(data.prescription ? JSON.parse(data.prescription) : []);
+            console.log("medicine", medicine);
+            const doc = new Document({
+                creator: "dinhduonghotro.com",
+                title: "Phiếu khám ${req.user.full_name ? req.user.full_name : req.user.name}",
+                description: "Phiếu khám ${req.user.full_name ? req.user.full_name : req.user.name}",
+                styles: {
+                    paragraphStyles: [
+                        {
+                            id: "hospital",
+                            basedOn: "Normal",
+                            next: "Normal",
+                            quickFormat: true,
+                            run: {
+                                size: 28,
                                 bold: true,
-                            }),
-                            new TextRun(" switching to normal "),
-                            new TextRun({
-                                text: "and then underlined ",
-                                underline: {},
-                            }),
-                            new TextRun({
-                                text: "and back to normal.",
-                            }),
-                        ],
-                    }),
-                ],
-            }],
-        });    
-        const b64string = await Packer.toBase64String(doc);
-        
-        res.setHeader('Content-Disposition', 'attachment; filename=Phieu_kham.docx');
-        res.send(Buffer.from(b64string, 'base64')); 
+                                allCaps: true
+                            }
+                        },
+                        {
+                            id: "department",
+                            basedOn: "Normal",
+                            next: "Normal",
+                            quickFormat: true,
+                            run: {
+                                size: 26,
+                                allCaps: true
+                            },
+                            paragraph: {
+                                spacing: {
+                                    before: 60,
+                                    after: 480
+                                },
+                            },
+                        },
+                        {
+                            id: "title",
+                            basedOn: "Normal",
+                            next: "Normal",
+                            quickFormat: true,
+                            run: {
+                                size: 26,
+                                bold: true
+                            },
+                            paragraph: {
+                                spacing: {
+                                    before: 240,
+                                    after: 120
+                                },
+                            },
+                        },
+                        {
+                            id: "size14",
+                            basedOn: "Normal",
+                            next: "Normal",
+                            quickFormat: true,
+                            run: {
+                                size: 28
+                            }
+                        },
+                        {
+                            id: "size14-bold",
+                            basedOn: "size14",
+                            next: "Normal",
+                            quickFormat: true,
+                            run: {
+                                bold: true
+                            }
+                        },
+                        {
+                            id: "table_heading",
+                            basedOn: "size14",
+                            next: "Normal",
+                            quickFormat: true,
+                            run: {
+                                bold: true
+                            },
+                            paragraph: {
+                                alignment: AlignmentType.CENTER,
+                                spacing: {
+                                    before: 80,
+                                    after: 80
+                                },
+                            }
+                        },
+                        {
+                            id: "table_cell",
+                            basedOn: "size14",
+                            next: "Normal",
+                            quickFormat: true,
+                            paragraph: {
+                                alignment: AlignmentType.CENTER,
+                                spacing: {
+                                    before: 80,
+                                    after: 80
+                                },
+                            }
+                        }
+                    ],
+                },
+                sections: [{
+                    children: [
+                        new Paragraph({
+                            text: req.user.hospital_name,
+                            style: "hospital",
+                        }),
+                        new Paragraph({
+                            text: req.user.department_name,
+                            style: "department",
+                            indent: {
+                                left: 1208
+                            }
+                        }),
+                        new Paragraph({
+                            text: "PHIẾU TƯ VẤN DINH DƯỠNG",
+                            alignment: AlignmentType.CENTER,
+                            style: "hospital",
+                            spacing:{
+                                after: 480
+                            }
+                        }),
+                        new Paragraph({
+                            text: "1. THÔNG TIN CHUNG",
+                            style: "title",
+                        }),
+                        tableName(data, yearOld),
+                        new Paragraph({
+                            children: [
+                                new TextRun({
+                                    text: "Địa chỉ: " + (data.cus_address ? data.cus_address : '')
+                                }),
+                            ],
+                            style: "size14"
+                        }),
+                        new Paragraph({
+                            children: [
+                                new TextRun({
+                                    text: "Chuẩn đoán: " + (data.diagnostic ? data.diagnostic : '')
+                                }),
+                            ],
+                            style: "size14"
+                        }),
+                        tableLength(data),
+                        tableCNTC(data),
+                        new Paragraph({
+                            text: "2. KHÁM LÂM SÀNG",
+                            style: "title",
+                        }),
+                        new Paragraph({
+                            text: data.clinical_examination ? data.clinical_examination : '',
+                            style: "size14",
+                        }),
+                        new Paragraph({
+                            text: "3. KẾT QUẢ XÉT NGHIỆM",
+                            style: "title",
+                        }),
+                        tableHongCau(data),
+                        tableAlbumin(data),
+                        tableAst(data),
+                        new Paragraph({
+                            children: [
+                                new TextRun({
+                                    text: "Bilirubin TP/TT: " + (data.cus_bilirubin ? data.cus_bilirubin : '')
+                                })
+                            ],
+                            style: "size14"
+                        }),
+                        new Paragraph({
+                            text: "4. LỜI KHUYÊN DINH DƯỠNG",
+                            style: "title",
+                        }),
+                        tableNutritionAdvice(data),
+                        new Paragraph({
+                            text: "5. CHẾ ĐỘ VẬN ĐỘNG, SINH HOẠT",
+                            style: "title",
+                        }),
+                        new Paragraph({
+                            text: data.active_mode_of_living ? data.active_mode_of_living : '',
+                            style: "size14",
+                        }),
+                        new Paragraph({
+                            text: "6. BỔ SUNG",
+                            style: "title",
+                        }),
+                        ...medicine,
+                        new Paragraph({
+                            text: `Hà Nội, ngày ${String(now.date()).padStart(2, '0')} tháng ${String(now.month()).padStart(2, '0')} năm ${now.year()}`,
+                            alignment: AlignmentType.RIGHT,
+                            style: "size14"
+                        }),
+                        new Paragraph({
+                            text: "CÁN BỘ TƯ VẤN",
+                            alignment: AlignmentType.RIGHT,
+                            style: "size14-bold"
+                        })
+                    ],
+                }],
+            });    
+            const b64string = await Packer.toBase64String(doc);
+            let filename = "Phieu_kham_" + webService.removeVietnameseTones(req.user.full_name ? req.user.full_name : req.user.name).replaceAll(" ", "_") + "_" + String(now.date()).padStart(2, '0') + "_" + String(now.month()).padStart(2, '0') + "_" + now.year(); 
+            res.setHeader('Content-Disposition', 'attachment; filename=' + filename + '.docx');
+            res.send(Buffer.from(b64string, 'base64')); 
+        }else{
+            res.json("Thiếu dữ liệu!");
+        }
     } catch (error) {
         
     }
-})
+});
+
+function tableNutritionAdvice(data){
+    const table = new Table({
+        columnWidths: [2000, 2336, 2336, 2336],
+        rows: [
+            new TableRow({
+                children: [
+                    new TableCell({
+                        width: {
+                            size: 2000,
+                            type: WidthType.DXA,
+                        },
+                        children: [new Paragraph({text: "Nhóm TP", style: "table_heading"})],
+                    }),
+                    new TableCell({
+                        width: {
+                            size: 2336,
+                            type: WidthType.DXA,
+                        },
+                        children: [new Paragraph({text: "TP nên dùng", style: "table_heading"})],
+                    }),
+                    new TableCell({
+                        width: {
+                            size: 2336,
+                            type: WidthType.DXA,
+                        },
+                        children: [new Paragraph({text: "TP hạn chế dùng", style: "table_heading"})],
+                    }),
+                    new TableCell({
+                        width: {
+                            size: 2336,
+                            type: WidthType.DXA,
+                        },
+                        children: [new Paragraph({text: "TP không nên dùng", style: "table_heading"})],
+                    }),
+                ],
+            }),
+            new TableRow({
+                children: [
+                    new TableCell({
+                        width: {
+                            size: 2000,
+                            type: WidthType.DXA,
+                        },
+                        children: [new Paragraph({text: "Nhóm glucid", style: "table_cell"})]
+                    }),
+                    new TableCell({
+                        width: {
+                            size: 2336,
+                            type: WidthType.DXA,
+                        },
+                        children: [new Paragraph({text: data.glucid_should_use ? data.glucid_should_use : '', style: "table_cell"})],
+                    }),
+                    new TableCell({
+                        width: {
+                            size: 2336,
+                            type: WidthType.DXA,
+                        },
+                        children: [new Paragraph({text: data.glucid_limited_use ? data.glucid_limited_use : '', style: "table_cell"})],
+                    }),
+                    new TableCell({
+                        width: {
+                            size: 2336,
+                            type: WidthType.DXA,
+                        },
+                        children: [new Paragraph({text: data.glucid_should_not_use ? data.glucid_should_not_use : '', style: "table_cell"})],
+                    }),
+                ],
+            }),
+            new TableRow({
+                children: [
+                    new TableCell({
+                        width: {
+                            size: 2000,
+                            type: WidthType.DXA,
+                        },
+                        children: [new Paragraph({text: "Nhóm protein", style: "table_cell"})]
+                    }),
+                    new TableCell({
+                        width: {
+                            size: 2336,
+                            type: WidthType.DXA,
+                        },
+                        children: [new Paragraph({text: data.protein_should_use ? data.protein_should_use : '', style: "table_cell"})],
+                    }),
+                    new TableCell({
+                        width: {
+                            size: 2336,
+                            type: WidthType.DXA,
+                        },
+                        children: [new Paragraph({text: data.protein_limited_use ? data.protein_limited_use : '', style: "table_cell"})],
+                    }),
+                    new TableCell({
+                        width: {
+                            size: 2336,
+                            type: WidthType.DXA,
+                        },
+                        children: [new Paragraph({text: data.protein_should_not_use ? data.protein_should_not_use : '', style: "table_cell"})],
+                    }),
+                ],
+            }),
+            new TableRow({
+                children: [
+                    new TableCell({
+                        width: {
+                            size: 2000,
+                            type: WidthType.DXA,
+                        },
+                        children: [new Paragraph({text: "Nhóm lipid", style: "table_cell"})]
+                    }),
+                    new TableCell({
+                        width: {
+                            size: 2336,
+                            type: WidthType.DXA,
+                        },
+                        children: [new Paragraph({text: data.lipid_should_use ? data.lipid_should_use : '', style: "table_cell"})],
+                    }),
+                    new TableCell({
+                        width: {
+                            size: 2336,
+                            type: WidthType.DXA,
+                        },
+                        children: [new Paragraph({text: data.lipid_limited_use ? data.lipid_limited_use : '', style: "table_cell"})],
+                    }),
+                    new TableCell({
+                        width: {
+                            size: 2336,
+                            type: WidthType.DXA,
+                        },
+                        children: [new Paragraph({text: data.lipid_should_not_use ? data.lipid_should_not_use : '', style: "table_cell"})],
+                    }),
+                ],
+            }),
+            new TableRow({
+                children: [
+                    new TableCell({
+                        width: {
+                            size: 2000,
+                            type: WidthType.DXA,
+                        },
+                        children: [new Paragraph({text: "Nhóm VTM & CK", style: "table_cell"})]
+                    }),
+                    new TableCell({
+                        width: {
+                            size: 2336,
+                            type: WidthType.DXA,
+                        },
+                        children: [new Paragraph({text: data.vitamin_ck_should_use ? data.vitamin_ck_should_use : '', style: "table_cell"})],
+                    }),
+                    new TableCell({
+                        width: {
+                            size: 2336,
+                            type: WidthType.DXA,
+                        },
+                        children: [new Paragraph({text: data.vitamin_ck_limited_use ? data.vitamin_ck_limited_use : '', style: "table_cell"})],
+                    }),
+                    new TableCell({
+                        width: {
+                            size: 2336,
+                            type: WidthType.DXA,
+                        },
+                        children: [new Paragraph({text: data.vitamin_ck_should_not_use ? data.vitamin_ck_should_not_use : '', style: "table_cell"})],
+                    }),
+                ],
+            }),
+        ],
+    });
+    return table;
+}
+
+function tableName(data, yearOld){
+    const table = new Table({
+        columnWidths: [6500, 1500, 1010],
+        rows: [
+            new TableRow({
+                children: [
+                    new TableCell({
+                        borders:{
+                            top: {style: BorderStyle.NONE, color: "FFFFFF"},
+                            bottom: {style: BorderStyle.NONE, color: "FFFFFF"},
+                            left: {style: BorderStyle.NONE, color: "FFFFFF"},
+                            right: {style: BorderStyle.NONE, color: "FFFFFF"},
+                        },
+                        width: {
+                            size: 6500,
+                            type: WidthType.DXA,
+                        },
+                        children: [new Paragraph({text: "Họ và tên: " + (data.cus_name ? data.cus_name : ''), style: "size14"})]
+                    }),
+                    new TableCell({
+                        borders:{
+                            top: {style: BorderStyle.NONE, color: "FFFFFF"},
+                            bottom: {style: BorderStyle.NONE, color: "FFFFFF"},
+                            left: {style: BorderStyle.NONE, color: "FFFFFF"},
+                            right: {style: BorderStyle.NONE, color: "FFFFFF"},
+                        },
+                        width: {
+                            size: 1500,
+                            type: WidthType.DXA,
+                        },
+                        children: [new Paragraph({text: "Giới: " + ((!data.cus_gender || data.cus_gender && data.cus_gender == 2) ? 'Khác' : (data.cus_gender == 1 ? 'Nam' : 'Nữ')), style: "size14"})],
+                    }),
+                    new TableCell({
+                        borders:{
+                            top: {style: BorderStyle.NONE, color: "FFFFFF"},
+                            bottom: {style: BorderStyle.NONE, color: "FFFFFF"},
+                            left: {style: BorderStyle.NONE, color: "FFFFFF"},
+                            right: {style: BorderStyle.NONE, color: "FFFFFF"},
+                        },
+                        width: {
+                            size: 1010,
+                            type: WidthType.DXA,
+                        },
+                        children: [new Paragraph({text: "Tuổi: " + (yearOld > 0 ? yearOld : ''), style: "size14"})],
+                    })
+                ],
+            }),
+        ]
+    });
+    return table;
+}
+
+function tableLength(data){
+    const table = new Table({
+        columnWidths: [3000, 3000, 3010],
+        rows: [
+            new TableRow({
+                children: [
+                    new TableCell({
+                        borders:{
+                            top: {style: BorderStyle.NONE, color: "FFFFFF"},
+                            bottom: {style: BorderStyle.NONE, color: "FFFFFF"},
+                            left: {style: BorderStyle.NONE, color: "FFFFFF"},
+                            right: {style: BorderStyle.NONE, color: "FFFFFF"},
+                        },
+                        width: {
+                            size: 3000,
+                            type: WidthType.DXA,
+                        },
+                        children: [new Paragraph({text: "Cao (m): " + (data.cus_length ? data.cus_length : ''), style: "size14"})]
+                    }),
+                    new TableCell({
+                        borders:{
+                            top: {style: BorderStyle.NONE, color: "FFFFFF"},
+                            bottom: {style: BorderStyle.NONE, color: "FFFFFF"},
+                            left: {style: BorderStyle.NONE, color: "FFFFFF"},
+                            right: {style: BorderStyle.NONE, color: "FFFFFF"},
+                        },
+                        width: {
+                            size: 3000,
+                            type: WidthType.DXA,
+                        },
+                        children: [new Paragraph({text: "CNTC (kg): " + (data.cus_cntc ? data.cus_cntc : ''), style: "size14"})],
+                    }),
+                    new TableCell({
+                        borders:{
+                            top: {style: BorderStyle.NONE, color: "FFFFFF"},
+                            bottom: {style: BorderStyle.NONE, color: "FFFFFF"},
+                            left: {style: BorderStyle.NONE, color: "FFFFFF"},
+                            right: {style: BorderStyle.NONE, color: "FFFFFF"},
+                        },
+                        width: {
+                            size: 3010,
+                            type: WidthType.DXA,
+                        },
+                        children: [new Paragraph({text: "CNHT (kg): " + (data.cus_cnht ? data.cus_cnht : ''), style: "size14"})],
+                    })
+                ],
+            }),
+        ]
+    });
+    return table;
+}
+
+function tableCNTC(data){
+    const table = new Table({
+        columnWidths: [4505, 4505],
+        rows: [
+            new TableRow({
+                children: [
+                    new TableCell({
+                        borders:{
+                            top: {style: BorderStyle.NONE, color: "FFFFFF"},
+                            bottom: {style: BorderStyle.NONE, color: "FFFFFF"},
+                            left: {style: BorderStyle.NONE, color: "FFFFFF"},
+                            right: {style: BorderStyle.NONE, color: "FFFFFF"},
+                        },
+                        width: {
+                            size: 4505,
+                            type: WidthType.DXA,
+                        },
+                        children: [new Paragraph({text: "CN chuẩn/CN khuyến nghị: ", style: "size14"})]
+                    }),
+                    new TableCell({
+                        borders:{
+                            top: {style: BorderStyle.NONE, color: "FFFFFF"},
+                            bottom: {style: BorderStyle.NONE, color: "FFFFFF"},
+                            left: {style: BorderStyle.NONE, color: "FFFFFF"},
+                            right: {style: BorderStyle.NONE, color: "FFFFFF"},
+                        },
+                        width: {
+                            size: 4505,
+                            type: WidthType.DXA,
+                        },
+                        children: [new Paragraph({text: "CC chuẩn (cm): ", style: "size14"})],
+                    })
+                ],
+            }),
+        ]
+    });
+    return table;
+}
+
+function tableHongCau(data){
+    const table = new Table({
+        columnWidths: [3000, 3000, 3010],
+        rows: [
+            new TableRow({
+                children: [
+                    new TableCell({
+                        borders:{
+                            top: {style: BorderStyle.NONE, color: "FFFFFF"},
+                            bottom: {style: BorderStyle.NONE, color: "FFFFFF"},
+                            left: {style: BorderStyle.NONE, color: "FFFFFF"},
+                            right: {style: BorderStyle.NONE, color: "FFFFFF"},
+                        },
+                        width: {
+                            size: 3000,
+                            type: WidthType.DXA,
+                        },
+                        children: [new Paragraph({text: "Hồng cầu: " + (data.erythrocytes ? data.erythrocytes : '') + " (T/L)", style: "size14"})]
+                    }),
+                    new TableCell({
+                        borders:{
+                            top: {style: BorderStyle.NONE, color: "FFFFFF"},
+                            bottom: {style: BorderStyle.NONE, color: "FFFFFF"},
+                            left: {style: BorderStyle.NONE, color: "FFFFFF"},
+                            right: {style: BorderStyle.NONE, color: "FFFFFF"},
+                        },
+                        width: {
+                            size: 3000,
+                            type: WidthType.DXA,
+                        },
+                        children: [new Paragraph({text: "Hemoglobin: " + (data.cus_bc ? data.cus_bc : '') + " (g/L)", style: "size14"})],
+                    }),
+                    new TableCell({
+                        borders:{
+                            top: {style: BorderStyle.NONE, color: "FFFFFF"},
+                            bottom: {style: BorderStyle.NONE, color: "FFFFFF"},
+                            left: {style: BorderStyle.NONE, color: "FFFFFF"},
+                            right: {style: BorderStyle.NONE, color: "FFFFFF"},
+                        },
+                        width: {
+                            size: 3010,
+                            type: WidthType.DXA,
+                        },
+                        children: [new Paragraph({text: "BC: " + (data.cus_tc ? data.cus_tc : ''), style: "size14"})],
+                    })
+                ],
+            }),
+        ]
+    });
+    return table;
+}
+
+function tableAlbumin(data){
+    const table = new Table({
+        columnWidths: [4505, 4505],
+        rows: [
+            new TableRow({
+                children: [
+                    new TableCell({
+                        borders:{
+                            top: {style: BorderStyle.NONE, color: "FFFFFF"},
+                            bottom: {style: BorderStyle.NONE, color: "FFFFFF"},
+                            left: {style: BorderStyle.NONE, color: "FFFFFF"},
+                            right: {style: BorderStyle.NONE, color: "FFFFFF"},
+                        },
+                        width: {
+                            size: 4505,
+                            type: WidthType.DXA,
+                        },
+                        children: [new Paragraph({text: "Albumin: " + (data.cus_albumin ? data.cus_albumin : '')  + " (g/L)", style: "size14"})]
+                    }),
+                    new TableCell({
+                        borders:{
+                            top: {style: BorderStyle.NONE, color: "FFFFFF"},
+                            bottom: {style: BorderStyle.NONE, color: "FFFFFF"},
+                            left: {style: BorderStyle.NONE, color: "FFFFFF"},
+                            right: {style: BorderStyle.NONE, color: "FFFFFF"},
+                        },
+                        width: {
+                            size: 4505,
+                            type: WidthType.DXA,
+                        },
+                        children: [new Paragraph({text: "Na+/K+/Cl-: " + (data.cus_nakcl ? data.cus_nakcl : ''), style: "size14"})],
+                    })
+                ],
+            }),
+        ]
+    });
+    return table;
+}
+
+function tableAst(data){
+    const table = new Table({
+        columnWidths: [4505, 4505],
+        rows: [
+            new TableRow({
+                children: [
+                    new TableCell({
+                        borders:{
+                            top: {style: BorderStyle.NONE, color: "FFFFFF"},
+                            bottom: {style: BorderStyle.NONE, color: "FFFFFF"},
+                            left: {style: BorderStyle.NONE, color: "FFFFFF"},
+                            right: {style: BorderStyle.NONE, color: "FFFFFF"},
+                        },
+                        width: {
+                            size: 4505,
+                            type: WidthType.DXA,
+                        },
+                        children: [new Paragraph({text: "AST/ALT/GGT: " + (data.cus_astaltggt ? data.cus_astaltggt : '')  + " (U/L)", style: "size14"})]
+                    }),
+                    new TableCell({
+                        borders:{
+                            top: {style: BorderStyle.NONE, color: "FFFFFF"},
+                            bottom: {style: BorderStyle.NONE, color: "FFFFFF"},
+                            left: {style: BorderStyle.NONE, color: "FFFFFF"},
+                            right: {style: BorderStyle.NONE, color: "FFFFFF"},
+                        },
+                        width: {
+                            size: 4505,
+                            type: WidthType.DXA,
+                        },
+                        children: [new Paragraph({text: "Ure/creatinin: " + (data.cus_urecreatinin ? data.cus_urecreatinin : ''), style: "size14"})],
+                    })
+                ],
+            }),
+        ]
+    });
+    return table;
+}
+
+function getMedicine(prescription){
+    try {
+        console.log("getMedicine", prescription);
+        let rowTables = [];
+        if(prescription && prescription.length > 0){
+            for(let item of prescription){
+                rowTables.push(new Paragraph({
+                    text: item.stt + ". " + (item.name ? item.name : '') + " x " + (item.total ? item.total : 1) + " " + (item.unit ? item.unit : ''),
+                    style: "size14",
+                    indent: {
+                        left: 1024
+                    }
+                }));
+                rowTables.push(new Paragraph({
+                    text: item.note ? item.note : '',
+                    style: "size14",
+                    indent: {
+                        left: 1224
+                    }
+                }));
+            }
+        }
+        return rowTables; 
+    } catch (error) {
+        
+    }
+}
 
 module.exports = router;
