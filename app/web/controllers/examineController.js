@@ -156,7 +156,7 @@ router.get('/edit/:id', function(req, res, next) {
                         }else if(req.user.role_id.includes(4) && req.user.department_id !== detailExamine.data[0].department_id){
                             //Nếu là bác sĩ xem theo khoa
                             str_errors.push("Bạn không có quyền truy cập thông tin bài #" + req.params.id);
-                        }else if(!(req.user.role_id.includes(2) && (req.user.phone == detailExamine.data[0].cus_phone || req.user.email == detailExamine.data[0].cus_email))){
+                        }else if(req.user.role_id.includes(2) && !(req.user.phone == detailExamine.data[0].cus_phone || req.user.email == detailExamine.data[0].cus_email)){
                             //Nếu là bệnh nhân xem theo số điện thoại hoặc email
                             str_errors.push("Bạn không có quyền truy cập thông tin bài #" + req.params.id);
                         }
