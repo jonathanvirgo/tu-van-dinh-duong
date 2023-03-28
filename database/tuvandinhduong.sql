@@ -12,7 +12,7 @@ MySQL - 10.4.24-MariaDB : Database - tuvandinhduong
 /*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
-USE `cppsgved_tuvandinhduong`;
+USE `tuvandinhduong`;
 
 /*Table structure for table `active_mode_of_living` */
 
@@ -71,7 +71,7 @@ CREATE TABLE `customer` (
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp(),
   PRIMARY KEY (`id`),
   UNIQUE KEY `phone` (`cus_phone`)
-) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4;
 
 /*Data for the table `customer` */
 
@@ -161,7 +161,7 @@ CREATE TABLE `examine` (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp(),
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8mb4;
 
 /*Data for the table `examine` */
 
@@ -177,7 +177,9 @@ insert  into `examine`(`id`,`count_id`,`cus_name`,`cus_phone`,`cus_email`,`cus_g
 (9,'00101280223','Bài test 1','','',0,'1990-02-28','','','','','','','','','','','','','','','','',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,1,3,1,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'[4,5]',NULL,NULL,12,'2023-02-28 15:51:03','2023-02-28 15:51:03'),
 (10,'00201280223','Bài test 51','','',0,'1990-02-14','','','','','','','','','','','','','','','','',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,1,3,1,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'[{\"stt\":1,\"name\":\" Nguyễn quốc đạt\",\"id\":2,\"total\":\"12\",\"unit\":\"viên\",\"note\":\"2 ngày 1 lần\"}]',NULL,12,'2023-02-28 18:01:51','2023-02-28 18:01:51'),
 (11,'00101080323','Bài test 51','','',1,'2023-03-08','','','','','','','','','','','','','','','','',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,1,3,1,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'[{\"stt\":1,\"name\":\" Nguyễn quốc đạt\",\"id\":2,\"total\":\"10\",\"unit\":\"viên\",\"note\":\"2 ngày 1 lần\"}]',NULL,12,'2023-03-08 17:08:25','2023-03-08 17:08:25'),
-(12,'00101130323','Nguyễn Quốc Đạt','','',1,'1990-08-31','','','','','','','','','','','','','','','','',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,1,3,1,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'[{\"id\":2,\"name\":\"Thực đơn 1\",\"detail\":[{\"id\":3,\"name\":\"6h - 7h\",\"name_course\":\"abc\",\"listFood\":[{\"id\":1,\"id_food\":2,\"name\":\" Nguyễn quốc đạt\",\"weight\":123,\"energy\":123,\"protein\":123,\"animal_protein\":123,\"lipid\":123,\"unanimal_lipid\":123,\"carbohydrate\":123}]},{\"id\":4,\"name\":\"11h - 12h\",\"name_course\":\"abc\",\"listFood\":[]},{\"id\":5,\"name\":\"15h\",\"name_course\":\"abc\",\"listFood\":[]},{\"id\":6,\"name\":\"17h - 18h\",\"name_course\":\"abc\",\"listFood\":[]}]},{\"id\":2,\"name\":\"Thực đơn 2\",\"detail\":[{\"id\":3,\"name\":\"6h - 7h\",\"name_course\":\"abc\",\"listFood\":[]},{\"id\":4,\"name\":\"11h - 12h\",\"name_course\":\"\",\"listFood\":[]},{\"id\":5,\"name\":\"15h\",\"name_course\":\"abc\",\"listFood\":[]},{\"id\":6,\"name\":\"17h - 18h\",\"name_course\":\"abc\",\"listFood\":[]}]}]',12,'2023-03-13 17:20:48','2023-03-13 17:20:48');
+(12,'00101130323','Nguyễn Quốc Đạt','','',1,'1990-08-31','','','','','','','','','','','','','','','','',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,1,3,1,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'[{\"id\":2,\"name\":\"Thực đơn 1\",\"detail\":[{\"id\":3,\"name\":\"6h - 7h\",\"name_course\":\"abc\",\"listFood\":[{\"id\":1,\"id_food\":2,\"name\":\" Nguyễn quốc đạt\",\"weight\":\"122\",\"energy\":122,\"protein\":122,\"animal_protein\":122,\"lipid\":122,\"unanimal_lipid\":122,\"carbohydrate\":122}]},{\"id\":4,\"name\":\"11h - 12h\",\"name_course\":\"abc\",\"listFood\":[]},{\"id\":5,\"name\":\"15h\",\"name_course\":\"abc\",\"listFood\":[]},{\"id\":6,\"name\":\"17h - 18h\",\"name_course\":\"abc\",\"listFood\":[]}]},{\"id\":2,\"name\":\"Thực đơn 2\",\"detail\":[{\"id\":3,\"name\":\"6h - 7h\",\"name_course\":\"abc\",\"listFood\":[]},{\"id\":4,\"name\":\"11h - 12h\",\"name_course\":\"\",\"listFood\":[]},{\"id\":5,\"name\":\"15h\",\"name_course\":\"abc\",\"listFood\":[]},{\"id\":6,\"name\":\"17h - 18h\",\"name_course\":\"abc\",\"listFood\":[]}]}]',12,'2023-03-13 17:20:48','2023-03-13 17:20:48'),
+(13,'00101240323','Bài test 51','0989402893','qdatvirgo@gmail.com',1,'1990-08-31','Trâu QUỳ Gia lâm hà nội ','test abc','1,2','59','','','','','','','','','','','','','','','','','','','','','CHẾ ĐỘ VẬN ĐỘNG SINH HOẠT\nCHẾ ĐỘ VẬN ĐỘNG SINH HOẠT\nCHẾ ĐỘ VẬN ĐỘNG SINH HOẠT\nCHẾ ĐỘ VẬN ĐỘNG SINH HOẠT\nCHẾ ĐỘ VẬN ĐỘNG SINH HOẠT\nCHẾ ĐỘ VẬN ĐỘNG SINH HOẠT',1,3,1,'','','','','','','','','','','','',NULL,NULL,'[]','[{\"stt\":1,\"name\":\" Nguyễn quốc đạt\",\"id\":2,\"total\":\"10\",\"unit\":\"viên\",\"note\":\"test 1\"},{\"stt\":2,\"name\":\" Nguyễn quốc đạt\",\"id\":2,\"total\":\"0\",\"unit\":\"viên\",\"note\":\"test 2\"}]','[{\"id\":1,\"name\":\"Thực đơn 1\",\"detail\":[{\"id\":3,\"name\":\"6h - 7h\",\"name_course\":\"\",\"listFood\":[]},{\"id\":4,\"name\":\"11h - 12h\",\"name_course\":\"\",\"listFood\":[]},{\"id\":5,\"name\":\"15h\",\"name_course\":\"\",\"listFood\":[]},{\"id\":6,\"name\":\"17h - 18h\",\"name_course\":\"\",\"listFood\":[]}]}]',12,'2023-03-24 17:11:47','2023-03-24 17:11:47'),
+(14,'00101270323','Nguyễn Quốc Đạt','','',1,'1990-09-11','','','','','','','','','','','','','','','','',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,1,3,1,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'[{\"id\":1,\"name\":\"Thực đơn 1\",\"detail\":[{\"id\":3,\"name\":\"6h - 7h\",\"name_course\":\"\",\"listFood\":[{\"id\":1,\"id_food\":34,\"name\":\"Bún khô\",\"weight\":100,\"energy\":377,\"protein\":7,\"animal_protein\":0,\"lipid\":1,\"unanimal_lipid\":1,\"carbohydrate\":79}]},{\"id\":4,\"name\":\"11h - 12h\",\"name_course\":\"\",\"listFood\":[{\"id\":1,\"id_food\":402,\"name\":\"Thịt bò khô\",\"weight\":100,\"energy\":239,\"protein\":51,\"animal_protein\":51,\"lipid\":1,\"unanimal_lipid\":0,\"carbohydrate\":5}]},{\"id\":5,\"name\":\"15h\",\"name_course\":\"\",\"listFood\":[{\"id\":1,\"id_food\":315,\"name\":\"Vú sữa\",\"weight\":100,\"energy\":42,\"protein\":1,\"animal_protein\":0,\"lipid\":0,\"unanimal_lipid\":0,\"carbohydrate\":9},{\"id\":2,\"id_food\":409,\"name\":\"Ruốc thịt heo\",\"weight\":100,\"energy\":396,\"protein\":46,\"animal_protein\":46,\"lipid\":20,\"unanimal_lipid\":0,\"carbohydrate\":0}]},{\"id\":6,\"name\":\"17h - 18h\",\"name_course\":\"\",\"listFood\":[]}]},{\"id\":2,\"name\":\"Thực đơn 2\",\"detail\":[{\"id\":3,\"name\":\"6h - 7h\",\"name_course\":\"\",\"listFood\":[]},{\"id\":4,\"name\":\"11h - 12h\",\"name_course\":\"\",\"listFood\":[]},{\"id\":5,\"name\":\"15h\",\"name_course\":\"\",\"listFood\":[{\"id\":1,\"id_food\":488,\"name\":\"Thịt lợn, thăn\",\"weight\":100,\"energy\":189,\"protein\":21,\"animal_protein\":null,\"lipid\":3,\"unanimal_lipid\":null,\"carbohydrate\":0}]},{\"id\":6,\"name\":\"17h - 18h\",\"name_course\":\"\",\"listFood\":[]}]}]',12,'2023-03-27 15:38:33','2023-03-27 15:38:33');
 
 /*Table structure for table `food_info` */
 
@@ -1088,7 +1090,7 @@ CREATE TABLE `log_err` (
   `last_ip` varchar(40) DEFAULT NULL,
   `create_on` timestamp NULL DEFAULT current_timestamp(),
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=46 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=53 DEFAULT CHARSET=utf8mb4;
 
 /*Data for the table `log_err` */
 
@@ -1131,7 +1133,14 @@ insert  into `log_err`(`id`,`user_id`,`short_message`,`full_message`,`page_url`,
 (42,12,'ER_DUP_ENTRY: Duplicate entry \'\' for key \'phone\'','{\"code\":\"ER_DUP_ENTRY\",\"errno\":1062,\"sqlMessage\":\"Duplicate entry \'\' for key \'phone\'\",\"sqlState\":\"23000\",\"index\":0,\"sql\":\"INSERT INTO customer(cus_name,cus_phone,cus_email,cus_gender,cus_birthday,cus_address,department_id,created_at) VALUES (\'Nguyễn Quốc Đạt\',\'\',\'\',\'1\',\'1990-08-31\',\'\',3,CURRENT_TIMESTAMP)\"}','/examine/create','http://localhost:3001/examine/create',NULL,'2023-03-13 17:20:48'),
 (43,0,'','Unexpected token u in JSON at position 0','/admin/food-info/import-from-excel',NULL,NULL,'2023-03-16 15:27:51'),
 (44,0,'','Unexpected token u in JSON at position 0','/admin/food-info/import-from-excel',NULL,NULL,'2023-03-16 15:28:03'),
-(45,12,'','Unexpected token u in JSON at position 0','/admin/food-info/import-from-excel','http://localhost:3001/admin/food-info/create',NULL,'2023-03-16 15:41:18');
+(45,12,'','Unexpected token u in JSON at position 0','/admin/food-info/import-from-excel','http://localhost:3001/admin/food-info/create',NULL,'2023-03-16 15:41:18'),
+(46,0,'diff_years is not defined','{}','webService caculateYearOld',NULL,NULL,'2023-03-24 15:34:53'),
+(47,0,'diff_years is not defined','{}','webService caculateYearOld',NULL,NULL,'2023-03-24 15:35:39'),
+(48,0,'diff_years is not defined','{}','webService caculateYearOld',NULL,NULL,'2023-03-24 15:36:50'),
+(49,0,'diff_years is not defined','{}','webService caculateYearOld',NULL,NULL,'2023-03-24 15:54:41'),
+(50,0,'diff_years is not defined','{}','webService caculateYearOld',NULL,NULL,'2023-03-24 17:11:41'),
+(51,0,'diff_years is not defined','{}','webService caculateYearOld',NULL,NULL,'2023-03-24 17:14:32'),
+(52,12,'ER_DUP_ENTRY: Duplicate entry \'\' for key \'phone\'','{\"code\":\"ER_DUP_ENTRY\",\"errno\":1062,\"sqlMessage\":\"Duplicate entry \'\' for key \'phone\'\",\"sqlState\":\"23000\",\"index\":0,\"sql\":\"INSERT INTO customer(cus_name,cus_phone,cus_email,cus_gender,cus_birthday,cus_address,department_id,created_at) VALUES (\'Nguyễn Quốc Đạt\',\'\',\'\',\'1\',\'1990-09-11\',\'\',3,CURRENT_TIMESTAMP)\"}','/examine/create','http://localhost:3001/examine/create',NULL,'2023-03-27 15:38:33');
 
 /*Table structure for table `log_mail` */
 

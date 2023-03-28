@@ -208,6 +208,33 @@ let logService = {
                 logService.createFromParams(message_err, 'logModel getLogById');
             }
         });
+    },
+    authorizeAccess: function(role_id, type){
+        try {
+            if(role_id && role_id.length > 0){
+                if(role_id.includes(1) || role_id.includes(3)) return true;
+                if(role_id.includes(5)){
+                    if(['role', 'user', 'hospital', 'log', 'setting'].includes(type)){
+                        return false;
+                    }else{
+                        return true;
+                    }
+                }
+                if(role_id.includes(4)){
+                    if(['role', 'user', 'hospital', 'log', 'setting','department','medical-test'].includes(type)){
+                        return false;
+                    }else{
+                        return true;
+                    }
+                }
+                return false;
+            }else{
+                return false;
+            }
+        } catch (error) {
+            let message_err = error.message ? error.message : error;
+            logService.createFromParams(message_err, 'logModel authorizeAccess');
+        }
     }
 }   
 module.exports = logService;

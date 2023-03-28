@@ -13,7 +13,7 @@ router.get('/', function (req, res, next) {
         if (!req.user) {
             return res.redirect('/user/login');
         }
-        if (!req.user.isAdmin || (req.user.role_id && (req.user.role_id.includes(3) || req.user.role_id.includes(5)))) {
+        if(!logService.authorizeAccess(req.user.role_id, 'department')){
             throw new Error(notice_admin);
         }
         res.render(viewPage("list"), { 
@@ -29,7 +29,7 @@ router.get('/create', function (req, res, next) {
         if (!req.user) {
             return res.redirect('/user/login');
         }
-        if (!req.user.isAdmin || (req.user.role_id && (req.user.role_id.includes(3) || req.user.role_id.includes(5)))) {
+        if(!logService.authorizeAccess(req.user.role_id, 'department')){
             throw new Error(notice_admin);
         }
         hospitalService.getAllHospital(function (err, result, fields) {
@@ -54,7 +54,7 @@ router.get('/edit/:id', function (req, res) {
         if (!req.user) {
             return res.redirect('/user/login');
         }
-        if (!req.user.isAdmin || (req.user.role_id && (req.user.role_id.includes(3) || req.user.role_id.includes(5)))) {
+        if(!logService.authorizeAccess(req.user.role_id, 'department')){
             throw new Error(notice_admin);
         }
         let arrPromise = [],
@@ -116,7 +116,7 @@ router.post('/create', function (req, res, next) {
         if (!req.user) {
             return res.redirect('/user/login');
         }
-        if (!req.user.isAdmin || (req.user.role_id && (req.user.role_id.includes(3) || req.user.role_id.includes(5)))) {
+        if(!logService.authorizeAccess(req.user.role_id, 'department')){
             throw new Error(notice_admin);
         }
         var str_error  = [],
@@ -168,7 +168,7 @@ router.post('/edit/:id', function (req, res, next) {
         if (!req.user) {
             return res.redirect('/user/login');
         }
-        if (!req.user.isAdmin || (req.user.role_id && (req.user.role_id.includes(3) || req.user.role_id.includes(5)))) {
+        if(!logService.authorizeAccess(req.user.role_id, 'department')){
             throw new Error(notice_admin);
         }
         var str_error  = [],
@@ -221,7 +221,7 @@ router.post('/delete/:id', function (req, res, next) {
         if (!req.user) {
             return res.redirect('/user/login');
         }
-        if (!req.user.isAdmin || (req.user.role_id && (req.user.role_id.includes(3) || req.user.role_id.includes(5)))) {
+        if(!logService.authorizeAccess(req.user.role_id, 'department')){
             throw new Error(notice_admin);
         }
         var record_id = isNaN(parseInt(req.params.id)) ? 0 : parseInt(req.params.id);
@@ -254,7 +254,7 @@ router.post('/list', function (req, res, next) {
         if (!req.user) {
             return res.redirect('/user/login');
         }
-        if (!req.user.isAdmin || (req.user.role_id && (req.user.role_id.includes(3) || req.user.role_id.includes(5)))) {
+        if(!logService.authorizeAccess(req.user.role_id, 'department')){
             throw new Error(notice_admin);
         }
         var arrPromise = [],
@@ -322,7 +322,7 @@ router.get('/list-follow-hospital', function (req, res, next) {
         if (!req.user) {
             return res.redirect('/user/login');
         }
-        if (!req.user.isAdmin || (req.user.role_id && (req.user.role_id.includes(3) || req.user.role_id.includes(5)))) {
+        if(!logService.authorizeAccess(req.user.role_id, 'department')){
             throw new Error(notice_admin);
         }
         var hospital_id = req.query.hos_id;
