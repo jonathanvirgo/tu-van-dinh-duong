@@ -38,6 +38,7 @@
                </li>
                <!-- Admin hoặc hệ thống -->
                <% if (user.role_id.includes(1) || user.role_id.includes(3) || user.role_id.includes(5) || user.role_id.includes(4)){%>
+                  <% if (user.role_id.includes(1) || user.role_id.includes(3)){%>
                   <li class="nav-item">
                      <a href="/admin/role" class="nav-link">
                         <i class="nav-icon fas fa-cubes"></i>
@@ -68,8 +69,10 @@
                         <p>Cài đặt</p>
                      </a>
                   </li>
+                  <% } %>
                   <!-- Quản lý bệnh viện -->
-                  <% if (user.role_id.includes(5) || user.role_id.includes(1) || user.role_id.includes(3)){%>
+                  <% if (user.role_id.includes(5) || user.role_id.includes(1) || user.role_id.includes(3) || user.role_id.includes(4)){%>
+                     <% if (user.role_id.includes(5) || user.role_id.includes(1) || user.role_id.includes(3)){%>
                      <li class="nav-item">
                         <a href="/admin/department" class="nav-link">
                            <i class="nav-icon fas fa-user"></i>
@@ -82,6 +85,7 @@
                            <p>Chỉ định xét nghiệm</p>
                         </a>
                      </li>
+                     <% } %>
                      <!-- Bác sĩ -->
                      <% if (user.role_id.includes(4) || user.role_id.includes(5) || user.role_id.includes(1) || user.role_id.includes(3)){%>
                         <li class="nav-item">
