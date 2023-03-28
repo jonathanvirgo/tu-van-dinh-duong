@@ -136,6 +136,38 @@ function exportExamine(){
     }
 }
 
+function exportMenuExample(){
+    try {
+        let menu_id = $('#menu_id').val();
+        if(menu_id && !isNaN(parseInt(menu_id))){
+            let data = {};
+            if(dataExamine.menuExamine && dataExamine.menuExamine.length > 0){
+                for(let item of dataExamine.menuExamine){
+                    if(item.id == parseInt(menu_id)){
+                        data = item;
+                        break;
+                    }
+                }
+                if(data){
+                    var link = document.createElement('a');
+                    link.href = '/export/menu-example?data=' + encodeURIComponent(JSON.stringify(data));
+                    link.click();
+                    link.remove();
+                }else{
+                    displayMessage('Không tìm thấy thực đơn!');
+                }
+            }else{
+                displayMessage('Chưa có dữ liệu thực đơn!');
+            }
+        }else{
+            displayMessage('Vui lòng chọn thực đơn!');
+        }
+        
+    } catch (error) {
+        
+    }
+}
+
 function changeTabExamine(tab){
     console.log("changeTabExamine", tab, dataExamine.prescription);
     switch(dataExamine.tab){

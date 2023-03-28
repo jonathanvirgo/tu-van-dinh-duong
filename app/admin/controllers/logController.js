@@ -12,7 +12,7 @@ router.get('/', function (req, res, next) {
         if (!req.user) {
             return res.redirect('/user/login');
         }
-        if (!req.user.isAdmin) {
+        if (!req.user.isAdmin || (req.user.role_id && (req.user.role_id.includes(3)))) {
             throw new Error(notice_admin);
         }
         res.render(viewPage("list"), { 
@@ -28,7 +28,7 @@ router.get('/view/:id', function (req, res) {
         if (!req.user) {
             return res.redirect('/user/login');
         }
-        if (!req.user.isAdmin) {
+        if (!req.user.isAdmin || (req.user.role_id && (req.user.role_id.includes(3)))) {
             throw new Error(notice_admin);
         }
         modelService.getLogById(req.params.id, function (err, result, fields) {
@@ -57,7 +57,7 @@ router.post('/delete_selected', function (req, res, next) {
         if (!req.user) {
             return res.redirect('/user/login');
         }
-        if (!req.user.isAdmin) {
+        if (!req.user.isAdmin || (req.user.role_id && (req.user.role_id.includes(3)))) {
             throw new Error(notice_admin);
         }
         var selectedIds = req.body.selectedIds;
@@ -78,7 +78,7 @@ router.post('/', function (req, res, next) {
         if (!req.user) {
             return res.redirect('/user/login');
         }
-        if (!req.user.isAdmin) {
+        if (!req.user.isAdmin || (req.user.role_id && (req.user.role_id.includes(3)))) {
             throw new Error(notice_admin);
         }
         modelService.deleteAll(function (err, results, fields) {
@@ -98,7 +98,7 @@ router.post('/delete/:id', function (req, res, next) {
         if (!req.user) {
             return res.redirect('/user/login');
         }
-        if (!req.user.isAdmin) {
+        if (!req.user.isAdmin || (req.user.role_id && (req.user.role_id.includes(3)))) {
             throw new Error(notice_admin);
         }
         var record_id = isNaN(parseInt(req.params.id)) ? 0 : parseInt(req.params.id);
@@ -131,7 +131,7 @@ router.post('/list', function (req, res, next) {
         if (!req.user) {
             return res.redirect('/user/login');
         }
-        if (!req.user.isAdmin) {
+        if (!req.user.isAdmin || (req.user.role_id && (req.user.role_id.includes(3)))) {
             throw new Error(notice_admin);
         }
         var arrPromise = [],

@@ -4,7 +4,7 @@ var express         = require('express'),
     moment          = require('moment');
 
 const docx = require("docx");
-const { AlignmentType, Document, HeadingLevel, Packer, Paragraph, TextRun, UnderlineType, Table, TableCell, TableRow, WidthType, BorderStyle} = docx;
+const { AlignmentType, Document, TextDirection, Packer, Paragraph, TextRun, VerticalAlign, Table, TableCell, TableRow, WidthType, BorderStyle} = docx;
 
 router.get("/examine", async (req, res) => {
     try {
@@ -18,9 +18,7 @@ router.get("/examine", async (req, res) => {
         let data = JSON.parse(req.query.data);
         if(data){
             let yearOld = webService.caculateYearOld(data.cus_birthday);
-            console.log("date", now.year(), now.month(), now.date());
             let medicine = getMedicine(data.prescription ? JSON.parse(data.prescription) : []);
-            console.log("medicine", medicine);
             const doc = new Document({
                 creator: "dinhduonghotro.com",
                 title: "Phiếu khám ${req.user.full_name ? req.user.full_name : req.user.name}",
@@ -65,10 +63,10 @@ router.get("/examine", async (req, res) => {
                             },
                             paragraph: {
                                 spacing: {
-                                    before: 240,
+                                    before: 120,
                                     after: 120
-                                },
-                            },
+                                }
+                            }
                         },
                         {
                             id: "size14",
@@ -77,6 +75,11 @@ router.get("/examine", async (req, res) => {
                             quickFormat: true,
                             run: {
                                 size: 28
+                            },
+                            paragraph: {
+                                spacing: {
+                                    before: 60
+                                }
                             }
                         },
                         {
@@ -121,12 +124,9 @@ router.get("/examine", async (req, res) => {
                 },
                 sections: [{
                     children: [
+                        paramFollowerStyle(req.user.hospital_name ? req.user.hospital_name : '', "hospital"),
                         new Paragraph({
-                            text: req.user.hospital_name,
-                            style: "hospital",
-                        }),
-                        new Paragraph({
-                            text: req.user.department_name,
+                            text: req.user.department_name ? req.user.department_name : '',
                             style: "department",
                             indent: {
                                 left: 1208
@@ -140,10 +140,7 @@ router.get("/examine", async (req, res) => {
                                 after: 480
                             }
                         }),
-                        new Paragraph({
-                            text: "1. THÔNG TIN CHUNG",
-                            style: "title",
-                        }),
+                        paramFollowerStyle("1. THÔNG TIN CHUNG", "title"),
                         tableName(data, yearOld),
                         new Paragraph({
                             children: [
@@ -163,18 +160,9 @@ router.get("/examine", async (req, res) => {
                         }),
                         tableLength(data),
                         tableCNTC(data),
-                        new Paragraph({
-                            text: "2. KHÁM LÂM SÀNG",
-                            style: "title",
-                        }),
-                        new Paragraph({
-                            text: data.clinical_examination ? data.clinical_examination : '',
-                            style: "size14",
-                        }),
-                        new Paragraph({
-                            text: "3. KẾT QUẢ XÉT NGHIỆM",
-                            style: "title",
-                        }),
+                        paramFollowerStyle("2. KHÁM LÂM SÀNG", "title"),
+                        paramFollowerStyle(data.clinical_examination ? data.clinical_examination : '', "size14"),
+                        paramFollowerStyle("3. KẾT QUẢ XÉT NGHIỆM", "title"),
                         tableHongCau(data),
                         tableAlbumin(data),
                         tableAst(data),
@@ -186,23 +174,14 @@ router.get("/examine", async (req, res) => {
                             ],
                             style: "size14"
                         }),
-                        new Paragraph({
-                            text: "4. LỜI KHUYÊN DINH DƯỠNG",
-                            style: "title",
-                        }),
+                        paramFollowerStyle("4. LỜI KHUYÊN DINH DƯỠNG", "title"),
                         tableNutritionAdvice(data),
+                        paramFollowerStyle("5. CHẾ ĐỘ VẬN ĐỘNG, SINH HOẠT", "title"),
                         new Paragraph({
-                            text: "5. CHẾ ĐỘ VẬN ĐỘNG, SINH HOẠT",
-                            style: "title",
-                        }),
-                        new Paragraph({
-                            text: data.active_mode_of_living ? data.active_mode_of_living : '',
+                            children: data.active_mode_of_living ? data.active_mode_of_living.split("\n").map(line=> textRunBreak(line)) : [],
                             style: "size14",
                         }),
-                        new Paragraph({
-                            text: "6. BỔ SUNG",
-                            style: "title",
-                        }),
+                        paramFollowerStyle("6. BỔ SUNG", "title"),
                         ...medicine,
                         new Paragraph({
                             text: `Hà Nội, ngày ${String(now.date()).padStart(2, '0')} tháng ${String(now.month()).padStart(2, '0')} năm ${now.year()}`,
@@ -222,7 +201,7 @@ router.get("/examine", async (req, res) => {
             res.setHeader('Content-Disposition', 'attachment; filename=' + filename + '.docx');
             res.send(Buffer.from(b64string, 'base64')); 
         }else{
-            res.json("Thiếu dữ liệu!");
+            return res.json("Thiếu dữ liệu!");
         }
     } catch (error) {
         
@@ -694,6 +673,298 @@ function getMedicine(prescription){
             }
         }
         return rowTables; 
+    } catch (error) {
+        
+    }
+}
+
+function paramFollowerStyle(text, style){
+    try {
+        return new Paragraph({
+            text: text,
+            style: style,
+        });
+    } catch (error) {
+        
+    }
+}
+
+function textRunBreak(text){
+    try {
+        return new TextRun({
+            text: text,
+            break: 1
+        })    
+    } catch (error) {
+        
+    }
+}
+
+router.get("/menu-example", async (req, res) =>{
+    try {
+        console.log("examine", JSON.parse(req.query.data), req.user);
+        if (!req.user) {
+            let message = "Vui lòng đăng nhập lại để thực hiện chức năng này!";
+            res.json(message);
+            return;
+        }
+        let now = moment();
+        let data = JSON.parse(req.query.data);
+        if(data){
+            let menuExamineDetail = menuExapleList(data);
+            console.log("menuExamineDetail", menuExamineDetail);
+            const doc = new Document({
+                creator: "dinhduonghotro.com",
+                title: "Thực đơn mẫu cho ${req.user.full_name ? req.user.full_name : req.user.name}",
+                description: "Thực đơn mẫu cho ${req.user.full_name ? req.user.full_name : req.user.name}",
+                styles: {
+                    paragraphStyles: [
+                        {
+                            id: "hospital",
+                            basedOn: "Normal",
+                            next: "Normal",
+                            quickFormat: true,
+                            run: {
+                                size: 28,
+                                bold: true,
+                                allCaps: true
+                            }
+                        },
+                        {
+                            id: "title",
+                            basedOn: "Normal",
+                            next: "Normal",
+                            quickFormat: true,
+                            run: {
+                                size: 26,
+                                bold: true
+                            },
+                            paragraph: {
+                                spacing: {
+                                    before: 120,
+                                    after: 120
+                                }
+                            }
+                        },
+                        {
+                            id: "size14",
+                            basedOn: "Normal",
+                            next: "Normal",
+                            quickFormat: true,
+                            run: {
+                                size: 28
+                            },
+                            paragraph: {
+                                spacing: {
+                                    before: 60
+                                }
+                            }
+                        },
+                        {
+                            id: "size14-bold",
+                            basedOn: "size14",
+                            next: "Normal",
+                            quickFormat: true,
+                            run: {
+                                bold: true
+                            }
+                        },
+                        {
+                            id: "table_heading",
+                            basedOn: "size14",
+                            next: "Normal",
+                            quickFormat: true,
+                            run: {
+                                bold: true
+                            },
+                            paragraph: {
+                                alignment: AlignmentType.CENTER,
+                                spacing: {
+                                    before: 80,
+                                    after: 80
+                                },
+                            }
+                        },
+                        {
+                            id: "table_cell",
+                            basedOn: "size14",
+                            next: "Normal",
+                            quickFormat: true,
+                            paragraph: {
+                                spacing: {
+                                    before: 80,
+                                    after: 80
+                                },
+                            }
+                        }
+                    ],
+                },
+                sections: [{
+                    children: [
+                        new Paragraph({
+                            text: "THỰC ĐƠN MẪU",
+                            alignment: AlignmentType.CENTER,
+                            style: "hospital",
+                            spacing:{
+                                after: 480
+                            }
+                        }),
+                        new Table({
+                            columnWidths: [6000, 3010],
+                            rows: [
+                                new TableRow({
+                                    children: [
+                                        new TableCell({
+                                            borders:{
+                                                top: {style: BorderStyle.NONE, color: "FFFFFF"},
+                                                bottom: {style: BorderStyle.NONE, color: "FFFFFF"},
+                                                left: {style: BorderStyle.NONE, color: "FFFFFF"},
+                                                right: {style: BorderStyle.NONE, color: "FFFFFF"},
+                                            },
+                                            width: {
+                                                size: 6000,
+                                                type: WidthType.DXA,
+                                            },
+                                            children: [
+                                                new Table({
+                                                    columnWidths: [1000, 3500, 1500],
+                                                    rows: [
+                                                        new TableRow({
+                                                            children: [
+                                                                new TableCell({
+                                                                    children: [
+                                                                        new Paragraph({text: "Giờ", style: "table_heading"})
+                                                                    ],
+                                                                    width: {
+                                                                        size: 1000,
+                                                                        type: WidthType.DXA,
+                                                                    },
+                                                                }),
+                                                                new TableCell({
+                                                                    children: [
+                                                                        new Paragraph({text: "Thực phẩm", style: "table_heading"})
+                                                                    ],
+                                                                    width: {
+                                                                        size: 4000,
+                                                                        type: WidthType.DXA,
+                                                                    },
+                                                                }),
+                                                                new TableCell({
+                                                                    children: [
+                                                                        new Paragraph({text: "gam", style: "table_heading"})
+                                                                    ],
+                                                                    width: {
+                                                                        size: 1000,
+                                                                        type: WidthType.DXA,
+                                                                    },
+                                                                })
+                                                            ]
+                                                        }),
+                                                        ...menuExamineDetail
+                                                    ]
+                                                })
+                                            ]
+                                        }),
+                                        new TableCell({
+                                            borders:{
+                                                top: {style: BorderStyle.NONE, color: "FFFFFF"},
+                                                bottom: {style: BorderStyle.NONE, color: "FFFFFF"},
+                                                left: {style: BorderStyle.NONE, color: "FFFFFF"},
+                                                right: {style: BorderStyle.NONE, color: "FFFFFF"},
+                                            },
+                                            width: {
+                                                size: 3010,
+                                                type: WidthType.DXA,
+                                            },
+                                            children: [],
+                                        })
+                                    ]
+                                })
+                            ]
+                        })
+                    ]
+                }]
+            });    
+            const b64string = await Packer.toBase64String(doc);
+            let filename = "Thuc_don_mau_" + webService.removeVietnameseTones(req.user.full_name ? req.user.full_name : req.user.name).replaceAll(" ", "_") + "_" + String(now.date()).padStart(2, '0') + "_" + String(now.month()).padStart(2, '0') + "_" + now.year(); 
+            res.setHeader('Content-Disposition', 'attachment; filename=' + filename + '.docx');
+            res.send(Buffer.from(b64string, 'base64')); 
+        }else{
+            return res.json("Thiếu dữ liệu!");
+        }
+    } catch (error) {
+        
+    }
+});
+
+function menuExapleList(data){
+    try {
+        let listDetailMenu = [];
+        if(data && data.detail.length > 0){
+            for(let item of data.detail){
+                console.log("item",item);
+                listDetailMenu.push(
+                    new TableRow({
+                        children: [
+                            new TableCell({
+                                children: [
+                                    new Paragraph({text: item.name, style: "table_heading"})
+                                ],
+                                width: {
+                                    size: 1000,
+                                    type: WidthType.DXA,
+                                },
+                                textDirection: TextDirection.BOTTOM_TO_TOP_LEFT_TO_RIGHT,
+                                verticalAlign: VerticalAlign.CENTER,
+                                rowSpan: item.listFood.length + 1
+                            }),
+                            new TableCell({
+                                children: [
+                                    new Paragraph({text: item.name_course, style: "table_cell"})
+                                ],
+                                width: {
+                                    size: 5000,
+                                    type: WidthType.DXA,
+                                },
+                                verticalAlign: VerticalAlign.CENTER,
+                                columnSpan: 2
+                            })
+                        ]
+                    })
+                );
+                if(item.listFood.length > 0){
+                    for(let food of item.listFood){
+                        listDetailMenu.push(
+                            new TableRow({
+                                children: [
+                                    new TableCell({
+                                        children: [
+                                            new Paragraph({text: food.name, style: "table_cell"})
+                                        ],
+                                        width: {
+                                            size: 4000,
+                                            type: WidthType.DXA,
+                                        }
+                                    }),
+                                    new TableCell({
+                                        children: [
+                                            new Paragraph({text: String(food.weight), style: "table_cell"})
+                                        ],
+                                        width: {
+                                            size: 1000,
+                                            type: WidthType.DXA,
+                                        }
+                                    })
+                                ]
+                            })
+                        );
+                    }
+                }
+            }
+            return listDetailMenu;
+        }else{
+            return listDetailMenu;
+        }
     } catch (error) {
         
     }

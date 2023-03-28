@@ -17,7 +17,7 @@ router.get('/', function (req, res, next) {
         if (!req.user) {
             return res.redirect('/user/login');
         }
-        if (!req.user.isAdmin) {
+        if (!req.user.isAdmin || (req.user.role_id && (req.user.role_id.includes(3)))) {
             throw new Error(notice_admin);
         }
         var roles     = [],
@@ -47,7 +47,7 @@ router.get('/create', function (req, res, next) {
         if (!req.user) {
             return res.redirect('/user/login');
         }
-        if (!req.user.isAdmin) {
+        if (!req.user.isAdmin || (req.user.role_id && (req.user.role_id.includes(3)))) {
             throw new Error(notice_admin);
         }
         let arrPromise = [],
@@ -108,7 +108,7 @@ router.get('/edit/:id', function (req, res) {
         if (!req.user) {
             return res.redirect('/user/login');
         }
-        if (!req.user.isAdmin) {
+        if (!req.user.isAdmin || (req.user.role_id && (req.user.role_id.includes(3)))) {
             throw new Error(notice_admin);
         }
         var str_error   = [],
@@ -281,7 +281,7 @@ router.post('/create', function (req, res, next) {
         if (!req.user) {
             return res.redirect('/user/login');
         }
-        if (!req.user.isAdmin) {
+        if (!req.user.isAdmin || (req.user.role_id && (req.user.role_id.includes(3)))) {
             throw new Error(notice_admin);
         }
         var role_ids          = [],
@@ -398,7 +398,7 @@ router.post('/edit/:id', function (req, res, next) {
         if (!req.user) {
             return res.redirect('/user/login');
         }
-        if (!req.user.isAdmin) {
+        if (!req.user.isAdmin || (req.user.role_id && (req.user.role_id.includes(3)))) {
             throw new Error(notice_admin);
         }
         var pr_user           = [],
@@ -573,7 +573,7 @@ router.post('/list', function (req, res, next) {
         if (!req.user) {
             return res.redirect('/user/login');
         }
-        if (!req.user.isAdmin) {
+        if (!req.user.isAdmin || (req.user.role_id && (req.user.role_id.includes(3)))) {
             throw new Error(notice_admin);
         }
         var users      = [],

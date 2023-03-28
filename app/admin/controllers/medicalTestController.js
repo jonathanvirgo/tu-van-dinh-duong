@@ -12,7 +12,7 @@ router.get('/', function (req, res, next) {
         if (!req.user) {
             return res.redirect('/user/login');
         }
-        if (!req.user.isAdmin) {
+        if (!req.user.isAdmin || (req.user.role_id && (req.user.role_id.includes(3) || req.user.role_id.includes(5)))) {
             throw new Error(notice_admin);
         }
         res.render(viewPage("list"), { 
@@ -28,7 +28,7 @@ router.get('/create', function (req, res, next) {
         if (!req.user) {
             return res.redirect('/user/login');
         }
-        if (!req.user.isAdmin) {
+        if (!req.user.isAdmin || (req.user.role_id && (req.user.role_id.includes(3) || req.user.role_id.includes(5)))) {
             throw new Error(notice_admin);
         }
         res.render(viewPage("create"), {
@@ -46,7 +46,7 @@ router.get('/edit/:id', function (req, res) {
         if (!req.user) {
             return res.redirect('/user/login');
         }
-        if (!req.user.isAdmin) {
+        if (!req.user.isAdmin || (req.user.role_id && (req.user.role_id.includes(3) || req.user.role_id.includes(5)))) {
             throw new Error(notice_admin);
         }
         modelService.getMedicalTestById(req.params.id, function (err, result, fields) {
@@ -74,7 +74,7 @@ router.post('/create', function (req, res, next) {
         if (!req.user) {
             return res.redirect('/user/login');
         }
-        if (!req.user.isAdmin) {
+        if (!req.user.isAdmin || (req.user.role_id && (req.user.role_id.includes(3) || req.user.role_id.includes(5)))) {
             throw new Error(notice_admin);
         }
         var str_error  = [],
@@ -127,7 +127,7 @@ router.post('/edit/:id', function (req, res, next) {
         if (!req.user) {
             return res.redirect('/user/login');
         }
-        if (!req.user.isAdmin) {
+        if (!req.user.isAdmin || (req.user.role_id && (req.user.role_id.includes(3) || req.user.role_id.includes(5)))) {
             throw new Error(notice_admin);
         }
         var str_error  = [],
@@ -180,7 +180,7 @@ router.post('/delete/:id', function (req, res, next) {
         if (!req.user) {
             return res.redirect('/user/login');
         }
-        if (!req.user.isAdmin) {
+        if (!req.user.isAdmin || (req.user.role_id && (req.user.role_id.includes(3) || req.user.role_id.includes(5)))) {
             throw new Error(notice_admin);
         }
         var record_id = isNaN(parseInt(req.params.id)) ? 0 : parseInt(req.params.id);
@@ -213,7 +213,7 @@ router.post('/list', function (req, res, next) {
         if (!req.user) {
             return res.redirect('/user/login');
         }
-        if (!req.user.isAdmin) {
+        if (!req.user.isAdmin || (req.user.role_id && (req.user.role_id.includes(3) || req.user.role_id.includes(5)))) {
             throw new Error(notice_admin);
         }
         var arrPromise = [],
