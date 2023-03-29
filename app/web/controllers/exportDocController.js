@@ -1,10 +1,11 @@
 var express         = require('express'),
     router          = express.Router(),
     webService      = require('./../models/webModel'),
+    logService      = require('../../admin/models/logModel'),
     moment          = require('moment');
 
 const docx = require("docx");
-const { AlignmentType, Document, TextDirection, Packer, Paragraph, TextRun, VerticalAlign, Table, TableCell, TableRow, WidthType, BorderStyle} = docx;
+const { AlignmentType, Document, TextDirection, Packer, Paragraph, TextRun, VerticalAlign, Table, TableCell, TableRow, WidthType, BorderStyle, convertInchesToTwip} = docx;
 
 router.get("/examine", async (req, res) => {
     try {
@@ -751,10 +752,7 @@ router.get("/menu-example", async (req, res) =>{
             let sqlGetAlternativeFood = 'SELECT food_main, food_replace FROM alternative_food WHERE created_by = ?';
             let dataAlternativeFood = await webService.getListTable(sqlGetAlternativeFood, req.user.id);
             let menuExamineDetail = menuExapleList(data);
-            let getTableAlternativeFood = {};
-            if(dataAlternativeFood.success && dataAlternativeFood.data && dataAlternativeFood.data.length > 0){
-                getTableAlternativeFood = tableAlternativeFood(dataAlternativeFood.data);
-            }
+            let listAlternativeFood = getRowAlternativeFood(dataAlternativeFood);
             const doc = new Document({
                 creator: "dinhduonghotro.com",
                 title: "Thực đơn mẫu cho ${req.user.full_name ? req.user.full_name : req.user.name}",
@@ -783,7 +781,6 @@ router.get("/menu-example", async (req, res) =>{
                             },
                             paragraph: {
                                 spacing: {
-                                    before: 120,
                                     after: 120
                                 }
                             }
@@ -843,14 +840,6 @@ router.get("/menu-example", async (req, res) =>{
                 },
                 sections: [{
                     children: [
-                        new Paragraph({
-                            text: "THỰC ĐƠN MẪU",
-                            alignment: AlignmentType.CENTER,
-                            style: "hospital",
-                            spacing:{
-                                after: 480
-                            }
-                        }),
                         new Table({
                             columnWidths: [6000, 3010],
                             rows: [
@@ -868,6 +857,14 @@ router.get("/menu-example", async (req, res) =>{
                                                 type: WidthType.DXA,
                                             },
                                             children: [
+                                                new Paragraph({
+                                                    text: "THỰC ĐƠN MẪU",
+                                                    alignment: AlignmentType.CENTER,
+                                                    style: "hospital",
+                                                    spacing:{
+                                                        after: 480
+                                                    }
+                                                }),
                                                 new Table({
                                                     columnWidths: [1000, 3500, 1500],
                                                     rows: [
@@ -919,8 +916,19 @@ router.get("/menu-example", async (req, res) =>{
                                                 type: WidthType.DXA,
                                             },
                                             children: [
-                                                getTableAlternativeFood ? getTableAlternativeFood : new Table()
+                                                new Paragraph({
+                                                    text: "Thực phẩm thay thế tương đương",
+                                                    style: "title"
+                                                }),
+                                                new Table({
+                                                    rows: [
+                                                        ...listAlternativeFood
+                                                    ]
+                                                })
                                             ],
+                                            margins: {
+                                                left: convertInchesToTwip(0.2)
+                                            }
                                         })
                                     ]
                                 })
@@ -1016,50 +1024,24 @@ function menuExapleList(data){
     }
 }
 
-function tableAlternativeFood(data){
-    try {
-        let listRows = getRowAlternativeFood(data);
-        const table = new Table({
-            columnWidths: [1510, 1500],
-            rows: [
-                new TableRow({
-                    children: [
-                        ...listRows
-                    ]
-                })
-            ]
-        });
-        return table; 
-    } catch (error) {
-        webService.addToLogService(error.message, "Export Doc Controller tableAlternativeFood");
-        return new Table();
-    }
-}
-
 function getRowAlternativeFood(data){
     try {
         let listRowAlternativeFood = [];
-        for(let item of data){
-            listRowAlternativeFood.push(
-                new TableRow({
-                    children: [
-                        new TableCell({
-                            width: {
-                                size: 1510,
-                                type: WidthType.DXA,
-                            },
-                            children: [paramFollowerStyle( item.food_main,"size14")]
-                        }),
-                        new TableCell({
-                            width: {
-                                size: 1500,
-                                type: WidthType.DXA,
-                            },
-                            children: [paramFollowerStyle( item.food_replace,"size14")],
-                        })
-                    ],
-                })
-            );
+        if(data.success && data.data && data.data.length > 0){
+            for(let item of data.data){
+                listRowAlternativeFood.push(
+                    new TableRow({
+                        children: [
+                            new TableCell({
+                                children: [new Paragraph({text: String(item.food_main), style: "size14"})]
+                            }),
+                            new TableCell({
+                                children: [new Paragraph({text: String(item.food_replace), style: "size14"})]
+                            })
+                        ],
+                    })
+                );
+            }
         }
         return listRowAlternativeFood;
     } catch (error) {

@@ -646,8 +646,8 @@ router.get('/suggest/food-name', function(req, res, next){
             res.json(resultData);
             return;
         }
-        let sqlFoodName = 'SELECT * FROM food_info WHERE created_by = ? AND name LIKE ?';
-        webService.getListTable(sqlFoodName, [req.user.id, '%' + req.query.term + '%']).then(responseData =>{
+        let sqlFoodName = 'SELECT * FROM food_info WHERE department_id = ? AND name LIKE ?';
+        webService.getListTable(sqlFoodName, [req.user.department_id, '%' + req.query.term + '%']).then(responseData =>{
             if(responseData.success && responseData.data.length > 0){
                 resultData.message = "Thành công";
                 resultData.success = true;

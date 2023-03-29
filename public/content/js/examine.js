@@ -392,10 +392,10 @@ function addPrescriptionEdit(){
 
 function generateFoodName(id){
     $('#' + id).select2({
-        minimumInputLength: 3,
+        minimumInputLength: 2,
         language: {
             inputTooShort: function() {
-                return "Vui lòng nhập ít nhất 3 ký tự";
+                return "Vui lòng nhập ít nhất 2 ký tự";
             },
             noResults: function(){
                return "Không có kết quả được tìm thấy";
@@ -774,6 +774,26 @@ function addFoodTemplate(food, menuTime_id){
     }
 }
 
+function importExcelFile(){
+    try {
+      console.log("importExcelFile");
+      $('#file_input_excel').trigger('click');
+    } catch (error) {
+      console.log("importExcelFile", error);
+    }
+}
+
+function getFileExcel(){
+    try {
+        let dataFile = $('#file_input_excel').prop('files');
+        readXlsxFile(dataFile[0]).then(function(rows) {
+            console.log("getFileExcel data", rows);
+        });
+    } catch (error) {
+      console.log("getFileExcel", error);
+    }
+}
+
 $(document).ready(function(){
     $("#cus_birthday").flatpickr({
         dateFormat: "d-m-Y",
@@ -857,22 +877,3 @@ $(document).ready(function(){
     });
 });
 
-function importExcelFile(){
-    try {
-      console.log("importExcelFile");
-      $('#file_input_excel').trigger('click');
-    } catch (error) {
-      console.log("importExcelFile", error);
-    }
-}
-
-function getFileExcel(){
-    try {
-        let dataFile = $('#file_input_excel').prop('files');
-        readXlsxFile(dataFile[0]).then(function(rows) {
-            console.log("getFileExcel data", rows);
-        });
-    } catch (error) {
-      console.log("getFileExcel", error);
-    }
-}
