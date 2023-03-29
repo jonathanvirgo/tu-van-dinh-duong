@@ -856,3 +856,23 @@ $(document).ready(function(){
         generateTableMenu();
     });
 });
+
+function importExcelFile(){
+    try {
+      console.log("importExcelFile");
+      $('#file_input_excel').trigger('click');
+    } catch (error) {
+      console.log("importExcelFile", error);
+    }
+}
+
+function getFileExcel(){
+    try {
+        let dataFile = $('#file_input_excel').prop('files');
+        readXlsxFile(dataFile[0]).then(function(rows) {
+            console.log("getFileExcel data", rows);
+        });
+    } catch (error) {
+      console.log("getFileExcel", error);
+    }
+}

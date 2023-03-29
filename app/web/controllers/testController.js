@@ -51,4 +51,45 @@ router.post('/', function(req, res) {
     }
 });
 
+router.get('/excel', function(req, res, next) {
+    try {
+        if (!req.user) {
+            resultData.message = "Vui lòng đăng nhập lại để thực hiện chức năng này!";
+            res.json(resultData);
+            return;
+        }
+
+        var str_errors = [],
+            arrPromise = [],
+            resultData = {
+                filter: []
+            };
+        arrPromise.push(webService.createSideBarFilter(req, 1).then(function(dataFilter) {
+            resultData.filter = dataFilter;
+            if (resultData.filter.error.length > 0) {
+                str_errors = str_errors.concat(resultData.filter.error);
+            }
+        }));
+        return new Promise(function(resolve, reject) {
+            Promise.all(arrPromise).then(function() {
+                res.render("test/index.ejs", {
+                    user: req.user,
+                    errors: str_errors,
+                    page:'excel',
+                    filter: resultData.filter,
+                });
+            });
+        });
+    } catch (e) {
+        webService.createSideBarFilter(req, 2).then(function(dataFilter) {
+            res.render("test/index.ejs", {
+                user: req.user,
+                errors: str_errors,
+                page:'excel',
+                filter: resultData.filter,
+            });
+        })
+    }
+});
+
 module.exports = router;

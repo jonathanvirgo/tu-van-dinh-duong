@@ -461,7 +461,6 @@ function syncFormatPRBooking(){
 
 function importFoodInfo(){
   try {
-    console.log("importFoodInfo");
     $('#file_input_food_info').trigger('click');
   } catch (error) {
     console.log("importFoodInfo", error);

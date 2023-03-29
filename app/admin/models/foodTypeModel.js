@@ -141,7 +141,6 @@ let foodTypeService = {
                     if (err) return callback(err);
                     callback(null, results, fields);
                 });
-                console.log("getAllFoodType", query.sql);
             } catch (error) {
                 webService.addToLogService(error, 'foodTypeModel getAllFoodType');
                 return callback(error);

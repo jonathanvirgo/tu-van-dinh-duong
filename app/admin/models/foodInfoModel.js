@@ -98,11 +98,11 @@ let foodInfoService = {
                 if (!parameter.role_ids.includes(1) && !parameter.role_ids.includes(3)){
                     //Nếu là quản lý load theo viện
                     if(parameter.role_ids.includes(5)){
-                        sql += " AND hospital_id = ?";
+                        sql += " AND food_info.hospital_id = ?";
                         paraSQL.push(parameter.hospital_id);
                     }else if(parameter.role_ids.includes(4)){
                         //Nếu là bác sĩ load theo khoa
-                        sql += " AND department_id = ?";
+                        sql += " AND food_info.department_id = ?";
                         paraSQL.push(parameter.department_id);
                     }
                 }

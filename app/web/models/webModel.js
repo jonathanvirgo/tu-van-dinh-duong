@@ -67,6 +67,7 @@ let webService = {
     },
     addToLogService: function(message, page_url) {
         try {
+            console.log("addToLogService", message, page_url);
             let short_message = '';
             let full_message = '';
             if (typeof message === "string") {
@@ -622,7 +623,6 @@ let webService = {
                         data: results
                     });
                 });
-                console.log("addRecordTable", query.sql);
             });
         })
     },
@@ -687,7 +687,6 @@ let webService = {
                             message: "Successful"
                         });
                     });
-                    console.log("getListTable", query.sql);
                 } catch (error) {
                     webService.addToLogService(err, "webService getListTable");
                     resolve({
@@ -771,7 +770,6 @@ let webService = {
             let id   = '';
             let sqlIdCount = 'SELECT count_id FROM examine INNER JOIN department ON department.id = examine.department_id INNER JOIN hospital ON hospital.id = department.hospital_id WHERE hospital.id = ? ORDER BY examine.id DESC LIMIT 1';
             webService.getListTable(sqlIdCount, [hospital_id]).then(success => {
-                console.log("sqlIdCount", success);
                 if(success.success) {
                     if (success.data.length == 0) {
                         id = '001' + String(hospital_id).padStart(2, '0') + date;

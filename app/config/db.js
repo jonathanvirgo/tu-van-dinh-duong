@@ -14,7 +14,6 @@ exports.connect = function(mode, done) {
             password: env.parsed.DATABASE_PASSWORD,
             database: env.parsed.DATABASE_URL
         });
-        console.log("env", env);
         state.mode = mode;
     } catch (error) {
         console.log("error", error);

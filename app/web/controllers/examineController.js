@@ -73,7 +73,6 @@ router.get('/', function(req, res) {
                         paginator.hasPrevPage = true;
                         paginator.prevPage    = filter.requestUri + '&page=' + (paginator.page - 1);
                     }
-                    console.log("listExamine", listExamine);
                     res.render('examine/index.ejs', { 
                         user: req.user,
                         errors: str_errors,
@@ -162,7 +161,6 @@ router.get('/edit/:id', function(req, res, next) {
                         }
                     }
                     resultData.detailExamine = detailExamine.data[0];
-                    console.log("id", resultData.detailExamine);
                 }
             }else{
                 str_errors = str_errors.push(detailExamine.message);
@@ -387,7 +385,6 @@ router.post('/create', function(req, res, next) {
             res.json(resultData);
             return;
         }
-        console.log("create", req.body);
         var str_errors   = [],
             parameter    = {
                 cus_name:               req.body.cus_name,
@@ -550,7 +547,6 @@ router.post('/edit/:id', function(req, res, next) {
             res.json(resultData);
             return;
         }
-        console.log("edit", req.body);
         var str_errors   = [],
             parameter    = {
                 cus_name:               req.body.cus_name,
@@ -650,7 +646,6 @@ router.get('/suggest/food-name', function(req, res, next){
             res.json(resultData);
             return;
         }
-        console.log("suggest/food-name", req.body, req.query, req.params);
         let sqlFoodName = 'SELECT * FROM food_info WHERE created_by = ? AND name LIKE ?';
         webService.getListTable(sqlFoodName, [req.user.id, '%' + req.query.term + '%']).then(responseData =>{
             if(responseData.success && responseData.data.length > 0){

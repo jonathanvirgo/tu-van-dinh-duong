@@ -65,7 +65,6 @@ router.get('/', function(req, res) {
             }));
 
             return new Promise(function (resolve, reject) {
-                console.log("abc", webService.getExamineStatusOption());
                 Promise.all(arrPromise).then(function () {
                     res.render('home/index.ejs', { 
                         user: req.user,

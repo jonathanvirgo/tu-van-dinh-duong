@@ -8,7 +8,6 @@ const { AlignmentType, Document, TextDirection, Packer, Paragraph, TextRun, Vert
 
 router.get("/examine", async (req, res) => {
     try {
-        console.log("examine", JSON.parse(req.query.data), req.user);
         if (!req.user) {
             let message = "Vui lòng đăng nhập lại để thực hiện chức năng này!";
             res.json(message);
@@ -204,455 +203,491 @@ router.get("/examine", async (req, res) => {
             return res.json("Thiếu dữ liệu!");
         }
     } catch (error) {
-        
+        logService.create(req, error.message).then(function() {
+            res.json(error.message);
+        }); 
     }
 });
 
 function tableNutritionAdvice(data){
-    const table = new Table({
-        columnWidths: [2000, 2336, 2336, 2336],
-        rows: [
-            new TableRow({
-                children: [
-                    new TableCell({
-                        width: {
-                            size: 2000,
-                            type: WidthType.DXA,
-                        },
-                        children: [new Paragraph({text: "Nhóm TP", style: "table_heading"})],
-                    }),
-                    new TableCell({
-                        width: {
-                            size: 2336,
-                            type: WidthType.DXA,
-                        },
-                        children: [new Paragraph({text: "TP nên dùng", style: "table_heading"})],
-                    }),
-                    new TableCell({
-                        width: {
-                            size: 2336,
-                            type: WidthType.DXA,
-                        },
-                        children: [new Paragraph({text: "TP hạn chế dùng", style: "table_heading"})],
-                    }),
-                    new TableCell({
-                        width: {
-                            size: 2336,
-                            type: WidthType.DXA,
-                        },
-                        children: [new Paragraph({text: "TP không nên dùng", style: "table_heading"})],
-                    }),
-                ],
-            }),
-            new TableRow({
-                children: [
-                    new TableCell({
-                        width: {
-                            size: 2000,
-                            type: WidthType.DXA,
-                        },
-                        children: [new Paragraph({text: "Nhóm glucid", style: "table_cell"})]
-                    }),
-                    new TableCell({
-                        width: {
-                            size: 2336,
-                            type: WidthType.DXA,
-                        },
-                        children: [new Paragraph({text: data.glucid_should_use ? data.glucid_should_use : '', style: "table_cell"})],
-                    }),
-                    new TableCell({
-                        width: {
-                            size: 2336,
-                            type: WidthType.DXA,
-                        },
-                        children: [new Paragraph({text: data.glucid_limited_use ? data.glucid_limited_use : '', style: "table_cell"})],
-                    }),
-                    new TableCell({
-                        width: {
-                            size: 2336,
-                            type: WidthType.DXA,
-                        },
-                        children: [new Paragraph({text: data.glucid_should_not_use ? data.glucid_should_not_use : '', style: "table_cell"})],
-                    }),
-                ],
-            }),
-            new TableRow({
-                children: [
-                    new TableCell({
-                        width: {
-                            size: 2000,
-                            type: WidthType.DXA,
-                        },
-                        children: [new Paragraph({text: "Nhóm protein", style: "table_cell"})]
-                    }),
-                    new TableCell({
-                        width: {
-                            size: 2336,
-                            type: WidthType.DXA,
-                        },
-                        children: [new Paragraph({text: data.protein_should_use ? data.protein_should_use : '', style: "table_cell"})],
-                    }),
-                    new TableCell({
-                        width: {
-                            size: 2336,
-                            type: WidthType.DXA,
-                        },
-                        children: [new Paragraph({text: data.protein_limited_use ? data.protein_limited_use : '', style: "table_cell"})],
-                    }),
-                    new TableCell({
-                        width: {
-                            size: 2336,
-                            type: WidthType.DXA,
-                        },
-                        children: [new Paragraph({text: data.protein_should_not_use ? data.protein_should_not_use : '', style: "table_cell"})],
-                    }),
-                ],
-            }),
-            new TableRow({
-                children: [
-                    new TableCell({
-                        width: {
-                            size: 2000,
-                            type: WidthType.DXA,
-                        },
-                        children: [new Paragraph({text: "Nhóm lipid", style: "table_cell"})]
-                    }),
-                    new TableCell({
-                        width: {
-                            size: 2336,
-                            type: WidthType.DXA,
-                        },
-                        children: [new Paragraph({text: data.lipid_should_use ? data.lipid_should_use : '', style: "table_cell"})],
-                    }),
-                    new TableCell({
-                        width: {
-                            size: 2336,
-                            type: WidthType.DXA,
-                        },
-                        children: [new Paragraph({text: data.lipid_limited_use ? data.lipid_limited_use : '', style: "table_cell"})],
-                    }),
-                    new TableCell({
-                        width: {
-                            size: 2336,
-                            type: WidthType.DXA,
-                        },
-                        children: [new Paragraph({text: data.lipid_should_not_use ? data.lipid_should_not_use : '', style: "table_cell"})],
-                    }),
-                ],
-            }),
-            new TableRow({
-                children: [
-                    new TableCell({
-                        width: {
-                            size: 2000,
-                            type: WidthType.DXA,
-                        },
-                        children: [new Paragraph({text: "Nhóm VTM & CK", style: "table_cell"})]
-                    }),
-                    new TableCell({
-                        width: {
-                            size: 2336,
-                            type: WidthType.DXA,
-                        },
-                        children: [new Paragraph({text: data.vitamin_ck_should_use ? data.vitamin_ck_should_use : '', style: "table_cell"})],
-                    }),
-                    new TableCell({
-                        width: {
-                            size: 2336,
-                            type: WidthType.DXA,
-                        },
-                        children: [new Paragraph({text: data.vitamin_ck_limited_use ? data.vitamin_ck_limited_use : '', style: "table_cell"})],
-                    }),
-                    new TableCell({
-                        width: {
-                            size: 2336,
-                            type: WidthType.DXA,
-                        },
-                        children: [new Paragraph({text: data.vitamin_ck_should_not_use ? data.vitamin_ck_should_not_use : '', style: "table_cell"})],
-                    }),
-                ],
-            }),
-        ],
-    });
-    return table;
+    try {
+        const table = new Table({
+            columnWidths: [2000, 2336, 2336, 2336],
+            rows: [
+                new TableRow({
+                    children: [
+                        new TableCell({
+                            width: {
+                                size: 2000,
+                                type: WidthType.DXA,
+                            },
+                            children: [new Paragraph({text: "Nhóm TP", style: "table_heading"})],
+                        }),
+                        new TableCell({
+                            width: {
+                                size: 2336,
+                                type: WidthType.DXA,
+                            },
+                            children: [new Paragraph({text: "TP nên dùng", style: "table_heading"})],
+                        }),
+                        new TableCell({
+                            width: {
+                                size: 2336,
+                                type: WidthType.DXA,
+                            },
+                            children: [new Paragraph({text: "TP hạn chế dùng", style: "table_heading"})],
+                        }),
+                        new TableCell({
+                            width: {
+                                size: 2336,
+                                type: WidthType.DXA,
+                            },
+                            children: [new Paragraph({text: "TP không nên dùng", style: "table_heading"})],
+                        }),
+                    ],
+                }),
+                new TableRow({
+                    children: [
+                        new TableCell({
+                            width: {
+                                size: 2000,
+                                type: WidthType.DXA,
+                            },
+                            children: [new Paragraph({text: "Nhóm glucid", style: "table_cell"})]
+                        }),
+                        new TableCell({
+                            width: {
+                                size: 2336,
+                                type: WidthType.DXA,
+                            },
+                            children: [new Paragraph({text: data.glucid_should_use ? data.glucid_should_use : '', style: "table_cell"})],
+                        }),
+                        new TableCell({
+                            width: {
+                                size: 2336,
+                                type: WidthType.DXA,
+                            },
+                            children: [new Paragraph({text: data.glucid_limited_use ? data.glucid_limited_use : '', style: "table_cell"})],
+                        }),
+                        new TableCell({
+                            width: {
+                                size: 2336,
+                                type: WidthType.DXA,
+                            },
+                            children: [new Paragraph({text: data.glucid_should_not_use ? data.glucid_should_not_use : '', style: "table_cell"})],
+                        }),
+                    ],
+                }),
+                new TableRow({
+                    children: [
+                        new TableCell({
+                            width: {
+                                size: 2000,
+                                type: WidthType.DXA,
+                            },
+                            children: [new Paragraph({text: "Nhóm protein", style: "table_cell"})]
+                        }),
+                        new TableCell({
+                            width: {
+                                size: 2336,
+                                type: WidthType.DXA,
+                            },
+                            children: [new Paragraph({text: data.protein_should_use ? data.protein_should_use : '', style: "table_cell"})],
+                        }),
+                        new TableCell({
+                            width: {
+                                size: 2336,
+                                type: WidthType.DXA,
+                            },
+                            children: [new Paragraph({text: data.protein_limited_use ? data.protein_limited_use : '', style: "table_cell"})],
+                        }),
+                        new TableCell({
+                            width: {
+                                size: 2336,
+                                type: WidthType.DXA,
+                            },
+                            children: [new Paragraph({text: data.protein_should_not_use ? data.protein_should_not_use : '', style: "table_cell"})],
+                        }),
+                    ],
+                }),
+                new TableRow({
+                    children: [
+                        new TableCell({
+                            width: {
+                                size: 2000,
+                                type: WidthType.DXA,
+                            },
+                            children: [new Paragraph({text: "Nhóm lipid", style: "table_cell"})]
+                        }),
+                        new TableCell({
+                            width: {
+                                size: 2336,
+                                type: WidthType.DXA,
+                            },
+                            children: [new Paragraph({text: data.lipid_should_use ? data.lipid_should_use : '', style: "table_cell"})],
+                        }),
+                        new TableCell({
+                            width: {
+                                size: 2336,
+                                type: WidthType.DXA,
+                            },
+                            children: [new Paragraph({text: data.lipid_limited_use ? data.lipid_limited_use : '', style: "table_cell"})],
+                        }),
+                        new TableCell({
+                            width: {
+                                size: 2336,
+                                type: WidthType.DXA,
+                            },
+                            children: [new Paragraph({text: data.lipid_should_not_use ? data.lipid_should_not_use : '', style: "table_cell"})],
+                        }),
+                    ],
+                }),
+                new TableRow({
+                    children: [
+                        new TableCell({
+                            width: {
+                                size: 2000,
+                                type: WidthType.DXA,
+                            },
+                            children: [new Paragraph({text: "Nhóm VTM & CK", style: "table_cell"})]
+                        }),
+                        new TableCell({
+                            width: {
+                                size: 2336,
+                                type: WidthType.DXA,
+                            },
+                            children: [new Paragraph({text: data.vitamin_ck_should_use ? data.vitamin_ck_should_use : '', style: "table_cell"})],
+                        }),
+                        new TableCell({
+                            width: {
+                                size: 2336,
+                                type: WidthType.DXA,
+                            },
+                            children: [new Paragraph({text: data.vitamin_ck_limited_use ? data.vitamin_ck_limited_use : '', style: "table_cell"})],
+                        }),
+                        new TableCell({
+                            width: {
+                                size: 2336,
+                                type: WidthType.DXA,
+                            },
+                            children: [new Paragraph({text: data.vitamin_ck_should_not_use ? data.vitamin_ck_should_not_use : '', style: "table_cell"})],
+                        }),
+                    ],
+                }),
+            ],
+        });
+        return table;
+    } catch (error) {
+        webService.addToLogService(error.message, "Export Doc Controller tableNutritionAdvice");
+        return new Table();
+    }
 }
 
 function tableName(data, yearOld){
-    const table = new Table({
-        columnWidths: [6500, 1500, 1010],
-        rows: [
-            new TableRow({
-                children: [
-                    new TableCell({
-                        borders:{
-                            top: {style: BorderStyle.NONE, color: "FFFFFF"},
-                            bottom: {style: BorderStyle.NONE, color: "FFFFFF"},
-                            left: {style: BorderStyle.NONE, color: "FFFFFF"},
-                            right: {style: BorderStyle.NONE, color: "FFFFFF"},
-                        },
-                        width: {
-                            size: 6500,
-                            type: WidthType.DXA,
-                        },
-                        children: [new Paragraph({text: "Họ và tên: " + (data.cus_name ? data.cus_name : ''), style: "size14"})]
-                    }),
-                    new TableCell({
-                        borders:{
-                            top: {style: BorderStyle.NONE, color: "FFFFFF"},
-                            bottom: {style: BorderStyle.NONE, color: "FFFFFF"},
-                            left: {style: BorderStyle.NONE, color: "FFFFFF"},
-                            right: {style: BorderStyle.NONE, color: "FFFFFF"},
-                        },
-                        width: {
-                            size: 1500,
-                            type: WidthType.DXA,
-                        },
-                        children: [new Paragraph({text: "Giới: " + ((!data.cus_gender || data.cus_gender && data.cus_gender == 2) ? 'Khác' : (data.cus_gender == 1 ? 'Nam' : 'Nữ')), style: "size14"})],
-                    }),
-                    new TableCell({
-                        borders:{
-                            top: {style: BorderStyle.NONE, color: "FFFFFF"},
-                            bottom: {style: BorderStyle.NONE, color: "FFFFFF"},
-                            left: {style: BorderStyle.NONE, color: "FFFFFF"},
-                            right: {style: BorderStyle.NONE, color: "FFFFFF"},
-                        },
-                        width: {
-                            size: 1010,
-                            type: WidthType.DXA,
-                        },
-                        children: [new Paragraph({text: "Tuổi: " + (yearOld > 0 ? yearOld : ''), style: "size14"})],
-                    })
-                ],
-            }),
-        ]
-    });
-    return table;
+    try {
+        const table = new Table({
+            columnWidths: [6500, 1500, 1010],
+            rows: [
+                new TableRow({
+                    children: [
+                        new TableCell({
+                            borders:{
+                                top: {style: BorderStyle.NONE, color: "FFFFFF"},
+                                bottom: {style: BorderStyle.NONE, color: "FFFFFF"},
+                                left: {style: BorderStyle.NONE, color: "FFFFFF"},
+                                right: {style: BorderStyle.NONE, color: "FFFFFF"},
+                            },
+                            width: {
+                                size: 6500,
+                                type: WidthType.DXA,
+                            },
+                            children: [new Paragraph({text: "Họ và tên: " + (data.cus_name ? data.cus_name : ''), style: "size14"})]
+                        }),
+                        new TableCell({
+                            borders:{
+                                top: {style: BorderStyle.NONE, color: "FFFFFF"},
+                                bottom: {style: BorderStyle.NONE, color: "FFFFFF"},
+                                left: {style: BorderStyle.NONE, color: "FFFFFF"},
+                                right: {style: BorderStyle.NONE, color: "FFFFFF"},
+                            },
+                            width: {
+                                size: 1500,
+                                type: WidthType.DXA,
+                            },
+                            children: [new Paragraph({text: "Giới: " + ((!data.cus_gender || data.cus_gender && data.cus_gender == 2) ? 'Khác' : (data.cus_gender == 1 ? 'Nam' : 'Nữ')), style: "size14"})],
+                        }),
+                        new TableCell({
+                            borders:{
+                                top: {style: BorderStyle.NONE, color: "FFFFFF"},
+                                bottom: {style: BorderStyle.NONE, color: "FFFFFF"},
+                                left: {style: BorderStyle.NONE, color: "FFFFFF"},
+                                right: {style: BorderStyle.NONE, color: "FFFFFF"},
+                            },
+                            width: {
+                                size: 1010,
+                                type: WidthType.DXA,
+                            },
+                            children: [new Paragraph({text: "Tuổi: " + (yearOld > 0 ? yearOld : ''), style: "size14"})],
+                        })
+                    ],
+                }),
+            ]
+        });
+        return table;
+    } catch (error) {
+        webService.addToLogService(error.message, "Export Doc Controller tableName");
+        return new Table();
+    }
 }
 
 function tableLength(data){
-    const table = new Table({
-        columnWidths: [3000, 3000, 3010],
-        rows: [
-            new TableRow({
-                children: [
-                    new TableCell({
-                        borders:{
-                            top: {style: BorderStyle.NONE, color: "FFFFFF"},
-                            bottom: {style: BorderStyle.NONE, color: "FFFFFF"},
-                            left: {style: BorderStyle.NONE, color: "FFFFFF"},
-                            right: {style: BorderStyle.NONE, color: "FFFFFF"},
-                        },
-                        width: {
-                            size: 3000,
-                            type: WidthType.DXA,
-                        },
-                        children: [new Paragraph({text: "Cao (m): " + (data.cus_length ? data.cus_length : ''), style: "size14"})]
-                    }),
-                    new TableCell({
-                        borders:{
-                            top: {style: BorderStyle.NONE, color: "FFFFFF"},
-                            bottom: {style: BorderStyle.NONE, color: "FFFFFF"},
-                            left: {style: BorderStyle.NONE, color: "FFFFFF"},
-                            right: {style: BorderStyle.NONE, color: "FFFFFF"},
-                        },
-                        width: {
-                            size: 3000,
-                            type: WidthType.DXA,
-                        },
-                        children: [new Paragraph({text: "CNTC (kg): " + (data.cus_cntc ? data.cus_cntc : ''), style: "size14"})],
-                    }),
-                    new TableCell({
-                        borders:{
-                            top: {style: BorderStyle.NONE, color: "FFFFFF"},
-                            bottom: {style: BorderStyle.NONE, color: "FFFFFF"},
-                            left: {style: BorderStyle.NONE, color: "FFFFFF"},
-                            right: {style: BorderStyle.NONE, color: "FFFFFF"},
-                        },
-                        width: {
-                            size: 3010,
-                            type: WidthType.DXA,
-                        },
-                        children: [new Paragraph({text: "CNHT (kg): " + (data.cus_cnht ? data.cus_cnht : ''), style: "size14"})],
-                    })
-                ],
-            }),
-        ]
-    });
-    return table;
+    try {
+        const table = new Table({
+            columnWidths: [3000, 3000, 3010],
+            rows: [
+                new TableRow({
+                    children: [
+                        new TableCell({
+                            borders:{
+                                top: {style: BorderStyle.NONE, color: "FFFFFF"},
+                                bottom: {style: BorderStyle.NONE, color: "FFFFFF"},
+                                left: {style: BorderStyle.NONE, color: "FFFFFF"},
+                                right: {style: BorderStyle.NONE, color: "FFFFFF"},
+                            },
+                            width: {
+                                size: 3000,
+                                type: WidthType.DXA,
+                            },
+                            children: [new Paragraph({text: "Cao (m): " + (data.cus_length ? data.cus_length : ''), style: "size14"})]
+                        }),
+                        new TableCell({
+                            borders:{
+                                top: {style: BorderStyle.NONE, color: "FFFFFF"},
+                                bottom: {style: BorderStyle.NONE, color: "FFFFFF"},
+                                left: {style: BorderStyle.NONE, color: "FFFFFF"},
+                                right: {style: BorderStyle.NONE, color: "FFFFFF"},
+                            },
+                            width: {
+                                size: 3000,
+                                type: WidthType.DXA,
+                            },
+                            children: [new Paragraph({text: "CNTC (kg): " + (data.cus_cntc ? data.cus_cntc : ''), style: "size14"})],
+                        }),
+                        new TableCell({
+                            borders:{
+                                top: {style: BorderStyle.NONE, color: "FFFFFF"},
+                                bottom: {style: BorderStyle.NONE, color: "FFFFFF"},
+                                left: {style: BorderStyle.NONE, color: "FFFFFF"},
+                                right: {style: BorderStyle.NONE, color: "FFFFFF"},
+                            },
+                            width: {
+                                size: 3010,
+                                type: WidthType.DXA,
+                            },
+                            children: [new Paragraph({text: "CNHT (kg): " + (data.cus_cnht ? data.cus_cnht : ''), style: "size14"})],
+                        })
+                    ],
+                }),
+            ]
+        });
+        return table;
+    } catch (error) {
+        webService.addToLogService(error.message, "Export Doc Controller tableLength");
+        return new Table();
+    }
 }
 
 function tableCNTC(data){
-    const table = new Table({
-        columnWidths: [4505, 4505],
-        rows: [
-            new TableRow({
-                children: [
-                    new TableCell({
-                        borders:{
-                            top: {style: BorderStyle.NONE, color: "FFFFFF"},
-                            bottom: {style: BorderStyle.NONE, color: "FFFFFF"},
-                            left: {style: BorderStyle.NONE, color: "FFFFFF"},
-                            right: {style: BorderStyle.NONE, color: "FFFFFF"},
-                        },
-                        width: {
-                            size: 4505,
-                            type: WidthType.DXA,
-                        },
-                        children: [new Paragraph({text: "CN chuẩn/CN khuyến nghị: ", style: "size14"})]
-                    }),
-                    new TableCell({
-                        borders:{
-                            top: {style: BorderStyle.NONE, color: "FFFFFF"},
-                            bottom: {style: BorderStyle.NONE, color: "FFFFFF"},
-                            left: {style: BorderStyle.NONE, color: "FFFFFF"},
-                            right: {style: BorderStyle.NONE, color: "FFFFFF"},
-                        },
-                        width: {
-                            size: 4505,
-                            type: WidthType.DXA,
-                        },
-                        children: [new Paragraph({text: "CC chuẩn (cm): ", style: "size14"})],
-                    })
-                ],
-            }),
-        ]
-    });
-    return table;
+    try {
+        const table = new Table({
+            columnWidths: [4505, 4505],
+            rows: [
+                new TableRow({
+                    children: [
+                        new TableCell({
+                            borders:{
+                                top: {style: BorderStyle.NONE, color: "FFFFFF"},
+                                bottom: {style: BorderStyle.NONE, color: "FFFFFF"},
+                                left: {style: BorderStyle.NONE, color: "FFFFFF"},
+                                right: {style: BorderStyle.NONE, color: "FFFFFF"},
+                            },
+                            width: {
+                                size: 4505,
+                                type: WidthType.DXA,
+                            },
+                            children: [new Paragraph({text: "CN chuẩn/CN khuyến nghị: ", style: "size14"})]
+                        }),
+                        new TableCell({
+                            borders:{
+                                top: {style: BorderStyle.NONE, color: "FFFFFF"},
+                                bottom: {style: BorderStyle.NONE, color: "FFFFFF"},
+                                left: {style: BorderStyle.NONE, color: "FFFFFF"},
+                                right: {style: BorderStyle.NONE, color: "FFFFFF"},
+                            },
+                            width: {
+                                size: 4505,
+                                type: WidthType.DXA,
+                            },
+                            children: [new Paragraph({text: "CC chuẩn (cm): ", style: "size14"})],
+                        })
+                    ],
+                }),
+            ]
+        });
+        return table;
+    } catch (error) {
+        webService.addToLogService(error.message, "Export Doc Controller tableCNTC");
+        return new Table();
+    }
 }
 
 function tableHongCau(data){
-    const table = new Table({
-        columnWidths: [3000, 3000, 3010],
-        rows: [
-            new TableRow({
-                children: [
-                    new TableCell({
-                        borders:{
-                            top: {style: BorderStyle.NONE, color: "FFFFFF"},
-                            bottom: {style: BorderStyle.NONE, color: "FFFFFF"},
-                            left: {style: BorderStyle.NONE, color: "FFFFFF"},
-                            right: {style: BorderStyle.NONE, color: "FFFFFF"},
-                        },
-                        width: {
-                            size: 3000,
-                            type: WidthType.DXA,
-                        },
-                        children: [new Paragraph({text: "Hồng cầu: " + (data.erythrocytes ? data.erythrocytes : '') + " (T/L)", style: "size14"})]
-                    }),
-                    new TableCell({
-                        borders:{
-                            top: {style: BorderStyle.NONE, color: "FFFFFF"},
-                            bottom: {style: BorderStyle.NONE, color: "FFFFFF"},
-                            left: {style: BorderStyle.NONE, color: "FFFFFF"},
-                            right: {style: BorderStyle.NONE, color: "FFFFFF"},
-                        },
-                        width: {
-                            size: 3000,
-                            type: WidthType.DXA,
-                        },
-                        children: [new Paragraph({text: "Hemoglobin: " + (data.cus_bc ? data.cus_bc : '') + " (g/L)", style: "size14"})],
-                    }),
-                    new TableCell({
-                        borders:{
-                            top: {style: BorderStyle.NONE, color: "FFFFFF"},
-                            bottom: {style: BorderStyle.NONE, color: "FFFFFF"},
-                            left: {style: BorderStyle.NONE, color: "FFFFFF"},
-                            right: {style: BorderStyle.NONE, color: "FFFFFF"},
-                        },
-                        width: {
-                            size: 3010,
-                            type: WidthType.DXA,
-                        },
-                        children: [new Paragraph({text: "BC: " + (data.cus_tc ? data.cus_tc : ''), style: "size14"})],
-                    })
-                ],
-            }),
-        ]
-    });
-    return table;
+    try {
+        const table = new Table({
+            columnWidths: [3000, 3000, 3010],
+            rows: [
+                new TableRow({
+                    children: [
+                        new TableCell({
+                            borders:{
+                                top: {style: BorderStyle.NONE, color: "FFFFFF"},
+                                bottom: {style: BorderStyle.NONE, color: "FFFFFF"},
+                                left: {style: BorderStyle.NONE, color: "FFFFFF"},
+                                right: {style: BorderStyle.NONE, color: "FFFFFF"},
+                            },
+                            width: {
+                                size: 3000,
+                                type: WidthType.DXA,
+                            },
+                            children: [new Paragraph({text: "Hồng cầu: " + (data.erythrocytes ? data.erythrocytes : '') + " (T/L)", style: "size14"})]
+                        }),
+                        new TableCell({
+                            borders:{
+                                top: {style: BorderStyle.NONE, color: "FFFFFF"},
+                                bottom: {style: BorderStyle.NONE, color: "FFFFFF"},
+                                left: {style: BorderStyle.NONE, color: "FFFFFF"},
+                                right: {style: BorderStyle.NONE, color: "FFFFFF"},
+                            },
+                            width: {
+                                size: 3000,
+                                type: WidthType.DXA,
+                            },
+                            children: [new Paragraph({text: "Hemoglobin: " + (data.cus_bc ? data.cus_bc : '') + " (g/L)", style: "size14"})],
+                        }),
+                        new TableCell({
+                            borders:{
+                                top: {style: BorderStyle.NONE, color: "FFFFFF"},
+                                bottom: {style: BorderStyle.NONE, color: "FFFFFF"},
+                                left: {style: BorderStyle.NONE, color: "FFFFFF"},
+                                right: {style: BorderStyle.NONE, color: "FFFFFF"},
+                            },
+                            width: {
+                                size: 3010,
+                                type: WidthType.DXA,
+                            },
+                            children: [new Paragraph({text: "BC: " + (data.cus_tc ? data.cus_tc : ''), style: "size14"})],
+                        })
+                    ],
+                }),
+            ]
+        });
+        return table;
+    } catch (error) {
+        webService.addToLogService(error.message, "Export Doc Controller tableHongCau");
+        return new Table();
+    }
 }
 
 function tableAlbumin(data){
-    const table = new Table({
-        columnWidths: [4505, 4505],
-        rows: [
-            new TableRow({
-                children: [
-                    new TableCell({
-                        borders:{
-                            top: {style: BorderStyle.NONE, color: "FFFFFF"},
-                            bottom: {style: BorderStyle.NONE, color: "FFFFFF"},
-                            left: {style: BorderStyle.NONE, color: "FFFFFF"},
-                            right: {style: BorderStyle.NONE, color: "FFFFFF"},
-                        },
-                        width: {
-                            size: 4505,
-                            type: WidthType.DXA,
-                        },
-                        children: [new Paragraph({text: "Albumin: " + (data.cus_albumin ? data.cus_albumin : '')  + " (g/L)", style: "size14"})]
-                    }),
-                    new TableCell({
-                        borders:{
-                            top: {style: BorderStyle.NONE, color: "FFFFFF"},
-                            bottom: {style: BorderStyle.NONE, color: "FFFFFF"},
-                            left: {style: BorderStyle.NONE, color: "FFFFFF"},
-                            right: {style: BorderStyle.NONE, color: "FFFFFF"},
-                        },
-                        width: {
-                            size: 4505,
-                            type: WidthType.DXA,
-                        },
-                        children: [new Paragraph({text: "Na+/K+/Cl-: " + (data.cus_nakcl ? data.cus_nakcl : ''), style: "size14"})],
-                    })
-                ],
-            }),
-        ]
-    });
-    return table;
+    try {
+        const table = new Table({
+            columnWidths: [4505, 4505],
+            rows: [
+                new TableRow({
+                    children: [
+                        new TableCell({
+                            borders:{
+                                top: {style: BorderStyle.NONE, color: "FFFFFF"},
+                                bottom: {style: BorderStyle.NONE, color: "FFFFFF"},
+                                left: {style: BorderStyle.NONE, color: "FFFFFF"},
+                                right: {style: BorderStyle.NONE, color: "FFFFFF"},
+                            },
+                            width: {
+                                size: 4505,
+                                type: WidthType.DXA,
+                            },
+                            children: [new Paragraph({text: "Albumin: " + (data.cus_albumin ? data.cus_albumin : '')  + " (g/L)", style: "size14"})]
+                        }),
+                        new TableCell({
+                            borders:{
+                                top: {style: BorderStyle.NONE, color: "FFFFFF"},
+                                bottom: {style: BorderStyle.NONE, color: "FFFFFF"},
+                                left: {style: BorderStyle.NONE, color: "FFFFFF"},
+                                right: {style: BorderStyle.NONE, color: "FFFFFF"},
+                            },
+                            width: {
+                                size: 4505,
+                                type: WidthType.DXA,
+                            },
+                            children: [new Paragraph({text: "Na+/K+/Cl-: " + (data.cus_nakcl ? data.cus_nakcl : ''), style: "size14"})],
+                        })
+                    ],
+                }),
+            ]
+        });
+        return table;
+    } catch (error) {
+        webService.addToLogService(error.message, "Export Doc Controller tableAlbumin");
+        return new Table();
+    }
 }
 
 function tableAst(data){
-    const table = new Table({
-        columnWidths: [4505, 4505],
-        rows: [
-            new TableRow({
-                children: [
-                    new TableCell({
-                        borders:{
-                            top: {style: BorderStyle.NONE, color: "FFFFFF"},
-                            bottom: {style: BorderStyle.NONE, color: "FFFFFF"},
-                            left: {style: BorderStyle.NONE, color: "FFFFFF"},
-                            right: {style: BorderStyle.NONE, color: "FFFFFF"},
-                        },
-                        width: {
-                            size: 4505,
-                            type: WidthType.DXA,
-                        },
-                        children: [new Paragraph({text: "AST/ALT/GGT: " + (data.cus_astaltggt ? data.cus_astaltggt : '')  + " (U/L)", style: "size14"})]
-                    }),
-                    new TableCell({
-                        borders:{
-                            top: {style: BorderStyle.NONE, color: "FFFFFF"},
-                            bottom: {style: BorderStyle.NONE, color: "FFFFFF"},
-                            left: {style: BorderStyle.NONE, color: "FFFFFF"},
-                            right: {style: BorderStyle.NONE, color: "FFFFFF"},
-                        },
-                        width: {
-                            size: 4505,
-                            type: WidthType.DXA,
-                        },
-                        children: [new Paragraph({text: "Ure/creatinin: " + (data.cus_urecreatinin ? data.cus_urecreatinin : ''), style: "size14"})],
-                    })
-                ],
-            }),
-        ]
-    });
-    return table;
+    try {
+        const table = new Table({
+            columnWidths: [4505, 4505],
+            rows: [
+                new TableRow({
+                    children: [
+                        new TableCell({
+                            borders:{
+                                top: {style: BorderStyle.NONE, color: "FFFFFF"},
+                                bottom: {style: BorderStyle.NONE, color: "FFFFFF"},
+                                left: {style: BorderStyle.NONE, color: "FFFFFF"},
+                                right: {style: BorderStyle.NONE, color: "FFFFFF"},
+                            },
+                            width: {
+                                size: 4505,
+                                type: WidthType.DXA,
+                            },
+                            children: [new Paragraph({text: "AST/ALT/GGT: " + (data.cus_astaltggt ? data.cus_astaltggt : '')  + " (U/L)", style: "size14"})]
+                        }),
+                        new TableCell({
+                            borders:{
+                                top: {style: BorderStyle.NONE, color: "FFFFFF"},
+                                bottom: {style: BorderStyle.NONE, color: "FFFFFF"},
+                                left: {style: BorderStyle.NONE, color: "FFFFFF"},
+                                right: {style: BorderStyle.NONE, color: "FFFFFF"},
+                            },
+                            width: {
+                                size: 4505,
+                                type: WidthType.DXA,
+                            },
+                            children: [new Paragraph({text: "Ure/creatinin: " + (data.cus_urecreatinin ? data.cus_urecreatinin : ''), style: "size14"})],
+                        })
+                    ],
+                }),
+            ]
+        });
+        return table;
+    } catch (error) {
+        webService.addToLogService(error.message, "Export Doc Controller tableAst");
+        return new Table();
+    }
 }
 
 function getMedicine(prescription){
     try {
-        console.log("getMedicine", prescription);
         let rowTables = [];
         if(prescription && prescription.length > 0){
             for(let item of prescription){
@@ -674,7 +709,8 @@ function getMedicine(prescription){
         }
         return rowTables; 
     } catch (error) {
-        
+        webService.addToLogService(error.message, "Export Doc Controller getMedicine");
+        return [];
     }
 }
 
@@ -685,7 +721,8 @@ function paramFollowerStyle(text, style){
             style: style,
         });
     } catch (error) {
-        
+        webService.addToLogService(error.message, "Export Doc Controller paramFollowerStyle");
+        return new Paragraph();
     }
 }
 
@@ -696,13 +733,13 @@ function textRunBreak(text){
             break: 1
         })    
     } catch (error) {
-        
+        webService.addToLogService(error.message, "Export Doc Controller textRunBreak");
+        return new TextRun();
     }
 }
 
 router.get("/menu-example", async (req, res) =>{
     try {
-        console.log("examine", JSON.parse(req.query.data), req.user);
         if (!req.user) {
             let message = "Vui lòng đăng nhập lại để thực hiện chức năng này!";
             res.json(message);
@@ -711,8 +748,13 @@ router.get("/menu-example", async (req, res) =>{
         let now = moment();
         let data = JSON.parse(req.query.data);
         if(data){
+            let sqlGetAlternativeFood = 'SELECT food_main, food_replace FROM alternative_food WHERE created_by = ?';
+            let dataAlternativeFood = await webService.getListTable(sqlGetAlternativeFood, req.user.id);
             let menuExamineDetail = menuExapleList(data);
-            console.log("menuExamineDetail", menuExamineDetail);
+            let getTableAlternativeFood = {};
+            if(dataAlternativeFood.success && dataAlternativeFood.data && dataAlternativeFood.data.length > 0){
+                getTableAlternativeFood = tableAlternativeFood(dataAlternativeFood.data);
+            }
             const doc = new Document({
                 creator: "dinhduonghotro.com",
                 title: "Thực đơn mẫu cho ${req.user.full_name ? req.user.full_name : req.user.name}",
@@ -876,7 +918,9 @@ router.get("/menu-example", async (req, res) =>{
                                                 size: 3010,
                                                 type: WidthType.DXA,
                                             },
-                                            children: [],
+                                            children: [
+                                                getTableAlternativeFood ? getTableAlternativeFood : new Table()
+                                            ],
                                         })
                                     ]
                                 })
@@ -893,7 +937,9 @@ router.get("/menu-example", async (req, res) =>{
             return res.json("Thiếu dữ liệu!");
         }
     } catch (error) {
-        
+        logService.create(req, error.message).then(function() {
+            res.json(error.message);
+        }); 
     }
 });
 
@@ -902,7 +948,6 @@ function menuExapleList(data){
         let listDetailMenu = [];
         if(data && data.detail.length > 0){
             for(let item of data.detail){
-                console.log("item",item);
                 listDetailMenu.push(
                     new TableRow({
                         children: [
@@ -966,7 +1011,60 @@ function menuExapleList(data){
             return listDetailMenu;
         }
     } catch (error) {
-        
+        webService.addToLogService(error.message, "Export Doc Controller menuExapleList");
+        return [];
+    }
+}
+
+function tableAlternativeFood(data){
+    try {
+        let listRows = getRowAlternativeFood(data);
+        const table = new Table({
+            columnWidths: [1510, 1500],
+            rows: [
+                new TableRow({
+                    children: [
+                        ...listRows
+                    ]
+                })
+            ]
+        });
+        return table; 
+    } catch (error) {
+        webService.addToLogService(error.message, "Export Doc Controller tableAlternativeFood");
+        return new Table();
+    }
+}
+
+function getRowAlternativeFood(data){
+    try {
+        let listRowAlternativeFood = [];
+        for(let item of data){
+            listRowAlternativeFood.push(
+                new TableRow({
+                    children: [
+                        new TableCell({
+                            width: {
+                                size: 1510,
+                                type: WidthType.DXA,
+                            },
+                            children: [paramFollowerStyle( item.food_main,"size14")]
+                        }),
+                        new TableCell({
+                            width: {
+                                size: 1500,
+                                type: WidthType.DXA,
+                            },
+                            children: [paramFollowerStyle( item.food_replace,"size14")],
+                        })
+                    ],
+                })
+            );
+        }
+        return listRowAlternativeFood;
+    } catch (error) {
+        webService.addToLogService(error.message, "Export Doc Controller getRowAlternativeFood");
+        return [];
     }
 }
 

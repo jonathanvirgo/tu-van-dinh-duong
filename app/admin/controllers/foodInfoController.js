@@ -200,7 +200,6 @@ router.post('/edit/:id', function (req, res, next) {
                 department_id: req.user.department_id,
                 created_by: req.user.id 
             };
-            console.log("parameter", parameter);
             if(parameter.name == ''){
                 str_error.push("Thiếu tên thực phẩm!");
             }
@@ -420,7 +419,6 @@ router.post('/import-from-excel', function (req, res, next) {
         });
         
     } catch (e) {
-        console.log("e", e);
         logService.create(req, e.message).then(function(){
             resultData.message = e.message;
             res.send(resultData);

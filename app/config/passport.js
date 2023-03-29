@@ -77,9 +77,7 @@ module.exports = function(passport) {
             passwordField: 'password',
             passReqToCallback: true
         }, function(req, username, password, done) {
-            console.log("getUser", username, password);
         userService.getUser(username, webService.saltHashPassword(password)).then(function(user) {
-            console.log("passport.use",user);
             if (!user) {
                 return done(null, false, { message: 'Sai tên đăng nhập hoặc mật khẩu!' });
             } else {  

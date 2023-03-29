@@ -46,7 +46,6 @@ router.post('/login', function (req, res, next) {
                 res.send(resultData);
                 return;
             }
-            console.log("login",responseData.data);
             if(responseData.data && responseData.data.length > 0){
                 req.logIn(responseData.data[0], function (err) {
                     if (err) {

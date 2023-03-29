@@ -54,7 +54,6 @@ let examineService = {
                 if (err) return callback(err);
                 callback(null, results, fields);
             });
-            console.log("count", query.sql);
         });
     },
     getAllExamine: function(parameter, callback) {
@@ -117,7 +116,6 @@ let examineService = {
                 if (err) return callback(err);
                 callback(null, results, fields);
             });
-            console.log("list", query.sql);
         });
     },
     getExamineGroupByDate: function(parameter, callback) {

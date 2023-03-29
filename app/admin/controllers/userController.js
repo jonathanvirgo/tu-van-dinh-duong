@@ -556,7 +556,6 @@ router.post('/edit/:id', function (req, res, next) {
             })
         })
     } catch (e) {
-        console.log(e);
         adminService.addToLog(req, res, e.message);
     }
 });
