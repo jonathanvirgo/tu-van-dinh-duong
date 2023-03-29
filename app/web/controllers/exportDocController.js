@@ -786,6 +786,16 @@ router.get("/menu-example", async (req, res) =>{
                             }
                         },
                         {
+                            id: "title2",
+                            basedOn: "title",
+                            next: "Normal",
+                            paragraph: {
+                                spacing: {
+                                    before: 360
+                                }
+                            }
+                        },
+                        {
                             id: "size14",
                             basedOn: "Normal",
                             next: "Normal",
@@ -936,7 +946,7 @@ router.get("/menu-example", async (req, res) =>{
                         }),
                         new Paragraph({
                             text: "Tổng lượng thực phẩm / ngày",
-                            style: "title"
+                            style: "title2"
                         }),
                         new Table({
                             columnWidths: [4000, 2000],
