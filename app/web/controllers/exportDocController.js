@@ -184,7 +184,7 @@ router.get("/examine", async (req, res) => {
                         paramFollowerStyle("6. BỔ SUNG", "title"),
                         ...medicine,
                         new Paragraph({
-                            text: `Hà Nội, ngày ${String(now.date()).padStart(2, '0')} tháng ${String(now.month()).padStart(2, '0')} năm ${now.year()}`,
+                            text: `Hà Nội, ngày ${String(now.date()).padStart(2, '0')} tháng ${String((now.month() + 1)).padStart(2, '0')} năm ${now.year()}`,
                             alignment: AlignmentType.RIGHT,
                             style: "size14"
                         }),
@@ -197,7 +197,7 @@ router.get("/examine", async (req, res) => {
                 }],
             });    
             const b64string = await Packer.toBase64String(doc);
-            let filename = "Phieu_kham_" + webService.removeVietnameseTones(req.user.full_name ? req.user.full_name : req.user.name).replaceAll(" ", "_") + "_" + String(now.date()).padStart(2, '0') + "_" + String(now.month()).padStart(2, '0') + "_" + now.year(); 
+            let filename = "Phieu_kham_" + webService.removeVietnameseTones(req.user.full_name ? req.user.full_name : req.user.name).replaceAll(" ", "_") + "_" + String(now.date()).padStart(2, '0') + "_" + String((now.month() + 1)).padStart(2, '0') + "_" + now.year(); 
             res.setHeader('Content-Disposition', 'attachment; filename=' + filename + '.docx');
             res.send(Buffer.from(b64string, 'base64')); 
         }else{
@@ -789,6 +789,7 @@ router.get("/menu-example", async (req, res) =>{
                             id: "title2",
                             basedOn: "title",
                             next: "Normal",
+                            quickFormat: true,
                             paragraph: {
                                 spacing: {
                                     before: 360
@@ -1140,5 +1141,138 @@ function getRowAlternativeFood(data){
         return [];
     }
 }
+
+router.get("/prescription", async (req, res) =>{
+    try {
+        if (!req.user) {
+            let message = "Vui lòng đăng nhập lại để thực hiện chức năng này!";
+            res.json(message);
+            return;
+        }
+        let now = moment();
+        let data = JSON.parse(req.query.data);
+        if(data){
+            let yearOld = webService.caculateYearOld(data.cus_birthday);
+            let medicine = getMedicine(data.prescription ? JSON.parse(data.prescription) : []);
+            const doc = new Document({
+                creator: "dinhduonghotro.com",
+                title: "Phiếu tư vấn ${req.user.full_name ? req.user.full_name : req.user.name}",
+                description: "Phiếu tư vấn ${req.user.full_name ? req.user.full_name : req.user.name}",
+                styles: {
+                    paragraphStyles: [
+                        {
+                            id: "hospital",
+                            basedOn: "Normal",
+                            next: "Normal",
+                            quickFormat: true,
+                            run: {
+                                size: 28,
+                                bold: true,
+                                allCaps: true
+                            }
+                        },
+                        
+                        {
+                            id: "title",
+                            basedOn: "Normal",
+                            next: "Normal",
+                            quickFormat: true,
+                            run: {
+                                size: 26,
+                                bold: true
+                            },
+                            paragraph: {
+                                spacing: {
+                                    before: 120,
+                                    after: 120
+                                }
+                            }
+                        },
+                        {
+                            id: "size14",
+                            basedOn: "Normal",
+                            next: "Normal",
+                            quickFormat: true,
+                            run: {
+                                size: 28
+                            },
+                            paragraph: {
+                                spacing: {
+                                    before: 60
+                                }
+                            }
+                        },
+                        {
+                            id: "size14-bold",
+                            basedOn: "size14",
+                            next: "Normal",
+                            quickFormat: true,
+                            run: {
+                                bold: true
+                            }
+                        }
+                    ],
+                },
+                sections: [{
+                    children: [
+                        new Paragraph({
+                            text: "PHIẾU TƯ VẤN DINH DƯỠNG",
+                            alignment: AlignmentType.CENTER,
+                            style: "hospital",
+                            spacing:{
+                                after: 480
+                            }
+                        }),
+                        paramFollowerStyle("1. THÔNG TIN CHUNG", "title"),
+                        tableName(data, yearOld),
+                        new Paragraph({
+                            children: [
+                                new TextRun({
+                                    text: "Địa chỉ: " + (data.cus_address ? data.cus_address : '')
+                                }),
+                            ],
+                            style: "size14"
+                        }),
+                        new Paragraph({
+                            children: [
+                                new TextRun({
+                                    text: "Chuẩn đoán: " + (data.diagnostic ? data.diagnostic : '')
+                                }),
+                            ],
+                            style: "size14",
+                            spacing:{
+                                after: 240
+                            }
+                        }),
+                        ...medicine,
+                        new Paragraph({
+                            text: `Hà Nội, ngày ${String(now.date()).padStart(2, '0')} tháng ${String((now.month() + 1)).padStart(2, '0')} năm ${now.year()}`,
+                            alignment: AlignmentType.RIGHT,
+                            style: "size14",
+                            spacing:{
+                                before: 240
+                            }
+                        }),
+                        new Paragraph({
+                            text: "CÁN BỘ TƯ VẤN",
+                            alignment: AlignmentType.RIGHT,
+                            style: "size14-bold"
+                        })
+                    ],
+                }],
+            });    
+            const b64string = await Packer.toBase64String(doc);
+            let filename = "Phieu_kham_" + webService.removeVietnameseTones(req.user.full_name ? req.user.full_name : req.user.name).replaceAll(" ", "_") + "_" + String(now.date()).padStart(2, '0') + "_" + String((now.month() + 1)).padStart(2, '0') + "_" + now.year(); 
+            res.setHeader('Content-Disposition', 'attachment; filename=' + filename + '.docx');
+            res.send(Buffer.from(b64string, 'base64')); 
+        }else{
+            return res.json("Thiếu dữ liệu!");
+        }
+    } catch (error) {
+        logService.create(req, error.message).then(function() {
+            res.json(error.message);
+        }); 
+    }
+});
 
 module.exports = router;

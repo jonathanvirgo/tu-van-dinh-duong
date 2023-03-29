@@ -122,10 +122,11 @@ function saveExamine(){
 
 function exportExamine(){
     try {
+        let tab = dataExamine.tab;
         changeTabExamine(1);
         changeTabExamine(2);
         changeTabExamine(4);
-        changeTabExamine(1);
+        changeTabExamine(tab);
         console.log("exportExamine", dataExamine.examine);
         var link = document.createElement('a');
         link.href = '/export/examine?data=' + encodeURIComponent(JSON.stringify(dataExamine.examine));
@@ -165,6 +166,22 @@ function exportMenuExample(){
         
     } catch (error) {
         
+    }
+}
+
+function exportPrescription(){
+    try {
+        let tab = dataExamine.tab;
+        changeTabExamine(1);
+        changeTabExamine(4);
+        changeTabExamine(tab);
+        console.log("exportExamine", dataExamine.examine);
+        var link = document.createElement('a');
+        link.href = '/export/prescription?data=' + encodeURIComponent(JSON.stringify(dataExamine.examine));
+        link.click();
+        link.remove();
+    } catch (error) {
+        console.log("exportExamine 2", error);
     }
 }
 
@@ -380,13 +397,16 @@ function getMedicalTest(id){
 
 function addPrescriptionEdit(){
     console.log("addPrescriptionEdit", dataExamine.prescription);
-    for(let item of dataExamine.prescription){
-        if(dataExamine.prescription.length > 0){
-            $("#tb_prescription").show();
-        }else{
-            $("#tb_prescription").hide();
+    if(dataExamine.prescription && dataExamine.prescription.length > 0){
+        $("#tb_prescription").show();
+        for(let [i, item] of dataExamine.prescription.entries()){
+            addHtmlPrescription(item);
+            if(i == (dataExamine.prescription.length - 1)){
+                dataExamine.id_prescription = item.stt + 1
+            }
         }
-        addHtmlPrescription(item);
+    }else{
+        $("#tb_prescription").hide();
     }
 }
 
