@@ -924,11 +924,92 @@ router.get("/menu-example", async (req, res) =>{
                                                     rows: [
                                                         ...listAlternativeFood
                                                     ]
-                                                })
+                                                }),
                                             ],
                                             margins: {
                                                 left: convertInchesToTwip(0.2)
                                             }
+                                        })
+                                    ]
+                                })
+                            ]
+                        }),
+                        new Paragraph({
+                            text: "Tổng lượng thực phẩm / ngày",
+                            style: "title"
+                        }),
+                        new Table({
+                            columnWidths: [4000, 2000],
+                            rows: [
+                                new TableRow({
+                                    children: [
+                                        new TableCell({
+                                            width: {
+                                                size: 4000,
+                                                type: WidthType.DXA,
+                                            },
+                                            children: [
+                                                new Paragraph({
+                                                    text: "Thịt / cá (g)",
+                                                    style: "size14",
+                                                    alignment: AlignmentType.CENTER
+                                                }),
+                                            ]
+                                        }),
+                                        new TableCell({
+                                            width: {
+                                                size: 2000,
+                                                type: WidthType.DXA,
+                                            },
+                                            children: []
+                                        })
+                                    ]
+                                }),
+                                new TableRow({
+                                    children: [
+                                        new TableCell({
+                                            width: {
+                                                size: 4000,
+                                                type: WidthType.DXA,
+                                            },
+                                            children: [
+                                                new Paragraph({
+                                                    text: "Rau (g)",
+                                                    style: "size14",
+                                                    alignment: AlignmentType.CENTER
+                                                }),
+                                            ]
+                                        }),
+                                        new TableCell({
+                                            width: {
+                                                size: 2000,
+                                                type: WidthType.DXA,
+                                            },
+                                            children: []
+                                        })
+                                    ]
+                                }),
+                                new TableRow({
+                                    children: [
+                                        new TableCell({
+                                            width: {
+                                                size: 4000,
+                                                type: WidthType.DXA,
+                                            },
+                                            children: [
+                                                new Paragraph({
+                                                    text: "Quả chín (g)",
+                                                    style: "size14",
+                                                    alignment: AlignmentType.CENTER
+                                                }),
+                                            ]
+                                        }),
+                                        new TableCell({
+                                            width: {
+                                                size: 2000,
+                                                type: WidthType.DXA,
+                                            },
+                                            children: []
                                         })
                                     ]
                                 })
