@@ -15986,9 +15986,9 @@ html body > * {
 }
 .sidebar-logo {
   display: flex;
-  margin: 1.875rem auto;
-  padding: 0 0.625rem;
-  width: 8.75rem;
+  /* margin: 1.875rem auto; */
+  padding: 0.7rem;
+  /* width: 8.75rem; */
 }
 .sidebar-logo-compact {
   display: none;
@@ -16016,7 +16016,7 @@ html body > * {
   }
 }
 .sidebar-logo img {
-  height: 2.375rem;
+  height: 3.3rem;
   width: 100%;
 }
 .sidebar-close {
