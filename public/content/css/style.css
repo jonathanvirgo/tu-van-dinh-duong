@@ -191,3 +191,9 @@
 .form-label-large{
     width: 7rem;
 }
+.btn-side-bar{
+    margin-left: calc(var(--sidebar-padding-x) * -1);
+    margin-right: calc(var(--sidebar-padding-x) * -1);
+    position: relative;
+    border-radius: 0;
+}

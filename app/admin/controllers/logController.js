@@ -5,6 +5,7 @@
     returnUrl       = "/admin/log",
     notice_admin    = "Tài khoản của bạn không có quyền truy cập!",
     adminService    = require('./../models/adminModel'),
+    logService      = require('../models/logModel'),
     modelService    = require('./../models/logModel'); 
 
 router.get('/', function (req, res, next) {

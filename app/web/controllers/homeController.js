@@ -75,13 +75,15 @@ router.get('/', function(req, res) {
                         webService: webService,
                         filter: filter,
                         chartNews: chartNews,
-                        statsByStatus: statsByStatus
+                        statsByStatus: statsByStatus,
+                        link:'dashboard'
                     });
                 }).catch(err => {
                     res.render("home/index.ejs", {
                         user: req.user,
                         errors: [err],
-                        filter: filter
+                        filter: filter,
+                        link:'dashboard'
                     });
                 });
             });

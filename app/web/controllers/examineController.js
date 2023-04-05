@@ -80,13 +80,15 @@ router.get('/', function(req, res) {
                         moment: moment,
                         webService: webService,
                         filter: filter,
-                        paginator: paginator
+                        paginator: paginator,
+                        link:'examine'
                     });
                 }).catch(err => {
                     res.render("examine/index.ejs", {
                         user: req.user,
                         errors: [err],
-                        filter: filter
+                        filter: filter,
+                        link:'examine'
                     });
                 });
             });
@@ -210,7 +212,8 @@ router.get('/edit/:id', function(req, res, next) {
                     prescriptionExamine: JSON.parse(resultData.detailExamine.prescription ? resultData.detailExamine.prescription : '[]'),
                     menuExamine: JSON.parse(resultData.detailExamine.menu_example ? resultData.detailExamine.menu_example : '[]'),
                     page:'edit',
-                    menuTime: resultData.menuTime
+                    menuTime: resultData.menuTime,
+                    link:'examine-page'
                 });
             }).catch(err => {
                 res.render("examine/create.ejs", {
@@ -225,7 +228,8 @@ router.get('/edit/:id', function(req, res, next) {
                     medicalTestExamine: [],
                     prescriptionExamine: [],
                     page:'edit',
-                    menuTime:[]
+                    menuTime:[],
+                    link:'examine-page'
                 });
             });
         });
@@ -243,7 +247,8 @@ router.get('/edit/:id', function(req, res, next) {
                 medicalTestExamine: [],
                 prescriptionExamine: [],
                 page:'edit',
-                menuTime:[]
+                menuTime:[],
+                link:'examine-page'
             });
         })
     }
@@ -332,7 +337,8 @@ router.get('/create', function(req, res, next) {
                     medicalTestExamine: [],
                     prescriptionExamine: [],
                     menuExamine: [],
-                    menuTime:resultData.menuTime
+                    menuTime:resultData.menuTime,
+                    link:'examine-page'
                 });
             }).catch(err => {
                 res.render("examine/create.ejs", {
@@ -348,7 +354,8 @@ router.get('/create', function(req, res, next) {
                     medicalTestExamine:[],
                     prescriptionExamine: [],
                     menuTime:[],
-                    menuExamine: []
+                    menuExamine: [],
+                    link:'examine-page'
                 });
             });
         });
@@ -367,7 +374,8 @@ router.get('/create', function(req, res, next) {
                 medicalTestExamine:[],
                 prescriptionExamine: [],
                 menuTime:[],
-                menuExamine: []
+                menuExamine: [],
+                link:'examine-page'
             });
         })
     }
