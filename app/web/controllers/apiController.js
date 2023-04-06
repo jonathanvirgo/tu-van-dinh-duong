@@ -24,7 +24,7 @@ router.get('/examine', function(req, res, next) {
             }else{
                 str_errors = str_errors.push(detailExamine.message);
             }
-            return res.render("menu-example/index.ejs", {
+            return res.render("accessExamine/index.ejs", {
                 errors: str_errors,
                 examine: resultData.detailExamine
             });
