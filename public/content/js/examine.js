@@ -652,12 +652,14 @@ function addFoodToMenu(){
             for(let item of dataExamine.menuExamine){
                 console.log("addFoodToMenu 1", menu_id);
                 if(menu_id == item.id){
+                    console.log("menu data", item);
                     let menuTime_id = parseInt($('#menuTime_id').val());
                     if(menuTime_id){
                         if(item.detail.length > 0){
+                            let listFoodTotal = [];
                             for(let menuTime of item.detail){
-                                menuTime.name_course = $('#course').val();
-                                $('#menu_time_' + menuTime_id).find('input').val($('#course').val());
+                                // menuTime.name_course = $('#course').val();
+                                // $('#menu_time_' + menuTime_id).find('input').val($('#course').val());
                                 if(menuTime_id == menuTime.id){
                                     let id = menuTime.listFood.length == 0 ? 1 : menuTime.listFood[menuTime.listFood.length - 1].id + 1;
                                     let food = {
@@ -665,12 +667,12 @@ function addFoodToMenu(){
                                         "id_food": parseInt($('#food_name').val()),
                                         "name": $('#food_name').find(':selected').text(),
                                         "weight": parseInt($('#weight_food').val()),
-                                        "energy": parseInt($('#energy_food').val()),
-                                        "protein": parseInt($('#protein_food').val()),
-                                        "animal_protein": parseInt($('#animal_protein').val()),
-                                        "lipid": parseInt($('#lipid_food').val()),
-                                        "unanimal_lipid": parseInt($('#unanimal_lipid').val()),
-                                        "carbohydrate": parseInt($('#carbohydrate').val())
+                                        "energy": isNaN(parseInt($('#energy_food').val())) ? 0 : parseInt($('#energy_food').val()),
+                                        "protein": isNaN(parseFloat($('#protein_food').val())) ? 0 : parseFloat($('#protein_food').val()),
+                                        "animal_protein": isNaN(parseFloat($('#animal_protein').val())) ? 0 : parseFloat($('#animal_protein').val()),
+                                        "lipid": isNaN(parseFloat($('#lipid_food').val())) ? 0 : parseFloat($('#lipid_food').val()),
+                                        "unanimal_lipid": isNaN(parseFloat($('#unanimal_lipid').val())) ? 0 : parseFloat($('#unanimal_lipid').val()),
+                                        "carbohydrate": isNaN(parseFloat($('#carbohydrate').val())) ? 0 : parseFloat($('#carbohydrate').val())
                                     }
                                     menuTime.listFood.push(food);
                                     console.log("addFoodToMenu", dataExamine.menuExamine);
@@ -682,7 +684,9 @@ function addFoodToMenu(){
                                     }
                                     $('#menu_time_' + menuTime_id + ' td:first-child').attr('rowspan', (id + 1));
                                 }
+                                listFoodTotal.push(...menuTime.listFood);
                             }
+                            setTotalMenu(listFoodTotal);
                         }else{
                             displayError('Chưa có dữ liệu giờ ăn!');
                         }
@@ -811,6 +815,32 @@ function getFileExcel(){
         });
     } catch (error) {
       console.log("getFileExcel", error);
+    }
+}
+
+function setTotalMenu(listFood){
+    try {
+        console.log("setTotalMenu", listFood);
+        if(listFood.length > 0){
+            let total_energy = 0, total_protein = 0, total_animal_protein = 0, total_lipid = 0, 
+            total_unanimal_lipid = 0, total_carbohydrate = 0;
+            for(let food of listFood){
+                total_energy += food.energy;
+                total_protein += food.protein;
+                total_animal_protein += food.animal_protein;
+                total_lipid += food.lipid;
+                total_unanimal_lipid += food.unanimal_lipid;
+                total_carbohydrate += food.carbohydrate;
+            }
+            $('#total_energy').text(String(total_energy));
+            $('#total_protein').text(String(parseFloat(total_protein).toFixed(2)));
+            $('#total_animal_protein').text(String(parseFloat(total_animal_protein).toFixed(2)));
+            $('#total_lipid').text(String(parseFloat(total_lipid).toFixed(2)));
+            $('#total_unanimal_lipid').text(String(parseFloat(total_unanimal_lipid).toFixed(2)));
+            $('#total_carbohydrate').text(String(parseFloat(total_carbohydrate).toFixed(2)));
+        }
+    } catch (error) {
+        
     }
 }
 
