@@ -233,6 +233,7 @@ function changeTabExamine(tab){
             dataExamine.examine['cus_cnht'] = $('#cus_cnht').val();
             dataExamine.examine['cus_bmi'] = $('#cus_bmi').val();
             dataExamine.examine['clinical_examination'] = $('#clinical_examination').val();
+            dataExamine.examine['diagnostic_id'] = $('#diagnostic_id').val();
             dataExamine.examine['erythrocytes'] = $('#erythrocytes').val();
             dataExamine.examine['cus_bc'] = $('#cus_bc').val();
             dataExamine.examine['cus_tc'] = $('#cus_tc').val();
@@ -253,6 +254,7 @@ function changeTabExamine(tab){
             dataExamine.examine['cus_butt'] = $('#cus_butt').val();
             dataExamine.examine['cus_cseomong'] = $('#cus_cseomong').val();
             dataExamine.examine['active_mode_of_living'] = $('#active_mode_of_living').val();
+            dataExamine.examine['active_mode_of_living_id'] = $('#active_mode_of_living_id').val();
             dataExamine.examine['glucid_should_use'] = $('#glucid_should_use').val();
             dataExamine.examine['glucid_limited_use'] = $('#glucid_limited_use').val();
             dataExamine.examine['glucid_should_not_use'] = $('#glucid_should_not_use').val();
@@ -1099,6 +1101,17 @@ $(document).ready(function(){
         generateTableMenu(evt.params.data.id);
     }).on('select2:unselect', function(e){
         console.log("menu_id unselect", e);
+    });
+
+    $("#diagnostic_id").on('select2:select', function(evt) {
+        if(dataExamine.diagnostic.length > 0){
+            for(let item of dataExamine.diagnostic){
+                if(evt.params.data.id == item.id){      
+                    $("#clinical_examination").text(item.detail);
+                    break;
+                }
+            }
+        }
     });
 });
 

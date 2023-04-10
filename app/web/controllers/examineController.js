@@ -121,7 +121,8 @@ router.get('/edit/:id', function(req, res, next) {
                 medicine: [],
                 medicalTest: [],
                 menuTime: [],
-                menuExample: []
+                menuExample: [],
+                diagnostic: []
             };
         arrPromise.push(webService.createSideBarFilter(req, 1).then(function(dataFilter) {
             resultData.filter = dataFilter;
@@ -130,8 +131,9 @@ router.get('/edit/:id', function(req, res, next) {
             }
         }));
 
-        let sqlNutritionAdviceList = 'SELECT * FROM nutrition_advice WHERE created_by = ?';
-        arrPromise.push(webService.getListTable(sqlNutritionAdviceList, [req.user.id]).then(responseData =>{
+        let sqlNutritionAdviceList = 'SELECT * FROM nutrition_advice WHERE id > 0';
+        let sqlNutritionAdviceListPermit = webService.addPermitTable(sqlNutritionAdviceList, req.user);
+        arrPromise.push(webService.getListTable(sqlNutritionAdviceListPermit.sqlQuery, sqlNutritionAdviceListPermit.paramSql).then(responseData =>{
             if(responseData.success){
                 resultData.nutritionAdvice = responseData.data;
             }else{
@@ -139,8 +141,9 @@ router.get('/edit/:id', function(req, res, next) {
             }
         }));
 
-        let sqlactiveModeOfLivingList = 'SELECT * FROM active_mode_of_living WHERE created_by = ?';
-        arrPromise.push(webService.getListTable(sqlactiveModeOfLivingList, [req.user.id]).then(responseData1 =>{
+        let sqlactiveModeOfLivingList = 'SELECT * FROM active_mode_of_living WHERE id > 0';
+        let sqlactiveModeOfLivingListPermit = webService.addPermitTable(sqlactiveModeOfLivingList, req.user);
+        arrPromise.push(webService.getListTable(sqlactiveModeOfLivingListPermit.sqlQuery, sqlactiveModeOfLivingListPermit.paramSql).then(responseData1 =>{
             if(responseData1.success){
                 resultData.activeModeOfLiving = responseData1.data;
             }else{
@@ -199,8 +202,19 @@ router.get('/edit/:id', function(req, res, next) {
             }
         }));
 
-        let sqlMenuExampleList = 'SELECT * FROM menu_example WHERE created_by = ?';
-        arrPromise.push(webService.getListTable(sqlMenuExampleList, [req.user.id]).then(responseData5 =>{
+        let sqlDiagnosticList = 'SELECT * FROM diagnostic WHERE id > 0';
+        let sqlDiagnosticListPermit = webService.addPermitTable(sqlDiagnosticList, req.user);
+        arrPromise.push(webService.getListTable(sqlDiagnosticListPermit.sqlQuery, sqlDiagnosticListPermit.paramSql).then(responseData =>{
+            if(responseData.success){
+                resultData.diagnostic = responseData.data;
+            }else{
+                str_errors.push(responseData.message);
+            }
+        }));
+
+        let sqlMenuExampleList = 'SELECT * FROM menu_example WHERE id > 0';
+        let sqlMenuExampleListPermit = webService.addPermitTable(sqlMenuExampleList, req.user);
+        arrPromise.push(webService.getListTable(sqlMenuExampleListPermit.sqlQuery, sqlMenuExampleListPermit.paramSql).then(responseData5 =>{
             if(responseData5.success){
                 resultData.menuExample = responseData5.data;
             }else{
@@ -226,7 +240,8 @@ router.get('/edit/:id', function(req, res, next) {
                     menuExample: resultData.menuExample,
                     page:'edit',
                     menuTime: resultData.menuTime,
-                    link:'examine-page'
+                    link:'examine-page',
+                    diagnostic: resultData.diagnostic
                 });
             }).catch(err => {
                 res.render("examine/create.ejs", {
@@ -243,7 +258,8 @@ router.get('/edit/:id', function(req, res, next) {
                     menuExample:[],
                     page:'edit',
                     menuTime:[],
-                    link:'examine-page'
+                    link:'examine-page',
+                    diagnostic: []
                 });
             });
         });
@@ -263,7 +279,8 @@ router.get('/edit/:id', function(req, res, next) {
                 menuExample: [],
                 page:'edit',
                 menuTime:[],
-                link:'examine-page'
+                link:'examine-page',
+                diagnostic: []
             });
         })
     }
@@ -283,7 +300,8 @@ router.get('/create', function(req, res, next) {
                 medicine: [],
                 medicalTest: [],
                 menuTime: [],
-                menuExample: []
+                menuExample: [],
+                diagnostic: []
             };
 
         arrPromise.push(webService.createSideBarFilter(req, 1).then(function(dataFilter) {
@@ -292,8 +310,9 @@ router.get('/create', function(req, res, next) {
                 str_errors = str_errors.concat(resultData.filter.error);
             }
         }));
-        let sqlNutritionAdviceList = 'SELECT * FROM nutrition_advice WHERE created_by = ?';
-        arrPromise.push(webService.getListTable(sqlNutritionAdviceList, [req.user.id]).then(responseData =>{
+        let sqlNutritionAdviceList = 'SELECT * FROM nutrition_advice WHERE id > 0';
+        let sqlNutritionAdviceListPermit = webService.addPermitTable(sqlNutritionAdviceList, req.user);
+        arrPromise.push(webService.getListTable(sqlNutritionAdviceListPermit.sqlQuery, sqlNutritionAdviceListPermit.paramSql).then(responseData =>{
             if(responseData.success){
                 resultData.nutritionAdvice = responseData.data;
             }else{
@@ -301,8 +320,19 @@ router.get('/create', function(req, res, next) {
             }
         }));
 
-        let sqlactiveModeOfLivingList = 'SELECT * FROM active_mode_of_living WHERE created_by = ?';
-        arrPromise.push(webService.getListTable(sqlactiveModeOfLivingList, [req.user.id]).then(responseData1 =>{
+        let sqlDiagnosticList = 'SELECT * FROM diagnostic WHERE id > 0';
+        let sqlDiagnosticListPermit = webService.addPermitTable(sqlDiagnosticList, req.user);
+        arrPromise.push(webService.getListTable(sqlDiagnosticListPermit.sqlQuery, sqlDiagnosticListPermit.paramSql).then(responseData =>{
+            if(responseData.success){
+                resultData.diagnostic = responseData.data;
+            }else{
+                str_errors.push(responseData.message);
+            }
+        }));
+
+        let sqlactiveModeOfLivingList = 'SELECT * FROM active_mode_of_living WHERE id > 0';
+        let sqlactiveModeOfLivingListPermit = webService.addPermitTable(sqlactiveModeOfLivingList, req.user);
+        arrPromise.push(webService.getListTable(sqlactiveModeOfLivingListPermit.sqlQuery, sqlactiveModeOfLivingListPermit.paramSql).then(responseData1 =>{
             if(responseData1.success){
                 resultData.activeModeOfLiving = responseData1.data;
             }else{
@@ -337,8 +367,9 @@ router.get('/create', function(req, res, next) {
             }
         }));
 
-        let sqlMenuExampleList = 'SELECT * FROM menu_example WHERE created_by = ?';
-        arrPromise.push(webService.getListTable(sqlMenuExampleList, [req.user.id]).then(responseData5 =>{
+        let sqlMenuExampleList = 'SELECT * FROM menu_example WHERE id > 0';
+        let sqlMenuExampleListPermit = webService.addPermitTable(sqlMenuExampleList, req.user);
+        arrPromise.push(webService.getListTable(sqlMenuExampleListPermit.sqlQuery, sqlMenuExampleListPermit.paramSql).then(responseData5 =>{
             if(responseData5.success){
                 resultData.menuExample = responseData5.data;
             }else{
@@ -364,7 +395,8 @@ router.get('/create', function(req, res, next) {
                     menuExamine: [],
                     menuExample: resultData.menuExample,
                     menuTime:resultData.menuTime,
-                    link:'examine-page'
+                    link:'examine-page',
+                    diagnostic: resultData.diagnostic
                 });
             }).catch(err => {
                 res.render("examine/create.ejs", {
@@ -382,7 +414,8 @@ router.get('/create', function(req, res, next) {
                     menuTime:[],
                     menuExample: [],
                     menuExamine: [],
-                    link:'examine-page'
+                    link:'examine-page',
+                    diagnostic: []
                 });
             });
         });
@@ -403,7 +436,8 @@ router.get('/create', function(req, res, next) {
                 menuTime:[],
                 menuExamine: [],
                 menuExample: [],
-                link:'examine-page'
+                link:'examine-page',
+                diagnostic: []
             });
         })
     }
@@ -467,6 +501,7 @@ router.post('/create', function(req, res, next) {
                 vitamin_ck_should_not_use: req.body.vitamin_ck_should_not_use,
                 nutrition_advice_id:    req.body.nutrition_advice_id,
                 active_mode_of_living_id: req.body.active_mode_of_living_id,
+                diagnostic_id:          req.body.diagnostic_id,
                 medical_test:           req.body.medical_test,  
                 menu_example:           req.body.menu_example,  
                 prescription:           req.body.prescription,
@@ -629,6 +664,7 @@ router.post('/edit/:id', function(req, res, next) {
                 vitamin_ck_should_not_use: req.body.vitamin_ck_should_not_use,
                 nutrition_advice_id:    req.body.nutrition_advice_id,
                 active_mode_of_living_id: req.body.active_mode_of_living_id,
+                diagnostic_id:          req.body.diagnostic_id,
                 medical_test:           req.body.medical_test,
                 prescription:           req.body.prescription,
                 menu_example:           req.body.menu_example
@@ -788,7 +824,6 @@ router.get('/search', (req, res, next) =>{
                 };
             console.log("req.query", req.query.cus_name, req.query.cus_phone, filter);
             if(filter.search.name.length > 0 && filter.search.phone.length > 0){
-                console.log("1");
                 arrPromise.push(new Promise(function (resolve, reject) {
                     examineService.countAllExamine2({search: filter.search, filter: true}, function (err, result, fields) {
                         if (err) {
@@ -821,13 +856,12 @@ router.get('/search', (req, res, next) =>{
                     });
                 }));
             }else{
-                console.log("2");
-                if(filter.search.name.length == 0){
-                    str_errors.push("Vui lòng nhập họ tên!");
-                }
-                if(filter.search.phone.length == 0){
-                    str_errors.push("Vui lòng nhập số điện thoại!");
-                }
+                // if(filter.search.name.length == 0){
+                //     str_errors.push("Vui lòng nhập họ tên!");
+                // }
+                // if(filter.search.phone.length == 0){
+                //     str_errors.push("Vui lòng nhập số điện thoại!");
+                // }
             }
 
             return new Promise(function (resolve, reject) {

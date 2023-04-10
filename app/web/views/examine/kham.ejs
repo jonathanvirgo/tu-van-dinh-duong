@@ -176,6 +176,23 @@
         </div>
     </div>
     <h3 class="box-title-break">Khám lâm sàng</h3>
+    <div class="row g-2 align-items-center">
+        <div class="col-6 col-md-6 d-flex">
+            <label class="col-form-label col-md-auto fw-bold mt-2" for="cus_butt">Chọn mẫu</label>
+            <div class="col-form-body col-md">
+                <div class="form-control-has-addon">
+                    <select class="form-select" name="diagnostic_id" id="diagnostic_id" data-plugin="select2" data-placeholder="Chọn mẫu chuẩn đoán">
+                        <option></option>
+                        <% if(diagnostic.length > 0){ %>
+                            <% for (let dia of diagnostic){ %>
+                                <option <%=dia.id == examine.diagnostic_id ? 'selected' : ''%> value="<%= dia.id %>"><%= dia.name %></option>
+                            <%}%>   
+                        <%}%>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
     <div class="row">
         <div class="col-form-body col-md">
             <div class="form-control-has-addon">

@@ -875,6 +875,23 @@ let webService = {
         let diff =(dt2.getTime() - dt1.getTime()) / 1000;
         diff /= (60 * 60 * 24);
         return Math.floor(Math.abs(diff/365.25));
+    },
+    addPermitTable: function(str, user){
+        try {
+            if(user.role_id.includes(1) || user.role_id.includes(3)){
+                //Nếu là admin load hết
+                return {sqlQuery :str, paramSql: []}
+            }else if(user.role_id.includes(5)){
+                //Nếu là quản lý load theo viện
+                str += " AND hospital_id = ?";
+                return {sqlQuery :str, paramSql: [user.hospital_id]}
+            }else if(user.role_id.includes(4)){
+                str += " AND created_by = ?";
+                return {sqlQuery :str, paramSql: [user.id]}
+            }
+        } catch (error) {
+            
+        }
     }
 }
 
