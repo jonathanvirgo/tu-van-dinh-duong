@@ -33,22 +33,63 @@ let examineService = {
                 }
             }
             //Không phải Administrator thì load các bản ghi theo khoa viện
-            if (!search.role_ids.includes(1) && !search.role_ids.includes(3)){
-                //Nếu là quản lý load theo viện
-                if(search.role_ids.includes(5)){
-                    sql += " AND examine.hospital_id = ?";
-                    paraSQL.push(search.hospital_id);
-                }else if(search.role_ids.includes(4)){
-                    //Nếu là bác sĩ load theo khoa
-                    sql += " AND examine.department_id = ?";
-                    paraSQL.push(search.department_id);
-                }else{
-                    //Nếu là bệnh nhân load theo số điện thoại hoặc email
-                    sql += " AND (examine.cus_phone = ? OR examine.cus_email = ?)";
-                    paraSQL.push(search.user_phone);
-                    paraSQL.push(search.user_mail);
+            if(search.role_ids && search.role_ids.length == 0){
+                if (search.name !== "" && search.phone !== "") {
+                    sql += ` AND (examine.cus_name like ? AND examine.cus_phone like ?)`;
+                    paraSQL.push("%" + search.name + "%");
+                    paraSQL.push("%" + search.phone + "%");
+                }
+            }else{
+                if (!search.role_ids.includes(1) && !search.role_ids.includes(3)){
+                    //Nếu là quản lý load theo viện
+                    if(search.role_ids.includes(5)){
+                        sql += " AND examine.hospital_id = ?";
+                        paraSQL.push(search.hospital_id);
+                    }else if(search.role_ids.includes(4)){
+                        //Nếu là bác sĩ load theo khoa
+                        sql += " AND examine.department_id = ?";
+                        paraSQL.push(search.department_id);
+                    }else{
+                        //Nếu là bệnh nhân load theo số điện thoại hoặc email
+                        sql += " AND (examine.cus_phone = ? OR examine.cus_email = ?)";
+                        paraSQL.push(search.user_phone);
+                        paraSQL.push(search.user_mail);
+                    }
                 }
             }
+            
+            var query = connection.query(sql, paraSQL, function(err, results, fields) {
+                connection.release();
+                if (err) return callback(err);
+                callback(null, results, fields);
+            });
+        });
+    },
+    countAllExamine2: function(parameter, callback) {
+        db.get().getConnection(function(err, connection) {
+            if (err) return callback(err);
+            var paraSQL = [];
+            var search  = parameter.search;
+            var sql     = `SELECT COUNT(*) AS count, hospital.id AS hospital_id FROM examine
+                            LEFT JOIN department ON examine.department_id = department.id
+                            LEFT JOIN hospital ON examine.hospital_id = hospital.id`;
+            
+            if(parameter.filter){
+                if (search.name !== "" && search.phone !== "") {
+                    sql += ` WHERE (examine.cus_name like ? AND examine.cus_phone like ?)`;
+                    paraSQL.push("%" + search.name + "%");
+                    paraSQL.push("%" + search.phone + "%");
+                }
+                if (search.fromdate !== "" && search.todate !== "") {
+                    sql += " AND examine.created_at >= ? AND examine.created_at <= ?";
+                    paraSQL.push(search.fromdate.split("-").reverse().join("-"));
+                    paraSQL.push(search.todate.split("-").reverse().join("-"));
+                } else if (search.fromdate !== "") {
+                    sql += " AND examine.created_at >= ? AND examine.created_at <= ?";
+                    paraSQL.push(search.fromdate.split("-").reverse().join("-") + " 00:00:00");
+                    paraSQL.push(search.fromdate.split("-").reverse().join("-") + " 23:59:59");
+                }
+            }     
             var query = connection.query(sql, paraSQL, function(err, results, fields) {
                 connection.release();
                 if (err) return callback(err);
@@ -90,23 +131,33 @@ let examineService = {
                     paraSQL.push(search.fromdate.split("-").reverse().join("-") + " 23:59:59");
                 }
             }
-            //Không phải Administrator thì load các bản ghi theo khoa viện
-            if (!search.role_ids.includes(1) && !search.role_ids.includes(3)){
-                //Nếu là quản lý load theo viện
-                if(search.role_ids.includes(5)){
-                    sql += " AND examine.hospital_id = ?";
-                    paraSQL.push(search.hospital_id);
-                }else if(search.role_ids.includes(4)){
-                    //Nếu là bác sĩ load theo khoa
-                    sql += " AND examine.department_id = ?";
-                    paraSQL.push(search.department_id);
-                }else{
-                    //Nếu là bệnh nhân load theo số điện thoại hoặc email
-                    sql += " AND (examine.cus_phone = ? OR examine.cus_email = ?)";
-                    paraSQL.push(search.user_phone);
-                    paraSQL.push(search.user_mail);
+
+            if(search.role_ids && search.role_ids.length == 0){
+                if (search.name !== "" && search.phone !== "") {
+                    sql += ` AND (examine.cus_name like ? AND examine.cus_phone like ?)`;
+                    paraSQL.push("%" + search.name + "%");
+                    paraSQL.push("%" + search.phone + "%");
+                }
+            }else{
+                //Không phải Administrator thì load các bản ghi theo khoa viện
+                if (!search.role_ids.includes(1) && !search.role_ids.includes(3)){
+                    //Nếu là quản lý load theo viện
+                    if(search.role_ids.includes(5)){
+                        sql += " AND examine.hospital_id = ?";
+                        paraSQL.push(search.hospital_id);
+                    }else if(search.role_ids.includes(4)){
+                        //Nếu là bác sĩ load theo khoa
+                        sql += " AND examine.department_id = ?";
+                        paraSQL.push(search.department_id);
+                    }else{
+                        //Nếu là bệnh nhân load theo số điện thoại hoặc email
+                        sql += " AND (examine.cus_phone = ? OR examine.cus_email = ?)";
+                        paraSQL.push(search.user_phone);
+                        paraSQL.push(search.user_mail);
+                    }
                 }
             }
+            
             sql += " ORDER BY "+ order_by +" LIMIT ?,?";
             paraSQL.push(search.skip);
             paraSQL.push(search.take);
@@ -116,6 +167,45 @@ let examineService = {
                 if (err) return callback(err);
                 callback(null, results, fields);
             });
+        });
+    },
+    getAllExamine2: function(parameter, callback) {
+        db.get().getConnection(function(err, connection) {
+            if (err) return callback(err);
+            var paraSQL     = [];
+            var search      = parameter.search;
+            var order_by    = "examine.created_at DESC";
+            var sql         = `SELECT examine.*, hospital.id AS hospital_id FROM examine
+                                LEFT JOIN department ON examine.department_id = department.id
+                                LEFT JOIN hospital ON examine.hospital_id = hospital.id`;
+            
+            if(parameter.filter){
+                if (search.name !== "" && search.phone !== "") {
+                    sql += ` WHERE (examine.cus_name like ? AND examine.cus_phone like ?)`;
+                    paraSQL.push("%" + search.name + "%");
+                    paraSQL.push("%" + search.phone + "%");
+                }
+                if (search.fromdate !== "" && search.todate !== "") {
+                    sql += " AND examine.created_at >= ? AND examine.created_at <= ?";
+                    paraSQL.push(search.fromdate.split("-").reverse().join("-"));
+                    paraSQL.push(search.todate.split("-").reverse().join("-"));
+                } else if (search.fromdate !== "") {
+                    sql += " AND examine.created_at >= ? AND examine.created_at <= ?";
+                    paraSQL.push(search.fromdate.split("-").reverse().join("-") + " 00:00:00");
+                    paraSQL.push(search.fromdate.split("-").reverse().join("-") + " 23:59:59");
+                }
+            }
+            
+            sql += " ORDER BY "+ order_by +" LIMIT ?,?";
+            paraSQL.push(search.skip);
+            paraSQL.push(search.take);
+            
+            var query = connection.query(sql, paraSQL, function(err, results, fields) {
+                connection.release();
+                if (err) return callback(err);
+                callback(null, results, fields);
+            });
+            console.log("query list", query.sql);
         });
     },
     getExamineGroupByDate: function(parameter, callback) {

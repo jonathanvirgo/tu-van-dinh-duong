@@ -1,5 +1,7 @@
 var express         = require('express'),
     router          = express.Router(),
+    url             = require('url'),
+    path            = require('path'),
     moment          = require('moment'),
     logService      = require('../../admin/models/logModel'),
     webService      = require('./../models/webModel'),
@@ -118,7 +120,8 @@ router.get('/edit/:id', function(req, res, next) {
                 activeModeOfLiving: [],
                 medicine: [],
                 medicalTest: [],
-                menuTime: []
+                menuTime: [],
+                menuExample: []
             };
         arrPromise.push(webService.createSideBarFilter(req, 1).then(function(dataFilter) {
             resultData.filter = dataFilter;
@@ -196,6 +199,15 @@ router.get('/edit/:id', function(req, res, next) {
             }
         }));
 
+        let sqlMenuExampleList = 'SELECT * FROM menu_example WHERE created_by = ?';
+        arrPromise.push(webService.getListTable(sqlMenuExampleList, [req.user.id]).then(responseData5 =>{
+            if(responseData5.success){
+                resultData.menuExample = responseData5.data;
+            }else{
+                str_errors.push(responseData5.message);
+            }
+        }));
+
         return new Promise(function(resolve, reject) {
             Promise.all(arrPromise).then(function() {
                 res.render("examine/create.ejs", {
@@ -211,6 +223,7 @@ router.get('/edit/:id', function(req, res, next) {
                     medicalTestExamine: JSON.parse(resultData.detailExamine.medical_test ? resultData.detailExamine.medical_test : '[]'),
                     prescriptionExamine: JSON.parse(resultData.detailExamine.prescription ? resultData.detailExamine.prescription : '[]'),
                     menuExamine: JSON.parse(resultData.detailExamine.menu_example ? resultData.detailExamine.menu_example : '[]'),
+                    menuExample: resultData.menuExample,
                     page:'edit',
                     menuTime: resultData.menuTime,
                     link:'examine-page'
@@ -227,6 +240,7 @@ router.get('/edit/:id', function(req, res, next) {
                     medicalTest: [],
                     medicalTestExamine: [],
                     prescriptionExamine: [],
+                    menuExample:[],
                     page:'edit',
                     menuTime:[],
                     link:'examine-page'
@@ -246,6 +260,7 @@ router.get('/edit/:id', function(req, res, next) {
                 medicalTest: [],
                 medicalTestExamine: [],
                 prescriptionExamine: [],
+                menuExample: [],
                 page:'edit',
                 menuTime:[],
                 link:'examine-page'
@@ -267,7 +282,8 @@ router.get('/create', function(req, res, next) {
                 activeModeOfLiving: [],
                 medicine: [],
                 medicalTest: [],
-                menuTime: []
+                menuTime: [],
+                menuExample: []
             };
 
         arrPromise.push(webService.createSideBarFilter(req, 1).then(function(dataFilter) {
@@ -320,6 +336,15 @@ router.get('/create', function(req, res, next) {
                 str_errors.push(responseData4.message);
             }
         }));
+
+        let sqlMenuExampleList = 'SELECT * FROM menu_example WHERE created_by = ?';
+        arrPromise.push(webService.getListTable(sqlMenuExampleList, [req.user.id]).then(responseData5 =>{
+            if(responseData5.success){
+                resultData.menuExample = responseData5.data;
+            }else{
+                str_errors.push(responseData5.message);
+            }
+        }));
         
         return new Promise(function(resolve, reject) {
             Promise.all(arrPromise).then(function() {
@@ -337,6 +362,7 @@ router.get('/create', function(req, res, next) {
                     medicalTestExamine: [],
                     prescriptionExamine: [],
                     menuExamine: [],
+                    menuExample: resultData.menuExample,
                     menuTime:resultData.menuTime,
                     link:'examine-page'
                 });
@@ -354,6 +380,7 @@ router.get('/create', function(req, res, next) {
                     medicalTestExamine:[],
                     prescriptionExamine: [],
                     menuTime:[],
+                    menuExample: [],
                     menuExamine: [],
                     link:'examine-page'
                 });
@@ -375,6 +402,7 @@ router.get('/create', function(req, res, next) {
                 prescriptionExamine: [],
                 menuTime:[],
                 menuExamine: [],
+                menuExample: [],
                 link:'examine-page'
             });
         })
@@ -669,6 +697,215 @@ router.get('/suggest/food-name', function(req, res, next){
     } catch (error) {
         logService.create(req, e.message).then(function() {
             resultData.message = e.message;
+            res.json(resultData);
+        });
+    }
+});
+
+router.post('/save-menu', (req, res, next) =>{
+    var resultData = {
+        success: false,
+        message: ""
+    };
+    try {
+        if (!req.user) {
+            resultData.message = "Vui lòng đăng nhập lại để thực hiện chức năng này!";
+            res.json(resultData);
+            return;
+        }
+        var str_errors   = [],
+            isCreate     = isNaN(parseInt(req.body.isCreate)) ? 0 : parseInt(req.body.isCreate),
+            parameter    = {
+                name_menu:      req.body.name,  
+                detail:         req.body.detail,  
+                department_id:  req.user.department_id,
+                hospital_id:    req.user.hospital_id,
+                created_by:     req.user.id
+            };
+        console.log("save-menu", req.body);
+        if(!parameter.name_menu){
+            str_errors.push("Thiếu tên menu!<br>");
+        }
+        if(!parameter.detail){
+            str_errors.push("Thiếu nội dung menu!");
+        }
+        
+        if (str_errors.length > 0) {
+            resultData.message = str_errors.toString();
+            res.json(resultData);
+            return;
+        } else {
+            if(isCreate == 1){
+                webService.addRecordTable( parameter, 'menu_example', true).then(responseData =>{
+                    if(!responseData.success){
+                        logService.create(req, responseData.message);
+                        resultData.message = responseData.message;
+                    }else{
+                        resultData.message = "Lưu mẫu thành công";
+                        resultData.success = true;
+                    }
+                    res.json(resultData);
+                })
+            }else{
+                if(req.body.menu_id){
+                    webService.updateRecordTable(parameter, {id: req.body.menu_id}, 'menu_example').then(responseData2 => {
+                        if(!responseData2.success){
+                            logService.create(req, responseData2.message);
+                            resultData.message = responseData2.message;
+                        }else{
+                            resultData.message = "Lưu mẫu thành công"; 
+                            resultData.success = true;
+                        }
+                        res.json(resultData);
+                    });
+                }
+            }
+        }
+    } catch (e) {
+        logService.create(req, e.message).then(function() {
+            resultData.message = e.message;
+            res.json(resultData);
+        });
+    }
+});
+
+router.get('/search', (req, res, next) =>{
+    try {
+        webService.createSideBarFilter(req, 2, 20).then(function(filter){
+            var str_errors  = filter.error,
+                arrPromise  = [],
+                listExamine = [],
+                paginator   = {
+                    perPage: 0,
+                    page: 0,
+                    totalItem: 0,
+                    totalPage: 0,
+                    hasPrevPage: false,
+                    hasNextPage: false,
+                    nextPage: '',
+                    prevPage: '',
+                    currentPage: '',
+                };
+            console.log("req.query", req.query.cus_name, req.query.cus_phone, filter);
+            if(filter.search.name.length > 0 && filter.search.phone.length > 0){
+                console.log("1");
+                arrPromise.push(new Promise(function (resolve, reject) {
+                    examineService.countAllExamine2({search: filter.search, filter: true}, function (err, result, fields) {
+                        if (err) {
+                            return logService.create(req, err).then(function(responseData){
+                                if(responseData.message) str_errors.push(responseData.message);
+                                else str_errors.push(err.sqlMessage);
+                                resolve();
+                            });
+                        }
+                        if (result !== undefined) {
+                            paginator.totalItem = result[0].count;
+                        }
+                        resolve();
+                    });
+                }));
+    
+                arrPromise.push(new Promise(function (resolve, reject) {
+                    examineService.getAllExamine2({search: filter.search, filter: true}, function (err, result, fields) {
+                        if (err) {
+                            return logService.create(req, err).then(function(responseData){
+                                if(responseData.message) str_errors.push(responseData.message);
+                                else str_errors.push(err.sqlMessage);
+                                resolve();
+                            });
+                        }
+                        if (result !== undefined) {
+                            listExamine = result;
+                        }
+                        resolve();
+                    });
+                }));
+            }else{
+                console.log("2");
+                if(filter.search.name.length == 0){
+                    str_errors.push("Vui lòng nhập họ tên!");
+                }
+                if(filter.search.phone.length == 0){
+                    str_errors.push("Vui lòng nhập số điện thoại!");
+                }
+            }
+
+            return new Promise(function (resolve, reject) {
+                Promise.all(arrPromise).then(function () {
+                    paginator.page        = filter.search.page;
+                    paginator.perPage     = filter.search.take;
+                    paginator.currentPage = filter.requestUri;
+                    paginator.totalPage   = Math.ceil(paginator.totalItem / paginator.perPage);
+                    if(paginator.totalPage > paginator.page){
+                        paginator.hasNextPage = true;
+                        paginator.nextPage    = filter.requestUri + '&page=' + (paginator.page + 1);
+                    }
+                    if(paginator.page >= 2){
+                        paginator.hasPrevPage = true;
+                        paginator.prevPage    = filter.requestUri + '&page=' + (paginator.page - 1);
+                    }
+                    res.render('search/index.ejs', { 
+                        errors: str_errors,
+                        listExamine: listExamine,
+                        moment: moment,
+                        filter: filter,
+                        paginator: paginator
+                    });
+                }).catch(err => {
+                    res.render("search/index.ejs", {
+                        user: req.user,
+                        errors: [err],
+                        filter: filter
+                    });
+                });
+            });
+        });
+    } catch (error) {
+        logService.create(req, error.message).then(function() {
+            res.render("search/index.ejs", {
+                user: req.user,
+                errors: [error.message],
+                filter: {}
+            });
+        });
+    }
+});
+
+router.post('/detail-examine', (req, res, next) =>{
+    try {
+        var resultData = {
+            success: false,
+            message: '',
+            data: ''
+        },
+        examine = {},
+        prescriptionExamine = [],
+        menuExample = [];
+
+        let sqlDetailExamine = 'SELECT * FROM examine WHERE id = ?';
+        webService.getListTable(sqlDetailExamine ,[req.body.id]).then(responseData =>{
+            if(responseData.success && responseData.data && responseData.data.length > 0){
+                examine   = responseData.data[0];
+                prescriptionExamine = JSON.parse(examine.prescription ? examine.prescription : '[]');
+                menuExample = JSON.parse(examine.menu_example ? examine.menu_example : '[]');
+                console.log("examine", examine, menuExample, prescriptionExamine, menuExample[0].detail);
+                express().render(path.resolve(__dirname, "../views/search/detail.ejs"), {examine,prescriptionExamine,menuExample}, (err, html) => {
+                    if(err){
+                        console.log("err", err);
+                        resultData.message = 'Lỗi xem chi tiết phiếu khám';
+                    }else{
+                        resultData.success = true;
+                        resultData.data = html;
+                    }
+                });
+            }else{
+                resultData.message = 'Lỗi xem chi tiết phiếu khám';
+            }
+            res.json(resultData);
+        });
+    } catch (error) {
+        resultData.message = error.message;
+        logService.create(req, error.message).then(function() {
             res.json(resultData);
         });
     }

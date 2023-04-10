@@ -1,0 +1,31 @@
+<div class="row g-2 align-items-center mt-2">
+    <div class="tab box">
+        <ul class="tab-nav nav nav-tabs justify-content-center">
+            <li class="nav-item">
+                <a class="nav-link active" aria-current="page" href="#phieutuvan" data-bs-toggle="tab" role="tab" aria-controls="tab" aria-selected="true" id="phieutuvan-tab">Phiếu tư vấn</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#thucdonmau" data-bs-toggle="tab" role="tab" aria-controls="tab" aria-selected="false" id="thucdonmau-tab">Thực đơn mẫu</a>
+            </li>
+        </ul>
+    </div>
+
+    <div class="tab-content">
+        <div class="tab-pane fade box-body show active" id="phieutuvan">
+            <%- include('../search/phieutuvan') %>
+        </div>
+        <div class="tab-pane fade box-body" id="thucdonmau">
+            <%- include('../search/thucdonmau') %>
+        </div>
+    </div>
+</div>
+<script>
+    $(document).ready(function() {
+        let menuExample = <%-JSON.stringify(menuExample) %>;
+        console.log("menuExample", menuExample);
+        let menu_id = $("#menu_id").val();
+        if(menu_id){
+            generateTableMenuSearch(parseInt(menu_id));
+        }
+    });
+</script>

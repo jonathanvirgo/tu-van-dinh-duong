@@ -12,10 +12,42 @@ let dataExamine = {
     // listMenu: [{id:1, name:"Thực đơn 1","detail":[]},{id:2, name:"Thực đơn 2","detail":[]},{id:3, name:"Thực đơn 3","detail":[]}],
     foodNameListSearch: [],
     listMenuTime: [],
-    menuExamine: []
+    menuExamine: [],
+    menuExample: []
 };
 
 const numberFormat = new Intl.NumberFormat();
+
+toastr.options = {
+    "closeButton": true,
+    "debug": false,
+    "newestOnTop": false,
+    "progressBar": false,
+    "positionClass": "toast-top-right",
+    "preventDuplicates": false,
+    "onclick": null,
+    "showDuration": "300",
+    "hideDuration": "1000",
+    "timeOut": "20000",
+    "extendedTimeOut": "20000",
+    "showEasing": "swing",
+    "hideEasing": "linear",
+    "showMethod": "fadeIn",
+    "hideMethod": "fadeOut"
+}
+
+function displayMessageToastr(message) {
+    if(message != ''){
+        toastr.success(message, 'Thông báo');
+    }
+} 
+
+function displayErrorToastr(message) {
+    toastr.clear();
+    if(message != ''){
+        toastr.error(message, 'Thông báo');
+    }
+}
 
 function displayMessage(message) {
     var confirmBox = `
@@ -556,19 +588,25 @@ function changeCourse(menuTime_id){
 }
 
 function generateMenuExamine(){
-    if(dataExamine.menuExamine && dataExamine.menuExamine.length == 0){
-        let menu = addMenuList();
-        dataExamine.menuExamine.push(menu);
-    }
-    for(let [i, item] of dataExamine.menuExamine.entries()){
-        let newOption = new Option(item.name, item.id, false, false);
-        if(i == (dataExamine.menuExamine.length - 1)){
-            $('#menu_id').append(newOption).trigger('change');
-        }else{
-            $('#menu_id').append(newOption);
+    // if(dataExamine.menuExamine && dataExamine.menuExamine.length == 0){
+    //     let menu = addMenuList();
+    //     dataExamine.menuExamine.push(menu);
+    // }
+    if(dataExamine.menuExamine && dataExamine.menuExamine.length > 0){
+        let menu_id_last;
+        for(let [i, item] of dataExamine.menuExamine.entries()){
+            let newOption = new Option(item.name, item.id, false, false);
+            menu_id_last = item.id;
+            if(i == (dataExamine.menuExamine.length - 1)){
+                $('#menu_id').append(newOption).trigger('change');
+            }else{
+                $('#menu_id').append(newOption);
+            }
         }
+        let menu_id = parseInt($('#menu_id').val() ? $('#menu_id').val() : 0);
+        console.log("generateMenuExamine", dataExamine.menuExamine);
+        generateTableMenu(menu_id);
     }
-    generateTableMenu();
 }
 
 function addMenuList(){
@@ -594,21 +632,24 @@ function addMenuList(){
     return menu;
 }
 
-function generateTableMenu(){
+function generateTableMenu(menu_id){
     try {
-        let menu_id = parseInt($("#menu_id").val());
-        console.log("generateTableMenu", menu_id);
+        console.log("generateTableMenu", $("#menu_id").val());
+        // let menu_id = parseInt($("#menu_id").val());
         if(menu_id){
             if(dataExamine.menuExamine.length > 0){
                 for(let menu of dataExamine.menuExamine){
                     console.log("generateTableMenu",menu_id, menu.id);
                     if(menu.id == menu_id){
-                        $('#name_menu').text(menu.name);
+                        $('#name_menu').val(menu.name);
                         addTemplateListMenuTime(menu.detail);
                         break;
                     }
                 }
             }
+            $('#tb_menu').show();
+        }else{
+            $('#tb_menu').hide();
         }
     } catch (error) {
         
@@ -617,6 +658,7 @@ function generateTableMenu(){
 
 function addTemplateListMenuTime(listMenuTime){
     try {
+        console.log("addTemplateListMenuTime", listMenuTime);
         if(listMenuTime.length > 0){
             for(let item of listMenuTime){
                 let menuTime = addTemplateMenuTime(item);
@@ -640,6 +682,39 @@ function addMenu(){
         dataExamine.menuExamine.push(menuNew);
         let newOption = new Option(menuNew.name, menuNew.id, false, false);
         $('#menu_id').append(newOption).trigger('change');
+        generateTableMenu(menuNew.id);
+        $('#tb_menu').show();
+    } catch (error) {
+        
+    }
+}
+
+function chooseMenuExample(){
+    try {
+        let id = 1;
+        if(dataExamine.menuExamine.length > 0){
+            id = dataExamine.menuExamine[dataExamine.menuExamine.length - 1].id + 1;
+        }
+        let menu_example_id = parseInt($("#menuExample_id").val());
+        if(menu_example_id){
+            for(let menu of dataExamine.menuExample){
+                if(menu.id = menu_example_id){
+                    let menuNew = {
+                        id: id,
+                        name: menu.name_menu,
+                        detail: JSON.parse(menu.detail)
+                    };
+                    dataExamine.menuExamine.push(menuNew);
+                    let newOption = new Option(menuNew.name, menuNew.id, false, false);
+                    $('#menu_id').append(newOption).trigger('change');
+                    break;
+                }
+            }
+            $('#tb_menu').show();
+            generateTableMenu(id);
+        }else{
+            displayError("Vui lòng chọn mẫu!");
+        }
     } catch (error) {
         
     }
@@ -737,62 +812,62 @@ function addTemplateMenuTime(menuTime){
 function addFoodTemplate(food, menuTime_id){
     try {
         return foodTemplate = $('<tr/>')
-            .attr("id", "food_"+ menuTime_id + "_" + food.id)
-            .append($("<td/>")
-                .text(food.name)
-            )
-            .append($("<td/>")
-                .attr("id", "food_"+ menuTime_id + "_" + food.id + "_weight")
-                .append($("<input/>")
-                    .attr({"type":"number", "value": food.weight})
-                    .addClass("form-control form-control-title p-1")
-                    .data( "food_id",  food.id)
-                    .data( "menu_time_id",  menuTime_id)
-                    .change(function(){
-                        let idFood = $(this).data('food_id');
-                        let idMenuTime = $(this).data('menu_time_id');
-                        let weight = $(this).val();
-                        changeWeightFood(idFood, idMenuTime, weight);
-                    })
-                )
-            )
-            .append($("<td/>")
-                .attr("id", "food_"+ menuTime_id + "_" + food.id + "_energy")
-                .text(food.energy)
-            )
-            .append($("<td/>")
-                .attr("id", "food_"+ menuTime_id + "_" + food.id + "_protein")
-                .text(food.protein)
-            )
-            .append($("<td/>")
-                .attr("id", "food_"+ menuTime_id + "_" + food.id + "_animal_protein")
-                .text(food.animal_protein)
-            )
-            .append($("<td/>")
-                .attr("id", "food_"+ menuTime_id + "_" + food.id + "_lipid")
-                .text(food.lipid)
-            )
-            .append($("<td/>")
-                .attr("id", "food_"+ menuTime_id + "_" + food.id + "_unanimal_lipid")
-                .text(food.unanimal_lipid)
-            )
-            .append($("<td/>")
-                .attr("id", "food_"+ menuTime_id + "_" + food.id + "_carbohydrate")
-                .text(food.carbohydrate)
-            )
-            .append($("<td/>")
-                .append($(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512">
-                            <path d="M310.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L160 210.7 54.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L114.7 256 9.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L160 301.3 265.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L205.3 256 310.6 150.6z"/>
-                        </svg>`))
-                .css({"cursor": "pointer"})
+        .attr("id", "food_"+ menuTime_id + "_" + food.id)
+        .append($("<td/>")
+            .text(food.name)
+        )
+        .append($("<td/>")
+            .attr("id", "food_"+ menuTime_id + "_" + food.id + "_weight")
+            .append($("<input/>")
+                .attr({"type":"number", "value": food.weight})
+                .addClass("form-control form-control-title p-1")
                 .data( "food_id",  food.id)
                 .data( "menu_time_id",  menuTime_id)
-                .click(function(){
+                .change(function(){
                     let idFood = $(this).data('food_id');
                     let idMenuTime = $(this).data('menu_time_id');
-                    deleteFood(idFood, idMenuTime);
+                    let weight = $(this).val();
+                    changeWeightFood(idFood, idMenuTime, weight);
                 })
-            );
+            )
+        )
+        .append($("<td/>")
+            .attr("id", "food_"+ menuTime_id + "_" + food.id + "_energy")
+            .text(food.energy)
+        )
+        .append($("<td/>")
+            .attr("id", "food_"+ menuTime_id + "_" + food.id + "_protein")
+            .text(food.protein)
+        )
+        .append($("<td/>")
+            .attr("id", "food_"+ menuTime_id + "_" + food.id + "_animal_protein")
+            .text(food.animal_protein)
+        )
+        .append($("<td/>")
+            .attr("id", "food_"+ menuTime_id + "_" + food.id + "_lipid")
+            .text(food.lipid)
+        )
+        .append($("<td/>")
+            .attr("id", "food_"+ menuTime_id + "_" + food.id + "_unanimal_lipid")
+            .text(food.unanimal_lipid)
+        )
+        .append($("<td/>")
+            .attr("id", "food_"+ menuTime_id + "_" + food.id + "_carbohydrate")
+            .text(food.carbohydrate)
+        )
+        .append($("<td/>")
+            .append($(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512">
+                        <path d="M310.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L160 210.7 54.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L114.7 256 9.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L160 301.3 265.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L205.3 256 310.6 150.6z"/>
+                    </svg>`))
+            .css({"cursor": "pointer"})
+            .data( "food_id",  food.id)
+            .data( "menu_time_id",  menuTime_id)
+            .click(function(){
+                let idFood = $(this).data('food_id');
+                let idMenuTime = $(this).data('menu_time_id');
+                deleteFood(idFood, idMenuTime);
+            })
+        );
     } catch (error) {
         
     }
@@ -839,6 +914,103 @@ function setTotalMenu(listFood){
             $('#total_unanimal_lipid').text(String(parseFloat(total_unanimal_lipid).toFixed(2)));
             $('#total_carbohydrate').text(String(parseFloat(total_carbohydrate).toFixed(2)));
         }
+    } catch (error) {
+        
+    }
+}
+
+function saveMenu(isCreate){
+    try {
+        let loading         = $("#loading-page");
+        let url = '/examine/save-menu';
+        let menu_id = parseInt($('#menu_id').val());
+        console.log("menu_id", menu_id);
+        let data = {isCreate: isCreate, name: $("#name_menu").val()};
+        for(let menu of dataExamine.menuExamine){
+            console.log("menu", menu.id);
+            if(menu_id == menu.id){
+                data['detail'] = JSON.stringify(menu.detail);
+            }
+        }
+        if(isCreate == 0){
+            data['menu_id'] = parseInt($('#menuExample_id').val());
+            if(isNaN(data['menu_id']) || !data.menu_id){
+                displayMessageToastr('Chưa chọn menu mẫu');
+            }
+        }
+        console.log("data menu", data);
+        $.ajax({
+            type: 'POST',
+            url: url,
+            data: data,
+            beforeSend: function() {
+                loading.show();
+            },
+            success: function(result) {
+                loading.hide();
+                console.log("result", result);
+                if (result.success) {
+                    displayMessageToastr('Lưu mẫu thành công');
+                } else {
+                    displayErrorToastr(result.message);
+                }
+            },
+            error: function(jqXHR, exception) {
+                loading.hide();
+                ajax_call_error(jqXHR, exception);
+            }
+        });
+    } catch (error) {
+        
+    }
+}
+
+function viewDetailExamine(id){
+    try {
+        console.log("viewDetailExamine", id);
+        let loading         = $("#loading-page");
+        if(id){
+            let url = '/examine/detail-examine';
+            $.ajax({
+                type: 'POST',
+                url: url,
+                data: {id: id},
+                beforeSend: function() {
+                    loading.show();
+                },
+                success: function(result) {
+                    loading.hide();
+                    console.log("result", result);
+                    if (result.success && result.data) {
+                        $("#modal-chi-tiet-phieu-kham").find('.table-responsive-inner').html(result.data);
+                        $("#modal-chi-tiet-phieu-kham").find('.modal-header').html(
+                            `<h3 class="modal-title fs-16px text-uppercase mb-0">Chi tiết phiếu khám</h3>`
+                        );
+
+                        $('#modal-chi-tiet-phieu-kham').find("#btn-detail-examine").html(`
+                            <div class="col-sm-6 col-md-auto">
+                                <button class="btn btn-cancel box-btn w-100 text-uppercase" type="button" data-bs-dismiss="modal">Đóng</button>
+                            </div>`);
+                        
+                        $('#modal-chi-tiet-phieu-kham').modal('show');
+                    } else {
+                        displayErrorToastr(result.message);
+                    }
+                },
+                error: function(jqXHR, exception) {
+                    loading.hide();
+                    ajax_call_error(jqXHR, exception);
+                }
+            });
+        }
+    } catch (error) {
+        
+    }
+}
+
+function generateTableMenuSearch(id){
+    try {
+        console.log("generateTableMenuSearch", id);
     } catch (error) {
         
     }
@@ -922,8 +1094,11 @@ $(document).ready(function(){
     });
 
     $("#menu_id").on('select2:select', function(evt) {
+        console.log("evt", evt.params.data.id);
         $("tbody tr").remove();
-        generateTableMenu();
+        generateTableMenu(evt.params.data.id);
+    }).on('select2:unselect', function(e){
+        console.log("menu_id unselect", e);
     });
 });
 

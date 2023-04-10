@@ -187,15 +187,17 @@ let webService = {
                         fromdate: "",
                         todate: "",
                         keyword: query.keyword == undefined ? "" : query.keyword,
+                        name: query.cus_name == undefined ? "" : query.cus_name.trim(),
+                        phone: query.cus_phone == undefined ? "" : query.cus_phone.trim(),
                         status_ids: query.status_ids == undefined ? "" : query.status_ids,
                         hospital_ids: query.hospital_ids == undefined ? "" : query.hospital_ids,
                         order_by: query.order_by == undefined ? 1 : parseInt(query.order_by),
                         created_by: 0,
                         role_ids: [],
-                        department_id: req.user.department_id,
-                        hospital_id: req.user.hospital_id,
-                        user_mail: req.user.email,
-                        user_phone: req.user.phone
+                        department_id: req.user ? req.user.department_id : null,
+                        hospital_id: req.user ? req.user.hospital_id : null,
+                        user_mail: req.user ? req.user.email : '',
+                        user_phone: req.user ? req.user.phone : ''
                     },
                     requestUri: "",
                     hospitalIds: [],
@@ -211,6 +213,8 @@ let webService = {
             }
             if (type == 1) {
                 listData.requestUri = "/examine?keyword=" + listData.search.keyword;
+            } else if(type == 2){
+                listData.requestUri = "/examine/search?cus_name=" + listData.search.name + "&cus_phone=" + listData.search.phone;
             } else {
                 listData.requestUri = "?keyword=" + listData.search.keyword;
             }

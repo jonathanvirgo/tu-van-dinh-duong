@@ -1,0 +1,80 @@
+<html lang="en">
+   <head>
+      <%- include('../layout/head') %>
+      <title>Phiếu tư vấn dinh dưỡng</title>
+    </head>
+    <body>
+        <div class="container-fluid">
+            <form action="/examine/search" method="get">
+                <div class="row g-2 align-items-center mt-2">
+                    <div class="col-12 col-md-6 d-flex">
+                        <label class="col-form-label col-md-auto fw-bold mt-2" for="cus_name">Họ và tên
+                            <span class="text-danger">*</span>
+                        </label>
+                        <div class="col-form-body col-md">
+                            <div class="form-control-has-addon">
+                                <input type="text" name="cus_name" class="form-control form-control-title" id="cus_name" placeholder="Họ và tên" value="<%= filter.search.name%>">
+                                <button class="btn form-control-addon btn-link p-0 min-h-auto" type="button" onclick="clearInput('#cus_name')">
+                                    <svg class="iconsvg-close">
+                                        <use xlink:href="/public/content/images/sprite.svg#close"></use>
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-6 d-flex">
+                        <label class="col-form-label col-md-auto fw-bold mt-2" for="cus_phone" style="width: 100px">Số điện thoại
+                            <span class="text-danger">*</span>
+                        </label>
+                        <div class="col-form-body col-md" style="flex-grow: 1;">
+                            <div class="form-control-has-addon input-group">
+                                <input type="text" name="cus_phone" class="form-control form-control-title" id="cus_phone" placeholder="Tìm kiếm theo số điện thoại" value="<%= filter.search.phone%>">
+                                <button class="btn form-control-addon btn-link p-0 min-h-auto" type="button" onclick="clearInput('#cus_phone')" style="position: absolute;right: 6rem;">
+                                    <svg class="iconsvg-close">
+                                        <use xlink:href="/public/content/images/sprite.svg#close"></use>
+                                    </svg>
+                                </button>
+                                <button class="btn btn-primary" type="submit">Tìm kiếm</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+            <% if (errors.length > 0){%>
+                <div class="row gy-32px">
+                   <div class="alert-dismissable">
+                      <div class="alert alert-danger">
+                         <ul>
+                           <% for (i = 0;i < errors.length;i++){%>
+                            <li><%=errors[i]%></li>
+                           <%}%>
+                         </ul>
+                      </div>
+                   </div>
+                </div>
+             <% } else { %>
+                <div class="row g-2 align-items-center mt-2">
+                    <%- include('../search/list') %>
+                </div>
+             <% } %>
+        </div>
+        <div class="modal fade modal-table-lg" id="modal-chi-tiet-phieu-kham" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" style="max-width:none">
+              <div class="modal-content">
+                <button class="modal-btn-close btn-close" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
+                <div class="modal-header flex-center flex-wrap gap-2 text-body-2 mb-4">
+                  
+                </div>
+                <div class="table-responsive-md table-responsive-flush mb-4">
+                  <div class="table-responsive-inner">
+                    
+                  </div>
+                </div>
+                <div class="row g-2 justify-content-center" id="btn-detail-examine">
+                  
+                </div>
+              </div>
+            </div>
+          </div>
+   </body>
+</html>

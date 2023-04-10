@@ -1,16 +1,39 @@
 <form id="thucdonmau_form" class="form-horizontal">
     <h3 class="box-title-break">Thực đơn mẫu</h3>
+    <input type="hidden" class="form-control form-control-title p-1" id="energy_food" placeholder="Energy" readonly>
+    <input type="hidden" class="form-control form-control-title p-1" id="protein_food" placeholder="Protein" readonly>
+    <input type="hidden" class="form-control form-control-title p-1" id="animal_protein" placeholder="Animal Protein" readonly>
+    <input type="hidden" class="form-control form-control-title p-1" id="lipid_food" placeholder="Lipid" readonly>
+    <input type="hidden" class="form-control form-control-title p-1" id="unanimal_lipid" placeholder="Unanimal Lipid" readonly>
+    <input type="hidden" class="form-control form-control-title p-1" id="carbohydrate" placeholder="Carbohydrate" readonly>
+
+    <div class="row g-2 align-items-center">
+        <div class="col-12 col-md-6 d-flex">
+            <label class="col-form-label col-md-auto fw-bold mt-2" for="menuExample_id">Chọn mẫu</label>
+            <div class="col-form-body col-md">
+                <div class="input-group">
+                    <div style="flex-grow:1;">
+                        <select class="form-select" id="menuExample_id" data-plugin="select2" data-placeholder="Chọn mẫu">
+                            <option></option>
+                            <% if(menuExample.length > 0){ %>
+                                <% for (let me of menuExample){ %>
+                                    <option value="<%= me.id %>"><%= me.name_menu %></option>
+                                <%}%>   
+                            <%}%>
+                        </select>
+                    </div>
+                    <button class="btn btn-primary" type="button" onclick="chooseMenuExample()">Thêm</button>
+                    <button class="btn btn-primary" type="button" onclick="addMenu()">Tạo mới</button>
+                </div>
+            </div>
+        </div>
+    </div>
     <div class="row g-2 align-items-center">
         <div class="col-12 col-md-6 d-flex">
             <label class="col-form-label col-md-auto fw-bold mt-2" for="menu_id">Chọn menu</label>
             <div class="col-form-body col-md">
-                <div class="input-group">
-                    <div style="flex-grow:1;">
-                        <select class="form-select" id="menu_id" data-plugin="select2" data-placeholder="Chọn menu" style="width: 90%;">
-                    
-                        </select>
-                    </div>
-                    <button class="btn btn-primary" type="button" onclick="addMenu()">Thêm</button>
+                <div class="form-control-has-addon">
+                    <select class="form-select" id="menu_id" data-plugin="select2" data-placeholder="Chọn menu"></select>
                 </div>
             </div>
         </div>
@@ -66,56 +89,56 @@
         <!-- <div class="col-12 col-md-3 d-flex">
             <label class="col-form-label col-md-auto fw-bold mt-2" for="energy_food">Energy</label>
             <div class="col-form-body col-md">
-              <div class="form-control-has-addon"> -->
+              <div class="form-control-has-addon">
                 <input type="hidden" class="form-control form-control-title p-1" id="energy_food" placeholder="Energy" readonly>
-              <!-- </div>
+              </div>
             </div>
         </div>
         <div class="col-12 col-md-3 d-flex">
             <label class="col-form-label col-md-auto fw-bold mt-2" for="protein_food">Protein</label>
             <div class="col-form-body col-md">
-              <div class="form-control-has-addon"> -->
+              <div class="form-control-has-addon">
                 <input type="hidden" class="form-control form-control-title p-1" id="protein_food" placeholder="Protein" readonly>
-              <!-- </div>
+              </div>
             </div>
-        </div>
-    </div> -->
+        </div> -->
+    </div>
     <!-- <div class="row g-2 align-items-center">
         <div class="col-12 col-md-3 d-flex">
             <label class="col-form-label col-md-auto fw-bold mt-2" for="animal_protein">Animal Protein</label>
             <div class="col-form-body col-md">
-                <div class="form-control-has-addon"> -->
+                <div class="form-control-has-addon">
                     <input type="hidden" class="form-control form-control-title p-1" id="animal_protein" placeholder="Animal Protein" readonly>
-                <!-- </div>
+                </div>
             </div>
         </div>
         <div class="col-12 col-md-3 d-flex">
             <label class="col-form-label col-md-auto fw-bold mt-2" for="lipid_food">Lipid</label>
             <div class="col-form-body col-md">
-              <div class="form-control-has-addon"> -->
+              <div class="form-control-has-addon">
                 <input type="hidden" class="form-control form-control-title p-1" id="lipid_food" placeholder="Lipid" readonly>
-              <!-- </div>
+              </div>
             </div>
         </div>
         <div class="col-12 col-md-3 d-flex">
             <label class="col-form-label col-md-auto fw-bold mt-2" for="unanimal_lipid">Unanimal Lipid</label>
             <div class="col-form-body col-md">
-              <div class="form-control-has-addon"> -->
+              <div class="form-control-has-addon">
                 <input type="hidden" class="form-control form-control-title p-1" id="unanimal_lipid" placeholder="Unanimal Lipid" readonly>
-              <!-- </div>
+              </div>
             </div>
         </div>
         <div class="col-12 col-md-3 d-flex">
             <label class="col-form-label col-md-auto fw-bold mt-2" for="carbohydrate">Carbohydrate</label>
             <div class="col-form-body col-md">
-              <div class="form-control-has-addon"> -->
+              <div class="form-control-has-addon">
                 <input type="hidden" class="form-control form-control-title p-1" id="carbohydrate" placeholder="Carbohydrate" readonly>
-              <!-- </div>
+              </div>
             </div>
         </div>
     </div> -->
     <div class="row g-2 align-items-center">
-      <div class="table-responsive-xl table-responsive-flush mb-4" id="tb_menu" style="width: 100%;">
+      <div class="table-responsive-xl table-responsive-flush mb-4" id="tb_menu" style="width: 100%;display: none;">
         <div class="table-responsive-inner"></div>
         <table class="table-2 table table-pe-x-3 mb-0 align-middle table-ds-booking table-bordered table-hover">
             <thead class="text-center">
@@ -124,7 +147,7 @@
                         <span>Giờ ăn</span>
                     </td>
                     <td colspan="9">
-                        <span id="name_menu"></span>
+                        <input type="text" id="name_menu" class="form-control form-control-title p-1" style="text-align: center;">
                     </td>
                 </tr>
                 <tr>
@@ -187,12 +210,19 @@
           </button>
         </div>
         <div class="col-6 col-md-auto">
-            <button class="btn btn-primary box-btn w-100 text-uppercase" type="button" onclick="saveMenu()">
+            <button class="btn btn-primary box-btn w-100 text-uppercase" type="button" onclick="saveMenu(1)">
               <svg class="iconsvg-send-2 flex-shrink-0 fs-16px me-2">
                 <use xlink:href="/public/content/images/sprite.svg#save"></use>
               </svg>Lưu Mẫu
             </button>
-          </div>
+        </div>
+        <div class="col-6 col-md-auto">
+            <button class="btn btn-primary box-btn w-100 text-uppercase" type="button" onclick="saveMenu(0)">
+              <svg class="iconsvg-send-2 flex-shrink-0 fs-16px me-2">
+                <use xlink:href="/public/content/images/sprite.svg#save"></use>
+              </svg>Cập nhật mẫu
+            </button>
+        </div>
         <div class="col-6 col-md-auto">
             <button class="btn btn-primary box-btn w-100 text-uppercase" type="button" onclick="exportMenuExample()">
               <svg class="iconsvg-send-2 flex-shrink-0 fs-16px me-2">

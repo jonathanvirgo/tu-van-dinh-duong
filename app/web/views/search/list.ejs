@@ -1,0 +1,56 @@
+<div class="col">
+    <div class="box">
+        <div class="box-header">
+            <h2 class="box-title">Danh sách khám <small class="text-icon fw-6">(<%=paginator.totalItem%>)</small></h2>
+            <div class="paginate fs-13px ms-auto d-none d-md-flex">
+                <%- include('../layout/pagination') %>
+            </div>
+        </div>
+        <div class="box-body box-table">
+            <div class="table-responsive-md table-responsive-flush">
+                <div class="table-responsive-inner">
+                    <table class="table-1 table table-pe-x-3 mb-0 align-middle">
+                    <thead>
+                        <tr>
+                            <td width="100px">Ngày khám</td>
+                            <td>Address</td>
+                            <td>Chẩn đoán</td>
+                            
+                            <td></td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    <% if (listExamine.length > 0){%>
+                        <% for (i = 0;i < listExamine.length;i++){%>
+                        <tr>
+                            <td class="fs-13px">
+                                <%=moment(listExamine[i].created_at).format("HH:mm:ss")%>
+                                <br>
+                                <small class="text-body-2">
+                                    <%=moment(listExamine[i].created_at).format("DD/MM/YYYY")%>
+                                </small>
+                            </td>
+                            <td class="fs-13px text-primary"><%=listExamine[i].cus_address%></td>
+                            <td class="fs-13px"><%=listExamine[i].diagnostic%></td>
+                            <td>
+                                <a onclick="viewDetailExamine('<%=listExamine[i].id%>')" style="cursor: pointer;"><span class="text-primary fw-6 fs-13px">Xem</span></a>
+                            </td>
+                        </tr>
+                        <%}%>
+                    <%} else {%>
+                        <tr>
+                        <td colspan="5" style="text-align: center;">
+                            <b>Không có dữ liệu!</b>
+                        </td>
+                        </tr>
+                    <% } %>
+                    </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="paginate fs-13px mx-auto">
+                <%- include('../layout/pagination') %>
+            </div>
+        </div>
+    </div>
+</div>
