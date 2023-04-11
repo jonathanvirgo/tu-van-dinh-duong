@@ -1,31 +1,52 @@
-<div class="row g-2 align-items-center">
-    <div class="col-6 d-flex">
-        <label class="col-form-label col-md-auto fw-bold mt-2" for="menu_id">Chọn menu</label>
-        <div class="col-form-body col-md">
-            <div class="form-control-has-addon">
-                <select class="form-select" id="menu_id">
-                    <% for(let item of menuExample){ %>
-                        <option value="<%=item.id%>"><%=item.name%></option>
-                    <% } %>
-                </select>
+<div class="form-horizontal">
+    <h3 class="box-title-break">Thực đơn mẫu</h3>
+    <div class="row g-2 align-items-center">
+        <div class="col-6 d-flex">
+            <label class="col-form-label col-md-auto fw-bold mt-2" for="menu_id">Chọn menu</label>
+            <div class="col-form-body col-md">
+                <div class="form-control-has-addon">
+                    <select class="form-select" id="menu_id">
+                        <% for(let item of menuExample){ %>
+                            <option value="<%=item.id%>"><%=item.name%></option>
+                        <% } %>
+                    </select>
+                </div>
             </div>
         </div>
     </div>
-</div>
-<div class="row g-2 align-items-center">
-    <div class="table-responsive-xl table-responsive-flush mb-4" id="tb_menu" style="width: 100%">
-      <div class="table-responsive-inner"></div>
-      <table class="table-2 table table-pe-x-3 mb-0 align-middle table-ds-booking table-bordered table-hover">
-          <thead class="text-center">
-              <tr>
-                  <td>Giờ</td>
-                  <td>Thực phẩm</td>
-                  <td>Weight(g)</td>
-              </tr>
-          </thead>
-          <tbody>
-            
-          </tbody>
-      </table>
+    <div class="row g-2 align-items-center">
+        <div class="table-responsive-xl table-responsive-flush mb-4" id="tb_menu" style="width: 100%">
+          <div class="table-responsive-inner"></div>
+          <table class="table-2 table table-pe-x-3 mb-0 align-middle table-ds-booking table-bordered table-hover">
+              <thead class="text-center">
+                  <tr>
+                      <td>Giờ</td>
+                      <td>Thực phẩm</td>
+                      <td>Weight(g)</td>
+                  </tr>
+              </thead>
+              <tbody>
+                
+              </tbody>
+          </table>
+        </div>
+    </div>
+    <h3 class="box-title-break">Thực phẩm thay thế tương đương</h3>
+    <div class="row g-2 align-items-center">
+        <div class="table-responsive-xl table-responsive-flush mb-4" id="tb_menu" style="width: 100%">
+            <div class="table-responsive-inner"></div>
+            <table class="table-2 table table-pe-x-3 mb-0 align-middle table-ds-booking table-bordered table-hover">
+                <tbody>
+                    <% if(dataAlternativeFood.length > 0){ %>
+                        <% for(let item of dataAlternativeFood){ %>
+                            <tr>
+                                <td><%= item.food_main %></td>
+                                <td><%= item.food_replace %></td>
+                            </tr>
+                        <% } %>
+                    <% } %>
+                </tbody>
+            </table>
+          </div>
     </div>
 </div>

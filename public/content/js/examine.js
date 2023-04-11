@@ -562,6 +562,7 @@ function changeWeightFood(id_food, menuTime_id, value){
                         break;
                     }
                 }
+                break;
             }
         }
     } catch (error) {
@@ -582,6 +583,7 @@ function changeCourse(menuTime_id){
                         break;
                     }
                 }
+                break;
             }
         }
     } catch (error) {
@@ -782,7 +784,7 @@ function addFoodToMenu(){
 function addTemplateMenuTime(menuTime){
     try {
         let rowspan = menuTime.listFood.length + 1;
-        return menuTimeTemplate = $('<tr/>')
+        return $('<tr/>')
             .attr("id", "menu_time_"+ menuTime.id)
             .addClass("text-center")
             .append($("<td/>")
@@ -813,7 +815,7 @@ function addTemplateMenuTime(menuTime){
 
 function addFoodTemplate(food, menuTime_id){
     try {
-        return foodTemplate = $('<tr/>')
+        return $('<tr/>')
         .attr("id", "food_"+ menuTime_id + "_" + food.id)
         .append($("<td/>")
             .text(food.name)
@@ -1013,6 +1015,73 @@ function viewDetailExamine(id){
 function generateTableMenuSearch(id){
     try {
         console.log("generateTableMenuSearch", id);
+        if(dataExamine.menuExamine.length > 0){
+            for(let menu of dataExamine.menuExamine){
+                if(id == menu.id){
+                    addTemplateListMenuTimeSearch(menu.detail);
+                    break;
+                }
+            }
+        }
+    } catch (error) {
+        
+    }
+}
+
+function addTemplateListMenuTimeSearch(listMenuTime){
+    try {
+        console.log("addTemplateListMenuTime", listMenuTime);
+        if(listMenuTime.length > 0){
+            for(let item of listMenuTime){
+                let menuTime = addTemplateMenuTimeSearch(item);
+                $("#tb_menu").find('tbody').append(menuTime);
+                if(item.listFood.length > 0){
+                    for(let food of item.listFood){
+                        let foodTemplate = addFoodTemplateSearch(food, item.id);
+                        $("#tb_menu").find('tbody').append(foodTemplate);
+                    }
+                }
+            }
+        }
+    } catch (error) {
+        
+    }
+}
+
+function addTemplateMenuTimeSearch(menuTime){
+    try {
+        let rowspan = menuTime.listFood.length + 1;
+        return menuTimeTemplate = $('<tr/>')
+            .attr("id", "menu_time_"+ menuTime.id)
+            .addClass("text-center")
+            .append($("<td/>")
+                .css({"writing-mode": "vertical-rl"})
+                .attr("rowspan", rowspan)
+                .text(menuTime.name)
+            )
+            .append($("<td/>")
+                .text(menuTime.name_course)
+                .css({"text-align": "center"})
+                .attr("colspan", 2)
+            );
+    } catch (error) {
+        
+    }
+}
+
+function addFoodTemplateSearch(food, menuTime_id){
+    try {
+        return $('<tr/>')
+        .attr("id", "food_"+ menuTime_id + "_" + food.id)
+        .append($("<td/>")
+            .text(food.name)
+            .css({"text-align": "center"})
+        )
+        .append($("<td/>")
+            .attr("id", "food_"+ menuTime_id + "_" + food.id + "_weight")
+            .text(food.weight)
+            .css({"text-align": "center"})
+        );
     } catch (error) {
         
     }

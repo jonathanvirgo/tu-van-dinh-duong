@@ -917,13 +917,16 @@ router.post('/detail-examine', (req, res, next) =>{
         menuExample = [];
 
         let sqlDetailExamine = 'SELECT * FROM examine WHERE id = ?';
-        webService.getListTable(sqlDetailExamine ,[req.body.id]).then(responseData =>{
+        webService.getListTable(sqlDetailExamine ,[req.body.id]).then(async responseData =>{
             if(responseData.success && responseData.data && responseData.data.length > 0){
                 examine   = responseData.data[0];
                 prescriptionExamine = JSON.parse(examine.prescription ? examine.prescription : '[]');
                 menuExample = JSON.parse(examine.menu_example ? examine.menu_example : '[]');
-                console.log("examine", examine, menuExample, prescriptionExamine, menuExample[0].detail);
-                express().render(path.resolve(__dirname, "../views/search/detail.ejs"), {examine,prescriptionExamine,menuExample}, (err, html) => {
+                let sqlGetAlternativeFood = 'SELECT food_main, food_replace FROM alternative_food';
+                let dataAlternativeFoodRespone = await webService.getListTable(sqlGetAlternativeFood);
+                let dataAlternativeFood = dataAlternativeFoodRespone.success ? dataAlternativeFoodRespone.data : [];
+                
+                express().render(path.resolve(__dirname, "../views/search/detail.ejs"), {examine,prescriptionExamine,menuExample,dataAlternativeFood}, (err, html) => {
                     if(err){
                         console.log("err", err);
                         resultData.message = 'Lỗi xem chi tiết phiếu khám';

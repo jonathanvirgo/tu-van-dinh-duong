@@ -749,8 +749,8 @@ router.get("/menu-example", async (req, res) =>{
         let now = moment();
         let data = JSON.parse(req.query.data);
         if(data){
-            let sqlGetAlternativeFood = 'SELECT food_main, food_replace FROM alternative_food WHERE created_by = ?';
-            let dataAlternativeFood = await webService.getListTable(sqlGetAlternativeFood, req.user.id);
+            let sqlGetAlternativeFood = 'SELECT food_main, food_replace FROM alternative_food';
+            let dataAlternativeFood = await webService.getListTable(sqlGetAlternativeFood);
             let menuExamineDetail = menuExapleList(data);
             let listAlternativeFood = getRowAlternativeFood(dataAlternativeFood);
             const doc = new Document({
