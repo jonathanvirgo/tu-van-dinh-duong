@@ -134,7 +134,7 @@ router.post('/edit/:id', function (req, res, next) {
             parameter  = {
                 id: parseInt(req.params.id),
                 name: req.body.diagnostic_name,
-                address: req.body.diagnostic_detail ? req.body.diagnostic_detail : ''
+                detail: req.body.diagnostic_detail ? req.body.diagnostic_detail : ''
             };
             
         if(parameter.name == ''){
