@@ -227,13 +227,14 @@ function changeTabExamine(tab){
             dataExamine.examine['cus_gender'] = $('#cus_gender').val();
             dataExamine.examine['cus_birthday'] = $('#cus_birthday').val();
             dataExamine.examine['cus_address'] = $('#cus_address').val();
+            dataExamine.examine['cus_anamnesis'] = $('#cus_anamnesis').val();
+            dataExamine.examine['cus_living_habits'] = $('#cus_living_habits').val();
             dataExamine.examine['diagnostic'] = $('#diagnostic').val();
             dataExamine.examine['cus_length'] = $('#cus_length').val();
             dataExamine.examine['cus_cntc'] = $('#cus_cntc').val();
             dataExamine.examine['cus_cnht'] = $('#cus_cnht').val();
             dataExamine.examine['cus_bmi'] = $('#cus_bmi').val();
             dataExamine.examine['clinical_examination'] = $('#clinical_examination').val();
-            dataExamine.examine['diagnostic_id'] = $('#diagnostic_id').val();
             dataExamine.examine['erythrocytes'] = $('#erythrocytes').val();
             dataExamine.examine['cus_bc'] = $('#cus_bc').val();
             dataExamine.examine['cus_tc'] = $('#cus_tc').val();
@@ -1087,6 +1088,14 @@ function addFoodTemplateSearch(food, menuTime_id){
     }
 }
 
+function onSampleSelectServerSearch(searchValue, virtualSelect){
+    try {
+        console.log("onSampleSelectServerSearch", searchValue);
+    } catch (error) {
+        console.log("onSampleSelectServerSearch error", error);
+    }
+}
+
 $(document).ready(function(){
     $("#cus_birthday").flatpickr({
         dateFormat: "d-m-Y",
@@ -1176,7 +1185,7 @@ $(document).ready(function(){
         if(dataExamine.diagnostic.length > 0){
             for(let item of dataExamine.diagnostic){
                 if(evt.params.data.id == item.id){      
-                    $("#clinical_examination").text(item.detail);
+                    $("#diagnostic_suggest").text(item.detail);
                     break;
                 }
             }

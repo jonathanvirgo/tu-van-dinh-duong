@@ -92,20 +92,48 @@
         </div>
 	</div>
 	<div class="row g-2 align-items-center">
-	  <label class="col-form-label col-md-auto fw-bold" for="cus_address">Địa chỉ
-		<!-- <span class="text-danger">*</span> -->
-	  </label>
-	  <div class="col-form-body col-md">
-        <div class="form-control-has-addon">
-            <textarea class="form-control" id="cus_address" placeholder="Nhập địa chỉ" name="cus_address"><%= examine.cus_address%></textarea>
-            <button class="btn form-control-addon btn-link p-0 min-h-auto" type="button" onclick="clearInput('#cus_address')">
-                <svg class="iconsvg-close">
-                <use xlink:href="/public/content/images/sprite.svg#close"></use>
-                </svg>
-            </button>
-        </div>
-	  </div>
+        <label class="col-form-label col-md-auto fw-bold" for="cus_address">Địa chỉ
+            <!-- <span class="text-danger">*</span> -->
+        </label>
+	    <div class="col-form-body col-md">
+            <div class="form-control-has-addon">
+                <textarea class="form-control" id="cus_address" placeholder="Nhập địa chỉ" name="cus_address"><%= examine.cus_address%></textarea>
+                <button class="btn form-control-addon btn-link p-0 min-h-auto" type="button" onclick="clearInput('#cus_address')">
+                    <svg class="iconsvg-close">
+                    <use xlink:href="/public/content/images/sprite.svg#close"></use>
+                    </svg>
+                </button>
+            </div>
+	    </div>
 	</div>
+    <div class="row g-2 align-items-center">
+        <div class="col-12 col-md-6 d-flex">
+            <label class="col-form-label col-md-auto fw-bold" for="cus_anamnesis">Tiền sử bệnh</label>
+            <div class="col-form-body col-md">
+                <div class="form-control-has-addon">
+                    <textarea class="form-control" id="cus_anamnesis" placeholder="Tiền sử bệnh" name="cus_anamnesis"><%= examine.cus_anamnesis%></textarea>
+                    <button class="btn form-control-addon btn-link p-0 min-h-auto" type="button" onclick="clearInput('#cus_anamnesis')">
+                        <svg class="iconsvg-close">
+                            <use xlink:href="/public/content/images/sprite.svg#close"></use>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 col-md-6 d-flex">
+            <label class="col-form-label col-md-auto fw-bold" for="cus_living_habits">Thói quen ăn uống sinh hoạt</label>
+            <div class="col-form-body col-md">
+                <div class="form-control-has-addon">
+                    <textarea class="form-control" id="cus_living_habits" placeholder="Thói quen ăn uống sinh hoạt" name="cus_living_habits"><%= examine.cus_living_habits%></textarea>
+                    <button class="btn form-control-addon btn-link p-0 min-h-auto" type="button" onclick="clearInput('#cus_living_habits')">
+                        <svg class="iconsvg-close">
+                            <use xlink:href="/public/content/images/sprite.svg#close"></use>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
     <div class="row g-2 align-items-center">
         <label class="col-form-label col-md-auto fw-bold" for="diagnostic">Chuẩn đoán
           <!-- <span class="text-danger">*</span> -->
@@ -175,17 +203,17 @@
             </div>
         </div>
     </div>
-    <h3 class="box-title-break">Khám lâm sàng</h3>
+    <h3 class="box-title-break">Gợi ý chuẩn đoán</h3>
     <div class="row g-2 align-items-center">
         <div class="col-6 col-md-6 d-flex">
-            <label class="col-form-label col-md-auto fw-bold mt-2" for="cus_butt">Chọn mẫu</label>
+            <label class="col-form-label col-md-auto fw-bold mt-2" for="cus_butt">Gợi ý chuẩn đoán</label>
             <div class="col-form-body col-md">
                 <div class="form-control-has-addon">
                     <select class="form-select" name="diagnostic_id" id="diagnostic_id" data-plugin="select2" data-placeholder="Chọn mẫu chuẩn đoán">
                         <option></option>
                         <% if(diagnostic.length > 0){ %>
                             <% for (let dia of diagnostic){ %>
-                                <option <%=dia.id == examine.diagnostic_id ? 'selected' : ''%> value="<%= dia.id %>"><%= dia.name %></option>
+                                <option value="<%=dia.id %>"><%=dia.name %></option>
                             <%}%>   
                         <%}%>
                     </select>
@@ -193,6 +221,19 @@
             </div>
         </div>
     </div>
+    <div class="row">
+        <div class="col-form-body col-md">
+            <div class="form-control-has-addon">
+                <textarea class="form-control" id="diagnostic_suggest" placeholder="Gợi ý chuẩn đoán" name="diagnostic_suggest"></textarea>
+                <button class="btn form-control-addon btn-link p-0 min-h-auto" type="button" onclick="clearInput('#diagnostic_suggest')">
+                    <svg class="iconsvg-close">
+                    <use xlink:href="/public/content/images/sprite.svg#close"></use>
+                    </svg>
+                </button>
+            </div>
+          </div>
+    </div>
+    <h3 class="box-title-break">Khám lâm sàng</h3>
     <div class="row">
         <div class="col-form-body col-md">
             <div class="form-control-has-addon">
@@ -328,7 +369,7 @@
                     </svg>
                 </button>
             </div>
-          </div>
+        </div>
     </div>
     <div class="row g-2 justify-content-center mt-0">
         <div class="col-6 col-md-auto">
