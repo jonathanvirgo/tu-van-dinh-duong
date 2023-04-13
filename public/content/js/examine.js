@@ -545,11 +545,11 @@ function caculateFoodInfo(food, weight){
     try {
         if(food && weight > 0){
             food.energy = Math.round((food.energy * weight) / food.weight);
-            food.protein = Math.round((food.protein * weight) / food.weight);
-            food.animal_protein = Math.round((food.animal_protein * weight) / food.weight);
-            food.lipid = Math.round((food.lipid * weight) / food.weight);
-            food.unanimal_lipid = Math.round((food.unanimal_lipid * weight) / food.weight);
-            food.carbohydrate = Math.round((food.carbohydrate * weight) / food.weight);
+            food.protein = Math.round(((food.protein * weight) / food.weight) * 100) / 100;
+            food.animal_protein = Math.round(((food.animal_protein * weight) / food.weight) * 100) /100;
+            food.lipid = Math.round(((food.lipid * weight) / food.weight) * 100) / 100;
+            food.unanimal_lipid = Math.round(((food.unanimal_lipid * weight) / food.weight) * 100) / 100;
+            food.carbohydrate = Math.round(((food.carbohydrate * weight) / food.weight) * 100) / 100;
             food.weight = weight
         }
     } catch (error) {
@@ -563,6 +563,7 @@ function changeWeightFood(id_food, menuTime_id, value){
         let menu_id = parseInt($('#menu_id').val());
         for(let menu of dataExamine.menuExamine){
             if(menu_id == menu.id){
+                let listFoodTotal = [];
                 for(let item of menu.detail){
                     if(menuTime_id == item.id){
                         for(let food of item.listFood){
@@ -578,9 +579,10 @@ function changeWeightFood(id_food, menuTime_id, value){
                                 break;
                             }
                         }
-                        break;
                     }
+                    listFoodTotal.push(...item.listFood);
                 }
+                setTotalMenu(listFoodTotal);
                 break;
             }
         }
@@ -616,19 +618,25 @@ function generateMenuExamine(){
     //     dataExamine.menuExamine.push(menu);
     // }
     if(dataExamine.menuExamine && dataExamine.menuExamine.length > 0){
-        let menu_id_last;
         for(let [i, item] of dataExamine.menuExamine.entries()){
             let newOption = new Option(item.name, item.id, false, false);
-            menu_id_last = item.id;
             if(i == (dataExamine.menuExamine.length - 1)){
                 $('#menu_id').append(newOption).trigger('change');
             }else{
                 $('#menu_id').append(newOption);
             }
+            if(i == 0){
+                let listFoodTotal = [];
+                for(let menuTime of item.detail){
+                    listFoodTotal.push(...menuTime.listFood);
+                }
+                setTotalMenu(listFoodTotal);
+            }
         }
         let menu_id = parseInt($('#menu_id').val() ? $('#menu_id').val() : 0);
-        console.log("generateMenuExamine", dataExamine.menuExamine);
+        console.log("generateMenuExamine", dataExamine.menuExamine, menu_id);
         generateTableMenu(menu_id);
+
     }
 }
 
@@ -933,11 +941,11 @@ function setTotalMenu(listFood){
                 total_carbohydrate += food.carbohydrate;
             }
             $('#total_energy').text(String(total_energy));
-            $('#total_protein').text(String(parseFloat(total_protein).toFixed(2)));
-            $('#total_animal_protein').text(String(parseFloat(total_animal_protein).toFixed(2)));
-            $('#total_lipid').text(String(parseFloat(total_lipid).toFixed(2)));
-            $('#total_unanimal_lipid').text(String(parseFloat(total_unanimal_lipid).toFixed(2)));
-            $('#total_carbohydrate').text(String(parseFloat(total_carbohydrate).toFixed(2)));
+            $('#total_protein').text(parseFloat(total_protein).toFixed(2));
+            $('#total_animal_protein').text(parseFloat(total_animal_protein).toFixed(2));
+            $('#total_lipid').text(parseFloat(total_lipid).toFixed(2));
+            $('#total_unanimal_lipid').text(parseFloat(total_unanimal_lipid).toFixed(2));
+            $('#total_carbohydrate').text(parseFloat(total_carbohydrate).toFixed(2));
         }
     } catch (error) {
         
@@ -1204,10 +1212,12 @@ $(document).ready(function(){
     });
 
     $("#food_name").on('select2:select', function(evt) {
+        console.log("food_name select evt", evt.params);
         if(dataExamine.foodNameListSearch.length > 0){
             for(let item of dataExamine.foodNameListSearch){
                 if(evt.params.data.id == item.id){      
                     $("#weight_food").val(item.weight);
+                    console.log("food_name select", item);
                     $("#weight_food").data('initial-value',item.weight);
                     $("#energy_food").val(item.energy);
                     $("#protein_food").val(item.protein);
@@ -1306,19 +1316,20 @@ $(document).ready(function(){
         if(menu_id && food_id){
             let oldValue = parseInt($("#weight_food").data('initial-value'));
             let currenValue = parseInt($("#weight_food").val());
-            let energy = parseInt($("#energy_food").val());
-            let protein = parseInt($("#protein_food").val());
-            let animal_protein = parseInt($("#animal_protein").val());
-            let lipid = parseInt($("#lipid_food").val());
-            let unanimal_lipid = parseInt($("#unanimal_lipid").val());
-            let carbohydrate = parseInt($("#carbohydrate").val());
+            let energy = parseFloat($("#energy_food").val());
+            let protein = parseFloat($("#protein_food").val());
+            let animal_protein = parseFloat($("#animal_protein").val());
+            let lipid = parseFloat($("#lipid_food").val());
+            let unanimal_lipid = parseFloat($("#unanimal_lipid").val());
+            let carbohydrate = parseFloat($("#carbohydrate").val());
 
             $("#energy_food").val(Math.round((energy * currenValue) / oldValue));
-            $("#protein_food").val(Math.round((protein * currenValue) / oldValue));
-            $("#animal_protein").val(Math.round((animal_protein * currenValue) / oldValue));
-            $("#lipid_food").val(Math.round((lipid * currenValue) / oldValue));
-            $("#unanimal_lipid").val(Math.round((unanimal_lipid * currenValue) / oldValue));
-            $("#carbohydrate").val(Math.round((carbohydrate * currenValue) / oldValue));
+            $("#protein_food").val(Math.round(((protein * currenValue) / oldValue) * 100) / 100);
+            $("#animal_protein").val(Math.round(((animal_protein * currenValue) / oldValue) * 100) / 100);
+            $("#lipid_food").val(Math.round(((lipid * currenValue) / oldValue) * 100) / 100);
+            $("#unanimal_lipid").val(Math.round(((unanimal_lipid * currenValue) / oldValue) * 100) / 100);
+            $("#carbohydrate").val(Math.round(((carbohydrate * currenValue) / oldValue) * 100) / 100);
+            $("#weight_food").data('initial-value', currenValue);
         }
     })
 });
