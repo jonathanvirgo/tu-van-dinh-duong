@@ -23,7 +23,7 @@
                   <td>Address</td>
                   <td>Chẩn đoán</td>
                   <td width="100px">Ngày tạo</td>
-                  <td class="w-1">Trạng thái</td>
+                  <!-- <td class="w-1">Trạng thái</td> -->
                 </tr>
               </thead>
               <tbody>
@@ -50,11 +50,11 @@
                       <br>
                       <small class="text-body-2"><%=moment(listExamine[i].created_at).format("DD/MM/YYYY")%></small>
                     </td>
-                    <td>
+                    <!-- <td>
                       <span class="badge badge-<%=webService.examineStatusClass(listExamine[i].status).name%>">
                         <%=webService.examineStatusClass(listExamine[i].status).value%>
                       </span>
-                    </td>
+                    </td> -->
                   </tr>
                 <%}%>
               <%} else {%>

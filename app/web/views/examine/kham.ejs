@@ -1,4 +1,24 @@
 <form id="kham_form" class="form-horizontal">
+    <h3 class="box-title-break">Tìm kiếm</h3>
+    <div class="row align-items-center">
+        <div class="col-12 col-md-6 d-flex">
+            <label class="col-form-label col-md-auto fw-bold mt-2" for="phone_search" style="width: 8rem">Số điện thoại</label>
+            <div class="col-form-body col-md">
+                <div class="form-control-has-addon">
+                    <select class="form-select" name="phone_search" id="phone_search" data-plugin="select2" data-placeholder="Số điện thoại người bệnh">
+                    </select>
+                    <a class="table-more-link link-primary text-lg-center mt-2" style="cursor: pointer; float: right;display: none;" id="btn_show_history" onclick="showHistory()">Xem lịch sử khám
+                        <svg class="iconsvg-chevron-right rotate-90 fs-base ms-1">
+                            <use xlink:href="/public/content/images/sprite.svg#chevron-right"></use>
+                        </svg>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row g-2 align-items-center" id="table_history">
+
+    </div>
     <h3 class="box-title-break">Thông tin chung</h3>
     <div class="row g-2 align-items-center">
         <div class="col-12 col-md-6 d-flex">
@@ -18,7 +38,7 @@
         </div>
         <div class="col-12 col-md-6 d-flex">
             <label class="col-form-label col-md-auto fw-bold mt-2" for="cus_phone">Phone
-                <!-- <span class="text-danger">*</span> -->
+                <span class="text-danger">*</span>
             </label>
             <div class="col-form-body col-md">
                 <div class="form-control-has-addon">
@@ -35,7 +55,7 @@
 	<div class="row g-2 align-items-center">
         <div class="col-12 col-md-2 d-flex">
             <label class="col-form-label col-md-auto fw-bold mt-2" for="cus_gender">Giới tính
-                <!-- <span class="text-danger">*</span> -->
+                <span class="text-danger">*</span>
             </label>
             <div class="col-form-body col-md">
                 <div class="form-control-has-addon">
@@ -205,7 +225,7 @@
     </div>
     <h3 class="box-title-break">Gợi ý chuẩn đoán</h3>
     <div class="row g-2 align-items-center">
-        <div class="col-6 col-md-6 d-flex">
+        <div class="col-12 col-md-6 d-flex">
             <label class="col-form-label col-md-auto fw-bold mt-2" for="cus_butt">Gợi ý chuẩn đoán</label>
             <div class="col-form-body col-md">
                 <div class="form-control-has-addon">

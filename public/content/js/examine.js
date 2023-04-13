@@ -11,6 +11,7 @@ let dataExamine = {
     id_prescription: 1,
     // listMenu: [{id:1, name:"Thực đơn 1","detail":[]},{id:2, name:"Thực đơn 2","detail":[]},{id:3, name:"Thực đơn 3","detail":[]}],
     foodNameListSearch: [],
+    phoneListSearch: [],
     listMenuTime: [],
     menuExamine: [],
     menuExample: []
@@ -120,10 +121,27 @@ function saveExamine(){
     try {
         let loading         = $("#loading-page");
         changeTabExamine(dataExamine.tab);
+        if(!dataExamine.examine.cus_name || !dataExamine.examine.cus_phone || !dataExamine.examine.cus_birthday || !dataExamine.examine.cus_gender){
+            if(!dataExamine.examine.cus_name){
+                displayErrorToastr('Vui lòng nhập họ tên!');
+                return;
+            } 
+            if(!dataExamine.examine.cus_phone){
+                displayErrorToastr('Vui lòng nhập số điện thoại!');
+                return;
+            } 
+            if(!dataExamine.examine.cus_birthday){
+                displayErrorToastr('Vui lòng nhập ngày sinh!');
+                return;
+            } 
+            if(!dataExamine.examine.cus_gender){
+                displayErrorToastr('Vui lòng nhập giới tính!');
+                return;
+            } 
+        }
         console.log("saveExamine", dataExamine.examine);
         let url = '/examine/create';
         if(dataExamine.page == 'edit')  url = '/examine/edit/' + dataExamine.id_examine;
-        console.log("saveExamine", url);
         $.ajax({
             type: 'POST',
             url: url,
@@ -776,6 +794,8 @@ function addFoodToMenu(){
                     break;
                 }
             }
+        }else{
+            displayError('Tạo mới hoặc chọn menu mẫu!');
         }
     } catch (error) {
         
@@ -1088,11 +1108,38 @@ function addFoodTemplateSearch(food, menuTime_id){
     }
 }
 
-function onSampleSelectServerSearch(searchValue, virtualSelect){
+function showHistory(){
     try {
-        console.log("onSampleSelectServerSearch", searchValue);
+        let customer_id = parseInt($('#phone_search').val());
+        if(customer_id){
+            let loading         = $("#loading-page");
+            let url = '/examine/table/history';
+            $.ajax({
+                type: 'POST',
+                url: url,
+                data: {cus_id: customer_id},
+                beforeSend: function() {
+                    loading.show();
+                },
+                success: function(result) {
+                    loading.hide();
+                    console.log("result", result);
+                    if (result.success && result.data) {
+                        $('#table_history').html(result.data);
+                    } else {
+                        displayErrorToastr(result.message);
+                    }
+                },
+                error: function(jqXHR, exception) {
+                    loading.hide();
+                    ajax_call_error(jqXHR, exception);
+                }
+            });
+        }else{
+            displayErrorToastr("Vui lòng nhập số điện thoại tìm kiếm");
+        }
     } catch (error) {
-        console.log("onSampleSelectServerSearch error", error);
+        
     }
 }
 
@@ -1161,6 +1208,7 @@ $(document).ready(function(){
             for(let item of dataExamine.foodNameListSearch){
                 if(evt.params.data.id == item.id){      
                     $("#weight_food").val(item.weight);
+                    $("#weight_food").data('initial-value',item.weight);
                     $("#energy_food").val(item.energy);
                     $("#protein_food").val(item.protein);
                     $("#animal_protein").val(item.animal_protein);
@@ -1191,5 +1239,87 @@ $(document).ready(function(){
             }
         }
     });
+
+    $('#phone_search').select2({
+        minimumInputLength: 3,
+        language: {
+            inputTooShort: function() {
+                return "Vui lòng nhập ít nhất 3 ký tự";
+            },
+            noResults: function(){
+               return "Không có kết quả được tìm thấy";
+            },
+            searching: function() {
+                return "Đang tìm kiếm...";
+            }
+        },
+        escapeMarkup: function (markup) {
+            return markup;
+        },
+        placeholder: 'Nhập số điện thoại',
+        allowClear: true,
+        ajax: {
+            url: function (params) {
+                return '/examine/suggest/phone'
+            },
+            delay: 1000,
+            dataType: 'json',
+            processResults: function (data) {
+                if(data.success){
+                    dataExamine.phoneListSearch = data.data;
+                }
+                return { 
+                    results: $.map(data.data, function (item) {
+                        console.log("item", item);
+                        return {
+                            text: item.cus_name + " - " + new Date(item.cus_birthday).toLocaleDateString('pt-PT') + " - " + (item.cus_gender == 0 ? "Nữ" : (item.cus_gender ==  1 ? "Nam" : "Khác") + " - " + item.cus_address),
+                            id: item.id
+                        }
+                    })
+                };
+            }
+        }
+    });
+
+    $("#phone_search").on('select2:select', function(evt) {
+        console.log("phone_search", evt.params.data.id, dataExamine.phoneListSearch);
+        if(evt.params.data.id) $('#btn_show_history').show();
+        if(dataExamine.phoneListSearch.length > 0){
+            for(let item of dataExamine.phoneListSearch){
+                if(evt.params.data.id == item.id){      
+                    $('#cus_name').val(item.cus_name);
+                    $('#cus_phone').val(item.cus_phone);
+                    $('#cus_email').val(item.cus_email);
+                    $('#cus_gender').val(item.cus_gender);
+                    $('#cus_birthday').val(item.cus_birthday);
+                    $('#cus_address').val(item.cus_address);
+                    break;
+                }
+            }
+        }
+    });
+
+    $('#weight_food').change(function(evt){
+        console.log("weight_food change", evt);
+        let menu_id = parseInt($('#menu_id').val());
+        let food_id = parseInt($('#food_name').val());
+        if(menu_id && food_id){
+            let oldValue = parseInt($("#weight_food").data('initial-value'));
+            let currenValue = parseInt($("#weight_food").val());
+            let energy = parseInt($("#energy_food").val());
+            let protein = parseInt($("#protein_food").val());
+            let animal_protein = parseInt($("#animal_protein").val());
+            let lipid = parseInt($("#lipid_food").val());
+            let unanimal_lipid = parseInt($("#unanimal_lipid").val());
+            let carbohydrate = parseInt($("#carbohydrate").val());
+
+            $("#energy_food").val(Math.round((energy * currenValue) / oldValue));
+            $("#protein_food").val(Math.round((protein * currenValue) / oldValue));
+            $("#animal_protein").val(Math.round((animal_protein * currenValue) / oldValue));
+            $("#lipid_food").val(Math.round((lipid * currenValue) / oldValue));
+            $("#unanimal_lipid").val(Math.round((unanimal_lipid * currenValue) / oldValue));
+            $("#carbohydrate").val(Math.round((carbohydrate * currenValue) / oldValue));
+        }
+    })
 });
 

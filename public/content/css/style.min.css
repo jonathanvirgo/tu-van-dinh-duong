@@ -13157,6 +13157,9 @@ span.flatpickr-weekday {
 .rotate-180 {
   transform: rotate(180deg) !important;
 }
+.rotate-90 {
+  transform: rotate(90deg) !important;
+}
 .mw-none {
   max-width: none !important;
 }

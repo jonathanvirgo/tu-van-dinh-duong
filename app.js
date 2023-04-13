@@ -56,7 +56,10 @@ app.set('view engine', 'ejs');
 app.use(expressSession({
   resave: false,
   saveUninitialized: true,
-  secret: 'secretprnews!@#!' 
+  secret: 'secrettuvandinhduong!@#!' ,
+  cookie: {
+    maxAge: 1000 * 60 * 60 * 24
+  }
 }));
 
 app.use(passport.initialize());

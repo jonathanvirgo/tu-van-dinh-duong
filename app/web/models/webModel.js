@@ -571,6 +571,7 @@ let webService = {
                             data: results
                         });
                     });
+                    console.log("update table", query.sql);
                 } catch (error) {
                     webService.addToLogService(err, "webService updateRecordTable");
                     resolve({
@@ -627,6 +628,7 @@ let webService = {
                         data: results
                     });
                 });
+                console.log("add table", query.sql);
             });
         })
     },

@@ -443,7 +443,7 @@ router.get('/create', function(req, res, next) {
     }
 });
 
-router.post('/create', function(req, res, next) {
+router.post('/create', async function(req, res, next) {
     var resultData = {
         success: false,
         message: "",
@@ -508,7 +508,8 @@ router.post('/create', function(req, res, next) {
                 hospital_id:            req.user.hospital_id,
                 status:                 1,
                 created_by:             req.user.id
-            };
+            },
+            id_examine = '';
         
         if(!parameter.cus_name){
             str_errors.push("Thiếu họ tên!");
@@ -519,24 +520,31 @@ router.post('/create', function(req, res, next) {
         if(!parameter.cus_birthday){
             str_errors.push("Thiếu ngày sinh!");
         }
+        if(!parameter.cus_phone){
+            str_errors.push("Thiếu số điện thoại!");
+        }
         if (str_errors.length > 0) {
             resultData.message = str_errors.toString();
             res.json(resultData);
             return;
         } else {
             parameter.cus_birthday = parameter.cus_birthday.split("-").reverse().join("-");
-            webService.createCountId(req.user.hospital_id).then(success =>{
+            await webService.createCountId(req.user.hospital_id).then(async success =>{
                 if(success.success && success.id_count){
                     parameter['count_id'] = success.id_count;
-                    webService.addRecordTable( parameter, 'examine', true).then(responseData =>{
+                    await webService.addRecordTable( parameter, 'examine', true).then(responseData =>{
                         if(!responseData.success){
                             resultData.message = responseData.message;
+                            res.json(resultData);
                             logService.create(req, responseData.message);
+                            return;
                         }else{
+                            console.log("id_examine", responseData.data.insertId);
+                            id_examine = responseData.data.insertId;
                             resultData.success = true;
                             resultData.message = "Lưu phiếu khám thành công!";
+                            res.json(resultData);
                         }
-                        res.json(resultData);
                     });
                 }else{
                     res.json(resultData);
@@ -551,50 +559,48 @@ router.post('/create', function(req, res, next) {
                 cus_gender:    parameter.cus_gender,
                 cus_birthday:  parameter.cus_birthday,
                 cus_address:   parameter.cus_address,
-                department_id: parameter.department_id 
+                department_id: parameter.department_id,
+                hospital_id: parameter.hospital_id
             };
-            if(parameter.cus_phone){
-                let sqlFindCustomer = 'SELECT * FROM customer WHERE cus_phone = ?';
-                webService.getListTable(sqlFindCustomer ,[parameter.cus_phone]).then(responseData1 =>{
+
+            let sqlFindCustomer = 'SELECT * FROM customer WHERE cus_phone = ? AND cus_gender = ? AND cus_birthday = ?';
+            webService.getListTable(sqlFindCustomer ,[parameter.cus_phone, parameter.cus_gender, parameter.cus_birthday]).then(responseData1 =>{
+                console.log("sqlFindCustomer", responseData1);
+                if(responseData1.success){
                     if(responseData1.data && responseData1.data.length > 0){
-                        let customerData = responseData1.data;
-                        if(paramCustomer.cus_name !== customerData.cus_name || paramCustomer.cus_gender !== customerData.cus_gender || paramCustomer.cus_birthday !== customerData.cus_birthday){
-                            // Cap nhat lai thong tin khach hang neu thay doi thong tin theo so dien thoai
+                        let customerData = responseData1.data[0];
+                        if(paramCustomer.cus_name !== customerData.cus_name){
+                            // Cap nhat lai thong tin khach hang neu thay doi thong tin
                             webService.updateRecordTable(paramCustomer, {id: customerData.id}, 'customer').then(responseData2 => {
                                 if(!responseData2.success){
                                     logService.create(req, responseData2.message);
                                 }
                             });
+                            // cập nhật id customer
+                            webService.updateRecordTable({customer_id: customerData.id}, {id: id_examine}, 'examine').then(responseData3 => {
+                                if(!responseData3.success){
+                                    logService.create(req, responseData3.message);
+                                }
+                            });
                         }
                     }else{
-                        // neu khong tim duoc theo so dien thoai tim theo cac thong tin khac
-                        sqlFindCustomer = 'SELECT id FROM customer WHERE cus_name = ? AND cus_gender = ? AND cus_birthday = ?';
-                        webService.getListTable(sqlFindCustomer ,[parameter.cus_name, parameter.cus_gender, parameter.cus_birthday]).then(responseData3=>{
-                            if(responseData3.data && responseData3.data.length == 0){
-                                // neu khong co khach hang thi them moi
-                                webService.addRecordTable( paramCustomer, 'customer', true).then(responseData4 =>{
-                                    if(!responseData4.success){
-                                        logService.create(req, responseData4.message);
-                                    }
-                                })
-                            }
-                        });
-                    }
-                });
-            }else{
-                // neu khong co so dien thoai tim theo cac truong khac
-                let sqlFindCustomer = 'SELECT id FROM customer WHERE cus_name = ? AND cus_gender = ? AND cus_birthday = ?';
-                webService.getListTable(sqlFindCustomer ,[parameter.cus_name, parameter.cus_gender, parameter.cus_birthday]).then(responseData5=>{
-                    if(responseData5.data && responseData5.data.length == 0){
                         // neu khong co khach hang thi them moi
-                        webService.addRecordTable( paramCustomer, 'customer', true).then(responseData6 =>{
-                            if(!responseData6.success){
-                                logService.create(req, responseData6.message);
+                        webService.addRecordTable( paramCustomer, 'customer', true).then(responseData4 =>{
+                            console.log("addRecordTable customer", responseData4, id_examine);
+                            if(!responseData4.success){
+                                logService.create(req, responseData4.message);
+                            }else{
+                                // cập nhật id customer
+                                webService.updateRecordTable({customer_id: responseData4.data.insertId}, {id: id_examine}, 'examine').then(responseData5 => {
+                                    if(!responseData5.success){
+                                        logService.create(req, responseData5.message);
+                                    }
+                                });
                             }
                         })
                     }
-                });
-            }
+                }
+            });
             return;
         }
     } catch (e) {
@@ -679,6 +685,9 @@ router.post('/edit/:id', function(req, res, next) {
         if(!parameter.cus_birthday){
             str_errors.push("Thiếu ngày sinh!");
         }
+        if(!parameter.cus_phone){
+            str_errors.push("Thiếu số điện thoại!");
+        }
         if (str_errors.length > 0) {
             resultData.message = str_errors.toString();
             res.json(resultData);
@@ -690,11 +699,63 @@ router.post('/edit/:id', function(req, res, next) {
                 if(!responseData.success){
                     resultData.message = responseData.message;
                     logService.create(req, responseData.message);
+                    res.json(resultData);
+                    return;
                 }else{
                     resultData.success = true;
                     resultData.message = "Lưu phiếu khám thành công!";
+                    res.json(resultData);
                 }
-                res.json(resultData);
+            });
+            // Them khach hang vao database
+            let paramCustomer = {
+                cus_name:      parameter.cus_name,
+                cus_phone:     parameter.cus_phone,
+                cus_email:     parameter.cus_email,
+                cus_gender:    parameter.cus_gender,
+                cus_birthday:  parameter.cus_birthday,
+                cus_address:   parameter.cus_address,
+                department_id: parameter.department_id,
+                hospital_id: parameter.hospital_id
+            };
+
+            let sqlFindCustomer = 'SELECT * FROM customer WHERE cus_phone = ? AND cus_gender = ? AND cus_birthday = ?';
+            webService.getListTable(sqlFindCustomer ,[parameter.cus_phone, parameter.cus_gender, parameter.cus_birthday]).then(responseData1 =>{
+                console.log("sqlFindCustomer", responseData1);
+                if(responseData1.success){
+                    if(responseData1.data && responseData1.data.length > 0){
+                        let customerData = responseData1.data[0];
+                        if(paramCustomer.cus_name !== customerData.cus_name){
+                            // Cap nhat lai thong tin khach hang neu thay doi thong tin
+                            webService.updateRecordTable(paramCustomer, {id: customerData.id}, 'customer').then(responseData2 => {
+                                if(!responseData2.success){
+                                    logService.create(req, responseData2.message);
+                                }
+                            });
+                            // cập nhật id customer
+                            webService.updateRecordTable({customer_id: customerData.id}, {id: req.params.id}, 'examine').then(responseData3 => {
+                                if(!responseData3.success){
+                                    logService.create(req, responseData3.message);
+                                }
+                            });
+                        }
+                    }else{
+                        // neu khong co khach hang thi them moi
+                        webService.addRecordTable( paramCustomer, 'customer', true).then(responseData4 =>{
+                            console.log("addRecordTable customer", responseData4, id_examine);
+                            if(!responseData4.success){
+                                logService.create(req, responseData4.message);
+                            }else{
+                                // cập nhật id customer
+                                webService.updateRecordTable({customer_id: responseData4.data.insertId}, {id: req.params.id}, 'examine').then(responseData5 => {
+                                    if(!responseData5.success){
+                                        logService.create(req, responseData5.message);
+                                    }
+                                });
+                            }
+                        })
+                    }
+                }
             });
             return;
         }
@@ -720,6 +781,38 @@ router.get('/suggest/food-name', function(req, res, next){
         }
         let sqlFoodName = 'SELECT * FROM food_info WHERE department_id = ? AND name LIKE ?';
         webService.getListTable(sqlFoodName, [req.user.department_id, '%' + req.query.term + '%']).then(responseData =>{
+            if(responseData.success && responseData.data.length > 0){
+                resultData.message = "Thành công";
+                resultData.success = true;
+                resultData.data = responseData.data;
+            }else{
+                resultData.message = "Tải dữ liệu thất bại!"
+                resultData.data = [];
+            }
+            res.json(resultData);
+        });
+    } catch (error) {
+        logService.create(req, e.message).then(function() {
+            resultData.message = e.message;
+            res.json(resultData);
+        });
+    }
+});
+
+router.get('/suggest/phone', function(req, res, next){
+    var resultData = {
+        success: false,
+        message: "",
+        data: []
+    };
+    try {
+        if (!req.user) {
+            resultData.message = "Vui lòng đăng nhập lại để thực hiện chức năng này!";
+            res.json(resultData);
+            return;
+        }
+        let sqlPhone = 'SELECT * FROM customer WHERE cus_phone LIKE ?';
+        webService.getListTable(sqlPhone, ['%' + req.query.term + '%']).then(responseData =>{
             if(responseData.success && responseData.data.length > 0){
                 resultData.message = "Thành công";
                 resultData.success = true;
@@ -937,6 +1030,42 @@ router.post('/detail-examine', (req, res, next) =>{
                 });
             }else{
                 resultData.message = 'Lỗi xem chi tiết phiếu khám';
+            }
+            res.json(resultData);
+        });
+    } catch (error) {
+        resultData.message = error.message;
+        logService.create(req, error.message).then(function() {
+            res.json(resultData);
+        });
+    }
+});
+
+router.post('/table/history', (req, res, next) =>{
+    try {
+        var resultData = {
+            success: false,
+            message: '',
+            data: ''
+        },
+        listExamine = [];
+        console.log("req.body.cus_id", req.body.cus_id);
+        let sqlDetailExamine = 'SELECT * FROM examine WHERE customer_id = ?';
+        webService.getListTable(sqlDetailExamine ,[req.body.cus_id]).then(async responseData =>{
+            console.log("getListTable", responseData);
+            if(responseData.success && responseData.data && responseData.data.length >= 0){
+                listExamine   = responseData.data;
+                express().render(path.resolve(__dirname, "../views/examine/history.ejs"), {listExamine,moment}, (err, html) => {
+                    if(err){
+                        console.log("err", err);
+                        resultData.message = 'Lỗi xem danh sách lịch sử khám';
+                    }else{
+                        resultData.success = true;
+                        resultData.data = html;
+                    }
+                });
+            }else{
+                resultData.message = 'Lỗi xem danh sách lịch sử khám';
             }
             res.json(resultData);
         });
