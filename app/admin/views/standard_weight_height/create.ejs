@@ -1,6 +1,6 @@
 ﻿<html lang="en">
 <head>
-    <title>Thêm mới thực phẩm</title>
+    <title>Thêm mới chiều cao cân nặng tiêu chuẩn</title>
   <%- include('../shared/head') %>
 </head>
 <body class="sidebar-mini layout-fixed control-sidebar-slide-open">
@@ -17,19 +17,19 @@
           </ul>
         </div>
         <%}%>
-        <form action="/admin/food-info/create" id="food-info-form" method="post" novalidate="novalidate">
+        <form action="/admin/standard_weight_height/create" id="standard_weight_height-form" method="post" novalidate="novalidate">
             <div class="content-header clearfix">
-              <h1 class="float-left">Thêm mới thực phẩm
+              <h1 class="float-left">Thêm mới chiều cao cân nặng tiêu chuẩn
                 <small> 
                   <i class="fas fa-arrow-circle-left"></i> 
-                  <a href="/admin/food-info">Danh sách thực phẩm</a> 
+                  <a href="/admin/standard_weight_height">Trở lại danh sách CC - CN</a> 
                 </small>
               </h1>
               <div class="float-right">
                 <button type="submit" name="save" class="btn btn-primary" value="save"> 
                   <i class="far fa-save"></i> Lưu 
                 </button>
-                <button type="button" name="saveContinue" class="btn btn-primary" value="saveContinue" onclick="importFileExcel('file_input_food_info')"> 
+                <button type="button" name="saveContinue" class="btn btn-primary" value="saveContinue" onclick="importFileExcel('file_input_weight_height')"> 
                   <i class="fas fa-file-import"></i> Import Excel 
                 </button>
                 <button type="submit" name="saveContinue" class="btn btn-primary" value="saveContinue"> 
@@ -43,7 +43,7 @@
                   <div class="cards-group">
                     <div class="card card-default">
                       <div class="card-body">
-                        <%- include('../food_info/_createorupdate',{foodInfo:foodInfo}) %>
+                        <%- include('../standard_weight_height/_createorupdate',{standard_wh:standard_wh}) %>
                       </div>
                     </div>
                   </div>
@@ -51,7 +51,7 @@
               </div>
             </section>
         </form>
-        <input accept=".xls,.xlsx" type="file" id="file_input_food_info" style="width: 0px;height: 0px;overflow: hidden;" onchange="getFileFoodInfo()"/>
+        <input accept=".xls,.xlsx" type="file" id="file_input_weight_height" style="width: 0px;height: 0px;overflow: hidden;" onchange="getFileWeightHeight()"/>
     </div>
     <%- include('../shared/footer') %>
   </div>

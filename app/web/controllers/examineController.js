@@ -465,8 +465,10 @@ router.post('/create', async function(req, res, next) {
                 cus_address:            req.body.cus_address,
                 diagnostic:             req.body.diagnostic,
                 cus_length:             req.body.cus_length,
+                cus_cctc:               req.body.cus_cctc,
                 cus_cntc:               req.body.cus_cntc,
                 cus_cnht:               req.body.cus_cnht,
+                cus_cnbt:               req.body.cus_cnbt,
                 cus_bmi:                req.body.cus_bmi,
                 clinical_examination:   req.body.clinical_examination,
                 erythrocytes:           req.body.erythrocytes,
@@ -1072,6 +1074,38 @@ router.post('/table/history', (req, res, next) =>{
     } catch (error) {
         resultData.message = error.message;
         logService.create(req, error.message).then(function() {
+            res.json(resultData);
+        });
+    }
+});
+
+router.post('/search/standard-weight-height', function(req, res, next){
+    var resultData = {
+        success: false,
+        message: "",
+        data: []
+    };
+    try {
+        if (!req.user) {
+            resultData.message = "Vui lòng đăng nhập lại để thực hiện chức năng này!";
+            res.json(resultData);
+            return;
+        }
+        let sqlPhone = 'SELECT * FROM standard_weight_height WHERE year_old = ? AND type_year_old = ? AND gender = ? ORDER BY id DESC LIMIT 1';
+        webService.getListTable(sqlPhone, [req.body.year_old,req.body.type_year_old,req.body.gender]).then(responseData =>{
+            if(responseData.success && responseData.data.length > 0){
+                resultData.message = "Thành công";
+                resultData.success = true;
+                resultData.data = responseData.data;
+            }else{
+                resultData.message = "Tải dữ liệu thất bại!"
+                resultData.data = [];
+            }
+            res.json(resultData);
+        });
+    } catch (error) {
+        logService.create(req, e.message).then(function() {
+            resultData.message = e.message;
             res.json(resultData);
         });
     }

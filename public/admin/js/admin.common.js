@@ -459,9 +459,9 @@ function syncFormatPRBooking(){
   });
 }
 
-function importFoodInfo(){
+function importFileExcel(id){
   try {
-    $('#file_input_food_info').trigger('click');
+    $('#' + id).trigger('click');
   } catch (error) {
     console.log("importFoodInfo", error);
   }
@@ -535,5 +535,61 @@ function getFileFoodInfo(){
     })
   } catch (error) {
     console.log("getFileFoodInfo", error);
+  }
+}
+
+function getFileWeightHeight(){
+  try {
+    let dataFile = $('#file_input_weight_height').prop('files');
+    let dataWeightHeight = [];
+    let i = 0;
+    readXlsxFile(dataFile[0]).then(function(rows) {
+      let type = 0;
+      for(let [index, item] of rows.entries()){
+        console.log("rows item",index,item);
+        // nếu có tên và khối lượng là thực phẩm 0-19
+        if(typeof(item[1]) == "number" && item[2] && item[3] && item[4] && item[5]){
+          if(item[0] && item[0] == 'Tuổi'){
+            type = 1;
+          }
+          dataWeightHeight.push({
+            type_year_old: type,
+            year_old: item[1],
+            gender: 0,
+            weight: item[4],
+            height: item[5]
+          }, {
+            type_year_old: type,
+            year_old: item[1],
+            gender: 1,
+            weight: item[2],
+            height: item[3]
+          });
+        }
+      }
+      console.log("dataWeightHeight", dataWeightHeight);
+      var formData        = new FormData();
+      formData.append("data", JSON.stringify(dataWeightHeight))
+      $.ajax({
+        type: 'POST',
+        url: '/admin/standard_weight_height/import-from-excel',
+        processData: false,
+        contentType: false,
+        data: formData,
+        success: function(result) {
+          console.log(result);
+            if (result.success) {
+                displayMessage('Lưu thành công');
+                setTimeout(()=>{
+                    window.location.href = "/admin/standard_weight_height"
+                }, 500);
+            } else {
+                displayError(result.message);
+            }
+        }
+      });
+    })
+  } catch (error) {
+    console.log("getFileStandardWeightHeight", error);
   }
 }

@@ -1,0 +1,76 @@
+﻿<div class="form-group row">
+  <div class="col-md-3">
+    <div class="label-wrapper">
+      <label class="col-form-label">Tuổi</label>
+    </div>
+  </div>
+  <div class="col-md-6">
+    <div class="input-group input-group-required">
+      <input class="form-control text-box single-line" name="year_old" type="text" value="<%=standard_wh.year_old%>">
+      <div class="input-group-btn"><span class="required">*</span></div>
+    </div>
+  </div>
+  <div class="col-md-3">
+    <div class="input-group-append input-group-required">
+      <div class="input-group">
+        <select id="type_year_old" name="type_year_old">
+          <option value="0" <%=(standard_wh.type_year_old == 0) ? 'selected' : ''%>>Tháng</option>
+          <option value="1" <%=(standard_wh.type_year_old == 1) ? 'selected' : ''%>>Tuổi</option>
+        </select>
+        <script>
+          $("#type_year_old").kendoDropDownList({
+            enable: true
+          });
+          </script>
+      </div>
+      <div class="input-group-btn"><span class="required">*</span></div>
+    </div>
+  </div>
+</div>
+<div class="form-group row">
+  <div class="col-md-3">
+    <div class="label-wrapper">
+      <label class="col-form-label">Giới tính</label>
+    </div>
+  </div>
+  <div class="col-md-9">
+    <div class="input-group-append input-group-required">
+      <div class="input-group">
+        <select id="gender" name="gender">
+          <option value="0" <%=(standard_wh.gender == 0) ? 'selected' : ''%>>Nữ</option>
+          <option value="1" <%=(standard_wh.gender == 1) ? 'selected' : ''%>>Nam</option>
+        </select>
+        <script>
+          $("#gender").kendoDropDownList({
+            enable: true
+          });
+          </script>
+      </div>
+      <div class="input-group-btn"><span class="required">*</span></div>
+    </div>
+  </div>
+</div>
+<div class="form-group row">
+  <div class="col-md-3">
+    <div class="label-wrapper">
+      <label class="col-form-label">Cân nặng</label>
+    </div>
+  </div>
+  <div class="col-md-9">
+    <div class="input-group input-group-required">
+      <input class="form-control text-box single-line" name="weight" type="text" value="<%=standard_wh.weight%>">
+    </div>
+  </div>
+</div>
+<div class="form-group row">
+  <div class="col-md-3">
+    <div class="label-wrapper">
+      <label class="col-form-label">Chiều cao</label>
+    </div>
+  </div>
+  <div class="col-md-9">
+    <div class="input-group input-group-required">
+      <input class="form-control text-box single-line" name="height" type="text" value="<%=standard_wh.height%>">
+    </div>
+  </div>
+</div>

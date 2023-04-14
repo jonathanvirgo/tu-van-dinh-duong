@@ -36,6 +36,7 @@ var admin_food_info  = require('./app/admin/controllers/foodInfoController');
 var admin_medical_test  = require('./app/admin/controllers/medicalTestController');
 var admin_menu_time  = require('./app/admin/controllers/menuTimeController');
 var admin_diagnostic  = require('./app/admin/controllers/diagnosticController');
+var admin_standard_weight_height  = require('./app/admin/controllers/standardWeightHeightController');
 
 require('./app/config/passport')(passport);
 
@@ -105,7 +106,7 @@ app.use('/admin/food-info', admin_food_info);
 app.use('/admin/medical-test', admin_medical_test);
 app.use('/admin/menu-time', admin_menu_time);
 app.use('/admin/diagnostic', admin_diagnostic);
-
+app.use('/admin/standard_weight_height', admin_standard_weight_height);
 
 app.get('/robots.txt', function (req, res) {
   res.type('text/plain');

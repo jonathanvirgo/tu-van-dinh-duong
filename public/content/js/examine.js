@@ -249,8 +249,10 @@ function changeTabExamine(tab){
             dataExamine.examine['cus_living_habits'] = $('#cus_living_habits').val();
             dataExamine.examine['diagnostic'] = $('#diagnostic').val();
             dataExamine.examine['cus_length'] = $('#cus_length').val();
-            dataExamine.examine['cus_cntc'] = $('#cus_cntc').val();
-            dataExamine.examine['cus_cnht'] = $('#cus_cnht').val();
+            dataExamine.examine['cus_cctc'] = $('#cus_cntc').val(); // chiều cao tiêu chuẩn
+            dataExamine.examine['cus_cntc'] = $('#cus_cntc').val(); // cân nặng tiêu chuẩn
+            dataExamine.examine['cus_cnht'] = $('#cus_cnht').val(); // cân nặng hiện tại
+            dataExamine.examine['cus_cnbt'] = $('#cus_cnbt').val(); // cân nặng thường có
             dataExamine.examine['cus_bmi'] = $('#cus_bmi').val();
             dataExamine.examine['clinical_examination'] = $('#clinical_examination').val();
             dataExamine.examine['erythrocytes'] = $('#erythrocytes').val();
@@ -305,8 +307,37 @@ function changeTabExamine(tab){
 function diff_years(dt2, dt1) 
  {
     let diff =(dt2.getTime() - dt1.getTime()) / 1000;
+    //ngày
     diff /= (60 * 60 * 24);
-    return Math.floor(Math.abs(diff/365.25));
+    let year_old = Math.abs(diff/365.25);
+    let type_year_old = 1;
+    console.log("year_old 1", year_old, diff);
+    if(year_old >= 18){
+        year_old = Math.floor(year_old);
+    }else if(year_old >= 5.5){
+        let year_round = Math.round(parseFloat(year_old.toFixed(1)));
+        if(year_round !== year_old){
+            if(year_round > year_old){
+                year_old = year_round - 0.5;
+            }else{
+                year_old = year_round;
+            }
+        }
+    }else if(year_old > 5){
+        year_old = 5.5;
+    }else{
+        type_year_old = 0;
+        year_old = Math.round(Math.abs(diff/30.43));
+    }
+    if(type_year_old == 0){
+        $('label[for="cus_age"]').text("Tháng");
+        if(year_old == 0) year_old = 1;
+    }else{
+        $('label[for="cus_age"]').text("Tuổi");
+    }
+    console.log("year_old", year_old, diff);
+    // return Math.floor(Math.abs(diff/365.25));
+    return year_old;
  }
 
  function caculateYearOld(selectedDates, dateStr, instance){
@@ -315,6 +346,53 @@ function diff_years(dt2, dt1)
     let yearOld = diff_years(now, cus_birthday);
     if(yearOld > 0){
         $('#cus_age').val(yearOld);
+    }
+ }
+
+ function checkStandardWeightHeight(){
+    try {
+        let year_old = $('#cus_age').val();
+        let type_year_old = $('label[for="cus_age"]').text() == 'Tuổi' ? 1 : 0;
+        let gender = parseInt($('#cus_gender').val());
+        console.log("checkStandardWeightHeight", year_old, type_year_old, gender);
+        if((gender == 1 || gender == 0) && year_old){
+            let loading = $("#loading-page");
+            let url = '/examine/search/standard-weight-height';
+            $.ajax({
+                type: 'POST',
+                url: url,
+                data: {year_old: year_old, type_year_old: type_year_old, gender: gender},
+                beforeSend: function() {
+                    loading.show();
+                },
+                success: function(result) {
+                    loading.hide();
+                    if (result.success && result.data && result.data.length > 0) {
+                        if(result.data[0].height) $('#cus_cctc').val(result.data[0].height);
+                        if(result.data[0].weight) $('#cus_cntc').val(result.data[0].weight);
+                    }
+                },
+                error: function(jqXHR, exception) {
+                    loading.hide();
+                    ajax_call_error(jqXHR, exception);
+                }
+            });
+        }
+    } catch (error) {
+        
+    }
+ }
+
+ function caculateBMI(){
+    try {
+        let height = $('#cus_length').val();
+        let weight = $('#cus_cnht').val();
+        if(height && weight){
+            let bmi = weight / (height * height);
+            $('#cus_bmi').val(bmi.toFixed(2));
+        }
+    } catch (error) {
+        
     }
  }
 
@@ -1157,6 +1235,7 @@ $(document).ready(function(){
         maxDate: "today",
         onChange: function(selectedDates, dateStr, instance) {
             caculateYearOld(selectedDates, dateStr, instance);
+            checkStandardWeightHeight();
         },
         onReady: function(selectedDates, dateStr, instance) {
             caculateYearOld(selectedDates, dateStr, instance);
@@ -1331,6 +1410,14 @@ $(document).ready(function(){
             $("#carbohydrate").val(Math.round(((carbohydrate * currenValue) / oldValue) * 100) / 100);
             $("#weight_food").data('initial-value', currenValue);
         }
+    });
+
+    $('#cus_gender').on('select2:select', function(evt) {
+        checkStandardWeightHeight();
+    });
+
+    $('#cus_length, #cus_cnht').change(function(evt){
+        caculateBMI();
     })
 });
 

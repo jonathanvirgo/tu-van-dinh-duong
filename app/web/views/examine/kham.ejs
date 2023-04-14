@@ -170,7 +170,46 @@
         </div>
     </div>
     <div class="row g-2 align-items-center">
-        <div class="col-6 col-md-3 d-flex">
+        <div class="col-6 col-md-4 d-flex">
+            <label class="col-form-label col-md-auto fw-bold mt-2" for="cus_cctc">CCTC (m)</label>
+            <div class="col-form-body col-md">
+                <div class="form-control-has-addon">
+                    <input type="text" name="cus_cctc" class="form-control form-control-title" id="cus_cctc" placeholder="Chiều cao tiêu chuẩn" value="<%= examine.cus_cctc%>">
+                    <button class="btn form-control-addon btn-link p-0 min-h-auto" type="button" onclick="clearInput('#cus_cctc')">
+                        <svg class="iconsvg-close">
+                            <use xlink:href="/public/content/images/sprite.svg#close"></use>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-md-4 d-flex">
+            <label class="col-form-label col-md-auto fw-bold mt-2" for="cus_cntc">CNTC (kg)</label>
+            <div class="col-form-body col-md">
+                <div class="form-control-has-addon">
+                    <input type="text" name="cus_cntc" class="form-control form-control-title" id="cus_cntc" placeholder="Cân nặng tiêu chuẩn" value="<%= examine.cus_cntc%>">
+                    <button class="btn form-control-addon btn-link p-0 min-h-auto" type="button" onclick="clearInput('#cus_cntc')">
+                        <svg class="iconsvg-close">
+                            <use xlink:href="/public/content/images/sprite.svg#close"></use>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-md-4 d-flex">
+            <label class="col-form-label col-md-auto fw-bold mt-2" for="cus_cnbt">CNBT (kg)</label>
+            <div class="col-form-body col-md">
+                <div class="form-control-has-addon">
+                    <input type="text" name="cus_cnbt" class="form-control form-control-title" id="cus_cnbt" placeholder="Cân nặng thường có" value="<%= examine.cus_cnbt%>">
+                    <button class="btn form-control-addon btn-link p-0 min-h-auto" type="button" onclick="clearInput('#cus_cnbt')">
+                        <svg class="iconsvg-close">
+                            <use xlink:href="/public/content/images/sprite.svg#close"></use>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-md-4 d-flex">
             <label class="col-form-label col-md-auto fw-bold mt-2" for="cus_length">Cao (m)</label>
             <div class="col-form-body col-md">
                 <div class="form-control-has-addon">
@@ -183,24 +222,11 @@
                 </div>
             </div>
         </div>
-        <div class="col-6 col-md-3 d-flex">
-            <label class="col-form-label col-md-auto fw-bold mt-2" for="cus_cntc">CNTC (kg)</label>
+        <div class="col-6 col-md-4 d-flex">
+            <label class="col-form-label col-md-auto fw-bold mt-2" for="cus_cnht">Cân nặng (kg)</label>
             <div class="col-form-body col-md">
                 <div class="form-control-has-addon">
-                    <input type="text" name="cus_cntc" class="form-control form-control-title" id="cus_cntc" placeholder="CNTC (kg)" value="<%= examine.cus_cntc%>">
-                    <button class="btn form-control-addon btn-link p-0 min-h-auto" type="button" onclick="clearInput('#cus_cntc')">
-                        <svg class="iconsvg-close">
-                            <use xlink:href="/public/content/images/sprite.svg#close"></use>
-                        </svg>
-                    </button>
-                </div>
-            </div>
-        </div>
-        <div class="col-6 col-md-3 d-flex">
-            <label class="col-form-label col-md-auto fw-bold mt-2" for="cus_cnht">CNHT (kg)</label>
-            <div class="col-form-body col-md">
-                <div class="form-control-has-addon">
-                    <input type="text" name="cus_cnht" class="form-control form-control-title" id="cus_cnht" placeholder="CNHT (kg)" value="<%= examine.cus_cnht%>">
+                    <input type="text" name="cus_cnht" class="form-control form-control-title" id="cus_cnht" placeholder="Cân nặng hiện tại" value="<%= examine.cus_cnht%>">
                     <button class="btn form-control-addon btn-link p-0 min-h-auto" type="button" onclick="clearInput('#cus_cnht')">
                         <svg class="iconsvg-close">
                             <use xlink:href="/public/content/images/sprite.svg#close"></use>
@@ -209,7 +235,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-6 col-md-3 d-flex">
+        <div class="col-6 col-md-4 d-flex">
             <label class="col-form-label col-md-auto fw-bold mt-2" for="cus_bmi">BMI</label>
             <div class="col-form-body col-md">
                 <div class="form-control-has-addon">
