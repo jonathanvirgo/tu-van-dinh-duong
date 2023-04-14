@@ -249,7 +249,7 @@ function changeTabExamine(tab){
             dataExamine.examine['cus_living_habits'] = $('#cus_living_habits').val();
             dataExamine.examine['diagnostic'] = $('#diagnostic').val();
             dataExamine.examine['cus_length'] = $('#cus_length').val();
-            dataExamine.examine['cus_cctc'] = $('#cus_cntc').val(); // chiều cao tiêu chuẩn
+            dataExamine.examine['cus_cctc'] = $('#cus_cctc').val(); // chiều cao tiêu chuẩn
             dataExamine.examine['cus_cntc'] = $('#cus_cntc').val(); // cân nặng tiêu chuẩn
             dataExamine.examine['cus_cnht'] = $('#cus_cnht').val(); // cân nặng hiện tại
             dataExamine.examine['cus_cnbt'] = $('#cus_cnbt').val(); // cân nặng thường có
