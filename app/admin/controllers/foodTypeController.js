@@ -129,10 +129,7 @@ router.post('/edit/:id', function (req, res, next) {
             btn_action = req.body.save != undefined ? req.body.save : req.body.saveContinue,
             parameter  = {
                 id: parseInt(req.params.id),
-                name: req.body.name,
-                hospital_id: req.user.hospital_id,
-                department_id: req.user.department_id,
-                created_by: req.user.id 
+                name: req.body.name
             };
             
         if(parameter.name == ''){

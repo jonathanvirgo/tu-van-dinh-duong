@@ -22,8 +22,8 @@ let foodTypeService = {
         db.get().getConnection(function (err, connection) {
             try {
                 if (err) return callback(err);
-                var sql   = 'UPDATE food_type SET name = ?, hospital_id = ?, department_id = ?, created_by = ? WHERE id=?';
-                var query = connection.query(sql, [parameter.name, parameter.hospital_id, parameter.department_id, parameter.created_by, parameter.id], function (err, results, fields) {
+                var sql   = 'UPDATE food_type SET name = ? WHERE id=?';
+                var query = connection.query(sql, [parameter.name, parameter.id], function (err, results, fields) {
                     connection.release();
                     if (err) return callback(err);
                     callback(null, results, fields);

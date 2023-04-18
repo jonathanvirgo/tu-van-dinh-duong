@@ -1,44 +1,24 @@
 <form id="chidinhcanlamsang_form" class="form-horizontal">
-    <!-- <h3 class="box-title-break">Chỉ định cận lâm sàng</h3> -->
+    <h3 class="box-title-break">Chỉ định cận lâm sàng</h3>
     <div class="row g-2 align-items-center">
-        <div class="col-6">
-            <label class="col-md-auto fw-bold mt-2" for="cus_fat">Phiếu xét nghiệm huyết học</label>
-            <div class="col-form-body col-md mt-2">
-                <div class="form-control-has-addon ms-3">
-                    <% if(medicalTest.length > 0){ %>
-                        <% for(let med of medicalTest){ %>
-                            <% if( med.type == 2 ){ %>
-                                <div class="form-check form-switch pt-3">
-                                    <input class="form-check-input" type="checkbox" id="medical_test_<%=med.id%>" value="<%=med.id %>" <%=medicalTestExamine.includes(med.id) ? 'checked' : ''%> onchange="getMedicalTest('#medical_test_<%=med.id%>')">
-                                    <label class="form-check-label" for="medical_test_<%=med.id%>"><%=med.name%></label>
-                                </div>
-                                <!-- <div class="form-check form-switch pt-3">
-                                    <input class="form-check-input" type="checkbox" id="flexSwitchCheckChecked" checked>
-                                    <label class="form-check-label" for="flexSwitchCheckChecked">Checked switch checkbox input</label>
-                                </div> -->
-                            <% } %>
-                        <% } %>
-                    <% } %>
+        <div class="col-12 col-md-6 d-flex">
+            <label class="col-form-label col-md-auto fw-bold mt-2" for="phone_search" style="width: 8rem">Loại xét nghiệm</label>
+            <div class="col-form-body col-md">
+                <div class="form-control-has-addon">
+                    <select class="form-select" name="medical_test_type" id="medical_test_type" data-plugin="select2" data-placeholder="Chọn loại xét nghiệm">
+                        <% if(medicalTestType.length > 0){ %>
+                            <% for(let med of medicalTestType){ %>
+                                <option value="<%=med.id %>"><%=med.name %></option>
+                            <% } %>   
+                        <% } %>    
+                    </select>
                 </div>
             </div>
         </div>
-        <div class="col-6">
-            <label class="col-md-auto fw-bold mt-2" for="cus_fat">Phiếu xét nghiệm hóa sinh</label>
-            <div class="col-form-body col-md mt-2">
-                <div class="form-control-has-addon ms-3">
-                    <% if(medicalTest.length > 0){ %>
-                        <% for(let med of medicalTest){ %>
-                            <% if( med.type == 1 ){ %>
-                                <div class="form-check form-switch pt-3">
-                                    <input class="form-check-input" type="checkbox" id="medical_test_<%=med.id%>" value="<%=med.id %>" <%=medicalTestExamine.includes(med.id) ? 'checked' : ''%> onchange="getMedicalTest('#medical_test_<%=med.id%>')">
-                                    <label class="form-check-label" for="medical_test_<%=med.id%>"><%=med.name%></label>
-                                </div>
-                            <% } %>
-                        <% } %>
-                    <% } %>
-                </div>
-            </div>
-        </div>
+    </div>
+    
+    <div class="row g-2 align-items-center" id="list_medical_test">
+        
     </div>
     <div class="row g-2 justify-content-center mt-0">
         <div class="col-6 col-md-auto">

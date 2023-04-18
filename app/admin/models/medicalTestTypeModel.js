@@ -1,19 +1,19 @@
 var db      = require('../../config/db'),
 webService  = require('../../web/models/webModel');
 
-let medicalTestService = {
+let medicalTestTypeService = {
     create: function (parameter, callback) {
         db.get().getConnection(function (err, connection) {
             try {
                 if (err) return callback(err);
-                var sql   = "INSERT INTO medical_test (name,type,hospital_id,department_id,created_by) VALUES (?,?,?,?,?)";
-                var query = connection.query(sql, [parameter.name,parameter.type,parameter.hospital_id,parameter.department_id,parameter.created_by], function (err, results, fields) {
+                var sql   = "INSERT INTO medical_test_type (name, hospital_id,department_id,created_by) VALUES (?,?,?,?)";
+                var query = connection.query(sql, [parameter.name,parameter.hospital_id,parameter.department_id,parameter.created_by], function (err, results, fields) {
                     connection.release();
                     if (err) return callback(err);
                     callback(null, results, fields);
                 });
             } catch (error) {
-                webService.addToLogService(error, 'medicalTestService create');
+                webService.addToLogService(error, 'medicalTestTypeModel create');
                 return callback(error);
             }
         });
@@ -22,14 +22,14 @@ let medicalTestService = {
         db.get().getConnection(function (err, connection) {
             try {
                 if (err) return callback(err);
-                var sql   = 'UPDATE medical_test SET name = ?, type = ?, hospital_id = ?, department_id = ?, created_by = ? WHERE id=?';
-                var query = connection.query(sql, [parameter.name,parameter.type, parameter.hospital_id, parameter.department_id, parameter.created_by, parameter.id], function (err, results, fields) {
+                var sql   = 'UPDATE medical_test_type SET name = ? WHERE id=?';
+                var query = connection.query(sql, [parameter.name, parameter.id], function (err, results, fields) {
                     connection.release();
                     if (err) return callback(err);
                     callback(null, results, fields);
                 });
             } catch (error) {
-                webService.addToLogService(error, 'medicalTestService update');
+                webService.addToLogService(error, 'medicalTestTypeModel update');
                 return callback(error);
             }
         });
@@ -38,24 +38,24 @@ let medicalTestService = {
         db.get().getConnection(function (err, connection) {
             try {
                 if (err) return callback(err);
-                var sql   = 'DELETE FROM medical_test WHERE id=?';
+                var sql   = 'DELETE FROM medical_test_type WHERE id=?';
                 var query = connection.query(sql, [id], function (err, results, fields) {
                     connection.release();
                     if (err) return callback(err);
                     callback(null, results, fields);
                 });
             } catch (error) {
-                webService.addToLogService(error, 'medicalTestService delete');
+                webService.addToLogService(error, 'medicalTestTypeModel delete');
                 return callback(error);
             }
         });
     },
-    countAllMedicalTest: function (parameter, callback) {
+    countAllMedicalTestType: function (parameter, callback) {
         db.get().getConnection(function (err, connection) {
             try {
                 if (err) return callback(err);
                 var paraSQL = [];
-                var sql     = 'SELECT COUNT(*) AS count FROM medical_test WHERE id > 0';
+                var sql     = 'SELECT COUNT(*) AS count FROM medical_test_type WHERE id > 0';
                 if (parameter.search_name != "") {
                     sql += " AND name LIKE ?";
                     paraSQL.push("%" + parameter.search_name + "%");
@@ -66,10 +66,6 @@ let medicalTestService = {
                     if(parameter.role_ids.includes(5)){
                         sql += " AND hospital_id = ?";
                         paraSQL.push(parameter.hospital_id);
-                    }else if(parameter.role_ids.includes(4)){
-                        //Nếu là bác sĩ load theo khoa
-                        sql += " AND department_id = ?";
-                        paraSQL.push(parameter.department_id);
                     }
                 }
                 var query = connection.query(sql, paraSQL, function (err, results, fields) {
@@ -78,62 +74,83 @@ let medicalTestService = {
                     callback(null, results, fields);
                 });
             } catch (error) {
-                webService.addToLogService(error, 'medicalTestService countAllMedicalTest');
+                webService.addToLogService(error, 'medicalTestTypeModel countAllMedicalTestType');
                 return callback(error);
             }
         });
     },
-    getAllMedicalTest: function (parameter, callback) {
+    getAllMedicalTestTypeFromParam: function (parameter, callback) {
         db.get().getConnection(function (err, connection) {
             try {
                 if (err) return callback(err);
                 var paraSQL = [];
-                var sql     = 'SELECT medical_test.*, medical_test_type.name AS medical_test_type_name FROM medical_test INNER JOIN medical_test_type ON medical_test.type = medical_test_type.id WHERE medical_test.id > 0';
+                var sql     = 'SELECT * FROM medical_test_type WHERE id > 0';
                 
                 if (parameter.search_name != "") {
-                    sql += " AND medical_test.name LIKE ?";
+                    sql += " AND name LIKE ?";
                     paraSQL.push("%" + parameter.search_name + "%");
                 }
                 //Không phải Administrator thì load các bản ghi theo khoa viện
                 if (!parameter.role_ids.includes(1) && !parameter.role_ids.includes(3)){
                     //Nếu là quản lý load theo viện
                     if(parameter.role_ids.includes(5)){
-                        sql += " AND medical_test.hospital_id = ?";
+                        sql += " AND hospital_id = ?";
                         paraSQL.push(parameter.hospital_id);
-                    }else if(parameter.role_ids.includes(4)){
-                        //Nếu là bác sĩ load theo khoa
-                        sql += " AND medical_test.department_id = ?";
-                        paraSQL.push(parameter.department_id);
                     }
                 }
-                sql += " ORDER BY medical_test.id DESC LIMIT " + parameter.skip + "," + parameter.take;
+                sql += " ORDER BY id DESC LIMIT " + parameter.skip + "," + parameter.take;
                 var query = connection.query(sql, paraSQL, function (err, results, fields) {
                     connection.release();
                     if (err) return callback(err);
                     callback(null, results, fields);
                 });
             } catch (error) {
-                webService.addToLogService(error, 'medicalTestService getAllMedicalTest');
+                webService.addToLogService(error, 'medicalTestTypeModel getAllMedicalTestTypeFromParam');
                 return callback(error);
             }
         });
     },
-    getMedicalTestById: function (id, callback) {
+    getAllMedicalTestType: function (parameter, callback) {
         db.get().getConnection(function (err, connection) {
             try {
                 if (err) return callback(err);
-                var sql   = 'SELECT * FROM medical_test WHERE id = ?';
-                var query = connection.query(sql, [id], function (err, results, fields) {
+                var paraSQL = [];
+                var sql     = 'SELECT * FROM medical_test_type WHERE id > 0 ORDER BY id';
+                //Không phải Administrator thì load các bản ghi theo khoa viện
+                if (!parameter.role_id.includes(1) && !parameter.role_id.includes(3)){
+                    //Nếu là quản lý load theo viện
+                    if(parameter.role_id.includes(5)){
+                        sql += " AND hospital_id = ?";
+                        paraSQL.push(parameter.hospital_id);
+                    }
+                }
+                var query = connection.query(sql, paraSQL, function (err, results, fields) {
                     connection.release();
                     if (err) return callback(err);
                     callback(null, results, fields);
                 });
             } catch (error) {
-                webService.addToLogService(error, 'medicalTestService getMedicalTestById');
+                webService.addToLogService(error, 'medicalTestTypeModel getAllMedicalTestType');
+                return callback(error);
+            }
+        });
+    },
+    getMedicalTestTypeById: function (role_id, callback) {
+        db.get().getConnection(function (err, connection) {
+            try {
+                if (err) return callback(err);
+                var sql   = 'SELECT * FROM medical_test_type WHERE id = ?';
+                var query = connection.query(sql, [role_id], function (err, results, fields) {
+                    connection.release();
+                    if (err) return callback(err);
+                    callback(null, results, fields);
+                });
+            } catch (error) {
+                webService.addToLogService(error, 'medicalTestTypeModel getMedicalTestTypeById');
                 return callback(error);
             }
         });
     }
 }
 
-module.exports = medicalTestService;
+module.exports = medicalTestTypeService;

@@ -14,7 +14,9 @@ let dataExamine = {
     phoneListSearch: [],
     listMenuTime: [],
     menuExamine: [],
-    menuExample: []
+    menuExample: [],
+    medicalTestExamine: [],
+    isGetListMedicalTest : 0
 };
 
 const numberFormat = new Intl.NumberFormat();
@@ -302,6 +304,12 @@ function changeTabExamine(tab){
         default: break;
     }
     dataExamine.tab = tab;
+    if(tab == 5){
+        if(dataExamine.isGetListMedicalTest == 0){
+            dataExamine.isGetListMedicalTest = 1;
+            $('#medical_test_type').trigger('change');
+        }
+    }
 }
 
 function diff_years(dt2, dt1) 
@@ -368,8 +376,8 @@ function diff_years(dt2, dt1)
                 success: function(result) {
                     loading.hide();
                     if (result.success && result.data && result.data.length > 0) {
-                        if(result.data[0].height) $('#cus_cctc').val(result.data[0].height);
-                        if(result.data[0].weight) $('#cus_cntc').val(result.data[0].weight);
+                        if(result.data[0].height) $('#cus_cctc').val((parseFloat(result.data[0].height)/100));
+                        if(result.data[0].weight) $('#cus_cntc').val(parseFloat(result.data[0].weight)/100);
                     }
                 },
                 error: function(jqXHR, exception) {
@@ -1230,7 +1238,7 @@ function showHistory(){
 }
 
 $(document).ready(function(){
-    $("#cus_birthday").flatpickr({
+    let cus_birthday = $("#cus_birthday").flatpickr({
         dateFormat: "d-m-Y",
         maxDate: "today",
         onChange: function(selectedDates, dateStr, instance) {
@@ -1376,11 +1384,12 @@ $(document).ready(function(){
         if(dataExamine.phoneListSearch.length > 0){
             for(let item of dataExamine.phoneListSearch){
                 if(evt.params.data.id == item.id){      
+                    console.log("abc", moment(item.cus_birthday).format("DD-MM-YYYY"));
                     $('#cus_name').val(item.cus_name);
                     $('#cus_phone').val(item.cus_phone);
                     $('#cus_email').val(item.cus_email);
                     $('#cus_gender').val(item.cus_gender);
-                    $('#cus_birthday').val(item.cus_birthday);
+                    cus_birthday.setDate(moment(item.cus_birthday).format("DD-MM-YYYY"), true);
                     $('#cus_address').val(item.cus_address);
                     break;
                 }
@@ -1418,6 +1427,38 @@ $(document).ready(function(){
 
     $('#cus_length, #cus_cnht').change(function(evt){
         caculateBMI();
-    })
+    });
+
+    $('#medical_test_type').change(function(evt){
+        console.log("medical_test_type", evt);
+        let id = $('#medical_test_type').val();
+        if(!isNaN(parseInt(id))){
+            let loading = $("#loading-page");
+            let url = '/examine/list/medical-test';
+            $.ajax({
+                type: 'POST',
+                url: url,
+                data: {type_id: id, type_name: $('#medical_test_type').find(':selected').text(), data:JSON.stringify(dataExamine.medicalTestExamine)},
+                beforeSend: function() {
+                    loading.show();
+                },
+                success: function(result) {
+                    loading.hide();
+                    console.log("result", result);
+                    if (result.success && result.data) {
+                        $('#list_medical_test').html(result.data);
+                    } else {
+                        displayErrorToastr(result.message);
+                    }
+                },
+                error: function(jqXHR, exception) {
+                    loading.hide();
+                    ajax_call_error(jqXHR, exception);
+                }
+            });
+        }else{
+            displayErrorToastr("Không có id loại xét nghiệm!");
+        }
+    });
 });
 

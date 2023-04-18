@@ -119,7 +119,8 @@ router.get('/edit/:id', function(req, res, next) {
                 nutritionAdvice: [],
                 activeModeOfLiving: [],
                 medicine: [],
-                medicalTest: [],
+                // medicalTest: [],
+                medicalTestType: [],
                 menuTime: [],
                 menuExample: [],
                 diagnostic: []
@@ -184,12 +185,21 @@ router.get('/edit/:id', function(req, res, next) {
             }
         }));
 
-        let sqlMedicalTest = 'SELECT * FROM medical_test WHERE hospital_id = ?';
-        arrPromise.push(webService.getListTable(sqlMedicalTest, [req.user.hospital_id]).then(responseData3 =>{
-            if(responseData3.success){
-                resultData.medicalTest = responseData3.data;
+        // let sqlMedicalTest = 'SELECT * FROM medical_test';
+        // arrPromise.push(webService.getListTable(sqlMedicalTest, []).then(responseData3 =>{
+        //     if(responseData3.success){
+        //         resultData.medicalTest = responseData3.data;
+        //     }else{
+        //         str_errors.push(responseData3.message);
+        //     }
+        // }));
+
+        let sqlMedicalTestType = 'SELECT * FROM medical_test_type';
+        arrPromise.push(webService.getListTable(sqlMedicalTestType, []).then(responseData6 =>{
+            if(responseData6.success){
+                resultData.medicalTestType = responseData6.data;
             }else{
-                str_errors.push(responseData3.message);
+                str_errors.push(responseData6.message);
             }
         }));
 
@@ -233,7 +243,8 @@ router.get('/edit/:id', function(req, res, next) {
                     activeModeOfLiving: resultData.activeModeOfLiving,
                     nutritionAdvice: resultData.nutritionAdvice,
                     medicine: resultData.medicine,
-                    medicalTest: resultData.medicalTest,
+                    // medicalTest: resultData.medicalTest,
+                    medicalTestType: resultData.medicalTestType,
                     medicalTestExamine: JSON.parse(resultData.detailExamine.medical_test ? resultData.detailExamine.medical_test : '[]'),
                     prescriptionExamine: JSON.parse(resultData.detailExamine.prescription ? resultData.detailExamine.prescription : '[]'),
                     menuExamine: JSON.parse(resultData.detailExamine.menu_example ? resultData.detailExamine.menu_example : '[]'),
@@ -252,7 +263,8 @@ router.get('/edit/:id', function(req, res, next) {
                     activeModeOfLiving:[],
                     nutritionAdvice: [],
                     medicine: [],
-                    medicalTest: [],
+                    // medicalTest: [],
+                    medicalTestType:[],
                     medicalTestExamine: [],
                     prescriptionExamine: [],
                     menuExample:[],
@@ -273,7 +285,8 @@ router.get('/edit/:id', function(req, res, next) {
                 activeModeOfLiving:[],
                 nutritionAdvice: [],
                 medicine: [],
-                medicalTest: [],
+                // medicalTest: [],
+                medicalTestType: [],
                 medicalTestExamine: [],
                 prescriptionExamine: [],
                 menuExample: [],
@@ -298,7 +311,8 @@ router.get('/create', function(req, res, next) {
                 nutritionAdvice: [],
                 activeModeOfLiving: [],
                 medicine: [],
-                medicalTest: [],
+                // medicalTest: [],
+                medicalTestType: [],
                 menuTime: [],
                 menuExample: [],
                 diagnostic: []
@@ -349,12 +363,21 @@ router.get('/create', function(req, res, next) {
             }
         }));
 
-        let sqlMedicalTest = 'SELECT * FROM medical_test WHERE hospital_id = ?';
-        arrPromise.push(webService.getListTable(sqlMedicalTest, [req.user.hospital_id]).then(responseData3 =>{
-            if(responseData3.success){
-                resultData.medicalTest = responseData3.data;
+        // let sqlMedicalTest = 'SELECT * FROM medical_test';
+        // arrPromise.push(webService.getListTable(sqlMedicalTest, []).then(responseData3 =>{
+        //     if(responseData3.success){
+        //         resultData.medicalTest = responseData3.data;
+        //     }else{
+        //         str_errors.push(responseData3.message);
+        //     }
+        // }));
+
+        let sqlMedicalTestType = 'SELECT * FROM medical_test_type';
+        arrPromise.push(webService.getListTable(sqlMedicalTestType, []).then(responseData6 =>{
+            if(responseData6.success){
+                resultData.medicalTestType = responseData6.data;
             }else{
-                str_errors.push(responseData3.message);
+                str_errors.push(responseData6.message);
             }
         }));
 
@@ -389,7 +412,8 @@ router.get('/create', function(req, res, next) {
                     activeModeOfLiving: resultData.activeModeOfLiving,
                     nutritionAdvice: resultData.nutritionAdvice,
                     medicine: resultData.medicine,
-                    medicalTest: resultData.medicalTest,
+                    // medicalTest: resultData.medicalTest,
+                    medicalTestType: resultData.medicalTestType,
                     medicalTestExamine: [],
                     prescriptionExamine: [],
                     menuExamine: [],
@@ -408,9 +432,10 @@ router.get('/create', function(req, res, next) {
                     activeModeOfLiving:[],
                     nutritionAdvice: [],
                     medicine: [],
-                    medicalTest: [],
+                    // medicalTest: [],
                     medicalTestExamine:[],
                     prescriptionExamine: [],
+                    medicalTestType: [],
                     menuTime:[],
                     menuExample: [],
                     menuExamine: [],
@@ -430,7 +455,8 @@ router.get('/create', function(req, res, next) {
                 activeModeOfLiving:[],
                 nutritionAdvice: [],
                 medicine: [],
-                medicalTest: [],
+                // medicalTest: [],
+                medicalTestType: [],
                 medicalTestExamine:[],
                 prescriptionExamine: [],
                 menuTime:[],
@@ -1108,6 +1134,44 @@ router.post('/search/standard-weight-height', function(req, res, next){
     } catch (error) {
         logService.create(req, e.message).then(function() {
             resultData.message = e.message;
+            res.json(resultData);
+        });
+    }
+});
+
+router.post('/list/medical-test', function(req, res, next){
+    try {
+        var resultData = {
+            success: false,
+            message: '',
+            data: ''
+        },
+        type_id = req.body.type_id,
+        type_name = req.body.type_name ? req.body.type_name : '',
+        medicalTestExamine = req.body.data ? JSON.parse(req.body.data) : [];
+        let sqlListMedicalTest = 'SELECT * FROM medical_test WHERE type = ?';
+        webService.getListTable(sqlListMedicalTest ,[type_id]).then(async responseData =>{
+            console.log("medicalTest", responseData);
+            if(responseData.success && responseData.data && responseData.data.length >= 0){
+                let medicalTest   = responseData.data;
+                console.log("medicalTest", medicalTest);
+                express().render(path.resolve(__dirname, "../views/component/listmedicaltest.ejs"), {medicalTest, medicalTestExamine, type_name}, (err, html) => {
+                    if(err){
+                        console.log("err", err);
+                        resultData.message = 'Lỗi xem danh sách chỉ định xét nghiệm';
+                    }else{
+                        resultData.success = true;
+                        resultData.data = html;
+                    }
+                });
+            }else{
+                resultData.message = 'Lỗi xem danh sách chỉ định xét nghiệm';
+            }
+            res.json(resultData);
+        });
+    } catch (error) {
+        resultData.message = error.message;
+        logService.create(req, error.message).then(function() {
             res.json(resultData);
         });
     }

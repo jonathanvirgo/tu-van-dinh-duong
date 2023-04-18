@@ -34,6 +34,7 @@ var admin_alternative_food  = require('./app/admin/controllers/alternativeFoodCo
 var admin_food_type  = require('./app/admin/controllers/foodTypeController');
 var admin_food_info  = require('./app/admin/controllers/foodInfoController');
 var admin_medical_test  = require('./app/admin/controllers/medicalTestController');
+var admin_medical_test_type = require('./app/admin/controllers/medicalTestTypeController');
 var admin_menu_time  = require('./app/admin/controllers/menuTimeController');
 var admin_diagnostic  = require('./app/admin/controllers/diagnosticController');
 var admin_standard_weight_height  = require('./app/admin/controllers/standardWeightHeightController');
@@ -104,6 +105,7 @@ app.use('/admin/alternative-food', admin_alternative_food);
 app.use('/admin/food-type', admin_food_type);
 app.use('/admin/food-info', admin_food_info);
 app.use('/admin/medical-test', admin_medical_test);
+app.use('/admin/medical-test-type', admin_medical_test_type);
 app.use('/admin/menu-time', admin_menu_time);
 app.use('/admin/diagnostic', admin_diagnostic);
 app.use('/admin/standard_weight_height', admin_standard_weight_height);

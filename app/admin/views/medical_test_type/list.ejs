@@ -1,6 +1,6 @@
 <html lang="en">
   <head>
-    <title>Danh sách chỉ định xét nghiệm</title>
+    <title>Danh sách loại xét nghiệm</title>
     <%- include('../shared/head') %>
   </head>
   <body class="hold-transition sidebar-mini layout-fixed control-sidebar-slide-open">
@@ -9,10 +9,10 @@
       <div class="content-wrapper">
         <div class="content-header clearfix">
           <h1 class="float-left">
-            Danh sách chỉ định xét nghiệm
+            Danh sách loại xét nghiệm
           </h1>
           <div class="float-right">
-            <a href="/admin/medical-test/create" class="btn btn-primary">
+            <a href="/admin/medical-test-type/create" class="btn btn-primary">
                 <i class="fas fa-plus-square"></i> Thêm mới
             </a>
           </div>
@@ -64,7 +64,7 @@
                                 processing: !0,
                                 serverSide: !0,
                                 ajax: {
-                                    url: "/admin/medical-test/list",
+                                    url: "/admin/medical-test-type/list",
                                     type: "POST",
                                     dataType: "json",
                                     dataSrc: function(response){
@@ -131,23 +131,13 @@
                                     data: "name"
                                 },
                                 {
-                                    title: "Loại",
-                                    visible: !0,
-                                    searchable: !1,
-                                    render: function(n) {
-                                      // let type = n == 1 ? 'Sinh hóa': 'Huyết học';
-                                      // return type;
-                                      return escapeHtml(n)
-                                    },
-                                    data: "medical_test_type_name"
-                                },{
                                     title: "Sửa",
                                     width: "100",
                                     visible: !0,
                                     searchable: !1,
                                     className: "button-column",
                                     render: function(n, t, i, r) {
-                                        return '<a class="btn btn-default" href="/admin/medical-test/edit/' + n + '"><i class="fas fa-pencil-alt"><\/i> Sửa<\/a>'
+                                        return '<a class="btn btn-default" href="/admin/medical-test-type/edit/' + n + '"><i class="fas fa-pencil-alt"><\/i> Sửa<\/a>'
                                     },
                                     data: "id"
                                 }]
@@ -156,7 +146,7 @@
                                 return $("#data-grid").DataTable().ajax.reload();
                             });
                             $("#data-grid").DataTable().columns.adjust();
-                        });
+                        })
                     </script>
                   </div>
                 </div>

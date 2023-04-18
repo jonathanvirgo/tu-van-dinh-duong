@@ -221,7 +221,7 @@ let logService = {
                     }
                 }
                 if(role_id.includes(4)){
-                    if(['role', 'user', 'hospital', 'log', 'setting','department','medical-test'].includes(type)){
+                    if(['role', 'user', 'hospital', 'log', 'setting','department','medical-test','medical-test-type'].includes(type)){
                         return false;
                     }else{
                         return true;

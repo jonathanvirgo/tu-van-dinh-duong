@@ -1,0 +1,15 @@
+<div class="col-6">
+    <label class="col-md-auto fw-bold mt-2" for="cus_fat">Phiếu xét nghiệm <%=type_name%></label>
+    <div class="col-form-body col-md mt-2">
+        <div class="form-control-has-addon ms-3">
+            <% if(medicalTest.length > 0){ %>
+                <% for(let med of medicalTest){ %>
+                    <div class="form-check form-switch pt-3">
+                        <input class="form-check-input" type="checkbox" id="medical_test_<%=med.id%>" value="<%=med.id %>" <%=medicalTestExamine.includes(med.id) ? 'checked' : ''%> onchange="getMedicalTest('#medical_test_<%=med.id%>')">
+                        <label class="form-check-label" for="medical_test_<%=med.id%>"><%=med.name%></label>
+                    </div>
+                <% } %>
+            <% } %>
+        </div>
+    </div>
+</div>
