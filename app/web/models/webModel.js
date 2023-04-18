@@ -564,12 +564,13 @@ let webService = {
                                 success: false,
                                 message: error
                             });
+                        }else{
+                            resolve({
+                                success: true,
+                                message: "Successful",
+                                data: results
+                            });
                         }
-                        resolve({
-                            success: true,
-                            message: "Successful",
-                            data: results
-                        });
                     });
                     console.log("update table", query.sql);
                 } catch (error) {
@@ -578,6 +579,20 @@ let webService = {
                         success: false,
                         message: error
                     });
+                }
+            });
+            db.get().getConnection(function(err, connection) {
+                try {
+                    if(err){
+
+                    }else{
+                        let sqlQueryLog = 'INSERT INTO log_info(type,examine_id,data) VALUES (?,?,?)';
+                        connection.query(sqlQueryLog, ['updateRecordTable: ' + table, table == 'examine' ? condition.id : null, JSON.stringify(param)], function(error, results, fields) {
+                            connection.release();
+                        });
+                    }
+                } catch (error) {
+                    
                 }
             });
         });
@@ -621,14 +636,29 @@ let webService = {
                             success: false,
                             message: error
                         });
+                    }else{
+                        resolve({
+                            success: true,
+                            message: "Successful",
+                            data: results
+                        });
                     }
-                    resolve({
-                        success: true,
-                        message: "Successful",
-                        data: results
-                    });
                 });
                 console.log("add table", query.sql);
+            });
+            db.get().getConnection(function(err, connection) {
+                try {
+                    if(err){
+
+                    }else{
+                        let sqlQueryLog = 'INSERT INTO log_info(type,examine_id,data) VALUES (?,?,?)';
+                        connection.query(sqlQueryLog, ['addRecordTable: ' + table, table == 'examine' ? results.insertId : null, JSON.stringify(param)], function(error, results, fields) {
+                            connection.release();
+                        });
+                    }
+                } catch (error) {
+                    
+                }
             });
         })
     },

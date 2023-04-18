@@ -15,7 +15,6 @@ let dataExamine = {
     listMenuTime: [],
     menuExamine: [],
     menuExample: [],
-    medicalTestExamine: [],
     isGetListMedicalTest : 0
 };
 
@@ -362,29 +361,41 @@ function diff_years(dt2, dt1)
         let year_old = $('#cus_age').val();
         let type_year_old = $('label[for="cus_age"]').text() == 'Tuổi' ? 1 : 0;
         let gender = parseInt($('#cus_gender').val());
-        console.log("checkStandardWeightHeight", year_old, type_year_old, gender);
-        if((gender == 1 || gender == 0) && year_old){
-            let loading = $("#loading-page");
-            let url = '/examine/search/standard-weight-height';
-            $.ajax({
-                type: 'POST',
-                url: url,
-                data: {year_old: year_old, type_year_old: type_year_old, gender: gender},
-                beforeSend: function() {
-                    loading.show();
-                },
-                success: function(result) {
-                    loading.hide();
-                    if (result.success && result.data && result.data.length > 0) {
-                        if(result.data[0].height) $('#cus_cctc').val((parseFloat(result.data[0].height)/100));
-                        if(result.data[0].weight) $('#cus_cntc').val(parseFloat(result.data[0].weight)/100);
+        console.log("checkStandardWeightHeight", year_old, type_year_old, gender, parseInt(year_old) > 18);
+        $('#cus_cctc').val('');
+        $('#cus_cntc').val('');
+        if(type_year_old == 1 && parseInt(year_old) > 18){
+            $('label[for="cus_cntc"]').text('CNKN (kg)');
+            if($('#cus_length').val() && !isNaN(parseFloat($('#cus_length').val()))){
+                let ccht = parseFloat($('#cus_length').val());
+                let cnkn = ccht * ccht * 22;
+                console.log("checkStandardWeightHeight cnkn", cnkn);
+                $('#cus_cntc').val(parseInt(cnkn));
+            }
+        }else{
+            if((gender == 1 || gender == 0) && year_old){
+                let loading = $("#loading-page");
+                let url = '/examine/search/standard-weight-height';
+                $.ajax({
+                    type: 'POST',
+                    url: url,
+                    data: {year_old: year_old, type_year_old: type_year_old, gender: gender},
+                    beforeSend: function() {
+                        loading.show();
+                    },
+                    success: function(result) {
+                        loading.hide();
+                        if (result.success && result.data && result.data.length > 0) {
+                            if(result.data[0].height) $('#cus_cctc').val((parseFloat(result.data[0].height)/100));
+                            if(result.data[0].weight) $('#cus_cntc').val(parseFloat(result.data[0].weight)/100);
+                        }
+                    },
+                    error: function(jqXHR, exception) {
+                        loading.hide();
+                        ajax_call_error(jqXHR, exception);
                     }
-                },
-                error: function(jqXHR, exception) {
-                    loading.hide();
-                    ajax_call_error(jqXHR, exception);
-                }
-            });
+                });
+            }
         }
     } catch (error) {
         
@@ -1247,6 +1258,7 @@ $(document).ready(function(){
         },
         onReady: function(selectedDates, dateStr, instance) {
             caculateYearOld(selectedDates, dateStr, instance);
+            checkStandardWeightHeight();
         }
     });
 
@@ -1425,6 +1437,14 @@ $(document).ready(function(){
         checkStandardWeightHeight();
     });
 
+    $('#cus_length').change(function(evt){
+        let year_old = $('#cus_age').val();
+        let type_year_old = $('label[for="cus_age"]').text() == 'Tuổi' ? 1 : 0;
+        if(type_year_old == 1 && parseInt(year_old) > 18){
+            checkStandardWeightHeight();
+        }
+    });
+
     $('#cus_length, #cus_cnht').change(function(evt){
         caculateBMI();
     });
@@ -1438,7 +1458,7 @@ $(document).ready(function(){
             $.ajax({
                 type: 'POST',
                 url: url,
-                data: {type_id: id, type_name: $('#medical_test_type').find(':selected').text(), data:JSON.stringify(dataExamine.medicalTestExamine)},
+                data: {type_id: id, type_name: $('#medical_test_type').find(':selected').text(), data:JSON.stringify(dataExamine.medicalTest)},
                 beforeSend: function() {
                     loading.show();
                 },

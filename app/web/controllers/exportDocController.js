@@ -472,7 +472,7 @@ function tableLength(data){
                                 size: 3000,
                                 type: WidthType.DXA,
                             },
-                            children: [new Paragraph({text: "CNTC (kg): " + (data.cus_cntc ? data.cus_cntc : ''), style: "size14"})],
+                            children: [new Paragraph({text: "CNTC (kg): " + (data.cus_cnbt ? data.cus_cnbt : ''), style: "size14"})],
                         }),
                         new TableCell({
                             borders:{
@@ -516,7 +516,7 @@ function tableCNTC(data){
                                 size: 4505,
                                 type: WidthType.DXA,
                             },
-                            children: [new Paragraph({text: "CN chuẩn/CN khuyến nghị: ", style: "size14"})]
+                            children: [new Paragraph({text: "CN chuẩn (CN khuyến nghị): " + (data.cus_cntc ? data.cus_cntc : ''), style: "size14"})]
                         }),
                         new TableCell({
                             borders:{
@@ -529,7 +529,7 @@ function tableCNTC(data){
                                 size: 4505,
                                 type: WidthType.DXA,
                             },
-                            children: [new Paragraph({text: "CC chuẩn (cm): ", style: "size14"})],
+                            children: [new Paragraph({text: "CC chuẩn (cm): " + (data.cus_cctc ? data.cus_cctc : ''), style: "size14"})],
                         })
                     ],
                 }),
