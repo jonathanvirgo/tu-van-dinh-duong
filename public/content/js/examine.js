@@ -389,7 +389,7 @@ function diff_years(dt2, dt1)
                         loading.hide();
                         if (result.success && result.data && result.data.length > 0) {
                             if(result.data[0].height) $('#cus_cctc').val((parseFloat(result.data[0].height)/100));
-                            if(result.data[0].weight) $('#cus_cntc').val(parseFloat(result.data[0].weight)/100);
+                            if(result.data[0].weight) $('#cus_cntc').val(result.data[0].weight);
                         }
                     },
                     error: function(jqXHR, exception) {
