@@ -299,6 +299,13 @@ $(document).ready(function () {
   $('#nopSideBarPusher').on('click', function (e) {
     reloadAllDataTables();
   });
+
+  $('textarea').each(function () {
+    this.setAttribute('style', 'height:' + (this.scrollHeight) + 'px;overflow-y:hidden;');
+  }).on('input', function () {
+      this.style.height = 'auto';
+      this.style.height = (this.scrollHeight) + 'px';
+  });
 });
 
 //scroll to top

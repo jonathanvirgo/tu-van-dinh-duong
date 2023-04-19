@@ -60,6 +60,23 @@ router.get('/', function(req, res) {
                     if (result !== undefined) {
                         listExamine = result;
                     }
+                    if(listExamine.length > 0){
+                        for(let examine of listExamine){
+                            //1: Tiếp nhận, 2: Đang khám, 3: Hoàn thành, 4: Đã hủy
+                            if(examine.status == 1){
+                                statsByStatus.post1 += 1;
+                            }
+                            if(examine.status == 2){
+                                statsByStatus.post2 += 1;
+                            }
+                            if(examine.status == 3){
+                                statsByStatus.post3 += 1;
+                            }
+                            if(examine.status == 4){
+                                statsByStatus.post4 += 1;
+                            }
+                        }
+                    }
                     resolve();
                 });
             }));
@@ -104,26 +121,11 @@ router.get('/search', function(req, res) {
         if (!req.user) {
             return res.redirect('/user/login');
         }
-        webService.createSideBarFilter(req, 0, 10).then(function(filter){
-            var str_errors       = filter.error,
-                query            = url.parse(req.url, true).query,
-                paging_type      = query.paging_type == undefined ? 0 : parseInt(query.paging_type),
-                current_page     = query.page == undefined ? 0 : parseInt(query.page),
-                arrPromise       = [],
-                listArticle      = [],
-                listBooking      = [],
-                paginatorBooking = {
-                    perPage: 0,
-                    page: 0,
-                    totalItem: 0,
-                    totalPage: 0,
-                    hasPrevPage: false,
-                    hasNextPage: false,
-                    nextPage: '',
-                    prevPage: '',
-                    currentPage: '',
-                },
-                paginatorArticle = {
+        webService.createSideBarFilter(req, 3).then(function(filter){
+            var str_errors  = filter.error,
+                arrPromise  = [],
+                listExamine = [],
+                paginator   = {
                     perPage: 0,
                     page: 0,
                     totalItem: 0,
@@ -134,64 +136,76 @@ router.get('/search', function(req, res) {
                     prevPage: '',
                     currentPage: '',
                 };
-            if([0,1].includes(current_page)){
-                paging_type = 0;
-            }
+
+            arrPromise.push(new Promise(function (resolve, reject) {
+                examineService.countAllExamine({search: filter.search, filter: true}, function (err, result, fields) {
+                    if (err) {
+                        return logService.create(req, err).then(function(responseData){
+                            if(responseData.message) str_errors.push(responseData.message);
+                            else str_errors.push(err.sqlMessage);
+                            resolve();
+                        });
+                    }
+                    if (result !== undefined) {
+                        paginator.totalItem = result[0].count;
+                    }
+                    resolve();
+                });
+            }));
+
+            arrPromise.push(new Promise(function (resolve, reject) {
+                examineService.getAllExamine({search: filter.search, filter: true}, function (err, result, fields) {
+                    if (err) {
+                        return logService.create(req, err).then(function(responseData){
+                            if(responseData.message) str_errors.push(responseData.message);
+                            else str_errors.push(err.sqlMessage);
+                            resolve();
+                        });
+                    }
+                    if (result !== undefined) {
+                        listExamine = result;
+                    }
+                    resolve();
+                });
+            }));
 
             return new Promise(function (resolve, reject) {
                 Promise.all(arrPromise).then(function () {
-                    if([0,1].includes(paging_type)){
-                        paginatorArticle.page          = filter.search.page;
-                        paginatorArticle.perPage       = filter.search.take;
-                        paginatorArticle.currentPage   = filter.requestUri;
-                        paginatorArticle.totalPage     = Math.ceil(paginatorArticle.totalItem / paginatorArticle.perPage);
-                        if (paginatorArticle.totalPage > paginatorArticle.page) {
-                            paginatorArticle.hasNextPage = true;
-                            paginatorArticle.nextPage    = filter.requestUri + '&paging_type=1&page=' + (paginatorArticle.page + 1);
-                        }
-                        if (paginatorArticle.page >= 2) {
-                            paginatorArticle.hasPrevPage = true;
-                            paginatorArticle.prevPage    = filter.requestUri + '&paging_type=1&page=' + (paginatorArticle.page - 1);
-                        }
+                    paginator.page        = filter.search.page;
+                    paginator.perPage     = filter.search.take;
+                    paginator.currentPage = filter.requestUri;
+                    paginator.totalPage   = Math.ceil(paginator.totalItem / paginator.perPage);
+                    if(paginator.totalPage > paginator.page){
+                        paginator.hasNextPage = true;
+                        paginator.nextPage    = filter.requestUri + '&page=' + (paginator.page + 1);
                     }
-                    
-                    if([0,2].includes(paging_type)){
-                        paginatorBooking.page          = filter.search.page;
-                        paginatorBooking.perPage       = filter.search.take;
-                        paginatorBooking.currentPage   = filter.requestUri;
-                        paginatorBooking.totalPage     = Math.ceil(paginatorBooking.totalItem / paginatorBooking.perPage);
-                        if (paginatorBooking.totalPage > paginatorBooking.page) {
-                            paginatorBooking.hasNextPage = true;
-                            paginatorBooking.nextPage    = filter.requestUri + '&paging_type=2&page=' + (paginatorBooking.page + 1);
-                        }
-                        if (paginatorBooking.page >= 2) {
-                            paginatorBooking.hasPrevPage = true;
-                            paginatorBooking.prevPage    = filter.requestUri + '&paging_type=2&page=' + (paginatorBooking.page - 1);
-                        }
+                    if(paginator.page >= 2){
+                        paginator.hasPrevPage = true;
+                        paginator.prevPage    = filter.requestUri + '&page=' + (paginator.page - 1);
                     }
-                    res.render('home/index.ejs', { 
+                    res.render('examine/index.ejs', { 
                         user: req.user,
                         errors: str_errors,
-                        listArticle: listArticle,
-                        listBooking: listBooking,
-                        webService: webService,
+                        listExamine: listExamine,
                         moment: moment,
+                        webService: webService,
                         filter: filter,
-                        paginatorBooking: paginatorBooking,
-                        paginatorArticle: paginatorArticle
+                        paginator: paginator,
+                        link:'examine'
                     });
                 }).catch(err => {
-                    res.render("home/index.ejs", {
+                    res.render("examine/index.ejs", {
                         user: req.user,
                         errors: [err],
                         filter: filter,
+                        link:'examine'
                     });
                 });
             });
         });
     } catch (e) {
         webService.createSideBarFilter(req, 0).then(function(dataFilter) {
-            res.render("search/index.ejs", {
+            res.render("examine/index.ejs", {
                 user: req.user,
                 errors: [e.message]
             });

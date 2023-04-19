@@ -11,16 +11,22 @@ let examineService = {
             var search  = parameter.search;
             var sql     = `SELECT COUNT(*) AS count, hospital.id AS hospital_id FROM examine
                             LEFT JOIN department ON examine.department_id = department.id
-                            LEFT JOIN hospital ON examine.hospital_id = hospital.id`;
+                            LEFT JOIN hospital ON examine.hospital_id = hospital.id WHERE examine.active = 1`;
             
             if(parameter.filter){
                 if (search.keyword !== "") {
-                    sql += ` AND (examine.cus_name like ? OR examine.cus_phone like ?)`;
+                    sql += ` AND (examine.cus_name like ? OR examine.cus_phone like ? OR examine.count_id = ?)`;
                     paraSQL.push("%" + search.keyword + "%");
                     paraSQL.push("%" + search.keyword + "%");
+                    paraSQL.push(search.keyword);
                 }
                 if (search.status_ids !== '') {
-                    sql += " AND examine.status in (" + search.status_ids + ")";
+                    sql += " AND examine.status in (?)";
+                    paraSQL.push(search.status_ids.split(','));
+                }
+                if(search.hospital_ids !== ''){
+                    sql += " AND examine.hospital_id in (?)";
+                    paraSQL.push(search.hospital_ids.split(','));
                 }
                 if (search.fromdate !== "" && search.todate !== "") {
                     sql += " AND examine.created_at >= ? AND examine.created_at <= ?";
@@ -72,11 +78,11 @@ let examineService = {
             var search  = parameter.search;
             var sql     = `SELECT COUNT(*) AS count, hospital.id AS hospital_id FROM examine
                             LEFT JOIN department ON examine.department_id = department.id
-                            LEFT JOIN hospital ON examine.hospital_id = hospital.id`;
+                            LEFT JOIN hospital ON examine.hospital_id = hospital.id WHERE examine.active = 1`;
             
             if(parameter.filter){
                 if (search.name !== "" && search.phone !== "") {
-                    sql += ` WHERE (examine.cus_name like ? AND examine.cus_phone like ?)`;
+                    sql += ` AND (examine.cus_name like ? AND examine.cus_phone like ?)`;
                     paraSQL.push("%" + search.name + "%");
                     paraSQL.push("%" + search.phone + "%");
                 }
@@ -98,6 +104,7 @@ let examineService = {
         });
     },
     getAllExamine: function(parameter, callback) {
+        console.log("getAllExamine", parameter);
         db.get().getConnection(function(err, connection) {
             if (err) return callback(err);
             var paraSQL     = [];
@@ -105,7 +112,7 @@ let examineService = {
             var order_by    = "examine.created_at DESC";
             var sql         = `SELECT examine.*, hospital.id AS hospital_id FROM examine
                                 LEFT JOIN department ON examine.department_id = department.id
-                                LEFT JOIN hospital ON examine.hospital_id = hospital.id`;
+                                LEFT JOIN hospital ON examine.hospital_id = hospital.id WHERE examine.active = 1`;
 
             if (search.order_by == 0) {
                 
@@ -117,9 +124,18 @@ let examineService = {
             
             if(parameter.filter){
                 if (search.keyword !== "") {
-                    sql += ` AND (examine.cus_name like ? OR examine.cus_phone like ?)`;
+                    sql += ` AND (examine.cus_name like ? OR examine.cus_phone like ? OR examine.count_id = ?)`;
                     paraSQL.push("%" + search.keyword + "%");
                     paraSQL.push("%" + search.keyword + "%");
+                    paraSQL.push(search.keyword);
+                }
+                if (search.status_ids !== '') {
+                    sql += " AND examine.status in (?)";
+                    paraSQL.push(search.status_ids.split(','));
+                }
+                if(search.hospital_ids !== ''){
+                    sql += " AND examine.hospital_id in (?)";
+                    paraSQL.push(search.hospital_ids.split(','));
                 }
                 if (search.fromdate !== "" && search.todate !== "") {
                     sql += " AND examine.created_at >= ? AND examine.created_at <= ?";
@@ -167,6 +183,7 @@ let examineService = {
                 if (err) return callback(err);
                 callback(null, results, fields);
             });
+            console.log("getAllExamine", query.sql);
         });
     },
     getAllExamine2: function(parameter, callback) {
@@ -177,11 +194,11 @@ let examineService = {
             var order_by    = "examine.created_at DESC";
             var sql         = `SELECT examine.*, hospital.id AS hospital_id FROM examine
                                 LEFT JOIN department ON examine.department_id = department.id
-                                LEFT JOIN hospital ON examine.hospital_id = hospital.id`;
+                                LEFT JOIN hospital ON examine.hospital_id = hospital.id WHERE examine.active = 1`;
             
             if(parameter.filter){
                 if (search.name !== "" && search.phone !== "") {
-                    sql += ` WHERE (examine.cus_name like ? AND examine.cus_phone like ?)`;
+                    sql += ` AND (examine.cus_name like ? AND examine.cus_phone like ?)`;
                     paraSQL.push("%" + search.name + "%");
                     paraSQL.push("%" + search.phone + "%");
                 }

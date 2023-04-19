@@ -1262,7 +1262,7 @@ router.get("/prescription", async (req, res) =>{
                 }],
             });    
             const b64string = await Packer.toBase64String(doc);
-            let filename = "Phieu_kham_" + webService.removeVietnameseTones(req.user.full_name ? req.user.full_name : req.user.name).replaceAll(" ", "_") + "_" + String(now.date()).padStart(2, '0') + "_" + String((now.month() + 1)).padStart(2, '0') + "_" + now.year(); 
+            let filename = "Phieu_tu_van_" + webService.removeVietnameseTones(req.user.full_name ? req.user.full_name : req.user.name).replaceAll(" ", "_") + "_" + String(now.date()).padStart(2, '0') + "_" + String((now.month() + 1)).padStart(2, '0') + "_" + now.year(); 
             res.setHeader('Content-Disposition', 'attachment; filename=' + filename + '.docx');
             res.send(Buffer.from(b64string, 'base64')); 
         }else{

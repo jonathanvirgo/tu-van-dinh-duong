@@ -118,7 +118,7 @@ function returnList() {
     window.location.href = '/examine';
 }
 
-function saveExamine(){
+function saveExamine(action){
     try {
         let loading         = $("#loading-page");
         changeTabExamine(dataExamine.tab);
@@ -141,6 +141,8 @@ function saveExamine(){
             } 
         }
         console.log("saveExamine", dataExamine.examine);
+        // action 1 tiếp nhận 2 đang khám 3 hoàn thành;
+        if(action) dataExamine.examine['action'] = action;
         let url = '/examine/create';
         if(dataExamine.page == 'edit')  url = '/examine/edit/' + dataExamine.id_examine;
         $.ajax({
@@ -1074,6 +1076,7 @@ function saveMenu(isCreate){
             url: url,
             data: data,
             beforeSend: function() {
+                $('#modal-cf-save-menu').modal('hide');
                 loading.show();
             },
             success: function(result) {
@@ -1243,6 +1246,14 @@ function showHistory(){
         }else{
             displayErrorToastr("Vui lòng nhập số điện thoại tìm kiếm");
         }
+    } catch (error) {
+        
+    }
+}
+
+function showConfirmSaveMenu(){
+    try {
+        $('#modal-cf-save-menu').modal('show');
     } catch (error) {
         
     }
@@ -1479,6 +1490,13 @@ $(document).ready(function(){
         }else{
             displayErrorToastr("Không có id loại xét nghiệm!");
         }
+    });
+
+    $('textarea').each(function () {
+        this.setAttribute('style', 'height:' + (this.scrollHeight) + 'px;overflow-y:hidden;');
+    }).on('input', function () {
+        this.style.height = 'auto';
+        this.style.height = (this.scrollHeight) + 'px';
     });
 });
 

@@ -82,6 +82,31 @@
                 </div>
               </div>
             </div>
+            <div class="modal fade" id="modal-cf-save-menu" tabindex="-1" aria-hidden="true">
+              <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                  <button class="modal-btn-close btn-close" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
+                  <h4 class="modal-title text-center mb-2">Bạn muốn tạo mới thực đơn mẫu không ?</h4>
+                  <p class="mb-5 fw-5 text-body-2 text-center">Nếu chọn không sẽ lưu vào thực đơn mẫu đang chọn.</p>
+                  <div class="row g-2 justify-content-center">
+                    <div class="col-6">
+                      <button class="btn btn-cancel w-100 text-uppercase" type="button" onclick="saveMenu(0)" title="Lưu vào thực đơn mẫu đang chọn">
+                        <svg class="iconsvg-close me-2">
+                          <use xlink:href="images/sprite.svg#close"></use>
+                        </svg>Không
+                      </button>
+                    </div>
+                    <div class="col-6">
+                      <button class="btn btn-primary w-100 text-uppercase" type="button" onclick="saveMenu(1)" title="Tạo mới thực đơn mẫu">
+                        <svg class="iconsvg-send-2 flex-shrink-0 fs-16px me-2">
+                          <use xlink:href="images/sprite.svg#send-2"></use>
+                        </svg>Có
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
             <script>
               $(document).ready(function() {
                 dataExamine.page = "<%=page%>";

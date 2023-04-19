@@ -15,7 +15,6 @@ router.get('/', function(req, res) {
         webService.createSideBarFilter(req, 1).then(function(filter){
             var str_errors  = filter.error,
                 arrPromise  = [],
-                pageview    = [],
                 listExamine = [],
                 paginator   = {
                     perPage: 0,
@@ -534,7 +533,7 @@ router.post('/create', async function(req, res, next) {
                 prescription:           req.body.prescription,
                 department_id:          req.user.department_id,
                 hospital_id:            req.user.hospital_id,
-                status:                 1,
+                status:                 req.body.action,
                 created_by:             req.user.id
             },
             id_examine = '';
@@ -703,7 +702,8 @@ router.post('/edit/:id', function(req, res, next) {
                 active_mode_of_living_id: req.body.active_mode_of_living_id,
                 medical_test:           req.body.medical_test,
                 prescription:           req.body.prescription,
-                menu_example:           req.body.menu_example
+                menu_example:           req.body.menu_example,
+                status:                 req.body.action
             };
         
         if(!parameter.cus_name){

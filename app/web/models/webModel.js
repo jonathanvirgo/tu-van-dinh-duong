@@ -192,6 +192,7 @@ let webService = {
                         status_ids: query.status_ids == undefined ? "" : query.status_ids,
                         hospital_ids: query.hospital_ids == undefined ? "" : query.hospital_ids,
                         order_by: query.order_by == undefined ? 1 : parseInt(query.order_by),
+                        book_date: query.book_date == undefined ? "" : query.book_date,
                         created_by: 0,
                         role_ids: [],
                         department_id: req.user ? req.user.department_id : null,
@@ -215,13 +216,57 @@ let webService = {
                 listData.requestUri = "/examine?keyword=" + listData.search.keyword;
             } else if(type == 2){
                 listData.requestUri = "/examine/search?cus_name=" + listData.search.name + "&cus_phone=" + listData.search.phone;
-            } else {
+            } else if(type == 3){ 
+                listData.requestUri = "/search?keyword=" + listData.search.keyword;
+            }else {
                 listData.requestUri = "?keyword=" + listData.search.keyword;
+            }
+
+            if (listData.search.hospital_ids !== '') {
+                var arr_hostpital = listData.search.hospital_ids.split(",");
+                for (var i = 0; i < arr_hostpital.length; i++) {
+                    if(!isNaN(parseInt(arr_hostpital[i]))){
+                        listData.hospitalIds.push(parseInt(arr_hostpital[i]));
+                    }
+                }
+                listData.requestUri += "&hospital_ids=" + listData.search.hospital_ids;
+            }
+
+            if (listData.search.status_ids !== '') {
+                var arr_status = listData.search.status_ids.split(",");
+                for (var i = 0; i < arr_status.length; i++) {
+                    if(!isNaN(parseInt(arr_status[i]))){
+                        listData.statusIds.push(parseInt(arr_status[i]));
+                    }
+                }
+                listData.requestUri += "&status_ids=" + listData.search.status_ids;
+            }
+
+            if (listData.search.book_date !== '') {
+                if(listData.search.book_date.indexOf(' - ') == -1){
+                    listData.search.fromdate = listData.search.book_date;
+                } else {
+                    var time = listData.search.book_date.split(' - ');
+                    listData.search.fromdate = time[0];
+                    listData.search.todate   = time[1];
+                }
+                listData.requestUri += "&book_date=" + listData.search.book_date;
             }
 
             if (listData.search.order_by !== '') {
                 listData.requestUri += "&order_by=" + listData.search.order_by;
             }
+            arrPromise.push(new Promise((resolve, reject) => {
+                webService.getListTable('SELECT id AS value, name AS label FROM hospital WHERE active = 1', []).then(responseData =>{
+                    if(responseData.success){
+                        listData.hospitals = responseData.data;
+                    }else{
+                        listData.error.push(responseData.message);
+                        webService.addToLogService(responseData.message, "createSideBarFilter get list hospital");
+                    }
+                    resolve();
+                })
+            }));
 
             return new Promise(function(resolve, reject) {
                 Promise.all(arrPromise).then(function() {

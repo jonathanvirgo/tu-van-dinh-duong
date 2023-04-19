@@ -16,19 +16,19 @@
       <form action="/search" method="get" id="search_filter">
         <div class="row">
           <div id="hospital_filter" class="col-lg-auto">
-            <div id="hospital_select"></div>
+            <div id="hospital_select" name="hospital_ids"></div>
           </div>
           <div class="col-lg-auto">
             <div id="status_filter">
-              <div id="status_select"></div>
+              <div id="status_select" name="status_ids"></div>
             </div>
           </div>
           <div class="col-lg-auto">
             <div class="flatpickr flatpickr-range" data-options='{"mode":"range"}' data-plugin="flatpickr" id="header-flatpickr" data-parent="#header-flatpickr">
               <% if (!filter.search.fromdate){%>
-              <input class="form-control" id="sfilter_date" type="text" placeholder="Thời gian" value="" data-input="data-input" aria-label="Thời gian" />
+              <input class="form-control" id="sfilter_date" type="text" placeholder="Thời gian" value="" data-input="data-input" aria-label="Thời gian" name="book_date" />
               <%} else {%>
-              <input class="form-control" id="sfilter_date" type="text" placeholder="Thời gian" value="<%=filter.search.fromdate%> - <%=filter.search.todate%>" data-input="data-input" aria-label="Thời gian" />
+              <input class="form-control" id="sfilter_date" type="text" placeholder="Thời gian" value="<%=filter.search.fromdate%> - <%=filter.search.todate%>" data-input="data-input" aria-label="Thời gian" name="book_date" />
               <%}%>
             </div>
           </div>

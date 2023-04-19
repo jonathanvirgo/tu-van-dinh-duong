@@ -22,8 +22,9 @@
                             <%}%>
                         </select>
                     </div>
-                    <button class="btn btn-primary" type="button" onclick="chooseMenuExample()">Thêm</button>
-                    <button class="btn btn-primary" type="button" onclick="addMenu()">Tạo mới</button>
+                    <button title="Thêm thực đơn đã chọn" class="btn btn-danger" type="button" onclick="chooseMenuExample()">Thêm</button>
+                    <button title="Lưu thực đơn mẫu" class="btn btn-primary" type="button" onclick="showConfirmSaveMenu()">Lưu mẫu</button>
+                    <button title="Tạo mới thực đơn trống dữ liệu" class="btn btn-primary-light" type="button" onclick="addMenu()">Tạo mới</button>
                 </div>
             </div>
         </div>
@@ -82,7 +83,7 @@
             <div class="col-form-body col-md">
               <div class="input-group">
                 <input type="number" class="form-control form-control-title p-1" id="weight_food" placeholder="Khối lượng" data-initial-value="0">
-                <button class="btn btn-primary" type="button" onclick="addFoodToMenu()">Thêm</button>
+                <button class="btn btn-primary" type="button" onclick="addFoodToMenu()" title="Thêm thực phẩm vào thực đơn">Thêm</button>
               </div>
             </div>
         </div>
@@ -203,35 +204,35 @@
 
     <div class="row g-2 justify-content-center mt-0">
         <div class="col-6 col-md-auto">
-          <button class="btn btn-primary box-btn w-100 text-uppercase" type="button" onclick="saveExamine()">
+          <button class="btn btn-primary box-btn w-100 text-uppercase" type="button" onclick="saveExamine(2)" title="Lưu phiếu khám">
             <svg class="iconsvg-send-2 flex-shrink-0 fs-16px me-2">
               <use xlink:href="/public/content/images/sprite.svg#save"></use>
-            </svg>Lưu
+            </svg>Lưu 
           </button>
         </div>
-        <div class="col-6 col-md-auto">
+        <!-- <div class="col-6 col-md-auto">
             <button class="btn btn-primary box-btn w-100 text-uppercase" type="button" onclick="saveMenu(1)">
               <svg class="iconsvg-send-2 flex-shrink-0 fs-16px me-2">
                 <use xlink:href="/public/content/images/sprite.svg#save"></use>
               </svg>Lưu Mẫu
             </button>
-        </div>
-        <div class="col-6 col-md-auto">
+        </div> -->
+        <!-- <div class="col-6 col-md-auto">
             <button class="btn btn-primary box-btn w-100 text-uppercase" type="button" onclick="saveMenu(0)">
               <svg class="iconsvg-send-2 flex-shrink-0 fs-16px me-2">
                 <use xlink:href="/public/content/images/sprite.svg#save"></use>
               </svg>Cập nhật mẫu
             </button>
-        </div>
+        </div> -->
         <div class="col-6 col-md-auto">
-            <button class="btn btn-primary box-btn w-100 text-uppercase" type="button" onclick="exportMenuExample()">
+            <button class="btn btn-action-edit box-btn w-100 text-uppercase" type="button" onclick="exportMenuExample()" title="Tải thực đơn mẫu">
               <svg class="iconsvg-send-2 flex-shrink-0 fs-16px me-2">
                 <use xlink:href="/public/content/images/sprite.svg#download"></use>
               </svg>Tải thực đơn
             </button>
         </div>
         <div class="col-6 col-md-auto">
-          <button class="btn btn-cancel box-btn w-100 text-uppercase" type="button" onclick="returnList()">
+          <button class="btn btn-cancel box-btn w-100 text-uppercase" type="button" onclick="returnList()" title="Hủy thao tác sửa phiếu khám">
             <svg class="iconsvg-close flex-shrink-0 fs-16px me-2">
             <use xlink:href="/public/content/images/sprite.svg#close"></use>
             </svg>Huỷ

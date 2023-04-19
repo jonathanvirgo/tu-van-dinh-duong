@@ -57,7 +57,7 @@
         <div class="col-form-body col-md">
           <div class="input-group">
             <input type="text" class="form-control form-control-title p-1" id="use_medinice" placeholder="Cách sử dụng">
-            <button class="btn btn-primary" type="button" onclick="addMedicine()">Thêm</button>
+            <button class="btn btn-primary" type="button" onclick="addMedicine()" title="Thêm dữ liệu thuốc">Thêm</button>
           </div>
         </div>
       </div>
@@ -102,26 +102,33 @@
       </div>
     </div>
     <div class="row g-2 justify-content-center mt-0">
-        <div class="col-6 col-md-auto">
-          <button class="btn btn-primary box-btn w-100 text-uppercase" type="button" onclick="saveExamine()">
-            <svg class="iconsvg-send-2 flex-shrink-0 fs-16px me-2">
-              <use xlink:href="/public/content/images/sprite.svg#save"></use>
-            </svg>Lưu
-          </button>
-        </div>
-        <div class="col-6 col-md-auto">
-          <button class="btn btn-primary box-btn w-100 text-uppercase" type="button" onclick="exportPrescription()">
-            <svg class="iconsvg-send-2 flex-shrink-0 fs-16px me-2">
-              <use xlink:href="/public/content/images/sprite.svg#download"></use>
-            </svg>Tải phiếu
-          </button>
+      <div class="col-6 col-md-auto">
+        <button class="btn btn-primary box-btn w-100 text-uppercase" type="button" onclick="saveExamine(3)" title="Hoàn thành phiếu khám">
+          <svg class="iconsvg-send-2 flex-shrink-0 fs-16px me-2">
+            <use xlink:href="/public/content/images/sprite.svg#save"></use>
+          </svg>Hoàn thành
+        </button>
       </div>
-        <div class="col-6 col-md-auto">
-          <button class="btn btn-cancel box-btn w-100 text-uppercase" type="button" onclick="returnList()">
-            <svg class="iconsvg-close flex-shrink-0 fs-16px me-2">
-            <use xlink:href="/public/content/images/sprite.svg#close"></use>
-            </svg>Huỷ
-          </button>
-        </div>
+      <div class="col-6 col-md-auto">
+        <button class="btn btn-action-edit box-btn w-100 text-uppercase" type="button" onclick="exportPrescription()" title="Tải phiếu khám">
+          <svg class="iconsvg-send-2 flex-shrink-0 fs-16px me-2">
+            <use xlink:href="/public/content/images/sprite.svg#download"></use>
+          </svg>Phiếu khám
+        </button>
+      </div>
+      <div class="col-6 col-md-auto">
+        <button class="btn btn-action-send box-btn w-100 text-uppercase" type="button" onclick="exportPrescription()" title="Tải phiếu tư vấn">
+          <svg class="iconsvg-send-2 flex-shrink-0 fs-16px me-2">
+            <use xlink:href="/public/content/images/sprite.svg#download"></use>
+          </svg>Phiếu tư vấn
+        </button>
+      </div>
+      <!-- <div class="col-6 col-md-auto">
+        <button class="btn btn-cancel box-btn w-100 text-uppercase" type="button" onclick="returnList()" title="Hủy thao tác sửa phiếu khám">
+          <svg class="iconsvg-close flex-shrink-0 fs-16px me-2">
+          <use xlink:href="/public/content/images/sprite.svg#close"></use>
+          </svg>Huỷ
+        </button>
+      </div> -->
       </div>
 </form>
