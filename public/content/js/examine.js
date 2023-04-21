@@ -1277,6 +1277,9 @@ $(document).ready(function(){
         if(dataExamine.nutritionAdviceList.length > 0){
             for(let item of dataExamine.nutritionAdviceList){
                 if(evt.params.data.id == item.id){
+                    $('#nutrition_advice textarea').each(function () {
+                        this.setAttribute('style', 'height:auto;');
+                    });
                     $("#glucid_should_use").text(item.glucid_should_use);
                     $("#glucid_limited_use").text(item.glucid_limited_use);
                     $("#glucid_should_not_use").text(item.glucid_should_not_use);
@@ -1292,6 +1295,11 @@ $(document).ready(function(){
                     $("#vitamin_ck_should_use").text(item.vitamin_ck_should_use);
                     $("#vitamin_ck_limited_use").text(item.vitamin_ck_limited_use);
                     $("#vitamin_ck_should_not_use").text(item.vitamin_ck_should_not_use);
+
+                    $('#nutrition_advice textarea').each(function () {
+                        console.log("height", this.scrollHeight);
+                        this.setAttribute('style', 'height:' + (this.scrollHeight) + 'px;overflow-y:hidden;');
+                    });
                     break;
                 }
             }
@@ -1407,11 +1415,11 @@ $(document).ready(function(){
         if(dataExamine.phoneListSearch.length > 0){
             for(let item of dataExamine.phoneListSearch){
                 if(evt.params.data.id == item.id){      
-                    console.log("abc", moment(item.cus_birthday).format("DD-MM-YYYY"));
+                    console.log("abc", moment(item.cus_birthday).format("DD-MM-YYYY"), item);
                     $('#cus_name').val(item.cus_name);
                     $('#cus_phone').val(item.cus_phone);
                     $('#cus_email').val(item.cus_email);
-                    $('#cus_gender').val(item.cus_gender);
+                    $('#cus_gender').val(item.cus_gender).trigger('change');
                     cus_birthday.setDate(moment(item.cus_birthday).format("DD-MM-YYYY"), true);
                     $('#cus_address').val(item.cus_address);
                     break;
@@ -1493,7 +1501,11 @@ $(document).ready(function(){
     });
 
     $('textarea').each(function () {
-        this.setAttribute('style', 'height:' + (this.scrollHeight) + 'px;overflow-y:hidden;');
+        if(this.scrollHeight !== 0){
+            this.setAttribute('style', 'height:' + (this.scrollHeight) + 'px;overflow-y:hidden;');
+        }else{
+            this.setAttribute('style', 'height:auto;');
+        }
     }).on('input', function () {
         this.style.height = 'auto';
         this.style.height = (this.scrollHeight) + 'px';

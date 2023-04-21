@@ -482,61 +482,61 @@ router.post('/create', async function(req, res, next) {
         }
         var str_errors   = [],
             parameter    = {
-                cus_name:               req.body.cus_name,
-                cus_phone:              req.body.cus_phone,
-                cus_email:              req.body.cus_email,
-                cus_gender:             req.body.cus_gender,
-                cus_birthday:           req.body.cus_birthday,
-                cus_address:            req.body.cus_address,
-                diagnostic:             req.body.diagnostic,
-                cus_length:             req.body.cus_length,
-                cus_cctc:               req.body.cus_cctc,
-                cus_cntc:               req.body.cus_cntc,
-                cus_cnht:               req.body.cus_cnht,
-                cus_cnbt:               req.body.cus_cnbt,
-                cus_bmi:                req.body.cus_bmi,
-                clinical_examination:   req.body.clinical_examination,
-                erythrocytes:           req.body.erythrocytes,
-                cus_bc:                 req.body.cus_bc,
-                cus_tc:                 req.body.cus_tc,
-                cus_albumin:            req.body.cus_albumin,
-                cus_nakcl:              req.body.cus_nakcl,
-                cus_astaltggt:          req.body.cus_astaltggt,
-                cus_urecreatinin:       req.body.cus_urecreatinin,
-                cus_bilirubin:          req.body.cus_bilirubin,
-                exa_note:               req.body.exa_note,
-                cus_fat:                req.body.cus_fat,
-                cus_water:              req.body.cus_water,
-                cus_visceral_fat:       req.body.cus_visceral_fat,
-                cus_bone_weight:        req.body.cus_bone_weight,
-                cus_chcb:               req.body.cus_chcb,
-                cus_waist:              req.body.cus_waist,
-                cus_butt:               req.body.cus_butt,
-                cus_cseomong:           req.body.cus_cseomong,
-                active_mode_of_living:  req.body.active_mode_of_living,
-                glucid_should_use:      req.body.glucid_should_use,
-                glucid_limited_use:     req.body.glucid_limited_use,
-                glucid_should_not_use:  req.body.glucid_should_not_use,
-                protein_should_use:     req.body.protein_should_use,
-                protein_limited_use:    req.body.protein_limited_use,
-                protein_should_not_use: req.body.protein_should_not_use,
-                lipid_should_use:       req.body.lipid_should_use,
-                lipid_limited_use:      req.body.lipid_limited_use,
-                lipid_should_not_use:   req.body.lipid_should_not_use,
-                vitamin_ck_should_use:  req.body.vitamin_ck_should_use,
-                vitamin_ck_limited_use: req.body.vitamin_ck_limited_use,
-                vitamin_ck_should_not_use: req.body.vitamin_ck_should_not_use,
-                nutrition_advice_id:    req.body.nutrition_advice_id,
-                active_mode_of_living_id: req.body.active_mode_of_living_id,
-                medical_test:           req.body.medical_test,  
-                menu_example:           req.body.menu_example,  
-                prescription:           req.body.prescription,
                 department_id:          req.user.department_id,
                 hospital_id:            req.user.hospital_id,
-                status:                 req.body.action,
                 created_by:             req.user.id
             },
             id_examine = '';
+        
+        if(req.body.cus_name)               parameter['cus_name']               = req.body.cus_name;
+        if(req.body.cus_phone)              parameter['cus_phone']              = req.body.cus_phone;
+        if(req.body.cus_email)              parameter['cus_email']              = req.body.cus_email;
+        if(req.body.cus_gender)             parameter['cus_gender']             = req.body.cus_gender;
+        if(req.body.cus_birthday)           parameter['cus_birthday']           = req.body.cus_birthday;
+        if(req.body.cus_address)            parameter['cus_address']            = req.body.cus_address;
+        if(req.body.diagnostic)             parameter['diagnostic']             = req.body.diagnostic;
+        if(req.body.cus_length)             parameter['cus_length']             = req.body.cus_length;
+        if(req.body.cus_cctc)               parameter['cus_cctc']               = req.body.cus_cctc;
+        if(req.body.cus_cntc)               parameter['cus_cntc']               = req.body.cus_cntc;
+        if(req.body.cus_cnht)               parameter['cus_cnht']               = req.body.cus_cnht;
+        if(req.body.cus_cnbt)               parameter['cus_cnbt']               = req.body.cus_cnbt;
+        if(req.body.cus_bmi)                parameter['cus_bmi']                = req.body.cus_bmi;
+        if(req.body.clinical_examination)   parameter['clinical_examination']   = req.body.clinical_examination;
+        if(req.body.erythrocytes)           parameter['erythrocytes']           = req.body.erythrocytes;
+        if(req.body.cus_bc)                 parameter['cus_bc']                 = req.body.cus_bc;
+        if(req.body.cus_tc)                 parameter['cus_tc']                 = req.body.cus_tc;
+        if(req.body.cus_albumin)            parameter['cus_albumin']            = req.body.cus_albumin;
+        if(req.body.cus_nakcl)              parameter['cus_nakcl']              = req.body.cus_nakcl;
+        if(req.body.cus_astaltggt)          parameter['cus_astaltggt']          = req.body.cus_astaltggt;
+        if(req.body.cus_urecreatinin)       parameter['cus_urecreatinin']       = req.body.cus_urecreatinin;
+        if(req.body.cus_bilirubin)          parameter['cus_bilirubin']          = req.body.cus_bilirubin;
+        if(req.body.exa_note)               parameter['exa_note']               = req.body.exa_note;
+        if(req.body.cus_fat)                parameter['cus_fat']                = req.body.cus_fat;
+        if(req.body.cus_water)              parameter['cus_water']              = req.body.cus_water;
+        if(req.body.cus_visceral_fat)       parameter['cus_visceral_fat']       = req.body.cus_visceral_fat;
+        if(req.body.cus_bone_weight)        parameter['cus_bone_weight']        = req.body.cus_bone_weight;
+        if(req.body.cus_chcb)               parameter['cus_chcb']               = req.body.cus_chcb;
+        if(req.body.cus_waist)              parameter['cus_waist']              = req.body.cus_waist;
+        if(req.body.cus_butt)               parameter['cus_butt']               = req.body.cus_butt;
+        if(req.body.cus_cseomong)           parameter['cus_cseomong']           = req.body.cus_cseomong;
+        if(req.body.active_mode_of_living)  parameter['active_mode_of_living']  = req.body.active_mode_of_living;
+        if(req.body.glucid_should_use)      parameter['glucid_should_use']      = req.body.glucid_should_use;
+        if(req.body.glucid_limited_use)     parameter['glucid_limited_use']     = req.body.glucid_limited_use;
+        if(req.body.glucid_should_not_use)  parameter['glucid_should_not_use']  = req.body.glucid_should_not_use;
+        if(req.body.protein_should_use)     parameter['protein_should_use']     = req.body.protein_should_use;
+        if(req.body.protein_limited_use)    parameter['protein_limited_use']    = req.body.protein_limited_use;
+        if(req.body.protein_should_not_use) parameter['protein_should_not_use'] = req.body.protein_should_not_use;
+        if(req.body.lipid_should_use)       parameter['lipid_should_use']       = req.body.lipid_should_use;
+        if(req.body.lipid_limited_use)      parameter['lipid_limited_use']      = req.body.lipid_limited_use;
+        if(req.body.lipid_should_not_use)   parameter['lipid_should_not_use']   = req.body.lipid_should_not_use;
+        if(req.body.vitamin_ck_should_use)  parameter['vitamin_ck_should_use']  = req.body.vitamin_ck_should_use;
+        if(req.body.vitamin_ck_limited_use) parameter['vitamin_ck_limited_use'] = req.body.vitamin_ck_limited_use;
+        if(req.body.vitamin_ck_should_not_use) parameter['vitamin_ck_should_not_use'] = req.body.vitamin_ck_should_not_use;
+        if(req.body.nutrition_advice_id)    parameter['nutrition_advice_id']    = req.body.nutrition_advice_id;
+        if(req.body.active_mode_of_living_id) parameter['active_mode_of_living_id'] = req.body.active_mode_of_living_id;
+        if(req.body.medical_test)           parameter['medical_test']           = req.body.medical_test;
+        if(req.body.prescription)           parameter['prescription']           = req.body.prescription;
+        if(req.body.action)                 parameter['status']                 = req.body.action;
         
         if(!parameter.cus_name){
             str_errors.push("Thiếu họ tên!");
