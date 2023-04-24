@@ -28,7 +28,7 @@ let adminService = {
 				}
 			});
 		} catch (error) {
-			console.log("addToLog catch", error);
+
 		}
 	},
 	parseDay: function(time) {

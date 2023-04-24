@@ -22,7 +22,6 @@
 <script>
     $(document).ready(function() {
         dataExamine.menuExamine = <%-JSON.stringify(menuExample) %>;
-        console.log("menuExample", dataExamine.menuExamine);
         let menu_id = $("#menu_id").val();
         if(menu_id && !isNaN(parseInt(menu_id))){
             generateTableMenuSearch(parseInt(menu_id));

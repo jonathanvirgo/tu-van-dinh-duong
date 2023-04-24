@@ -412,7 +412,6 @@ router.post('/import-from-excel', function (req, res, next) {
                 }
                 res.json(resultData);
             } catch (error) {
-                console.log(error);
                 resultData.message = typeof(error) == 'object' ? JSON.stringify(error) : error;
                 res.json(resultData);
             }

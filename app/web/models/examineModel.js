@@ -104,7 +104,6 @@ let examineService = {
         });
     },
     getAllExamine: function(parameter, callback) {
-        console.log("getAllExamine", parameter);
         db.get().getConnection(function(err, connection) {
             if (err) return callback(err);
             var paraSQL     = [];
@@ -183,7 +182,6 @@ let examineService = {
                 if (err) return callback(err);
                 callback(null, results, fields);
             });
-            console.log("getAllExamine", query.sql);
         });
     },
     getAllExamine2: function(parameter, callback) {
@@ -222,7 +220,6 @@ let examineService = {
                 if (err) return callback(err);
                 callback(null, results, fields);
             });
-            console.log("query list", query.sql);
         });
     },
     getExamineGroupByDate: function(parameter, callback) {

@@ -1216,7 +1216,7 @@ router.get("/prescription", async (req, res) =>{
                 sections: [{
                     children: [
                         new Paragraph({
-                            text: "PHIẾU TƯ VẤN DINH DƯỠNG",
+                            text: "PHIẾU TƯ VẤN",
                             alignment: AlignmentType.CENTER,
                             style: "hospital",
                             spacing:{

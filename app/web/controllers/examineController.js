@@ -7,6 +7,8 @@ var express         = require('express'),
     webService      = require('./../models/webModel'),
     examineService  = require('./../models/examineModel');
 
+    //1 tiếp nhận, 2 đang khám, 3 hoàn thành, 4 đã hủy
+
 router.get('/', function(req, res) {
     try {
         if (!req.user) {
@@ -494,6 +496,8 @@ router.post('/create', async function(req, res, next) {
         if(req.body.cus_gender)             parameter['cus_gender']             = req.body.cus_gender;
         if(req.body.cus_birthday)           parameter['cus_birthday']           = req.body.cus_birthday;
         if(req.body.cus_address)            parameter['cus_address']            = req.body.cus_address;
+        if(req.body.cus_anamnesis)          parameter['cus_anamnesis']          = req.body.cus_anamnesis;
+        if(req.body.cus_living_habits)      parameter['cus_living_habits']      = req.body.cus_living_habits;
         if(req.body.diagnostic)             parameter['diagnostic']             = req.body.diagnostic;
         if(req.body.cus_length)             parameter['cus_length']             = req.body.cus_length;
         if(req.body.cus_cctc)               parameter['cus_cctc']               = req.body.cus_cctc;
@@ -566,7 +570,6 @@ router.post('/create', async function(req, res, next) {
                             logService.create(req, responseData.message);
                             return;
                         }else{
-                            console.log("id_examine", responseData.data.insertId);
                             id_examine = responseData.data.insertId;
                             resultData.success = true;
                             resultData.message = "Lưu phiếu khám thành công!";
@@ -592,7 +595,6 @@ router.post('/create', async function(req, res, next) {
 
             let sqlFindCustomer = 'SELECT * FROM customer WHERE cus_phone = ? AND cus_gender = ? AND cus_birthday = ?';
             webService.getListTable(sqlFindCustomer ,[parameter.cus_phone, parameter.cus_gender, parameter.cus_birthday]).then(responseData1 =>{
-                console.log("sqlFindCustomer", responseData1);
                 if(responseData1.success){
                     if(responseData1.data && responseData1.data.length > 0){
                         let customerData = responseData1.data[0];
@@ -613,7 +615,6 @@ router.post('/create', async function(req, res, next) {
                     }else{
                         // neu khong co khach hang thi them moi
                         webService.addRecordTable( paramCustomer, 'customer', true).then(responseData4 =>{
-                            console.log("addRecordTable customer", responseData4, id_examine);
                             if(!responseData4.success){
                                 logService.create(req, responseData4.message);
                             }else{
@@ -651,61 +652,60 @@ router.post('/edit/:id', function(req, res, next) {
             return;
         }
         var str_errors   = [],
-            parameter    = {
-                cus_name:               req.body.cus_name,
-                cus_phone:              req.body.cus_phone,
-                cus_email:              req.body.cus_email,
-                cus_gender:             req.body.cus_gender,
-                cus_birthday:           req.body.cus_birthday,
-                cus_address:            req.body.cus_address,
-                cus_anamnesis:          req.body.cus_anamnesis,
-                cus_living_habits:      req.body.cus_living_habits,
-                diagnostic:             req.body.diagnostic,
-                cus_length:             req.body.cus_length,
-                cus_cctc:               req.body.cus_cctc,
-                cus_cntc:               req.body.cus_cntc,
-                cus_cnht:               req.body.cus_cnht,
-                cus_cnbt:               req.body.cus_cnbt,
-                cus_bmi:                req.body.cus_bmi,
-                clinical_examination:   req.body.clinical_examination,
-                erythrocytes:           req.body.erythrocytes,
-                cus_bc:                 req.body.cus_bc,
-                cus_tc:                 req.body.cus_tc,
-                cus_albumin:            req.body.cus_albumin,
-                cus_nakcl:              req.body.cus_nakcl,
-                cus_astaltggt:          req.body.cus_astaltggt,
-                cus_urecreatinin:       req.body.cus_urecreatinin,
-                cus_bilirubin:          req.body.cus_bilirubin,
-                exa_note:               req.body.exa_note,
-                cus_fat:                req.body.cus_fat,
-                cus_water:              req.body.cus_water,
-                cus_visceral_fat:       req.body.cus_visceral_fat,
-                cus_bone_weight:        req.body.cus_bone_weight,
-                cus_chcb:               req.body.cus_chcb,
-                cus_waist:              req.body.cus_waist,
-                cus_butt:               req.body.cus_butt,
-                cus_cseomong:           req.body.cus_cseomong,
-                active_mode_of_living:  req.body.active_mode_of_living,
-                glucid_should_use:      req.body.glucid_should_use,
-                glucid_limited_use:     req.body.glucid_limited_use,
-                glucid_should_not_use:  req.body.glucid_should_not_use,
-                protein_should_use:     req.body.protein_should_use,
-                protein_limited_use:    req.body.protein_limited_use,
-                protein_should_not_use: req.body.protein_should_not_use,
-                lipid_should_use:       req.body.lipid_should_use,
-                lipid_limited_use:      req.body.lipid_limited_use,
-                lipid_should_not_use:   req.body.lipid_should_not_use,
-                vitamin_ck_should_use:  req.body.vitamin_ck_should_use,
-                vitamin_ck_limited_use: req.body.vitamin_ck_limited_use,
-                vitamin_ck_should_not_use: req.body.vitamin_ck_should_not_use,
-                nutrition_advice_id:    req.body.nutrition_advice_id,
-                active_mode_of_living_id: req.body.active_mode_of_living_id,
-                medical_test:           req.body.medical_test,
-                prescription:           req.body.prescription,
-                menu_example:           req.body.menu_example,
-                status:                 req.body.action
-            };
-        
+            parameter    = {};
+
+        if(req.body.cus_name)               parameter['cus_name']               = req.body.cus_name;
+        if(req.body.cus_phone)              parameter['cus_phone']              = req.body.cus_phone;
+        if(req.body.cus_email)              parameter['cus_email']              = req.body.cus_email;
+        if(req.body.cus_gender)             parameter['cus_gender']             = req.body.cus_gender;
+        if(req.body.cus_birthday)           parameter['cus_birthday']           = req.body.cus_birthday;
+        if(req.body.cus_address)            parameter['cus_address']            = req.body.cus_address;
+        if(req.body.cus_anamnesis)          parameter['cus_anamnesis']          = req.body.cus_anamnesis;
+        if(req.body.cus_living_habits)      parameter['cus_living_habits']      = req.body.cus_living_habits;
+        if(req.body.diagnostic)             parameter['diagnostic']             = req.body.diagnostic;
+        if(req.body.cus_length)             parameter['cus_length']             = req.body.cus_length;
+        if(req.body.cus_cctc)               parameter['cus_cctc']               = req.body.cus_cctc;
+        if(req.body.cus_cntc)               parameter['cus_cntc']               = req.body.cus_cntc;
+        if(req.body.cus_cnht)               parameter['cus_cnht']               = req.body.cus_cnht;
+        if(req.body.cus_cnbt)               parameter['cus_cnbt']               = req.body.cus_cnbt;
+        if(req.body.cus_bmi)                parameter['cus_bmi']                = req.body.cus_bmi;
+        if(req.body.clinical_examination)   parameter['clinical_examination']   = req.body.clinical_examination;
+        if(req.body.erythrocytes)           parameter['erythrocytes']           = req.body.erythrocytes;
+        if(req.body.cus_bc)                 parameter['cus_bc']                 = req.body.cus_bc;
+        if(req.body.cus_tc)                 parameter['cus_tc']                 = req.body.cus_tc;
+        if(req.body.cus_albumin)            parameter['cus_albumin']            = req.body.cus_albumin;
+        if(req.body.cus_nakcl)              parameter['cus_nakcl']              = req.body.cus_nakcl;
+        if(req.body.cus_astaltggt)          parameter['cus_astaltggt']          = req.body.cus_astaltggt;
+        if(req.body.cus_urecreatinin)       parameter['cus_urecreatinin']       = req.body.cus_urecreatinin;
+        if(req.body.cus_bilirubin)          parameter['cus_bilirubin']          = req.body.cus_bilirubin;
+        if(req.body.exa_note)               parameter['exa_note']               = req.body.exa_note;
+        if(req.body.cus_fat)                parameter['cus_fat']                = req.body.cus_fat;
+        if(req.body.cus_water)              parameter['cus_water']              = req.body.cus_water;
+        if(req.body.cus_visceral_fat)       parameter['cus_visceral_fat']       = req.body.cus_visceral_fat;
+        if(req.body.cus_bone_weight)        parameter['cus_bone_weight']        = req.body.cus_bone_weight;
+        if(req.body.cus_chcb)               parameter['cus_chcb']               = req.body.cus_chcb;
+        if(req.body.cus_waist)              parameter['cus_waist']              = req.body.cus_waist;
+        if(req.body.cus_butt)               parameter['cus_butt']               = req.body.cus_butt;
+        if(req.body.cus_cseomong)           parameter['cus_cseomong']           = req.body.cus_cseomong;
+        if(req.body.active_mode_of_living)  parameter['active_mode_of_living']  = req.body.active_mode_of_living;
+        if(req.body.glucid_should_use)      parameter['glucid_should_use']      = req.body.glucid_should_use;
+        if(req.body.glucid_limited_use)     parameter['glucid_limited_use']     = req.body.glucid_limited_use;
+        if(req.body.glucid_should_not_use)  parameter['glucid_should_not_use']  = req.body.glucid_should_not_use;
+        if(req.body.protein_should_use)     parameter['protein_should_use']     = req.body.protein_should_use;
+        if(req.body.protein_limited_use)    parameter['protein_limited_use']    = req.body.protein_limited_use;
+        if(req.body.protein_should_not_use) parameter['protein_should_not_use'] = req.body.protein_should_not_use;
+        if(req.body.lipid_should_use)       parameter['lipid_should_use']       = req.body.lipid_should_use;
+        if(req.body.lipid_limited_use)      parameter['lipid_limited_use']      = req.body.lipid_limited_use;
+        if(req.body.lipid_should_not_use)   parameter['lipid_should_not_use']   = req.body.lipid_should_not_use;
+        if(req.body.vitamin_ck_should_use)  parameter['vitamin_ck_should_use']  = req.body.vitamin_ck_should_use;
+        if(req.body.vitamin_ck_limited_use) parameter['vitamin_ck_limited_use'] = req.body.vitamin_ck_limited_use;
+        if(req.body.vitamin_ck_should_not_use) parameter['vitamin_ck_should_not_use'] = req.body.vitamin_ck_should_not_use;
+        if(req.body.nutrition_advice_id)    parameter['nutrition_advice_id']    = req.body.nutrition_advice_id;
+        if(req.body.active_mode_of_living_id) parameter['active_mode_of_living_id'] = req.body.active_mode_of_living_id;
+        if(req.body.medical_test)           parameter['medical_test']           = req.body.medical_test;
+        if(req.body.prescription)           parameter['prescription']           = req.body.prescription;
+        if(req.body.action)                 parameter['status']                 = req.body.action;
+
         if(!parameter.cus_name){
             str_errors.push("Thiếu họ tên!");
         }
@@ -751,7 +751,6 @@ router.post('/edit/:id', function(req, res, next) {
 
             let sqlFindCustomer = 'SELECT * FROM customer WHERE cus_phone = ? AND cus_gender = ? AND cus_birthday = ?';
             webService.getListTable(sqlFindCustomer ,[parameter.cus_phone, parameter.cus_gender, parameter.cus_birthday]).then(responseData1 =>{
-                console.log("sqlFindCustomer", responseData1);
                 if(responseData1.success){
                     if(responseData1.data && responseData1.data.length > 0){
                         let customerData = responseData1.data[0];
@@ -772,7 +771,6 @@ router.post('/edit/:id', function(req, res, next) {
                     }else{
                         // neu khong co khach hang thi them moi
                         webService.addRecordTable( paramCustomer, 'customer', true).then(responseData4 =>{
-                            console.log("addRecordTable customer", responseData4, id_examine);
                             if(!responseData4.success){
                                 logService.create(req, responseData4.message);
                             }else{
@@ -881,7 +879,6 @@ router.post('/save-menu', (req, res, next) =>{
                 hospital_id:    req.user.hospital_id,
                 created_by:     req.user.id
             };
-        console.log("save-menu", req.body);
         if(!parameter.name_menu){
             str_errors.push("Thiếu tên menu!<br>");
         }
@@ -945,7 +942,6 @@ router.get('/search', (req, res, next) =>{
                     prevPage: '',
                     currentPage: '',
                 };
-            console.log("req.query", req.query.cus_name, req.query.cus_phone, filter);
             if(filter.search.name.length > 0 && filter.search.phone.length > 0){
                 arrPromise.push(new Promise(function (resolve, reject) {
                     examineService.countAllExamine2({search: filter.search, filter: true}, function (err, result, fields) {
@@ -1051,7 +1047,6 @@ router.post('/detail-examine', (req, res, next) =>{
                 
                 express().render(path.resolve(__dirname, "../views/search/detail.ejs"), {examine,prescriptionExamine,menuExample,dataAlternativeFood}, (err, html) => {
                     if(err){
-                        console.log("err", err);
                         resultData.message = 'Lỗi xem chi tiết phiếu khám';
                     }else{
                         resultData.success = true;
@@ -1079,15 +1074,12 @@ router.post('/table/history', (req, res, next) =>{
             data: ''
         },
         listExamine = [];
-        console.log("req.body.cus_id", req.body.cus_id);
         let sqlDetailExamine = 'SELECT * FROM examine WHERE customer_id = ?';
         webService.getListTable(sqlDetailExamine ,[req.body.cus_id]).then(async responseData =>{
-            console.log("getListTable", responseData);
             if(responseData.success && responseData.data && responseData.data.length >= 0){
                 listExamine   = responseData.data;
                 express().render(path.resolve(__dirname, "../views/examine/history.ejs"), {listExamine,moment}, (err, html) => {
                     if(err){
-                        console.log("err", err);
                         resultData.message = 'Lỗi xem danh sách lịch sử khám';
                     }else{
                         resultData.success = true;
@@ -1151,13 +1143,10 @@ router.post('/list/medical-test', function(req, res, next){
         medicalTestExamine = req.body.data ? JSON.parse(req.body.data) : [];
         let sqlListMedicalTest = 'SELECT * FROM medical_test WHERE type = ?';
         webService.getListTable(sqlListMedicalTest ,[type_id]).then(async responseData =>{
-            console.log("medicalTest", responseData);
             if(responseData.success && responseData.data && responseData.data.length >= 0){
                 let medicalTest   = responseData.data;
-                console.log("medicalTest", medicalTest);
                 express().render(path.resolve(__dirname, "../views/component/listmedicaltest.ejs"), {medicalTest, medicalTestExamine, type_name}, (err, html) => {
                     if(err){
-                        console.log("err", err);
                         resultData.message = 'Lỗi xem danh sách chỉ định xét nghiệm';
                     }else{
                         resultData.success = true;
@@ -1174,6 +1163,54 @@ router.post('/list/medical-test', function(req, res, next){
         logService.create(req, error.message).then(function() {
             res.json(resultData);
         });
+    }
+});
+
+router.post('/cancel', async function(req, res, next){
+    var resultData = {
+        success: false,
+        message: ''
+    };
+    try {  
+        if (!req.user) {
+            resultData.message = "Vui lòng đăng nhập lại để thực hiện chức năng này!";
+            res.json(resultData);
+            return;
+        }
+        let id      = req.body.id,
+            status  = req.body.status;
+        if(!id){
+            resultData.message = "Thiếu id phiếu khám!";
+            res.json(resultData);
+            return;
+        }else{
+            let param = {};
+            if(status && status == 4){
+                param['active'] = 0;
+            }else{
+                param['status'] = 4;
+            }
+            let responseData = await webService.updateRecordTable( param, {id: id}, 'examine');
+            // data: OkPacket {
+            //     fieldCount: 0,
+            //     affectedRows: 1,
+            //     insertId: 0,
+            //     serverStatus: 2,
+            //     warningCount: 0,
+            //     message: '(Rows matched: 1  Changed: 1  Warnings: 0',
+            //     protocol41: true,
+            //     changedRows: 1
+            // }
+            if(responseData.success && responseData.data && responseData.changedRows == 1){
+                resultData.message = 'Thành công!';
+                resultData.success = true;
+            }else{
+                resultData.message = responseData.message;
+            }
+            res.json(resultData);
+        }
+    } catch (error) {
+        
     }
 });
 

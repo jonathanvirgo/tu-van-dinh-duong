@@ -67,7 +67,6 @@ let webService = {
     },
     addToLogService: function(message, page_url) {
         try {
-            console.log("addToLogService", message, page_url);
             let short_message = '';
             let full_message = '';
             if (typeof message === "string") {
@@ -81,7 +80,7 @@ let webService = {
             }
             webService.addRecordTable({short_message:short_message, full_message: full_message, page_url: page_url}, "log_err");
         } catch (error) {
-            console.log("addToLogService catch", error);
+
         }
     },
     getStringRandom: function(length) {
@@ -617,7 +616,6 @@ let webService = {
                             });
                         }
                     });
-                    console.log("update table", query.sql);
                 } catch (error) {
                     webService.addToLogService(err, "webService updateRecordTable");
                     resolve({
@@ -689,7 +687,6 @@ let webService = {
                         });
                     }
                 });
-                console.log("add table", query.sql);
             });
             db.get().getConnection(function(err, connection) {
                 try {

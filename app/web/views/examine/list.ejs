@@ -28,16 +28,16 @@
             <td class="table-sort">
               <span>Thời gian</span>
             </td>
-            <!-- <td class="table-sort w-1">
+            <td class="table-sort w-1">
               <span>Trạng thái</span>
-            </td> -->
+            </td>
             <td class="table-sort w-1">Hành động</td>
           </tr>
         </thead>
         <tbody>
           <% if (listExamine.length > 0){%>
             <% for (i = 0;i < listExamine.length;i++){%>
-              <tr>
+              <tr id="examine_<%=listExamine[i].id%>">
                 <td>
                   <a target="_blank" href="/examine/edit/<%=listExamine[i].id%>">
                     <span class="text-primary fw-6 fs-13px"><%=listExamine[i].count_id%></span>
@@ -56,11 +56,11 @@
                   <br>
                   <small class="text-body-2"><%=moment(listExamine[i].created_at).format("DD/MM/YYYY")%></small>
                 </td>
-                <!-- <td>
+                <td>
                   <span class="badge badge-<%=webService.examineStatusClass(listExamine[i].status).name%>">
                     <%=webService.examineStatusClass(listExamine[i].status).value%>
                   </span>
-                </td> -->
+                </td>
                 <td>
                   <div class="flex-center-x gap-10px" style="position: relative;">
                     <a title="Sửa" class="btn btn-action btn-action-edit" target="_blank" href="/examine/edit/<%=listExamine[i].id%>">
@@ -68,7 +68,7 @@
                          <use xlink:href="/public/content/images/sprite.svg#edit-2"></use>
                       </svg>
                     </a>
-                    <button class="btn btn-action btn-action-cancel" title="Huỷ phiếu khám" type="button">
+                    <button class="btn btn-action btn-action-cancel" title="Huỷ phiếu khám" type="button" onclick="showModalCancelExamine('<%=listExamine[i].id%>','<%=listExamine[i].status%>')">
                       <svg class="iconsvg-close-circle">
                          <use xlink:href="/public/content/images/sprite.svg#trash"></use>
                       </svg>

@@ -140,7 +140,6 @@ function saveExamine(action){
                 return;
             } 
         }
-        console.log("saveExamine", dataExamine.examine);
         // action 1 tiếp nhận 2 đang khám 3 hoàn thành;
         if(action) dataExamine.examine['action'] = action;
         let url = '/examine/create';
@@ -169,7 +168,7 @@ function saveExamine(action){
             }
         });
     } catch (error) {
-        console.log("saveExamine 2", error);
+
     }
 }
 
@@ -180,13 +179,12 @@ function exportExamine(){
         changeTabExamine(2);
         changeTabExamine(4);
         changeTabExamine(tab);
-        console.log("exportExamine", dataExamine.examine);
         var link = document.createElement('a');
         link.href = '/export/examine?data=' + encodeURIComponent(JSON.stringify(dataExamine.examine));
         link.click();
         link.remove();
     } catch (error) {
-        console.log("exportExamine 2", error);
+
     }
 }
 
@@ -228,18 +226,16 @@ function exportPrescription(){
         changeTabExamine(1);
         changeTabExamine(4);
         changeTabExamine(tab);
-        console.log("exportExamine", dataExamine.examine);
         var link = document.createElement('a');
         link.href = '/export/prescription?data=' + encodeURIComponent(JSON.stringify(dataExamine.examine));
         link.click();
         link.remove();
     } catch (error) {
-        console.log("exportExamine 2", error);
+
     }
 }
 
 function changeTabExamine(tab){
-    console.log("changeTabExamine", tab, dataExamine.prescription);
     switch(dataExamine.tab){
         case 1:
             dataExamine.examine['cus_name'] = $('#cus_name').val();
@@ -297,7 +293,6 @@ function changeTabExamine(tab){
             break;
         case 4:
             dataExamine.examine['prescription'] = JSON.stringify(dataExamine.prescription);
-            console.log("change tab 4", dataExamine.examine['prescription']);
             break;
         case 5:
             dataExamine.examine['medical_test'] = JSON.stringify(dataExamine.medicalTest);
@@ -320,7 +315,6 @@ function diff_years(dt2, dt1)
     diff /= (60 * 60 * 24);
     let year_old = Math.abs(diff/365.25);
     let type_year_old = 1;
-    console.log("year_old 1", year_old, diff);
     if(year_old >= 18){
         year_old = Math.floor(year_old);
     }else if(year_old >= 5.5){
@@ -344,7 +338,6 @@ function diff_years(dt2, dt1)
     }else{
         $('label[for="cus_age"]').text("Tuổi");
     }
-    console.log("year_old", year_old, diff);
     // return Math.floor(Math.abs(diff/365.25));
     return year_old;
  }
@@ -363,7 +356,6 @@ function diff_years(dt2, dt1)
         let year_old = $('#cus_age').val();
         let type_year_old = $('label[for="cus_age"]').text() == 'Tuổi' ? 1 : 0;
         let gender = parseInt($('#cus_gender').val());
-        console.log("checkStandardWeightHeight", year_old, type_year_old, gender, parseInt(year_old) > 18);
         $('#cus_cctc').val('');
         $('#cus_cntc').val('');
         if(type_year_old == 1 && parseInt(year_old) > 18){
@@ -371,7 +363,6 @@ function diff_years(dt2, dt1)
             if($('#cus_length').val() && !isNaN(parseFloat($('#cus_length').val()))){
                 let ccht = parseFloat($('#cus_length').val());
                 let cnkn = ccht * ccht * 22;
-                console.log("checkStandardWeightHeight cnkn", cnkn);
                 $('#cus_cntc').val(parseInt(cnkn));
             }
         }else{
@@ -449,8 +440,6 @@ function diff_years(dt2, dt1)
  }
 
  function addHtmlPrescription(prescriptionItem){
-    console.log("addHtmlPrescription", prescriptionItem);
-    
     let tr = document.createElement("tr");
     $(tr).attr('id', 'tr_' + prescriptionItem.id);
 
@@ -534,7 +523,6 @@ function getMedicalTest(id){
     if(id){
         let isChecked = $(id).is(':checked');
         let id_medical_test = parseInt($(id).val());
-        console.log(isChecked, id_medical_test);
         if(isChecked){
             if(!dataExamine.medicalTest.includes(id_medical_test)){
                 dataExamine.medicalTest.push(id_medical_test);
@@ -548,7 +536,6 @@ function getMedicalTest(id){
 }
 
 function addPrescriptionEdit(){
-    console.log("addPrescriptionEdit", dataExamine.prescription);
     if(dataExamine.prescription && dataExamine.prescription.length > 0){
         $("#tb_prescription").show();
         for(let [i, item] of dataExamine.prescription.entries()){
@@ -618,7 +605,6 @@ function generateFoodName(id){
 
 function deleteFood(id_food, id_menu_time){
     try {
-        console.log("deleteFood", id_food, id_menu_time);
         let menu_id = parseInt($('#menu_id').val());
         for(let menu of dataExamine.menuExamine){
             if(menu.id = menu_id){
@@ -631,12 +617,11 @@ function deleteFood(id_food, id_menu_time){
             }
         }
         $('#food_' + id_menu_time + "_" + id_food).remove();
-        console.log("rowspan", $('#menu_time_' + id_menu_time + ' td:first-child').attr("rowspan"));
         let rowspan = $('#menu_time_' + id_menu_time + ' td:first-child').attr("rowspan");
         
         $('#menu_time_' + id_menu_time + ' td:first-child').attr('rowspan', (rowspan - 1));
     } catch (error) {
-        console.log("deleteFood error", error);
+
     }
 }
 
@@ -658,7 +643,6 @@ function caculateFoodInfo(food, weight){
 
 function changeWeightFood(id_food, menuTime_id, value){
     try {
-        console.log("changeWeightFood", id_food, menuTime_id, value);
         let menu_id = parseInt($('#menu_id').val());
         for(let menu of dataExamine.menuExamine){
             if(menu_id == menu.id){
@@ -674,7 +658,6 @@ function changeWeightFood(id_food, menuTime_id, value){
                                 $("#food_"+ menuTime_id + "_" + food.id + "_lipid").text(food.lipid);
                                 $("#food_"+ menuTime_id + "_" + food.id + "_unanimal_lipid").text(food.unanimal_lipid);
                                 $("#food_"+ menuTime_id + "_" + food.id + "_carbohydrate").text(food.carbohydrate);
-                                console.log("caculateFoodInfo", {...food});
                                 break;
                             }
                         }
@@ -693,7 +676,6 @@ function changeWeightFood(id_food, menuTime_id, value){
 function changeCourse(menuTime_id){
     try {
         let name_course = $('#menu_time_' + menuTime_id).find("input").val();
-        console.log("changeCourse", name_course);
         let menu_id = parseInt($('#menu_id').val());
         for(let menu of dataExamine.menuExamine){
             if(menu_id == menu.id){
@@ -733,7 +715,6 @@ function generateMenuExamine(){
             }
         }
         let menu_id = parseInt($('#menu_id').val() ? $('#menu_id').val() : 0);
-        console.log("generateMenuExamine", dataExamine.menuExamine, menu_id);
         generateTableMenu(menu_id);
 
     }
@@ -750,7 +731,6 @@ function addMenuList(){
         detail: []
     }
     for(let time of dataExamine.listMenuTime){
-        console.log("listMenuTime", time);
         menu.detail.push({
             "id": time.id, 
             "name": time.name,
@@ -758,18 +738,15 @@ function addMenuList(){
             "listFood":[]
         });
     }
-    console.log("addMenuList",menu);
     return menu;
 }
 
 function generateTableMenu(menu_id){
     try {
-        console.log("generateTableMenu", $("#menu_id").val());
         // let menu_id = parseInt($("#menu_id").val());
         if(menu_id){
             if(dataExamine.menuExamine.length > 0){
                 for(let menu of dataExamine.menuExamine){
-                    console.log("generateTableMenu",menu_id, menu.id);
                     if(menu.id == menu_id){
                         $('#name_menu').val(menu.name);
                         addTemplateListMenuTime(menu.detail);
@@ -788,7 +765,6 @@ function generateTableMenu(menu_id){
 
 function addTemplateListMenuTime(listMenuTime){
     try {
-        console.log("addTemplateListMenuTime", listMenuTime);
         if(listMenuTime.length > 0){
             for(let item of listMenuTime){
                 let menuTime = addTemplateMenuTime(item);
@@ -828,7 +804,7 @@ function chooseMenuExample(){
         let menu_example_id = parseInt($("#menuExample_id").val());
         if(menu_example_id){
             for(let menu of dataExamine.menuExample){
-                if(menu.id = menu_example_id){
+                if(menu.id == menu_example_id){
                     let menuNew = {
                         id: id,
                         name: menu.name_menu,
@@ -855,9 +831,7 @@ function addFoodToMenu(){
         let menu_id = parseInt($('#menu_id').val());
         if(menu_id && dataExamine.menuExamine.length > 0){
             for(let item of dataExamine.menuExamine){
-                console.log("addFoodToMenu 1", menu_id);
                 if(menu_id == item.id){
-                    console.log("menu data", item);
                     let menuTime_id = parseInt($('#menuTime_id').val());
                     if(menuTime_id){
                         if(item.detail.length > 0){
@@ -880,7 +854,6 @@ function addFoodToMenu(){
                                         "carbohydrate": isNaN(parseFloat($('#carbohydrate').val())) ? 0 : parseFloat($('#carbohydrate').val())
                                     }
                                     menuTime.listFood.push(food);
-                                    console.log("addFoodToMenu", dataExamine.menuExamine);
                                     let foodTemplate = addFoodTemplate(food, menuTime_id);
                                     if(id == 1){
                                         foodTemplate.insertAfter('#menu_time_' + menuTime_id);
@@ -1007,10 +980,9 @@ function addFoodTemplate(food, menuTime_id){
 
 function importExcelFile(){
     try {
-      console.log("importExcelFile");
       $('#file_input_excel').trigger('click');
     } catch (error) {
-      console.log("importExcelFile", error);
+
     }
 }
 
@@ -1021,13 +993,12 @@ function getFileExcel(){
             console.log("getFileExcel data", rows);
         });
     } catch (error) {
-      console.log("getFileExcel", error);
+
     }
 }
 
 function setTotalMenu(listFood){
     try {
-        console.log("setTotalMenu", listFood);
         if(listFood.length > 0){
             let total_energy = 0, total_protein = 0, total_animal_protein = 0, total_lipid = 0, 
             total_unanimal_lipid = 0, total_carbohydrate = 0;
@@ -1053,13 +1024,11 @@ function setTotalMenu(listFood){
 
 function saveMenu(isCreate){
     try {
-        let loading         = $("#loading-page");
+        let loading = $("#loading-page");
         let url = '/examine/save-menu';
         let menu_id = parseInt($('#menu_id').val());
-        console.log("menu_id", menu_id);
         let data = {isCreate: isCreate, name: $("#name_menu").val()};
         for(let menu of dataExamine.menuExamine){
-            console.log("menu", menu.id);
             if(menu_id == menu.id){
                 data['detail'] = JSON.stringify(menu.detail);
             }
@@ -1070,7 +1039,6 @@ function saveMenu(isCreate){
                 displayMessageToastr('Chưa chọn menu mẫu');
             }
         }
-        console.log("data menu", data);
         $.ajax({
             type: 'POST',
             url: url,
@@ -1081,7 +1049,6 @@ function saveMenu(isCreate){
             },
             success: function(result) {
                 loading.hide();
-                console.log("result", result);
                 if (result.success) {
                     displayMessageToastr('Lưu mẫu thành công');
                 } else {
@@ -1100,7 +1067,6 @@ function saveMenu(isCreate){
 
 function viewDetailExamine(id){
     try {
-        console.log("viewDetailExamine", id);
         let loading         = $("#loading-page");
         if(id){
             let url = '/examine/detail-examine';
@@ -1113,7 +1079,6 @@ function viewDetailExamine(id){
                 },
                 success: function(result) {
                     loading.hide();
-                    console.log("result", result);
                     if (result.success && result.data) {
                         $("#modal-chi-tiet-phieu-kham").find('.table-responsive-inner').html(result.data);
                         $("#modal-chi-tiet-phieu-kham").find('.modal-header').html(
@@ -1143,7 +1108,6 @@ function viewDetailExamine(id){
 
 function generateTableMenuSearch(id){
     try {
-        console.log("generateTableMenuSearch", id);
         if(dataExamine.menuExamine.length > 0){
             for(let menu of dataExamine.menuExamine){
                 if(id == menu.id){
@@ -1159,7 +1123,6 @@ function generateTableMenuSearch(id){
 
 function addTemplateListMenuTimeSearch(listMenuTime){
     try {
-        console.log("addTemplateListMenuTime", listMenuTime);
         if(listMenuTime.length > 0){
             for(let item of listMenuTime){
                 let menuTime = addTemplateMenuTimeSearch(item);
@@ -1231,7 +1194,6 @@ function showHistory(){
                 },
                 success: function(result) {
                     loading.hide();
-                    console.log("result", result);
                     if (result.success && result.data) {
                         $('#table_history').html(result.data);
                     } else {
@@ -1254,6 +1216,97 @@ function showHistory(){
 function showConfirmSaveMenu(){
     try {
         $('#modal-cf-save-menu').modal('show');
+    } catch (error) {
+        
+    }
+}
+
+function encodeImageFileAsURL() {
+
+    var filesSelected = document.getElementById("inputFileToLoad").files;
+    if (filesSelected.length > 0) {
+      var fileToLoad = filesSelected[0];
+
+      var fileReader = new FileReader();
+
+      fileReader.onload = function(fileLoadedEvent) {
+        var srcData = fileLoadedEvent.target.result; // <--- data: base64
+        $('#avatar').val(srcData);
+        $('#imgTest').attr('src', srcData);
+      }
+      fileReader.readAsDataURL(fileToLoad);
+    }
+}
+
+function cancelExamine(id, status){
+    try {
+        if(id){
+            let loading = $("#loading-page");
+            let url = '/examine/cancel';
+            $.ajax({
+                type: 'POST',
+                url: url,
+                data: {id: id, status: status},
+                beforeSend: function() {
+                    loading.show();
+                },
+                success: function(result) {
+                    loading.hide();
+                    if (result.success) {
+                        displayMessageToastr(result.message);
+                        if(status && status == 4){
+                            $('#examine_' + id).remove();
+                        }else{
+                            window.location.href = '/examine';
+                        }
+                    } else {
+                        displayErrorToastr(result.message);
+                    }
+                },
+                error: function(jqXHR, exception) {
+                    loading.hide();
+                    ajax_call_error(jqXHR, exception);
+                }
+            });
+        }
+    } catch (error) {
+        
+    }
+}
+
+
+function showModalCancelExamine(id, status){
+    try {
+        var confirmBox = `
+        <div class="modal fade" id="modal_cf_cancel_examine" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <button class="modal-btn-close btn-close" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
+                <div class="text-center mb-2">
+                <svg class="iconsvg-trash-lg text-tra-lai fs-65px">
+                    <use xlink:href="/public/content/images/sprite.svg#trash-lg"></use>
+                </svg>
+                </div>
+                <h4 class="modal-title text-center text-tra-lai mb-4">Huỷ phiếu khám</h4>
+                <p class="text-body-2 fw-5 text-center mb-4">Bạn muốn hủy phiếu khám này không?</p>
+                <div class="row g-2 justify-content-center">
+                <div class="col-6">
+                    <button class="btn btn-cancel box-btn w-100 text-uppercase" type="button" data-bs-dismiss="modal">Không</button>
+                </div>
+                <div class="col-6">
+                    <button onclick="cancelExamine(`+ id +`,`+ status +`)" class="btn btn-primary box-btn w-100 text-uppercase" type="button" data-bs-dismiss="modal">
+                    <svg class="iconsvg-confirm flex-shrink-0 fs-16px me-2">
+                        <use xlink:href="/public/content/images/sprite.svg#confirm"></use>
+                    </svg>
+                    Đồng ý
+                    </button>
+                </div>
+                </div>
+            </div>
+            </div>
+        </div>`;
+        $("#modal_confirm_box").html(confirmBox); 
+        $("#modal_cf_cancel_examine").modal('show');
     } catch (error) {
         
     }
@@ -1297,7 +1350,6 @@ $(document).ready(function(){
                     $("#vitamin_ck_should_not_use").text(item.vitamin_ck_should_not_use);
 
                     $('#nutrition_advice textarea').each(function () {
-                        console.log("height", this.scrollHeight);
                         this.setAttribute('style', 'height:' + (this.scrollHeight) + 'px;overflow-y:hidden;');
                     });
                     break;
@@ -1330,12 +1382,10 @@ $(document).ready(function(){
     });
 
     $("#food_name").on('select2:select', function(evt) {
-        console.log("food_name select evt", evt.params);
         if(dataExamine.foodNameListSearch.length > 0){
             for(let item of dataExamine.foodNameListSearch){
                 if(evt.params.data.id == item.id){      
                     $("#weight_food").val(item.weight);
-                    console.log("food_name select", item);
                     $("#weight_food").data('initial-value',item.weight);
                     $("#energy_food").val(item.energy);
                     $("#protein_food").val(item.protein);
@@ -1350,11 +1400,10 @@ $(document).ready(function(){
     });
 
     $("#menu_id").on('select2:select', function(evt) {
-        console.log("evt", evt.params.data.id);
         $("tbody tr").remove();
         generateTableMenu(evt.params.data.id);
     }).on('select2:unselect', function(e){
-        console.log("menu_id unselect", e);
+
     });
 
     $("#diagnostic_id").on('select2:select', function(evt) {
@@ -1398,7 +1447,6 @@ $(document).ready(function(){
                 }
                 return { 
                     results: $.map(data.data, function (item) {
-                        console.log("item", item);
                         return {
                             text: item.cus_name + " - " + new Date(item.cus_birthday).toLocaleDateString('pt-PT') + " - " + (item.cus_gender == 0 ? "Nữ" : (item.cus_gender ==  1 ? "Nam" : "Khác") + " - " + item.cus_address),
                             id: item.id
@@ -1410,12 +1458,10 @@ $(document).ready(function(){
     });
 
     $("#phone_search").on('select2:select', function(evt) {
-        console.log("phone_search", evt.params.data.id, dataExamine.phoneListSearch);
         if(evt.params.data.id) $('#btn_show_history').show();
         if(dataExamine.phoneListSearch.length > 0){
             for(let item of dataExamine.phoneListSearch){
                 if(evt.params.data.id == item.id){      
-                    console.log("abc", moment(item.cus_birthday).format("DD-MM-YYYY"), item);
                     $('#cus_name').val(item.cus_name);
                     $('#cus_phone').val(item.cus_phone);
                     $('#cus_email').val(item.cus_email);
@@ -1429,7 +1475,6 @@ $(document).ready(function(){
     });
 
     $('#weight_food').change(function(evt){
-        console.log("weight_food change", evt);
         let menu_id = parseInt($('#menu_id').val());
         let food_id = parseInt($('#food_name').val());
         if(menu_id && food_id){
@@ -1469,7 +1514,6 @@ $(document).ready(function(){
     });
 
     $('#medical_test_type').change(function(evt){
-        console.log("medical_test_type", evt);
         let id = $('#medical_test_type').val();
         if(!isNaN(parseInt(id))){
             let loading = $("#loading-page");
@@ -1483,7 +1527,6 @@ $(document).ready(function(){
                 },
                 success: function(result) {
                     loading.hide();
-                    console.log("result", result);
                     if (result.success && result.data) {
                         $('#list_medical_test').html(result.data);
                     } else {
