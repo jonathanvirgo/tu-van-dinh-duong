@@ -94,101 +94,101 @@
 							         </div>
 							      </div>
 							      <script>
-							      	$(document).ready(function() {
-									    function i(t) {
-									        var i = [],
-									            r = [];
-									        $.ajax({
-									            cache: !1,
-									            type: "GET",
-									            url: "/Admin/Order/LoadOrderStatistics",
-									            data: {
-									                period: t
-									            },
-									            success: function(t) {
-									                for (var u = 0; u < t.length; u++) i.push(t[u].date), r.push(t[u].value);
-									                window.orderStatistics ? (window.orderStatistics.config.data.labels = i, window.orderStatistics.config.data.datasets[0].data = r, window.orderStatistics.update()) : (n.data.labels = i, n.data.datasets[0].data = r, n.data.scales = window.orderStatistics = new Chart(document.getElementById("order-statistics-chart").getContext("2d"), n))
-									            },
-									            error: function() {
-									                $("#loadOrderStatisticsAlert").click()
-									            }
-									        })
-									    }
-									    var t, n;
-									    $("#order-statistics-card").on("click", 'button[data-card-widget="collapse"]', function() {
-									        var n = !$("#order-statistics-card").hasClass("collapsed-card");
-									        saveUserPreferences("/Admin/Preferences/SavePreference", "Reports.HideOrderStatisticsCard", n);
-									        n ? $('#order-statistics-card button[data-chart-role="toggle-chart"]').attr("disabled", "disabled") : ($('#order-statistics-card button[data-chart-role="toggle-chart"]').removeAttr("disabled"), t || $('#order-statistics-card button[data-chart-role="toggle-chart"][data-chart-period="week"]').trigger("click"))
-									    });
-									    n = {
-									        type: "line",
-									        data: {
-									            labels: [],
-									            datasets: [{
-									                label: "Orders",
-									                fillColor: "rgba(60,141,188,0.9)",
-									                strokeColor: "rgba(60,141,188,0.8)",
-									                pointColor: "#3b8bba",
-									                pointStrokeColor: "rgba(60,141,188,1)",
-									                pointHighlightFill: "#fff",
-									                pointHighlightStroke: "rgba(60,141,188,1)",
-									                borderColor: "rgba(60, 141, 188, 0.7)",
-									                backgroundColor: "rgba(44, 152, 214, 0.5)",
-									                pointBorderColor: "rgba(37, 103, 142, 0.9)",
-									                pointBackgroundColor: "rgba(60, 141, 188, 0.4)",
-									                pointBorderWidth: 1,
-									                data: []
-									            }]
-									        },
-									        options: {
-									            legend: {
-									                display: !1
-									            },
-									            scales: {
-									                xAxes: [{
-									                    display: !0,
-									                    ticks: {
-									                        userCallback: function(n, t) {
-									                            return window.orderStatistics && window.orderStatistics.config.data.labels.length > 12 ? t % 5 == 0 ? n : "" : n
-									                        }
-									                    }
-									                }],
-									                yAxes: [{
-									                    display: !0,
-									                    ticks: {
-									                        userCallback: function(n) {
-									                            return (n ^ 0) === n ? n : ""
-									                        },
-									                        min: 0
-									                    }
-									                }]
-									            },
-									            showScale: !0,
-									            scaleShowGridLines: !1,
-									            scaleGridLineColor: "rgba(0,0,0,.05)",
-									            scaleGridLineWidth: 1,
-									            scaleShowHorizontalLines: !0,
-									            scaleShowVerticalLines: !0,
-									            bezierCurve: !0,
-									            pointDot: !1,
-									            pointDotRadius: 4,
-									            pointDotStrokeWidth: 1,
-									            pointHitDetectionRadius: 20,
-									            datasetStroke: !0,
-									            datasetFill: !0,
-									            maintainAspectRatio: !1,
-									            responsive: !0
-									        }
-									    };
-									    $('#order-statistics-card button[data-chart-role="toggle-chart"]').on("click", function() {
-									        var n = $(this).attr("data-chart-period");
-									        t = n;
-									        i(n);
-									        $('#order-statistics-card button[data-chart-role="toggle-chart"]').removeClass("bg-light-blue");
-									        $(this).addClass("bg-light-blue")
-									    });
-									    $('#order-statistics-card button[data-chart-role="toggle-chart"][data-chart-period="week"]').trigger("click")
-									})
+							      	// $(document).ready(function() {
+									//     function i(t) {
+									//         var i = [],
+									//             r = [];
+									//         $.ajax({
+									//             cache: !1,
+									//             type: "GET",
+									//             url: "/Admin/Order/LoadOrderStatistics",
+									//             data: {
+									//                 period: t
+									//             },
+									//             success: function(t) {
+									//                 for (var u = 0; u < t.length; u++) i.push(t[u].date), r.push(t[u].value);
+									//                 window.orderStatistics ? (window.orderStatistics.config.data.labels = i, window.orderStatistics.config.data.datasets[0].data = r, window.orderStatistics.update()) : (n.data.labels = i, n.data.datasets[0].data = r, n.data.scales = window.orderStatistics = new Chart(document.getElementById("order-statistics-chart").getContext("2d"), n))
+									//             },
+									//             error: function() {
+									//                 $("#loadOrderStatisticsAlert").click()
+									//             }
+									//         })
+									//     }
+									//     var t, n;
+									//     $("#order-statistics-card").on("click", 'button[data-card-widget="collapse"]', function() {
+									//         var n = !$("#order-statistics-card").hasClass("collapsed-card");
+									//         saveUserPreferences("/Admin/Preferences/SavePreference", "Reports.HideOrderStatisticsCard", n);
+									//         n ? $('#order-statistics-card button[data-chart-role="toggle-chart"]').attr("disabled", "disabled") : ($('#order-statistics-card button[data-chart-role="toggle-chart"]').removeAttr("disabled"), t || $('#order-statistics-card button[data-chart-role="toggle-chart"][data-chart-period="week"]').trigger("click"))
+									//     });
+									//     n = {
+									//         type: "line",
+									//         data: {
+									//             labels: [],
+									//             datasets: [{
+									//                 label: "Orders",
+									//                 fillColor: "rgba(60,141,188,0.9)",
+									//                 strokeColor: "rgba(60,141,188,0.8)",
+									//                 pointColor: "#3b8bba",
+									//                 pointStrokeColor: "rgba(60,141,188,1)",
+									//                 pointHighlightFill: "#fff",
+									//                 pointHighlightStroke: "rgba(60,141,188,1)",
+									//                 borderColor: "rgba(60, 141, 188, 0.7)",
+									//                 backgroundColor: "rgba(44, 152, 214, 0.5)",
+									//                 pointBorderColor: "rgba(37, 103, 142, 0.9)",
+									//                 pointBackgroundColor: "rgba(60, 141, 188, 0.4)",
+									//                 pointBorderWidth: 1,
+									//                 data: []
+									//             }]
+									//         },
+									//         options: {
+									//             legend: {
+									//                 display: !1
+									//             },
+									//             scales: {
+									//                 xAxes: [{
+									//                     display: !0,
+									//                     ticks: {
+									//                         userCallback: function(n, t) {
+									//                             return window.orderStatistics && window.orderStatistics.config.data.labels.length > 12 ? t % 5 == 0 ? n : "" : n
+									//                         }
+									//                     }
+									//                 }],
+									//                 yAxes: [{
+									//                     display: !0,
+									//                     ticks: {
+									//                         userCallback: function(n) {
+									//                             return (n ^ 0) === n ? n : ""
+									//                         },
+									//                         min: 0
+									//                     }
+									//                 }]
+									//             },
+									//             showScale: !0,
+									//             scaleShowGridLines: !1,
+									//             scaleGridLineColor: "rgba(0,0,0,.05)",
+									//             scaleGridLineWidth: 1,
+									//             scaleShowHorizontalLines: !0,
+									//             scaleShowVerticalLines: !0,
+									//             bezierCurve: !0,
+									//             pointDot: !1,
+									//             pointDotRadius: 4,
+									//             pointDotStrokeWidth: 1,
+									//             pointHitDetectionRadius: 20,
+									//             datasetStroke: !0,
+									//             datasetFill: !0,
+									//             maintainAspectRatio: !1,
+									//             responsive: !0
+									//         }
+									//     };
+									//     $('#order-statistics-card button[data-chart-role="toggle-chart"]').on("click", function() {
+									//         var n = $(this).attr("data-chart-period");
+									//         t = n;
+									//         i(n);
+									//         $('#order-statistics-card button[data-chart-role="toggle-chart"]').removeClass("bg-light-blue");
+									//         $(this).addClass("bg-light-blue")
+									//     });
+									//     $('#order-statistics-card button[data-chart-role="toggle-chart"][data-chart-period="week"]').trigger("click")
+									// })
 							      </script>
 							   </div>
 							   <div class="col-md-6">
@@ -212,101 +212,101 @@
 							         </div>
 							      </div>
 							      <script>
-							      	$(document).ready(function() {
-									    function i(t) {
-									        var i = [],
-									            r = [];
-									        $.ajax({
-									            cache: !1,
-									            type: "GET",
-									            url: "/Admin/Customer/LoadCustomerStatistics",
-									            data: {
-									                period: t
-									            },
-									            success: function(t) {
-									                for (var u = 0; u < t.length; u++) i.push(t[u].date), r.push(t[u].value);
-									                window.customerStatistics ? (window.customerStatistics.config.data.labels = i, window.customerStatistics.config.data.datasets[0].data = r, window.customerStatistics.update()) : (n.data.labels = i, n.data.datasets[0].data = r, n.data.scales = window.customerStatistics = new Chart(document.getElementById("customer-statistics-chart").getContext("2d"), n))
-									            },
-									            error: function() {
-									                $("#loadCustomerStatisticsAlert").click()
-									            }
-									        })
-									    }
-									    var t, n;
-									    $("#customer-statistics-card").on("click", 'button[data-card-widget="collapse"]', function() {
-									        var n = !$("#customer-statistics-card").hasClass("collapsed-card");
-									        saveUserPreferences("/Admin/Preferences/SavePreference", "Reports.HideCustomerStatisticsCard", n);
-									        n ? $('#customer-statistics-card button[data-chart-role="toggle-chart"]').attr("disabled", "disabled") : ($('#customer-statistics-card button[data-chart-role="toggle-chart"]').removeAttr("disabled"), t || $('#customer-statistics-card button[data-chart-role="toggle-chart"][data-chart-period="week"]').trigger("click"))
-									    });
-									    n = {
-									        type: "line",
-									        data: {
-									            labels: [],
-									            datasets: [{
-									                label: "New customers",
-									                fillColor: "rgba(60,141,188,0.9)",
-									                strokeColor: "rgba(60,141,188,0.8)",
-									                pointColor: "#00a65a",
-									                pointStrokeColor: "rgba(0,166,90,1)",
-									                pointHighlightFill: "#fff",
-									                pointHighlightStroke: "rgba(0,166,90,1)",
-									                borderColor: "rgba(0,166,90, 1)",
-									                backgroundColor: "rgba(0,166,90,0.5)",
-									                pointBorderColor: "rgba(0,166,90,0.7)",
-									                pointBackgroundColor: "rgba(0,166,90,0.2)",
-									                pointBorderWidth: 1,
-									                data: []
-									            }]
-									        },
-									        options: {
-									            legend: {
-									                display: !1
-									            },
-									            scales: {
-									                xAxes: [{
-									                    display: !0,
-									                    ticks: {
-									                        userCallback: function(n, t) {
-									                            return window.customerStatistics && window.customerStatistics.config.data.labels.length > 12 ? t % 5 == 0 ? n : "" : n
-									                        }
-									                    }
-									                }],
-									                yAxes: [{
-									                    display: !0,
-									                    ticks: {
-									                        userCallback: function(n) {
-									                            return (n ^ 0) === n ? n : ""
-									                        },
-									                        min: 0
-									                    }
-									                }]
-									            },
-									            showScale: !0,
-									            scaleShowGridLines: !1,
-									            scaleGridLineColor: "rgba(0,0,0,.05)",
-									            scaleGridLineWidth: 1,
-									            scaleShowHorizontalLines: !0,
-									            scaleShowVerticalLines: !0,
-									            bezierCurve: !0,
-									            pointDot: !1,
-									            pointDotRadius: 4,
-									            pointDotStrokeWidth: 1,
-									            pointHitDetectionRadius: 20,
-									            datasetStroke: !0,
-									            datasetFill: !0,
-									            maintainAspectRatio: !1,
-									            responsive: !0
-									        }
-									    };
-									    $('#customer-statistics-card button[data-chart-role="toggle-chart"]').on("click", function() {
-									        var n = $(this).attr("data-chart-period");
-									        t = n;
-									        i(n);
-									        $('#customer-statistics-card button[data-chart-role="toggle-chart"]').removeClass("bg-light-blue");
-									        $(this).addClass("bg-light-blue")
-									    });
-									    $('#customer-statistics-card button[data-chart-role="toggle-chart"][data-chart-period="week"]').trigger("click")
-									})
+							      	// $(document).ready(function() {
+									//     function i(t) {
+									//         var i = [],
+									//             r = [];
+									//         $.ajax({
+									//             cache: !1,
+									//             type: "GET",
+									//             url: "/Admin/Customer/LoadCustomerStatistics",
+									//             data: {
+									//                 period: t
+									//             },
+									//             success: function(t) {
+									//                 for (var u = 0; u < t.length; u++) i.push(t[u].date), r.push(t[u].value);
+									//                 window.customerStatistics ? (window.customerStatistics.config.data.labels = i, window.customerStatistics.config.data.datasets[0].data = r, window.customerStatistics.update()) : (n.data.labels = i, n.data.datasets[0].data = r, n.data.scales = window.customerStatistics = new Chart(document.getElementById("customer-statistics-chart").getContext("2d"), n))
+									//             },
+									//             error: function() {
+									//                 $("#loadCustomerStatisticsAlert").click()
+									//             }
+									//         })
+									//     }
+									//     var t, n;
+									//     $("#customer-statistics-card").on("click", 'button[data-card-widget="collapse"]', function() {
+									//         var n = !$("#customer-statistics-card").hasClass("collapsed-card");
+									//         saveUserPreferences("/Admin/Preferences/SavePreference", "Reports.HideCustomerStatisticsCard", n);
+									//         n ? $('#customer-statistics-card button[data-chart-role="toggle-chart"]').attr("disabled", "disabled") : ($('#customer-statistics-card button[data-chart-role="toggle-chart"]').removeAttr("disabled"), t || $('#customer-statistics-card button[data-chart-role="toggle-chart"][data-chart-period="week"]').trigger("click"))
+									//     });
+									//     n = {
+									//         type: "line",
+									//         data: {
+									//             labels: [],
+									//             datasets: [{
+									//                 label: "New customers",
+									//                 fillColor: "rgba(60,141,188,0.9)",
+									//                 strokeColor: "rgba(60,141,188,0.8)",
+									//                 pointColor: "#00a65a",
+									//                 pointStrokeColor: "rgba(0,166,90,1)",
+									//                 pointHighlightFill: "#fff",
+									//                 pointHighlightStroke: "rgba(0,166,90,1)",
+									//                 borderColor: "rgba(0,166,90, 1)",
+									//                 backgroundColor: "rgba(0,166,90,0.5)",
+									//                 pointBorderColor: "rgba(0,166,90,0.7)",
+									//                 pointBackgroundColor: "rgba(0,166,90,0.2)",
+									//                 pointBorderWidth: 1,
+									//                 data: []
+									//             }]
+									//         },
+									//         options: {
+									//             legend: {
+									//                 display: !1
+									//             },
+									//             scales: {
+									//                 xAxes: [{
+									//                     display: !0,
+									//                     ticks: {
+									//                         userCallback: function(n, t) {
+									//                             return window.customerStatistics && window.customerStatistics.config.data.labels.length > 12 ? t % 5 == 0 ? n : "" : n
+									//                         }
+									//                     }
+									//                 }],
+									//                 yAxes: [{
+									//                     display: !0,
+									//                     ticks: {
+									//                         userCallback: function(n) {
+									//                             return (n ^ 0) === n ? n : ""
+									//                         },
+									//                         min: 0
+									//                     }
+									//                 }]
+									//             },
+									//             showScale: !0,
+									//             scaleShowGridLines: !1,
+									//             scaleGridLineColor: "rgba(0,0,0,.05)",
+									//             scaleGridLineWidth: 1,
+									//             scaleShowHorizontalLines: !0,
+									//             scaleShowVerticalLines: !0,
+									//             bezierCurve: !0,
+									//             pointDot: !1,
+									//             pointDotRadius: 4,
+									//             pointDotStrokeWidth: 1,
+									//             pointHitDetectionRadius: 20,
+									//             datasetStroke: !0,
+									//             datasetFill: !0,
+									//             maintainAspectRatio: !1,
+									//             responsive: !0
+									//         }
+									//     };
+									//     $('#customer-statistics-card button[data-chart-role="toggle-chart"]').on("click", function() {
+									//         var n = $(this).attr("data-chart-period");
+									//         t = n;
+									//         i(n);
+									//         $('#customer-statistics-card button[data-chart-role="toggle-chart"]').removeClass("bg-light-blue");
+									//         $(this).addClass("bg-light-blue")
+									//     });
+									//     $('#customer-statistics-card button[data-chart-role="toggle-chart"][data-chart-period="week"]').trigger("click")
+									// })
 							      </script>
 							   </div>
 							</div>
