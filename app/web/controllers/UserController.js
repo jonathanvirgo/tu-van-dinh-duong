@@ -1,17 +1,13 @@
 ﻿var express  		= require('express'),
     router   		= express.Router(),
-    url             = require('url'),
     crypto          = require('crypto'),
     moment          = require('moment'),
-    passport        = require('passport'),
     validator       = require("validator"),
     webService      = require('../models/webModel'),
     adminService    = require('../../admin/models/adminModel'),
     logService      = require('../../admin/models/logModel'),
     userService     = require('../../admin/models/userModel'),
-    roleUserService = require('../../admin/models/roleUsersModel'),
-    settingService  = require('../../admin/models/settingModel'),
-    mailService     = require('../service/sendMail');
+    roleUserService = require('../../admin/models/roleUsersModel');
 
 router.get('/login', function (req, res, next) {
     return res.render('user/login.ejs');
@@ -215,39 +211,26 @@ router.get('/profile', function(req, res) {
         }
         webService.createSideBarFilter(req, 0).then(function(filter){
             var str_errors   = filter.error,
-                arrPromise   = [],
                 pr_user      = [];
 
-            arrPromise.push(new Promise(function (resolve, reject) {
-                userService.getUserById(req.user.id, function (err, result, fields) {
-                    if (err) {
-                        return logService.create(req, err).then(function(responseData){
-                            if(responseData.message) str_errors.push(responseData.message);
-                            else str_errors.push(err.sqlMessage);
-                            resolve();
-                        });
-                    }
+            userService.getUserById(req.user.id, async function (err, result, fields) {
+                if (err) {
+                    await logService.create(req, err).then(function(responseData){
+                        if(responseData.message) str_errors.push(responseData.message);
+                        else str_errors.push(err.sqlMessage);
+                    });
+                }else{
                     if (result !== undefined) {
                         pr_user = result[0];
                     }
-                    resolve();
-                });
-            }));
-            return new Promise(function (resolve, reject) {
-                Promise.all(arrPromise).then(function () {
-                    res.render('user/profile.ejs', { 
-                        user: req.user,
-                        errors: str_errors,
-                        pr_user: pr_user,
-                        moment: moment,
-                        filter: filter
-                    });
-                }).catch(err => {
-                    res.render("user/profile.ejs", {
-                        user: req.user,
-                        errors: [err],
-                        filter: filter
-                    });
+                }
+                res.render('user/profile.ejs', { 
+                    user: req.user,
+                    errors: str_errors,
+                    pr_user: pr_user,
+                    moment: moment,
+                    filter: filter,
+                    link: ''
                 });
             });
         });
@@ -256,7 +239,8 @@ router.get('/profile', function(req, res) {
             res.render("user/profile.ejs", {
                 user: req.user,
                 errors: [e.message],
-                filter: dataFilter
+                filter: dataFilter,
+                link: ''
             });
         })
     }
