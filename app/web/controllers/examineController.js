@@ -540,6 +540,7 @@ router.post('/create', async function(req, res, next) {
         if(req.body.active_mode_of_living_id) parameter['active_mode_of_living_id'] = req.body.active_mode_of_living_id;
         if(req.body.medical_test)           parameter['medical_test']           = req.body.medical_test;
         if(req.body.prescription)           parameter['prescription']           = req.body.prescription;
+        if(req.body.menu_example)           parameter['menu_example']           = req.body.menu_example;
         if(req.body.action)                 parameter['status']                 = req.body.action;
         
         if(!parameter.cus_name){
@@ -704,6 +705,7 @@ router.post('/edit/:id', function(req, res, next) {
         if(req.body.active_mode_of_living_id) parameter['active_mode_of_living_id'] = req.body.active_mode_of_living_id;
         if(req.body.medical_test)           parameter['medical_test']           = req.body.medical_test;
         if(req.body.prescription)           parameter['prescription']           = req.body.prescription;
+        if(req.body.menu_example)           parameter['menu_example']           = req.body.menu_example;
         if(req.body.action)                 parameter['status']                 = req.body.action;
 
         if(!parameter.cus_name){
