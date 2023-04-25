@@ -17,7 +17,7 @@
          <li class="nav-item"><a href="#" class="nav-link disabled"><%= user.name %></a></li>
          <li class="nav-item"><a class="nav-link" href="/user/logout">Logout</a></li>
          <%}%>
-         <li class="nav-item"><a class="nav-link" href="/">Public web</a></li>
+         <li class="nav-item"><a class="nav-link" href="/">Trang chủ</a></li>
       </ul>
    </div>
 </nav>
@@ -30,12 +30,6 @@
       <nav class="mt-2">
          <ul id="admin-menu" class="nav nav-pills nav-sidebar flex-column nav-legacy" data-widget="treeview" role="menu">
             <% if(user){%>
-               <li class="nav-item">
-                  <a href="/" class="nav-link">
-                     <i class="nav-icon fas fa-desktop"></i>
-                     <p>Trang chủ</p>
-                  </a>
-               </li>
                <li class="nav-item">
                   <a href="/admin" class="nav-link active">
                      <i class="nav-icon fas fa-desktop"></i>
@@ -59,7 +53,7 @@
                   </li>
                   <li class="nav-item">
                      <a href="/admin/hospital" class="nav-link">
-                        <i class="nav-icon fas fa-user"></i>
+                        <i class="nav-icon far fa-hospital"></i>
                         <p>Quản lý bệnh viện</p>
                      </a>
                   </li>
@@ -81,19 +75,19 @@
                      <% if (user.role_id.includes(5) || user.role_id.includes(1) || user.role_id.includes(3)){%>
                      <li class="nav-item">
                         <a href="/admin/department" class="nav-link">
-                           <i class="nav-icon fas fa-user"></i>
+                           <i class="fas fa-clinic-medical"></i>
                            <p>Quản lý khoa</p>
                         </a>
                      </li>
                      <li class="nav-item">
                         <a href="/admin/medical-test-type" class="nav-link">
-                           <i class="nav-icon fas fa-user"></i>
+                           <i class="fas fa-vials"></i>
                            <p>Loại chỉ định xét nghiệm</p>
                         </a>
                      </li>
                      <li class="nav-item">
                         <a href="/admin/medical-test" class="nav-link">
-                           <i class="nav-icon fas fa-user"></i>
+                           <i class="fas fa-vial"></i>
                            <p>Chỉ định xét nghiệm</p>
                         </a>
                      </li>
@@ -102,55 +96,61 @@
                      <% if (user.role_id.includes(4) || user.role_id.includes(5) || user.role_id.includes(1) || user.role_id.includes(3)){%>
                         <li class="nav-item">
                            <a href="/admin/medicine" class="nav-link">
-                              <i class="nav-icon fas fa-user"></i>
+                              <i class="fas fa-capsules"></i>
                               <p>Quản lý thuốc</p>
                            </a>
                         </li>
                         <li class="nav-item">
                            <a href="/admin/active-mode-of-living" class="nav-link">
-                              <i class="nav-icon fas fa-user"></i>
+                              <i class="fas fa-people-carry"></i>
                               <p>Chế độ vận động</p>
                            </a>
                         </li>
                         <li class="nav-item">
+                           <a href="/admin/menu-example" class="nav-link">
+                              <i class="fas fa-utensils"></i>
+                              <p>Thực đơn mẫu</p>
+                           </a>
+                        </li>
+                        <li class="nav-item">
                            <a href="/admin/nutrition-advice" class="nav-link">
-                              <i class="nav-icon fas fa-user"></i>
+                              <i class="fas fa-comment-medical"></i>
                               <p>Lời khuyên dinh dưỡng</p>
                            </a>
                         </li>
                         <li class="nav-item">
                            <a href="/admin/diagnostic" class="nav-link">
-                              <i class="nav-icon fas fa-user"></i>
+                              <i class="fas fa-stethoscope"></i>
                               <p>Chuẩn đoán mẫu</p>
                            </a>
                         </li>
                         <li class="nav-item">
                            <a href="/admin/standard_weight_height" class="nav-link">
-                              <i class="nav-icon fas fa-user"></i>
+                              <i class="fas fa-balance-scale"></i>
                               <p>CC - CN chuẩn</p>
                            </a>
                         </li>
                         <li class="nav-item">
                            <a href="/admin/menu-time" class="nav-link">
-                              <i class="nav-icon fas fa-user"></i>
+                              <i class="far fa-clock"></i>
                               <p>Quản lý giờ ăn</p>
                            </a>
                         </li>
                         <li class="nav-item">
                            <a href="/admin/alternative-food" class="nav-link">
-                              <i class="nav-icon fas fa-user"></i>
+                              <i class="fas fa-bread-slice"></i>
                               <p>Thực phẩm thay thế</p>
                            </a>
                         </li>
                         <li class="nav-item">
                            <a href="/admin/food-type" class="nav-link">
-                              <i class="nav-icon fas fa-user"></i>
+                              <i class="fas fa-cookie-bite"></i>
                               <p>Loại thực phẩm</p>
                            </a>
                         </li>
                         <li class="nav-item">
                            <a href="/admin/food-info" class="nav-link">
-                              <i class="nav-icon fas fa-user"></i>
+                              <i class="fas fa-pizza-slice"></i>
                               <p>Thông tin thực phẩm</p>
                            </a>
                         </li>
