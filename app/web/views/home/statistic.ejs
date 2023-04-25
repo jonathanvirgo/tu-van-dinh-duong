@@ -1,6 +1,39 @@
 <form action="/" method="get" id="dashboard_filter">
 <div class="statistic_body">
   <div class="box-body">
+    <div class="dashboard_search">
+      <div class="row flex-grow-1">
+        <div class="col-md-auto">
+          <div id="website_filter">
+            <div id="website_select"></div>
+          </div>
+        </div>
+        <div class="col-md-auto">
+          <div id="status_filter">
+            <div id="status_select"></div>
+          </div>
+        </div>
+        <div class="col-md-auto">
+          <form action="/" method="get" id="dashboard_filter">
+            <div class="statistic_search">
+              <div class="flatpickr flatpickr-range" data-options='{"mode":"range"}' data-plugin="flatpickr">
+                <% if (!filter.search.fromdate){%>
+                <input class="form-control" id="sfilter_date" type="text" placeholder="Thời gian" value="" data-input="data-input" aria-label="Thời gian" />
+                <%} else {%>
+                <input class="form-control" id="sfilter_date" type="text" placeholder="Thời gian" value="<%=filter.search.fromdate%> - <%=filter.search.todate%>" data-input="data-input" aria-label="Thời gian" />
+                <%}%>
+             </div>
+              <a onclick="statistic_search()" class="btn btn-danger sidebar-btn-booking">
+                <svg class="iconsvg-search">
+                  <use xlink:href="/public/content/images/sprite.svg#search"></use>
+                </svg>
+                Thống kê
+              </a>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
     <div class="row">
       <div class="col-xl-4">
         <div class="box box-stat">
