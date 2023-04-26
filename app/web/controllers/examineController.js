@@ -156,18 +156,18 @@ router.get('/edit/:id', function(req, res, next) {
         arrPromise.push(examineService.getDetailExamineById(req.params.id).then(function(detailExamine) {
             if (detailExamine.success) {
                 if(detailExamine.data.length == 0){
-                    str_errors.push("Không tìm thấy thông tin bài viết có mã #" + req.params.id);
+                    str_errors.push("Không tìm thấy thông tin phiếu khám có mã #" + req.params.id);
                 }else{
                     if (!req.user.role_id.includes(1) && !req.user.role_id.includes(3)){
                         //Nếu là quản lý xem toàn viện
                         if(req.user.role_id.includes(5) && req.user.hospital_id !== detailExamine.data[0].hospital_id){
-                            str_errors.push("Bạn không có quyền truy cập thông tin bài #" + req.params.id);
+                            str_errors.push("Bạn không có quyền truy cập thông tin phiếu #" + req.params.id);
                         }else if(req.user.role_id.includes(4) && req.user.department_id !== detailExamine.data[0].department_id){
                             //Nếu là bác sĩ xem theo khoa
-                            str_errors.push("Bạn không có quyền truy cập thông tin bài #" + req.params.id);
+                            str_errors.push("Bạn không có quyền truy cập thông tin phiếu #" + req.params.id);
                         }else if(req.user.role_id.includes(2) && !(req.user.phone == detailExamine.data[0].cus_phone || req.user.email == detailExamine.data[0].cus_email)){
                             //Nếu là bệnh nhân xem theo số điện thoại hoặc email
-                            str_errors.push("Bạn không có quyền truy cập thông tin bài #" + req.params.id);
+                            str_errors.push("Bạn không có quyền truy cập thông tin phiếu #" + req.params.id);
                         }
                     }
                     resultData.detailExamine = detailExamine.data[0];

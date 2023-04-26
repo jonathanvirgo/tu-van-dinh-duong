@@ -1,15 +1,7 @@
 var nodemailer     = require('nodemailer'),
     def            = require('../../config/default'),
     webService     = require('../models/webModel');
-
-// nếu chưa có booking thì set mặc định bookingId = 0
-// ma_bai  mã được tạo khi dựng bài
-// site tên chính xác của site vd : kenh14.vn .....
-// link_chi_tiet là link dẫn đến form tạo yêu cầu đăng hoặc chi tiết bài viết...
-// noi_dung_mo_ta là nội dung được nhập từ form
-// link_noi_dung là list link nội dung bài viết
-// nguoi_nhan : email của khách hàng
-// giay_phep_qc : list giấy phép quảng các
+    
 var timeout = 5000;
 
 let mailService = {
