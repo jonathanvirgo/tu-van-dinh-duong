@@ -1203,7 +1203,7 @@ router.post('/cancel', async function(req, res, next){
             //     protocol41: true,
             //     changedRows: 1
             // }
-            if(responseData.success && responseData.data && responseData.changedRows == 1){
+            if(responseData.success && responseData.data && responseData.data.changedRows == 1){
                 resultData.message = 'Thành công!';
                 resultData.success = true;
             }else{
@@ -1213,6 +1213,33 @@ router.post('/cancel', async function(req, res, next){
         }
     } catch (error) {
         
+    }
+});
+
+router.post('/list/department', function(req, res, next){
+    try {
+        var resultData = {
+            success: false,
+            message: '',
+            data: []
+        },
+        hospital_id = req.body.hospital_id;
+        
+        let sqlListDepartment = 'SELECT id, `name` FROM department WHERE hospital_id = ? AND active = 1 ';
+        webService.getListTable(sqlListDepartment ,[hospital_id]).then(async responseData =>{
+            if(responseData.success && responseData.data && responseData.data.length >= 0){
+                resultData.success = true;
+                resultData.data   = responseData.data;
+            }else{
+                resultData.message = 'Lỗi lấy danh sách khoa';
+            }
+            res.json(resultData);
+        });
+    } catch (error) {
+        resultData.message = error.message;
+        logService.create(req, error.message).then(function() {
+            res.json(resultData);
+        });
     }
 });
 

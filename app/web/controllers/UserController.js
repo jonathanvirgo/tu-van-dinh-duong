@@ -211,6 +211,7 @@ router.get('/profile', function(req, res) {
         }
         webService.createSideBarFilter(req, 0).then(function(filter){
             var str_errors   = filter.error,
+                department   = [],
                 pr_user      = [];
 
             userService.getUserById(req.user.id, async function (err, result, fields) {
@@ -224,15 +225,24 @@ router.get('/profile', function(req, res) {
                         pr_user = result[0];
                     }
                 }
+                console.log("pr_user",pr_user, req.user, filter);
+                let dataDepartment = await webService.getListTable('SELECT id, `name` FROM department WHERE hospital_id = ? AND active = 1 ', [req.user.hospital_id]); 
+                if(dataDepartment.success){
+                    department = dataDepartment.data;
+                }else{
+                    str_errors.push(dataDepartment.message);
+                }
                 res.render('user/profile.ejs', { 
                     user: req.user,
                     errors: str_errors,
                     pr_user: pr_user,
                     moment: moment,
                     filter: filter,
+                    department: department,
                     link: ''
                 });
             });
+
         });
     } catch (e) {
         webService.createSideBarFilter(req, 0).then(function(dataFilter) {
@@ -244,7 +254,58 @@ router.get('/profile', function(req, res) {
             });
         })
     }
-})
+});
+
+router.post('/profile', async function(req, res){
+    var resultData = {
+        success: false,
+        message: ''
+    };
+    try {  
+        if (!req.user) {
+            resultData.message = "Vui lòng đăng nhập lại để thực hiện chức năng này!";
+            res.json(resultData);
+            return;
+        }
+        let parameter = {
+            hospital_id: req.body.hospital_id,
+            department_id: req.body.department_id,
+            full_name: req.body.name,
+            gender: req.body.gender,
+            birthday: req.body.birthday,
+            address: req.body.address
+        }
+        parameter.birthday = parameter.birthday.split("-").reverse().join("-");
+        if(!parameter.hospital_id || !parameter.department_id || !parameter.full_name || !parameter.gender || !parameter.birthday || !parameter.address){
+            resultData.message = !hospital_id ? "Chưa chọn bệnh viện!" : "Chưa chọn khoa!";
+            resultData.message += !parameter.full_name || !parameter.gender || !parameter.birthday || !parameter.address ? ' Thiếu dữ liệu' : '';
+            res.json(resultData);
+            return;
+        }else{
+            let responseData = await webService.updateRecordTable(parameter, {id: req.user.id}, 'user');
+            console.log("responseData", responseData);
+            // data: OkPacket {
+            //     fieldCount: 0,
+            //     affectedRows: 1,
+            //     insertId: 0,
+            //     serverStatus: 2,
+            //     warningCount: 0,
+            //     message: '(Rows matched: 1  Changed: 1  Warnings: 0',
+            //     protocol41: true,
+            //     changedRows: 1
+            // }
+            if(responseData.success && responseData.data && responseData.data.changedRows == 1){
+                resultData.message = 'Thành công!';
+                resultData.success = true;
+            }else{
+                resultData.message = responseData.message;
+            }
+            res.json(resultData);
+        }
+    } catch (error) {
+        
+    }
+});
 
 function createUser(resultData, list_error, parameter, req, res) {
     var passwordData  = adminService.sha512(parameter.password, adminService.salt()),

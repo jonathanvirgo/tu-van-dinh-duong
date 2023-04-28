@@ -44,8 +44,13 @@
                         Tên đầy đủ
                       </label>
                       <div class="col-form-body col-md">
-                        <div class="form-control">
-                          <%=pr_user.full_name%>
+                        <div class="form-control-has-addon">
+                            <input type="text" name="full_name" class="form-control form-control-title" id="full_name" placeholder="Họ và tên" value="<%=pr_user.full_name%>">
+                            <button class="btn form-control-addon btn-link p-0 min-h-auto" type="button" onclick="clearInput('#full_name')">
+                                <svg class="iconsvg-close">
+                                    <use xlink:href="/public/content/images/sprite.svg#close"></use>
+                                </svg>
+                            </button>
                         </div>
                       </div>
                     </div>
@@ -84,8 +89,13 @@
                         Địa chỉ
                       </label>
                       <div class="col-form-body col-md">
-                        <div class="form-control">
-                          <%=pr_user.address%>
+                        <div class="form-control-has-addon">
+                            <input type="text" name="cus_address" class="form-control form-control-title" id="cus_address" placeholder="Địa chỉ" value="<%=pr_user.address%>">
+                            <button class="btn form-control-addon btn-link p-0 min-h-auto" type="button" onclick="clearInput('#cus_address')">
+                                <svg class="iconsvg-close">
+                                    <use xlink:href="/public/content/images/sprite.svg#close"></use>
+                                </svg>
+                            </button>
                         </div>
                       </div>
                     </div>
@@ -94,8 +104,8 @@
                         Ngày sinh
                       </label>
                       <div class="col-form-body col-md">
-                        <div class="form-control">
-                          <%=pr_user.birthday%>
+                        <div class="form-control-has-addon">
+                            <input type="text" name="birthday" class="form-control form-control-title p-1" id="birthday" placeholder="Ngày sinh" value="<%=moment(pr_user.birthday).format('DD-MM-YYYY')%>">
                         </div>
                       </div>
                     </div>
@@ -104,12 +114,58 @@
                         Giới tính
                       </label>
                       <div class="col-form-body col-md">
-                        <div class="form-control">
-                          <%=pr_user.gender == 0 ? "Nam" : "Nữ"%>
+                        <div class="form-control-has-addon">
+                            <select class="form-select" name="cus_gender" id="cus_gender" data-plugin="select2" data-placeholder="Giới tính" data-minimum-results-for-search="Infinity">
+                                <option></option>
+                                <option value="1" <%=pr_user.gender == '1' ? 'selected' : ''%>>Nam</option>
+                                <option value="0" <%=pr_user.gender == '0' ? 'selected' : ''%>>Nữ</option>
+                                <option value="2" <%=pr_user.gender == '2' ? 'selected' : ''%>>Khác</option>
+                              </select>
                         </div>
                       </div>
                     </div>
-                  </div>
+                    <% if(!user.role_id.includes(2)){%>
+                      <div class="row g-2 align-items-center">
+                        <label class="col-form-label col-md-auto fw-bold">Bệnh viện</label>
+                        <div class="col-form-body col-md">
+                          <div class="form-control-has-addon">
+                            <select class="form-select" name="hospital_id" id="hospital_id" data-plugin="select2" data-placeholder="Chọn bệnh viện">
+                                <option></option>
+                                <% if(filter.hospitals.length > 0){ %>
+                                    <% for (let hos of filter.hospitals){ %>
+                                        <option value="<%=hos.value %>" <%=hos.value == pr_user.hospital_id ? 'selected' : ''%>><%=hos.label %></option>
+                                    <%}%>   
+                                <%}%>
+                            </select>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="row g-2 align-items-center">
+                        <label class="col-form-label col-md-auto fw-bold">Khoa</label>
+                        <div class="col-form-body col-md">
+                          <div class="form-control-has-addon">
+                            <select class="form-select" name="department_id" id="department_id" data-plugin="select2" data-placeholder="Chọn khoa">
+                                <option></option>
+                                <% if(department.length > 0){ %>
+                                  <% for (let de of department){ %>
+                                      <option <%=de.id == pr_user.department_id ? 'selected' : ''%> value="<%=de.id %>"><%=de.name %></option>
+                                  <%}%>   
+                                <%}%>
+                            </select>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="row g-2 justify-content-center">
+                        <div class="col-6 col-md-auto">
+                          <button class="btn btn-primary box-btn w-100 text-uppercase" type="button" onclick="saveProfile()">
+                          <svg class="iconsvg-save flex-shrink-0 fs-16px me-2">
+                            <use xlink:href="/public/content/images/sprite.svg#save"></use>
+                          </svg>Lưu
+                          </button>
+                        </div>
+                      </div>
+                    <% } %>
+                    </div>
                 </div>
               </div>
             <% } %>
@@ -117,5 +173,96 @@
          </div>
          <%- include('../layout/footer', { footer_class: ""}) %>
       </div>
+      <script>
+        function saveProfile(){
+          try {
+            let loading = $("#loading-page");
+            let url = '/user/profile';
+            let data = {
+              hospital_id: $('#hospital_id').val(),
+              department_id: $('#department_id').val(),
+              name: $('#full_name').val().trim(),
+              gender: $('#cus_gender').val(),
+              birthday: $('#birthday').val(),
+              address: $('#cus_address').val().trim()
+            }
+
+            if(data.hospital_id && data.department_id && data.name && data.gender && data.birthday && data.address){
+              $.ajax({
+                type: 'POST',
+                url: url,
+                data: data,
+                beforeSend: function() {
+                  loading.show();
+                },
+                success: function(result) {
+                  console.log("result", result);
+                  loading.hide();
+                  if (result.success) {
+                    displayMessageToastr(result.message);
+                  } else {
+                    displayErrorToastr(result.message);
+                  }
+                },
+                error: function(jqXHR, exception) {
+                  loading.hide();
+                  ajax_call_error(jqXHR, exception);
+                }
+              });
+            }else{
+                if(!data.hospital_id) displayErrorToastr('Vui lòng chọn bệnh viện');
+                if(!data.department_id) displayErrorToastr('Vui lòng chọn khoa');
+                if(!data.name) displayErrorToastr('Vui lòng nhập tên');
+                if(!data.gender) displayErrorToastr('Vui lòng chọn giới tính');
+                if(!data.birthday) displayErrorToastr('Vui lòng chọn ngày sinh');
+                if(!data.address) displayErrorToastr('Vui lòng chọn địa chỉ');
+            }
+          } catch (error) {
+              console.log("saveProfile error", error);
+          }
+        }
+
+        $(document).ready(function(){
+          $("#birthday").flatpickr({
+              dateFormat: "d-m-Y",
+              maxDate: "today"
+          });
+          $('#hospital_id').on('select2:select', function(evt) {
+            if(evt.params.data.id){
+              let loading = $("#loading-page");
+              let url = '/examine/list/department';
+              $.ajax({
+                type: 'POST',
+                url: url,
+                data: {hospital_id: evt.params.data.id},
+                beforeSend: function() {
+                  loading.show();
+                },
+                success: function(result) {
+                    loading.hide();
+                    console.log("hospital_id select", result);
+                    if (result.success && result.data) {
+                      $('#department_id').empty();
+                      for(let [i, item] of result.data.entries()){
+                          let newOption = new Option(item.name, item.id, false, false);
+                          if(i == (result.data.length - 1)) {
+                            $('#department_id').append(newOption).trigger('change');
+                          }else{
+                            $('#department_id').append(newOption)
+                          }
+                      }
+                    } else {
+                      displayErrorToastr(result.message);
+                    }
+                },
+                error: function(jqXHR, exception) {
+                  loading.hide();
+                  ajax_call_error(jqXHR, exception);
+                }
+              });
+            }
+          });
+        });
+      </script>
    </body>
 </html>

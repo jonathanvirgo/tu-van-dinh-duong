@@ -15,9 +15,11 @@
       </div>
       <form action="/search" method="get" id="search_filter">
         <div class="row">
+          <% if(user.role_id.includes(1) || user.role_id.includes(3)){ %>
           <div id="hospital_filter" class="col-lg-auto">
             <div id="hospital_select" name="hospital_ids"></div>
           </div>
+          <% } %>
           <div class="col-lg-auto">
             <div id="status_filter">
               <div id="status_select" name="status_ids"></div>
