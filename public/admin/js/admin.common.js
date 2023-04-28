@@ -517,8 +517,6 @@ function getFileFoodInfo(){
           }
         }
       }
-      console.log("dataFood", dataFood);
-      console.log("dataRemove", dataRemove);
       var formData        = new FormData();
       formData.append("data", JSON.stringify(dataFood))
       $.ajax({
@@ -528,7 +526,6 @@ function getFileFoodInfo(){
         contentType: false,
         data: formData,
         success: function(result) {
-          console.log(result);
             if (result.success) {
                 displayMessage('Lưu thành công');
                 setTimeout(()=>{
@@ -553,7 +550,6 @@ function getFileWeightHeight(){
     readXlsxFile(dataFile[0]).then(function(rows) {
       let type = 0;
       for(let [index, item] of rows.entries()){
-        console.log("rows item",index,item);
         // nếu có tên và khối lượng là thực phẩm 0-19
         if(typeof(item[1]) == "number" && item[2] && item[3] && item[4] && item[5]){
           if(item[0] && item[0] == 'Tuổi'){
@@ -574,7 +570,6 @@ function getFileWeightHeight(){
           });
         }
       }
-      console.log("dataWeightHeight", dataWeightHeight);
       var formData        = new FormData();
       formData.append("data", JSON.stringify(dataWeightHeight))
       $.ajax({
@@ -584,7 +579,6 @@ function getFileWeightHeight(){
         contentType: false,
         data: formData,
         success: function(result) {
-          console.log(result);
             if (result.success) {
                 displayMessage('Lưu thành công');
                 setTimeout(()=>{

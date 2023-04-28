@@ -23,7 +23,7 @@
                   <td>Address</td>
                   <td>Chẩn đoán</td>
                   <td width="100px">Ngày tạo</td>
-                  <!-- <td class="w-1">Trạng thái</td> -->
+                  <td class="w-1">Trạng thái</td>
                 </tr>
               </thead>
               <tbody>
@@ -31,7 +31,7 @@
                 <% for (i = 0;i < listExamine.length;i++){%>
                   <tr>
                     <td>
-                      <a target="_blank" href="/examine/edit/<%=listExamine[i].id%>">
+                      <a target="_blank" href="/examine/edit/<%=listExamine[i].id%>?detail=true">
                         <span class="text-primary fw-6 fs-13px">
                           <%=listExamine[i].count_id%>
                         </span>
@@ -50,11 +50,11 @@
                       <br>
                       <small class="text-body-2"><%=moment(listExamine[i].created_at).format("DD/MM/YYYY")%></small>
                     </td>
-                    <!-- <td>
+                    <td>
                       <span class="badge badge-<%=webService.examineStatusClass(listExamine[i].status).name%>">
                         <%=webService.examineStatusClass(listExamine[i].status).value%>
                       </span>
-                    </td> -->
+                    </td>
                   </tr>
                 <%}%>
               <%} else {%>

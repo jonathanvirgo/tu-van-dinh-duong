@@ -1,67 +1,69 @@
 <form id="kham_form" class="form-horizontal">
     <h3 class="box-title-break">Tư vấn thực phẩm bổ xung</h3>
-    <div class="row g-2 align-items-center">
-      <div class="col-12 col-md-6 d-flex">
-        <label class="col-form-label col-md-auto fw-bold mt-2" for="medicine_id">Tên thuốc
-            <span class="text-danger">*</span>
-        </label>
-        <div class="col-form-body col-md">
-          <div class="form-control-has-addon">
-            <select class="form-select" id="medicine_id" data-plugin="select2" data-placeholder="Chọn loại thuốc">
-              <option></option>
-              <% if(medicine.length > 0){ %>
-                <% for (let me of medicine){ %>
-                  <option value="<%= me.id %>"><%= me.name %></option>
-                <%}%>   
-              <%}%>
-            </select>
+    <% if(!(examine.status == 4 || (examine.status == 3 && isDetail == true))){ %>
+      <div class="row g-2 align-items-center">
+        <div class="col-12 col-md-6 d-flex">
+          <label class="col-form-label col-md-auto fw-bold mt-2" for="medicine_id">Tên thuốc
+              <span class="text-danger">*</span>
+          </label>
+          <div class="col-form-body col-md">
+            <div class="form-control-has-addon">
+              <select class="form-select" id="medicine_id" data-plugin="select2" data-placeholder="Chọn loại thuốc">
+                <option></option>
+                <% if(medicine.length > 0){ %>
+                  <% for (let me of medicine){ %>
+                    <option value="<%= me.id %>"><%= me.name %></option>
+                  <%}%>   
+                <%}%>
+              </select>
+            </div>
           </div>
         </div>
-      </div>
-      <div class="col-12 col-md-3 d-flex">
-        <label class="col-form-label col-md-auto fw-bold mt-2" for="total_medinice">Số lượng
+        <div class="col-12 col-md-3 d-flex">
+          <label class="col-form-label col-md-auto fw-bold mt-2" for="total_medinice">Số lượng
+              <span class="text-danger">*</span>
+          </label>
+          <div class="col-form-body col-md">
+            <div class="form-control-has-addon">
+              <input type="number" class="form-control form-control-title p-1" id="total_medinice" placeholder="Số lượng">
+              <button class="btn form-control-addon btn-link p-0 min-h-auto" type="button" onclick="clearInput('#total_medinice')">
+                  <svg class="iconsvg-close">
+                      <use xlink:href="/public/content/images/sprite.svg#close"></use>
+                  </svg>
+              </button>
+            </div>
+          </div>
+        </div>
+        <div class="col-12 col-md-3 d-flex">
+          <label class="col-form-label col-md-auto fw-bold mt-2" for="unit_medinice">ĐVT
             <span class="text-danger">*</span>
-        </label>
-        <div class="col-form-body col-md">
-          <div class="form-control-has-addon">
-            <input type="number" class="form-control form-control-title p-1" id="total_medinice" placeholder="Số lượng">
-            <button class="btn form-control-addon btn-link p-0 min-h-auto" type="button" onclick="clearInput('#total_medinice')">
+          </label>
+          <div class="col-form-body col-md">
+            <div class="form-control-has-addon">
+              <input type="text" class="form-control form-control-title p-1" id="unit_medinice" placeholder="Đơn vị tính">
+              <button class="btn form-control-addon btn-link p-0 min-h-auto" type="button" onclick="clearInput('#unit_medinice')">
                 <svg class="iconsvg-close">
                     <use xlink:href="/public/content/images/sprite.svg#close"></use>
                 </svg>
             </button>
+            </div>
           </div>
         </div>
       </div>
-      <div class="col-12 col-md-3 d-flex">
-        <label class="col-form-label col-md-auto fw-bold mt-2" for="unit_medinice">ĐVT
-          <span class="text-danger">*</span>
-        </label>
-        <div class="col-form-body col-md">
-          <div class="form-control-has-addon">
-            <input type="text" class="form-control form-control-title p-1" id="unit_medinice" placeholder="Đơn vị tính">
-            <button class="btn form-control-addon btn-link p-0 min-h-auto" type="button" onclick="clearInput('#unit_medinice')">
-              <svg class="iconsvg-close">
-                  <use xlink:href="/public/content/images/sprite.svg#close"></use>
-              </svg>
-          </button>
+      <div class="row g-2 align-items-center">
+        <div class="col-12 d-flex">
+          <label class="col-form-label col-md-auto fw-bold mt-2" for="use_medinice">Cách sử dụng
+            <span class="text-danger">*</span>
+          </label>
+          <div class="col-form-body col-md">
+            <div class="input-group">
+              <input type="text" class="form-control form-control-title p-1" id="use_medinice" placeholder="Cách sử dụng">
+              <button class="btn btn-primary" type="button" onclick="addMedicine()" title="Thêm dữ liệu thuốc">Thêm</button>
+            </div>
           </div>
         </div>
       </div>
-    </div>
-    <div class="row g-2 align-items-center">
-      <div class="col-12 d-flex">
-        <label class="col-form-label col-md-auto fw-bold mt-2" for="use_medinice">Cách sử dụng
-          <span class="text-danger">*</span>
-        </label>
-        <div class="col-form-body col-md">
-          <div class="input-group">
-            <input type="text" class="form-control form-control-title p-1" id="use_medinice" placeholder="Cách sử dụng">
-            <button class="btn btn-primary" type="button" onclick="addMedicine()" title="Thêm dữ liệu thuốc">Thêm</button>
-          </div>
-        </div>
-      </div>
-    </div>
+    <% } %>
     <div class="row g-2 align-items-center">
       <div class="table-responsive-xl table-responsive-flush mb-4" style="width: 100%;display: none;" id="tb_prescription">
         <div class="table-responsive-inner"></div>
@@ -81,34 +83,25 @@
               <td class="table-sort">
                 <span>Đơn vị tính</span>
               </td>
-              <td class="table-sort w-1">Hành động</td>
+              <td id="active_table_medicine" class="table-sort w-1">Hành động</td>
             </tr>
           </thead>
           <tbody>
-            <!-- <tr>
-              <td>1</td>
-              <td class="min-w-150px fw-14px">Paracetamon</td>
-              <td class="min-w-150px fs-13px">2 viên 1 ngày </td>
-              <td class="fw-14px text-red">1</td>
-              <td class="fs-13px text-primary">Viên</td>
-              <td>
-                <div class="flex-center-x gap-10px" style="position: relative;">
-                  <button class="btn btn-action"></button>
-                <div>
-              </td>
-            </tr> -->
+            
           </tbody>
         </table>
       </div>
     </div>
     <div class="row g-2 justify-content-center mt-0">
-      <div class="col-6 col-md-auto">
-        <button class="btn btn-primary box-btn w-100 text-uppercase" type="button" onclick="saveExamine(3)" title="Hoàn thành phiếu khám">
-          <svg class="iconsvg-send-2 flex-shrink-0 fs-16px me-2">
-            <use xlink:href="/public/content/images/sprite.svg#save"></use>
-          </svg>Hoàn thành
-        </button>
-      </div>
+      <% if(!(examine.status == 4 || (examine.status == 3 && isDetail == true))){ %>
+        <div class="col-6 col-md-auto">
+          <button class="btn btn-primary box-btn w-100 text-uppercase" type="button" onclick="saveExamine(3)" title="Hoàn thành phiếu khám">
+            <svg class="iconsvg-send-2 flex-shrink-0 fs-16px me-2">
+              <use xlink:href="/public/content/images/sprite.svg#save"></use>
+            </svg>Hoàn thành
+          </button>
+        </div>
+      <% } %>
       <div class="col-6 col-md-auto">
         <button class="btn btn-action-edit box-btn w-100 text-uppercase" type="button" onclick="exportExamine()" title="Tải phiếu khám">
           <svg class="iconsvg-send-2 flex-shrink-0 fs-16px me-2">
@@ -123,12 +116,5 @@
           </svg>Phiếu tư vấn
         </button>
       </div>
-      <!-- <div class="col-6 col-md-auto">
-        <button class="btn btn-cancel box-btn w-100 text-uppercase" type="button" onclick="returnList()" title="Hủy thao tác sửa phiếu khám">
-          <svg class="iconsvg-close flex-shrink-0 fs-16px me-2">
-          <use xlink:href="/public/content/images/sprite.svg#close"></use>
-          </svg>Huỷ
-        </button>
-      </div> -->
       </div>
 </form>

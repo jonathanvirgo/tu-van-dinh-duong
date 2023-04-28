@@ -121,7 +121,8 @@
 
                 dataExamine.diagnostic = <%-JSON.stringify(diagnostic) %>;
                 dataExamine.medicalTest = <%-JSON.stringify(medicalTestExamine) %>;
-                dataExamine.examine = <%-JSON.stringify(examine) %>;
+                // dataExamine.examine = <%-JSON.stringify(examine) %>;
+                dataExamine.isDetail = "<%=isDetail%>";
                 addPrescriptionEdit();
                 generateFoodName("food_name");
                 generateMenuExamine();

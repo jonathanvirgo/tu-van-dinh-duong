@@ -5,7 +5,7 @@
             <% if(medicalTest.length > 0){ %>
                 <% for(let med of medicalTest){ %>
                     <div class="form-check form-switch pt-3">
-                        <input class="form-check-input" type="checkbox" id="medical_test_<%=med.id%>" value="<%=med.id %>" <%=medicalTestExamine.includes(med.id) ? 'checked' : ''%> onchange="getMedicalTest('#medical_test_<%=med.id%>')">
+                        <input class="form-check-input" style="pointer-events: <%=isLockInput == true ? 'none' : 'auto'%>;" type="checkbox" id="medical_test_<%=med.id%>" value="<%=med.id %>" <%=medicalTestExamine.includes(med.id) ? 'checked' : ''%> onchange="getMedicalTest('#medical_test_<%=med.id%>')">
                         <label class="form-check-label" for="medical_test_<%=med.id%>"><%=med.name%></label>
                     </div>
                 <% } %>

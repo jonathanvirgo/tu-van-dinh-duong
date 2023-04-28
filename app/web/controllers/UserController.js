@@ -225,7 +225,6 @@ router.get('/profile', function(req, res) {
                         pr_user = result[0];
                     }
                 }
-                console.log("pr_user",pr_user, req.user, filter);
                 let dataDepartment = await webService.getListTable('SELECT id, `name` FROM department WHERE hospital_id = ? AND active = 1 ', [req.user.hospital_id]); 
                 if(dataDepartment.success){
                     department = dataDepartment.data;
@@ -283,7 +282,6 @@ router.post('/profile', async function(req, res){
             return;
         }else{
             let responseData = await webService.updateRecordTable(parameter, {id: req.user.id}, 'user');
-            console.log("responseData", responseData);
             // data: OkPacket {
             //     fieldCount: 0,
             //     affectedRows: 1,

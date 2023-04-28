@@ -6,28 +6,31 @@
     <input type="hidden" class="form-control form-control-title p-1" id="lipid_food" placeholder="Lipid" readonly>
     <input type="hidden" class="form-control form-control-title p-1" id="unanimal_lipid" placeholder="Unanimal Lipid" readonly>
     <input type="hidden" class="form-control form-control-title p-1" id="carbohydrate" placeholder="Carbohydrate" readonly>
+    <input type="hidden" class="form-control form-control-title p-1" id="status_examine" value="<%=examine.status%>">
 
     <div class="row g-2 align-items-center">
-        <div class="col-12 col-md-6 d-flex">
-            <label class="col-form-label col-md-auto fw-bold mt-2" for="menuExample_id">Chọn mẫu</label>
-            <div class="col-form-body col-md">
-                <div class="input-group">
-                    <div style="flex-grow:1;">
-                        <select class="form-select" id="menuExample_id" data-plugin="select2" data-placeholder="Chọn mẫu">
-                            <option></option>
-                            <% if(menuExample.length > 0){ %>
-                                <% for (let me of menuExample){ %>
-                                    <option value="<%= me.id %>"><%= me.name_menu %></option>
-                                <%}%>   
-                            <%}%>
-                        </select>
+        <% if(!(examine.status == 4 || (examine.status == 3 && isDetail == true))){ %>
+            <div class="col-12 col-md-6 d-flex">
+                <label class="col-form-label col-md-auto fw-bold mt-2" for="menuExample_id">Chọn mẫu</label>
+                <div class="col-form-body col-md">
+                    <div class="input-group">
+                        <div style="flex-grow:1;">
+                            <select class="form-select" id="menuExample_id" data-plugin="select2" data-placeholder="Chọn mẫu">
+                                <option></option>
+                                <% if(menuExample.length > 0){ %>
+                                    <% for (let me of menuExample){ %>
+                                        <option value="<%= me.id %>"><%= me.name_menu %></option>
+                                    <%}%>   
+                                <%}%>
+                            </select>
+                        </div>
+                        <button title="Thêm thực đơn đã chọn" class="btn btn-danger" type="button" onclick="chooseMenuExample()">Thêm</button>
+                        <button title="Lưu thực đơn mẫu" class="btn btn-primary" type="button" onclick="showConfirmSaveMenu()">Lưu mẫu</button>
+                        <button title="Tạo mới thực đơn trống dữ liệu" class="btn btn-primary-light" type="button" onclick="addMenu()">Tạo mới</button>
                     </div>
-                    <button title="Thêm thực đơn đã chọn" class="btn btn-danger" type="button" onclick="chooseMenuExample()">Thêm</button>
-                    <button title="Lưu thực đơn mẫu" class="btn btn-primary" type="button" onclick="showConfirmSaveMenu()">Lưu mẫu</button>
-                    <button title="Tạo mới thực đơn trống dữ liệu" class="btn btn-primary-light" type="button" onclick="addMenu()">Tạo mới</button>
                 </div>
             </div>
-        </div>
+        <% } %>
     </div>
     <div class="row g-2 align-items-center">
         <div class="col-12 col-md-6 d-flex">
@@ -38,106 +41,47 @@
                 </div>
             </div>
         </div>
-        <div class="col-12 col-md-6 d-flex">
-            <label class="col-form-label col-md-auto fw-bold mt-2" for="menuTime_id">Chọn giờ ăn</label>
-            <div class="col-form-body col-md">
-                <div class="form-control-has-addon">
-                    <select class="form-select" id="menuTime_id" data-plugin="select2" data-placeholder="Chọn giờ ăn">
-                        <option></option>
-                        <% if(menuTime.length > 0){ %>
-                            <% for (let mt of menuTime){ %>
-                                <option value="<%= mt.id %>"><%= mt.name %></option>
-                            <%}%>   
-                        <%}%>
-                    </select>
+        <% if(!(examine.status == 4 || (examine.status == 3 && isDetail == true))){ %>
+            <div class="col-12 col-md-6 d-flex">
+                <label class="col-form-label col-md-auto fw-bold mt-2" for="menuTime_id">Chọn giờ ăn</label>
+                <div class="col-form-body col-md">
+                    <div class="form-control-has-addon">
+                        <select class="form-select" id="menuTime_id" data-plugin="select2" data-placeholder="Chọn giờ ăn">
+                            <option></option>
+                            <% if(menuTime.length > 0){ %>
+                                <% for (let mt of menuTime){ %>
+                                    <option value="<%= mt.id %>"><%= mt.name %></option>
+                                <%}%>   
+                            <%}%>
+                        </select>
+                    </div>
                 </div>
             </div>
-        </div>
-        <!-- <div class="col-12 col-md-4 d-flex">
-            <label class="col-form-label col-md-auto fw-bold mt-2" for="course">Tên món</label>
-            <div class="col-form-body col-md">
-                <div class="form-control-has-addon">
-                    <input type="text" class="form-control form-control-title" id="course" placeholder="Tên món">
-                    <button class="btn form-control-addon btn-link p-0 min-h-auto" type="button" onclick="clearInput('#course')">
-                        <svg class="iconsvg-close">
-                            <use xlink:href="/public/content/images/sprite.svg#close"></use>
-                        </svg>
-                    </button>
-                </div>
-            </div>
-        </div> -->
+        <% } %>
     </div>
-    <div class="row g-2 align-items-center">
-        <div class="col-12 col-md-8 d-flex">
-            <label class="col-form-label col-md-auto fw-bold mt-2" for="food_name">Thực phẩm</label>
-            <div class="col-form-body col-md">
-                <div class="form-control-has-addon">
-                    <select class="form-select" id="food_name" data-plugin="select2" data-placeholder="Chọn thực phẩm">
-                        
-                    </select>
+    <% if(!(examine.status == 4 || (examine.status == 3 && isDetail == true))){ %>
+        <div class="row g-2 align-items-center">
+            <div class="col-12 col-md-8 d-flex">
+                <label class="col-form-label col-md-auto fw-bold mt-2" for="food_name">Thực phẩm</label>
+                <div class="col-form-body col-md">
+                    <div class="form-control-has-addon">
+                        <select class="form-select" id="food_name" data-plugin="select2" data-placeholder="Chọn thực phẩm">
+                            
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 col-md-4 d-flex">
+                <label class="col-form-label col-md-auto fw-bold mt-2" for="weight_food">Khối lượng</label>
+                <div class="col-form-body col-md">
+                <div class="input-group">
+                    <input type="number" class="form-control form-control-title p-1" id="weight_food" placeholder="Khối lượng" data-initial-value="0">
+                    <button class="btn btn-primary" type="button" onclick="addFoodToMenu()" title="Thêm thực phẩm vào thực đơn">Thêm</button>
+                </div>
                 </div>
             </div>
         </div>
-        <div class="col-12 col-md-4 d-flex">
-            <label class="col-form-label col-md-auto fw-bold mt-2" for="weight_food">Khối lượng</label>
-            <div class="col-form-body col-md">
-              <div class="input-group">
-                <input type="number" class="form-control form-control-title p-1" id="weight_food" placeholder="Khối lượng" data-initial-value="0">
-                <button class="btn btn-primary" type="button" onclick="addFoodToMenu()" title="Thêm thực phẩm vào thực đơn">Thêm</button>
-              </div>
-            </div>
-        </div>
-        <!-- <div class="col-12 col-md-3 d-flex">
-            <label class="col-form-label col-md-auto fw-bold mt-2" for="energy_food">Energy</label>
-            <div class="col-form-body col-md">
-              <div class="form-control-has-addon">
-                <input type="hidden" class="form-control form-control-title p-1" id="energy_food" placeholder="Energy" readonly>
-              </div>
-            </div>
-        </div>
-        <div class="col-12 col-md-3 d-flex">
-            <label class="col-form-label col-md-auto fw-bold mt-2" for="protein_food">Protein</label>
-            <div class="col-form-body col-md">
-              <div class="form-control-has-addon">
-                <input type="hidden" class="form-control form-control-title p-1" id="protein_food" placeholder="Protein" readonly>
-              </div>
-            </div>
-        </div> -->
-    </div>
-    <!-- <div class="row g-2 align-items-center">
-        <div class="col-12 col-md-3 d-flex">
-            <label class="col-form-label col-md-auto fw-bold mt-2" for="animal_protein">Animal Protein</label>
-            <div class="col-form-body col-md">
-                <div class="form-control-has-addon">
-                    <input type="hidden" class="form-control form-control-title p-1" id="animal_protein" placeholder="Animal Protein" readonly>
-                </div>
-            </div>
-        </div>
-        <div class="col-12 col-md-3 d-flex">
-            <label class="col-form-label col-md-auto fw-bold mt-2" for="lipid_food">Lipid</label>
-            <div class="col-form-body col-md">
-              <div class="form-control-has-addon">
-                <input type="hidden" class="form-control form-control-title p-1" id="lipid_food" placeholder="Lipid" readonly>
-              </div>
-            </div>
-        </div>
-        <div class="col-12 col-md-3 d-flex">
-            <label class="col-form-label col-md-auto fw-bold mt-2" for="unanimal_lipid">Unanimal Lipid</label>
-            <div class="col-form-body col-md">
-              <div class="form-control-has-addon">
-                <input type="hidden" class="form-control form-control-title p-1" id="unanimal_lipid" placeholder="Unanimal Lipid" readonly>
-              </div>
-            </div>
-        </div>
-        <div class="col-12 col-md-3 d-flex">
-            <label class="col-form-label col-md-auto fw-bold mt-2" for="carbohydrate">Carbohydrate</label>
-            <div class="col-form-body col-md">
-              <div class="form-control-has-addon">
-                <input type="hidden" class="form-control form-control-title p-1" id="carbohydrate" placeholder="Carbohydrate" readonly>
-              </div>
-            </div>
-        </div>
-    </div> -->
+    <% } %>
     <div class="row g-2 align-items-center">
       <div class="table-responsive-xl table-responsive-flush mb-4" id="tb_menu" style="width: 100%;display: none;">
         <div class="table-responsive-inner"></div>
@@ -148,7 +92,7 @@
                         <span>Giờ ăn</span>
                     </td>
                     <td colspan="9">
-                        <input type="text" id="name_menu" class="form-control form-control-title p-1" style="text-align: center;">
+                        <input type="text" id="name_menu" <%= isDetail ? 'readonly' : '' %> class="form-control form-control-title p-1" style="text-align: center;">
                     </td>
                 </tr>
                 <tr>
@@ -164,26 +108,7 @@
                 </tr>
             </thead>
             <tbody>
-                <!-- <tr class="text-center">
-                    <td style="writing-mode: vertical-rl;" rowspan="1">6h-7h</td>
-                    <td colspan="3"><input type="text" value="150" class="form-control form-control-title p-1" value="Cơm"></td>
-                    <td colspan="6"></td>
-                </tr> -->
-                <!-- <tr>
-                    <td>Bún</td>
-                    <td><input type="number" value="150" class="form-control form-control-title p-1" onchange="changeWeightFood()"></td>
-                    <td>150</td>
-                    <td>Bánh phở</td>
-                    <td>150</td>
-                    <td>150</td>
-                    <td>Gạo nếp</td>
-                    <td>110</td>
-                    <td style="cursor: pointer;" onclick="deleteFood()">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512">
-                            <path d="M310.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L160 210.7 54.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L114.7 256 9.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L160 301.3 265.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L205.3 256 310.6 150.6z"/>
-                        </svg>
-                    </td>
-                </tr> -->
+                
             </tbody>
             <tfoot>
                 <tr>
@@ -203,27 +128,15 @@
     </div>
 
     <div class="row g-2 justify-content-center mt-0">
-        <div class="col-6 col-md-auto">
-          <button class="btn btn-primary box-btn w-100 text-uppercase" type="button" onclick="saveExamine(2)" title="Lưu phiếu khám">
-            <svg class="iconsvg-send-2 flex-shrink-0 fs-16px me-2">
-              <use xlink:href="/public/content/images/sprite.svg#save"></use>
-            </svg>Lưu 
-          </button>
-        </div>
-        <!-- <div class="col-6 col-md-auto">
-            <button class="btn btn-primary box-btn w-100 text-uppercase" type="button" onclick="saveMenu(1)">
-              <svg class="iconsvg-send-2 flex-shrink-0 fs-16px me-2">
+        <% if(!(examine.status == 4 || (examine.status == 3 && isDetail == true))){ %>
+            <div class="col-6 col-md-auto">
+            <button class="btn btn-primary box-btn w-100 text-uppercase" type="button" onclick="saveExamine(2)" title="Lưu phiếu khám">
+                <svg class="iconsvg-send-2 flex-shrink-0 fs-16px me-2">
                 <use xlink:href="/public/content/images/sprite.svg#save"></use>
-              </svg>Lưu Mẫu
+                </svg>Lưu 
             </button>
-        </div> -->
-        <!-- <div class="col-6 col-md-auto">
-            <button class="btn btn-primary box-btn w-100 text-uppercase" type="button" onclick="saveMenu(0)">
-              <svg class="iconsvg-send-2 flex-shrink-0 fs-16px me-2">
-                <use xlink:href="/public/content/images/sprite.svg#save"></use>
-              </svg>Cập nhật mẫu
-            </button>
-        </div> -->
+            </div>
+        <% } %>
         <div class="col-6 col-md-auto">
             <button class="btn btn-action-edit box-btn w-100 text-uppercase" type="button" onclick="exportMenuExample()" title="Tải thực đơn mẫu">
               <svg class="iconsvg-send-2 flex-shrink-0 fs-16px me-2">
@@ -231,12 +144,14 @@
               </svg>Tải thực đơn
             </button>
         </div>
-        <div class="col-6 col-md-auto">
-          <button class="btn btn-cancel box-btn w-100 text-uppercase" type="button" onclick="returnList()" title="Hủy thao tác sửa phiếu khám">
-            <svg class="iconsvg-close flex-shrink-0 fs-16px me-2">
-            <use xlink:href="/public/content/images/sprite.svg#close"></use>
-            </svg>Huỷ
-          </button>
-        </div>
+        <% if(!(examine.status == 4 || (examine.status == 3 && isDetail == true))){ %>
+            <div class="col-6 col-md-auto">
+            <button class="btn btn-cancel box-btn w-100 text-uppercase" type="button" onclick="returnList()" title="Hủy thao tác sửa phiếu khám">
+                <svg class="iconsvg-close flex-shrink-0 fs-16px me-2">
+                <use xlink:href="/public/content/images/sprite.svg#close"></use>
+                </svg>Huỷ
+            </button>
+            </div>
+        <% } %>
       </div>
 </form>

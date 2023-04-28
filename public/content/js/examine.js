@@ -15,7 +15,8 @@ let dataExamine = {
     listMenuTime: [],
     menuExamine: [],
     menuExample: [],
-    isGetListMedicalTest : 0
+    isGetListMedicalTest : 0,
+    isDetail: false
 };
 
 const numberFormat = new Intl.NumberFormat();
@@ -142,6 +143,8 @@ function saveExamine(action){
         }
         // action 1 tiếp nhận 2 đang khám 3 hoàn thành;
         if(action) dataExamine.examine['action'] = action;
+        let status = parseInt($('#status_examine').val());
+        if(status == 3) dataExamine.examine['action'] = 3;
         let url = '/examine/create';
         if(dataExamine.page == 'edit')  url = '/examine/edit/' + dataExamine.id_examine;
         $.ajax({
@@ -440,6 +443,8 @@ function diff_years(dt2, dt1)
  }
 
  function addHtmlPrescription(prescriptionItem){
+    let status = parseInt($('#status_examine').val());
+    let isLockInput = (status == 4 || (status == 3 && dataExamine.isDetail == 'true')) ? true : false;
     let tr = document.createElement("tr");
     $(tr).attr('id', 'tr_' + prescriptionItem.id);
 
@@ -492,8 +497,12 @@ function diff_years(dt2, dt1)
     tr.append(td3);
     tr.append(td4);
     tr.append(td5);
-    tr.append(td6);
     
+    if(isLockInput){
+        $('#active_table_medicine').hide();
+    }else{
+        tr.append(td6);
+    }
     $('#tb_prescription table tbody').append(tr);
  }
 
@@ -884,6 +893,8 @@ function addFoodToMenu(){
 
 function addTemplateMenuTime(menuTime){
     try {
+        let status = parseInt($('#status_examine').val());
+        let isLockInput = (status == 4 || (status == 3 && dataExamine.isDetail == 'true')) ? true : false;
         let rowspan = menuTime.listFood.length + 1;
         return $('<tr/>')
             .attr("id", "menu_time_"+ menuTime.id)
@@ -895,7 +906,7 @@ function addTemplateMenuTime(menuTime){
             )
             .append($("<td/>")
                 .append($("<input/>")
-                    .attr({"type":"text", "value": menuTime.name_course})
+                    .attr({"type":"text", "value": menuTime.name_course, "readonly": isLockInput})
                     .addClass("form-control form-control-title p-1")
                     .css({"text-align": "center"})
                     .data( "menu_time_id",  menuTime.id)
@@ -916,6 +927,8 @@ function addTemplateMenuTime(menuTime){
 
 function addFoodTemplate(food, menuTime_id){
     try {
+        let status = parseInt($('#status_examine').val());
+        let isLockInput = (status == 4 || (status == 3 && dataExamine.isDetail == 'true')) ? true : false;
         return $('<tr/>')
         .attr("id", "food_"+ menuTime_id + "_" + food.id)
         .append($("<td/>")
@@ -924,7 +937,7 @@ function addFoodTemplate(food, menuTime_id){
         .append($("<td/>")
             .attr("id", "food_"+ menuTime_id + "_" + food.id + "_weight")
             .append($("<input/>")
-                .attr({"type":"number", "value": food.weight})
+                .attr({"type":"number", "value": food.weight, "readonly": isLockInput})
                 .addClass("form-control form-control-title p-1")
                 .data( "food_id",  food.id)
                 .data( "menu_time_id",  menuTime_id)
@@ -963,8 +976,9 @@ function addFoodTemplate(food, menuTime_id){
         .append($("<td/>")
             .append($(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512">
                         <path d="M310.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L160 210.7 54.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L114.7 256 9.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L160 301.3 265.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L205.3 256 310.6 150.6z"/>
-                    </svg>`))
-            .css({"cursor": "pointer"})
+                    </svg>`)
+                    .css({"display": isLockInput ? 'none' : 'block'}))
+            .css({"cursor": "pointer", "pointer-events": isLockInput ? 'none' : 'auto'})
             .data( "food_id",  food.id)
             .data( "menu_time_id",  menuTime_id)
             .click(function(){
@@ -1274,7 +1288,6 @@ function cancelExamine(id, status){
     }
 }
 
-
 function showModalCancelExamine(id, status){
     try {
         var confirmBox = `
@@ -1514,6 +1527,8 @@ $(document).ready(function(){
     });
 
     $('#medical_test_type').change(function(evt){
+        let status = parseInt($('#status_examine').val());
+        let isLockInput = (status == 4 || (status == 3 && dataExamine.isDetail == 'true')) ? true : false;
         let id = $('#medical_test_type').val();
         if(!isNaN(parseInt(id))){
             let loading = $("#loading-page");
@@ -1521,7 +1536,7 @@ $(document).ready(function(){
             $.ajax({
                 type: 'POST',
                 url: url,
-                data: {type_id: id, type_name: $('#medical_test_type').find(':selected').text(), data:JSON.stringify(dataExamine.medicalTest)},
+                data: {type_id: id, type_name: $('#medical_test_type').find(':selected').text(), data:JSON.stringify(dataExamine.medicalTest), isLockInput: isLockInput},
                 beforeSend: function() {
                     loading.show();
                 },

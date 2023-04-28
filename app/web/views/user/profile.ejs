@@ -196,7 +196,6 @@
                   loading.show();
                 },
                 success: function(result) {
-                  console.log("result", result);
                   loading.hide();
                   if (result.success) {
                     displayMessageToastr(result.message);
@@ -240,7 +239,6 @@
                 },
                 success: function(result) {
                     loading.hide();
-                    console.log("hospital_id select", result);
                     if (result.success && result.data) {
                       $('#department_id').empty();
                       for(let [i, item] of result.data.entries()){

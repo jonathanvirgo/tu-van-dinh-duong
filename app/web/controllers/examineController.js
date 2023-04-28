@@ -125,14 +125,16 @@ router.get('/edit/:id', function(req, res, next) {
                 menuTime: [],
                 menuExample: [],
                 diagnostic: []
-            };
+            },
+            isDetail = req.query.detail && req.query.detail == 'true' ? true : false;
+
         arrPromise.push(webService.createSideBarFilter(req, 1).then(function(dataFilter) {
             resultData.filter = dataFilter;
             if (resultData.filter.error.length > 0) {
                 str_errors = str_errors.concat(resultData.filter.error);
             }
         }));
-
+        // lời khuyên dinh dưỡng
         let sqlNutritionAdviceList = 'SELECT * FROM nutrition_advice WHERE id > 0';
         let sqlNutritionAdviceListPermit = webService.addPermitTable(sqlNutritionAdviceList, req.user);
         arrPromise.push(webService.getListTable(sqlNutritionAdviceListPermit.sqlQuery, sqlNutritionAdviceListPermit.paramSql).then(responseData =>{
@@ -142,7 +144,7 @@ router.get('/edit/:id', function(req, res, next) {
                 str_errors.push(responseData.message);
             }
         }));
-
+        // chế độ vận động sinh hoạt
         let sqlactiveModeOfLivingList = 'SELECT * FROM active_mode_of_living WHERE id > 0';
         let sqlactiveModeOfLivingListPermit = webService.addPermitTable(sqlactiveModeOfLivingList, req.user);
         arrPromise.push(webService.getListTable(sqlactiveModeOfLivingListPermit.sqlQuery, sqlactiveModeOfLivingListPermit.paramSql).then(responseData1 =>{
@@ -152,7 +154,7 @@ router.get('/edit/:id', function(req, res, next) {
                 str_errors.push(responseData1.message);
             }
         }));
-
+        // chi tiết phiếu khám
         arrPromise.push(examineService.getDetailExamineById(req.params.id).then(function(detailExamine) {
             if (detailExamine.success) {
                 if(detailExamine.data.length == 0){
@@ -176,7 +178,7 @@ router.get('/edit/:id', function(req, res, next) {
                 str_errors = str_errors.push(detailExamine.message);
             }
         }));
-
+        // danh sách thuốc
         let sqlMedicine = 'SELECT * FROM medicine WHERE hospital_id = ?';
         arrPromise.push(webService.getListTable(sqlMedicine, [req.user.hospital_id]).then(responseData2 =>{
             if(responseData2.success){
@@ -185,16 +187,7 @@ router.get('/edit/:id', function(req, res, next) {
                 str_errors.push(responseData2.message);
             }
         }));
-
-        // let sqlMedicalTest = 'SELECT * FROM medical_test';
-        // arrPromise.push(webService.getListTable(sqlMedicalTest, []).then(responseData3 =>{
-        //     if(responseData3.success){
-        //         resultData.medicalTest = responseData3.data;
-        //     }else{
-        //         str_errors.push(responseData3.message);
-        //     }
-        // }));
-
+        // chỉ định xét nghiệm
         let sqlMedicalTestType = 'SELECT * FROM medical_test_type';
         arrPromise.push(webService.getListTable(sqlMedicalTestType, []).then(responseData6 =>{
             if(responseData6.success){
@@ -203,7 +196,7 @@ router.get('/edit/:id', function(req, res, next) {
                 str_errors.push(responseData6.message);
             }
         }));
-
+        // giờ ăn
         let sqlMenuTime = 'SELECT id, time AS name FROM menu_time WHERE hospital_id = ?';
         arrPromise.push(webService.getListTable(sqlMenuTime, [req.user.hospital_id]).then(responseData4 =>{
             if(responseData4.success){
@@ -212,7 +205,7 @@ router.get('/edit/:id', function(req, res, next) {
                 str_errors.push(responseData4.message);
             }
         }));
-
+        // gợi ý chuẩn đoán
         let sqlDiagnosticList = 'SELECT * FROM diagnostic WHERE id > 0';
         let sqlDiagnosticListPermit = webService.addPermitTable(sqlDiagnosticList, req.user);
         arrPromise.push(webService.getListTable(sqlDiagnosticListPermit.sqlQuery, sqlDiagnosticListPermit.paramSql).then(responseData =>{
@@ -222,7 +215,7 @@ router.get('/edit/:id', function(req, res, next) {
                 str_errors.push(responseData.message);
             }
         }));
-
+        // menu mẫu
         let sqlMenuExampleList = 'SELECT * FROM menu_example WHERE id > 0';
         let sqlMenuExampleListPermit = webService.addPermitTable(sqlMenuExampleList, req.user);
         arrPromise.push(webService.getListTable(sqlMenuExampleListPermit.sqlQuery, sqlMenuExampleListPermit.paramSql).then(responseData5 =>{
@@ -244,7 +237,7 @@ router.get('/edit/:id', function(req, res, next) {
                     activeModeOfLiving: resultData.activeModeOfLiving,
                     nutritionAdvice: resultData.nutritionAdvice,
                     medicine: resultData.medicine,
-                    // medicalTest: resultData.medicalTest,
+                    isDetail: isDetail,
                     medicalTestType: resultData.medicalTestType,
                     medicalTestExamine: JSON.parse(resultData.detailExamine.medical_test ? resultData.detailExamine.medical_test : '[]'),
                     prescriptionExamine: JSON.parse(resultData.detailExamine.prescription ? resultData.detailExamine.prescription : '[]'),
@@ -254,25 +247,6 @@ router.get('/edit/:id', function(req, res, next) {
                     menuTime: resultData.menuTime,
                     link:'examine-page',
                     diagnostic: resultData.diagnostic
-                });
-            }).catch(err => {
-                res.render("examine/create.ejs", {
-                    user: req.user,
-                    errors: [err],
-                    filter: resultData.filter,
-                    examine: {},
-                    activeModeOfLiving:[],
-                    nutritionAdvice: [],
-                    medicine: [],
-                    // medicalTest: [],
-                    medicalTestType:[],
-                    medicalTestExamine: [],
-                    prescriptionExamine: [],
-                    menuExample:[],
-                    page:'edit',
-                    menuTime:[],
-                    link:'examine-page',
-                    diagnostic: []
                 });
             });
         });
@@ -286,7 +260,7 @@ router.get('/edit/:id', function(req, res, next) {
                 activeModeOfLiving:[],
                 nutritionAdvice: [],
                 medicine: [],
-                // medicalTest: [],
+                isDetail: false,
                 medicalTestType: [],
                 medicalTestExamine: [],
                 prescriptionExamine: [],
@@ -364,15 +338,6 @@ router.get('/create', function(req, res, next) {
             }
         }));
 
-        // let sqlMedicalTest = 'SELECT * FROM medical_test';
-        // arrPromise.push(webService.getListTable(sqlMedicalTest, []).then(responseData3 =>{
-        //     if(responseData3.success){
-        //         resultData.medicalTest = responseData3.data;
-        //     }else{
-        //         str_errors.push(responseData3.message);
-        //     }
-        // }));
-
         let sqlMedicalTestType = 'SELECT * FROM medical_test_type';
         arrPromise.push(webService.getListTable(sqlMedicalTestType, []).then(responseData6 =>{
             if(responseData6.success){
@@ -409,11 +374,11 @@ router.get('/create', function(req, res, next) {
                     filter: resultData.filter,
                     moment: moment,
                     page:'create',
-                    examine:{},
+                    examine:{status: 1},
                     activeModeOfLiving: resultData.activeModeOfLiving,
                     nutritionAdvice: resultData.nutritionAdvice,
                     medicine: resultData.medicine,
-                    // medicalTest: resultData.medicalTest,
+                    isDetail: false,
                     medicalTestType: resultData.medicalTestType,
                     medicalTestExamine: [],
                     prescriptionExamine: [],
@@ -422,26 +387,6 @@ router.get('/create', function(req, res, next) {
                     menuTime:resultData.menuTime,
                     link:'examine-page',
                     diagnostic: resultData.diagnostic
-                });
-            }).catch(err => {
-                res.render("examine/create.ejs", {
-                    user: req.user,
-                    errors: [err],
-                    filter: resultData.filter,
-                    page:'create',
-                    examine: {},
-                    activeModeOfLiving:[],
-                    nutritionAdvice: [],
-                    medicine: [],
-                    // medicalTest: [],
-                    medicalTestExamine:[],
-                    prescriptionExamine: [],
-                    medicalTestType: [],
-                    menuTime:[],
-                    menuExample: [],
-                    menuExamine: [],
-                    link:'examine-page',
-                    diagnostic: []
                 });
             });
         });
@@ -456,7 +401,7 @@ router.get('/create', function(req, res, next) {
                 activeModeOfLiving:[],
                 nutritionAdvice: [],
                 medicine: [],
-                // medicalTest: [],
+                isDetail: false,
                 medicalTestType: [],
                 medicalTestExamine:[],
                 prescriptionExamine: [],
@@ -1142,12 +1087,13 @@ router.post('/list/medical-test', function(req, res, next){
         },
         type_id = req.body.type_id,
         type_name = req.body.type_name ? req.body.type_name : '',
-        medicalTestExamine = req.body.data ? JSON.parse(req.body.data) : [];
+        medicalTestExamine = req.body.data ? JSON.parse(req.body.data) : [],
+        isLockInput = req.body.isLockInput ? (req.body.isLockInput == 'true' ? true: false) : false;
         let sqlListMedicalTest = 'SELECT * FROM medical_test WHERE type = ?';
         webService.getListTable(sqlListMedicalTest ,[type_id]).then(async responseData =>{
             if(responseData.success && responseData.data && responseData.data.length >= 0){
                 let medicalTest   = responseData.data;
-                express().render(path.resolve(__dirname, "../views/component/listmedicaltest.ejs"), {medicalTest, medicalTestExamine, type_name}, (err, html) => {
+                express().render(path.resolve(__dirname, "../views/component/listmedicaltest.ejs"), {medicalTest, medicalTestExamine, type_name, isLockInput}, (err, html) => {
                     if(err){
                         resultData.message = 'Lỗi xem danh sách chỉ định xét nghiệm';
                     }else{

@@ -46,7 +46,6 @@ function numberKeyOnly(evt) {
 
 function phone_change() {
     var phone   = $("#signup-form #phone").val();
-    console.log("phone_change");
     $("#imgchkphone").html("");
     $("#signup-form #phone").removeClass('error-border');
 
@@ -155,7 +154,6 @@ function signup() {
         password     = $("#signup-form #password").val(),
         confirm_pw   = $("#signup-form #confirm_password").val();
     
-    console.log("signup", email, phone, password, confirm_pw);
     if ($("#imgchkphone").text() !== ''){
         check_signup = false;
         check_phone  = false;
@@ -252,7 +250,6 @@ function signup() {
                     $("#footer").css("display","none");
                     $("#login-content-page").html(strMessage);
                 } else {
-                    console.log(result);
                     if(result.error){
                         if(result.error.full_name.length > 0){
                             $("#imgchkfull_name").html(result.error.full_name.toString());

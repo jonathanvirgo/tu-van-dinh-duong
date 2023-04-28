@@ -289,11 +289,9 @@ router.post('/create', function (req, res, next) {
             arrPromise        = [],
             roleUserPromise   = [],
             passwordData      = adminService.sha512(req.body.password, adminService.salt()),
-            active            = req.body.active == "on" ? 1 : 0,
             selected_role_ids = req.body.selected_role_ids != undefined ? req.body.selected_role_ids : [],
             btn_action        = req.body.save != undefined ? req.body.save : req.body.saveContinue,
             parameter         = {
-                user_id: req.body.user_id,
                 name: req.body.name,
                 full_name: req.body.full_name,
                 password: req.body.password,
@@ -301,11 +299,12 @@ router.post('/create', function (req, res, next) {
                 phone: req.body.phone,
                 gender: req.body.gender == "male" ? 0 : 1,
                 birthday: adminService.parseDay(req.body.birthday),
+                hospital_id: req.body.hospital_id,
                 department_id: req.body.department_id,
                 address: req.body.address,
                 activePasswordToken: "",
                 resetPasswordExpires: new Date(Date.now() + 3600000),
-                active: active,
+                active: req.body.active ? (req.body.active == 'on' ? 1 : 0) : 0, 
                 isUpdate: false
             };
         
@@ -408,12 +407,10 @@ router.post('/edit/:id', function (req, res, next) {
             hospital          = [],
             roleUserPromise   = [],
             passwordData      = adminService.sha512(req.body.password, adminService.salt()),
-            active            = req.body.active == "on" ? 1 : 0,
             selected_role_ids = req.body.selected_role_ids != undefined ? req.body.selected_role_ids : [],
             btn_action        = req.body.save != undefined ? req.body.save : req.body.saveContinue,
             parameter         = {
                 id: parseInt(req.params.id),
-                user_id: req.body.user_id,
                 name: req.body.name,
                 full_name: req.body.full_name,
                 password: req.body.password,
@@ -424,7 +421,7 @@ router.post('/edit/:id', function (req, res, next) {
                 address: req.body.address,
                 department_id: req.body.department_id,
                 hospital_id: req.body.hospital_id,
-                active: active,
+                active: req.body.active ? (req.body.active == 'on' ? 1 : 0) : 0, 
                 isUpdate: true
             };
         arrPromise.push(new Promise(function (resolve, reject) {

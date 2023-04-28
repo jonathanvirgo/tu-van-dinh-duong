@@ -7,7 +7,6 @@ let userService = {
             try {
                 if (err) return callback(err);
                 var sql   = `INSERT INTO user(
-                            user_id,
                             name,
                             full_name,
                             password,
@@ -16,6 +15,7 @@ let userService = {
                             gender,
                             birthday,
                             address,
+                            hospital_id,
                             department_id,
                             activePasswordToken,
                             resetPasswordExpires,
@@ -23,7 +23,6 @@ let userService = {
                             VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)`;
                 var query = connection.query(sql,
                     [
-                        parameter.user_id,
                         parameter.name,
                         parameter.full_name,
                         parameter.password,
@@ -32,6 +31,7 @@ let userService = {
                         parameter.gender,
                         parameter.birthday,
                         parameter.address,
+                        parameter.hospital_id,
                         parameter.department_id,
                         parameter.activePasswordToken,
                         parameter.resetPasswordExpires,
@@ -52,9 +52,8 @@ let userService = {
         db.get().getConnection(function (err, connection) {
             try {
                 if (err) return callback(err);
-                var sql     = 'UPDATE user SET user_id = ?, name = ?, full_name = ?,password = ?,email = ?, phone = ?, gender = ?, birthday = ?, address = ?,hospital_id = ?, department_id = ?, last_ip = ?, active = ? WHERE id=?';
+                var sql     = 'UPDATE user SET name = ?, full_name = ?,password = ?,email = ?, phone = ?, gender = ?, birthday = ?, address = ?,hospital_id = ?, department_id = ?, last_ip = ?, active = ? WHERE id=?';
                 var paraSQL = [
-                    parameter.user_id,
                     parameter.name,
                     parameter.full_name,
                     parameter.password,
@@ -71,9 +70,8 @@ let userService = {
                 ];
                 
                 if(parameter.password == ''){
-                    sql     = 'UPDATE user SET user_id = ?, name = ?, full_name = ?,email = ?, phone = ?, gender = ?, birthday = ?, address = ?,hospital_id = ?, department_id = ?, last_ip = ?, active = ? WHERE id=?';
+                    sql     = 'UPDATE user SET name = ?, full_name = ?,email = ?, phone = ?, gender = ?, birthday = ?, address = ?,hospital_id = ?, department_id = ?, last_ip = ?, active = ? WHERE id=?';
                     paraSQL = [
-                        parameter.user_id,
                         parameter.name,
                         parameter.full_name,
                         parameter.email,
