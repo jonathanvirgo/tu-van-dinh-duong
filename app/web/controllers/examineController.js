@@ -179,8 +179,9 @@ router.get('/edit/:id', function(req, res, next) {
             }
         }));
         // danh sách thuốc
-        let sqlMedicine = 'SELECT * FROM medicine WHERE hospital_id = ?';
-        arrPromise.push(webService.getListTable(sqlMedicine, [req.user.hospital_id]).then(responseData2 =>{
+        let sqlMedicine = 'SELECT * FROM medicine WHERE id > 0';
+        let sqlMedicinePermit = webService.addPermitTable(sqlMedicine, req.user);
+        arrPromise.push(webService.getListTable(sqlMedicinePermit.sqlQuery, sqlMedicinePermit.paramSql).then(responseData2 =>{
             if(responseData2.success){
                 resultData.medicine = responseData2.data;
             }else{
@@ -197,8 +198,9 @@ router.get('/edit/:id', function(req, res, next) {
             }
         }));
         // giờ ăn
-        let sqlMenuTime = 'SELECT id, time AS name FROM menu_time WHERE hospital_id = ?';
-        arrPromise.push(webService.getListTable(sqlMenuTime, [req.user.hospital_id]).then(responseData4 =>{
+        let sqlMenuTime = 'SELECT id, time AS name FROM menu_time WHERE id > 0';
+        let sqlMenuTimePermit = webService.addPermitTable(sqlMenuTime, req.user);
+        arrPromise.push(webService.getListTable(sqlMenuTimePermit.sqlQuery, sqlMenuTimePermit.paramSql).then(responseData4 =>{
             if(responseData4.success){
                 resultData.menuTime = responseData4.data;
             }else{
@@ -329,8 +331,9 @@ router.get('/create', function(req, res, next) {
             }
         }));
 
-        let sqlMedicine = 'SELECT * FROM medicine WHERE hospital_id = ?';
-        arrPromise.push(webService.getListTable(sqlMedicine, [req.user.hospital_id]).then(responseData2 =>{
+        let sqlMedicine = 'SELECT * FROM medicine WHERE id > 0';
+        let sqlMedicinePermit = webService.addPermitTable(sqlMedicine, req.user);
+        arrPromise.push(webService.getListTable(sqlMedicinePermit.sqlQuery, sqlMedicinePermit.paramSql).then(responseData2 =>{
             if(responseData2.success){
                 resultData.medicine = responseData2.data;
             }else{
@@ -347,8 +350,9 @@ router.get('/create', function(req, res, next) {
             }
         }));
 
-        let sqlMenuTime = 'SELECT id, time AS name FROM menu_time WHERE hospital_id = ?';
-        arrPromise.push(webService.getListTable(sqlMenuTime, [req.user.hospital_id]).then(responseData4 =>{
+        let sqlMenuTime = 'SELECT id, time AS name FROM menu_time WHERE id > 0';
+        let sqlMenuTimePermit = webService.addPermitTable(sqlMenuTime, req.user);
+        arrPromise.push(webService.getListTable(sqlMenuTimePermit.sqlQuery, sqlMenuTimePermit.paramSql).then(responseData4 =>{
             if(responseData4.success){
                 resultData.menuTime = responseData4.data;
             }else{

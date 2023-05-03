@@ -6,8 +6,8 @@ let activeModeOfLivingService = {
         db.get().getConnection(function (err, connection) {
             try {
                 if (err) return callback(err);
-                var sql   = "INSERT INTO active_mode_of_living (name,detail,hospital_id,department_id,created_by) VALUES (?,?,?,?,?)";
-                var query = connection.query(sql, [parameter.name,parameter.detail,parameter.hospital_id,parameter.department_id,parameter.created_by], function (err, results, fields) {
+                var sql   = "INSERT INTO active_mode_of_living (name,detail,share,hospital_id,department_id,created_by) VALUES (?,?,?,?,?,?)";
+                var query = connection.query(sql, [parameter.name,parameter.detail,parameter.share,parameter.hospital_id,parameter.department_id,parameter.created_by], function (err, results, fields) {
                     connection.release();
                     if (err) return callback(err);
                     callback(null, results, fields);
@@ -22,8 +22,8 @@ let activeModeOfLivingService = {
         db.get().getConnection(function (err, connection) {
             try {
                 if (err) return callback(err);
-                var sql   = 'UPDATE active_mode_of_living SET name = ?, detail = ?, hospital_id = ?, department_id = ?, created_by = ? WHERE id=?';
-                var query = connection.query(sql, [parameter.name,parameter.detail, parameter.hospital_id, parameter.department_id, parameter.created_by, parameter.id], function (err, results, fields) {
+                var sql   = 'UPDATE active_mode_of_living SET name = ?, detail = ?,share = ?, hospital_id = ?, department_id = ?, created_by = ? WHERE id=?';
+                var query = connection.query(sql, [parameter.name,parameter.detail, parameter.share,parameter.hospital_id, parameter.department_id, parameter.created_by, parameter.id], function (err, results, fields) {
                     connection.release();
                     if (err) return callback(err);
                     callback(null, results, fields);

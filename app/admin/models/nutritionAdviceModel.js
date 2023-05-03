@@ -6,7 +6,7 @@ let nutritionAdviceService = {
         db.get().getConnection(function (err, connection) {
             try {
                 if (err) return callback(err);
-                var sql   = "INSERT INTO nutrition_advice (name,glucid_should_use,glucid_limited_use,glucid_should_not_use,protein_should_use,protein_limited_use,protein_should_not_use,lipid_should_use,lipid_limited_use,lipid_should_not_use,vitamin_ck_should_use,vitamin_ck_limited_use,vitamin_ck_should_not_use,created_at,hospital_id,department_id,created_by) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,CURRENT_TIMESTAMP,?,?,?)";
+                var sql   = "INSERT INTO nutrition_advice (name,glucid_should_use,glucid_limited_use,glucid_should_not_use,protein_should_use,protein_limited_use,protein_should_not_use,lipid_should_use,lipid_limited_use,lipid_should_not_use,vitamin_ck_should_use,vitamin_ck_limited_use,vitamin_ck_should_not_use,created_at,share,hospital_id,department_id,created_by) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,CURRENT_TIMESTAMP,?,?,?,?)";
                 var query = connection.query(sql, [
                     parameter.name,
                     parameter.glucid_should_use,
@@ -21,6 +21,7 @@ let nutritionAdviceService = {
                     parameter.vitamin_ck_should_use,
                     parameter.vitamin_ck_limited_use,
                     parameter.vitamin_ck_should_not_use,
+                    parameter.share,
                     parameter.hospital_id,
                     parameter.department_id,
                     parameter.created_by
@@ -39,7 +40,7 @@ let nutritionAdviceService = {
         db.get().getConnection(function (err, connection) {
             try {
                 if (err) return callback(err);
-                var sql   = 'UPDATE nutrition_advice SET name = ?, glucid_should_use = ?, glucid_limited_use = ?, glucid_should_not_use = ?, protein_should_use = ?, protein_limited_use = ?, protein_should_not_use = ?, lipid_should_use = ?, lipid_limited_use = ?, lipid_should_not_use = ?, vitamin_ck_should_use = ?, vitamin_ck_limited_use = ?, vitamin_ck_should_not_use = ?, hospital_id = ?, department_id = ?, created_by = ? WHERE id=?';
+                var sql   = 'UPDATE nutrition_advice SET name = ?, glucid_should_use = ?, glucid_limited_use = ?, glucid_should_not_use = ?, protein_should_use = ?, protein_limited_use = ?, protein_should_not_use = ?, lipid_should_use = ?, lipid_limited_use = ?, lipid_should_not_use = ?, vitamin_ck_should_use = ?, vitamin_ck_limited_use = ?, vitamin_ck_should_not_use = ?,share = ?, hospital_id = ?, department_id = ?, created_by = ? WHERE id=?';
                 var query = connection.query(sql, [
                     parameter.name,
                     parameter.glucid_should_use,
@@ -54,6 +55,7 @@ let nutritionAdviceService = {
                     parameter.vitamin_ck_should_use,
                     parameter.vitamin_ck_limited_use,
                     parameter.vitamin_ck_should_not_use,
+                    parameter.share,
                     parameter.hospital_id,
                     parameter.department_id,
                     parameter.created_by,

@@ -126,7 +126,8 @@ router.post('/edit/:id', function (req, res, next) {
             btn_action = req.body.save != undefined ? req.body.save : req.body.saveContinue,
             parameter  = {
                 id: parseInt(req.params.id),
-                name: req.body.name_menu
+                name: req.body.name_menu,
+                share: req.body.share ? (req.body.share == 'on' ? 1 : 0) : 0
             };
             
         if(parameter.name == ''){

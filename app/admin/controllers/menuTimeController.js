@@ -81,6 +81,7 @@ router.post('/create', function (req, res, next) {
             btn_action = req.body.save != undefined ? req.body.save : req.body.saveContinue,
             parameter  = {
                 name: req.body.name,
+                share: req.body.share ? (req.body.share == 'on' ? 1 : 0) : 0,
                 hospital_id: req.user.hospital_id,
                 department_id: req.user.department_id,
                 created_by: req.user.id 
@@ -130,6 +131,7 @@ router.post('/edit/:id', function (req, res, next) {
             parameter  = {
                 id: parseInt(req.params.id),
                 name: req.body.name,
+                share: req.body.share ? (req.body.share == 'on' ? 1 : 0) : 0,
                 hospital_id: req.user.hospital_id,
                 department_id: req.user.department_id,
                 created_by: req.user.id 

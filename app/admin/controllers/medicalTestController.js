@@ -124,6 +124,7 @@ router.post('/create', function (req, res, next) {
             parameter  = {
                 name: req.body.name,
                 type: isNaN(parseInt(req.body.medical_test_type)) ? null : parseInt(req.body.medical_test_type),
+                share: req.body.share ? (req.body.share == 'on' ? 1 : 0) : 0,
                 department_id: req.user.department_id,
                 hospital_id: req.user.hospital_id,
                 created_by: req.user.id
@@ -178,6 +179,7 @@ router.post('/edit/:id', function (req, res, next) {
                 id: parseInt(req.params.id),
                 name: req.body.name,
                 type: isNaN(parseInt(req.body.medical_test_type)) ? null : parseInt(req.body.medical_test_type),
+                share: req.body.share ? (req.body.share == 'on' ? 1 : 0) : 0,
                 department_id: req.user.department_id,
                 hospital_id: req.user.hospital_id,
                 created_by: req.user.id,

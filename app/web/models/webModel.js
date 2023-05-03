@@ -957,10 +957,10 @@ let webService = {
                 return {sqlQuery :str, paramSql: []}
             }else if(user.role_id.includes(5)){
                 //Nếu là quản lý load theo viện
-                str += " AND hospital_id = ?";
+                str += " AND (hospital_id = ? OR share = 1)";
                 return {sqlQuery :str, paramSql: [user.hospital_id]}
             }else if(user.role_id.includes(4)){
-                str += " AND created_by = ?";
+                str += " AND (created_by = ? OR share = 1)";
                 return {sqlQuery :str, paramSql: [user.id]}
             }
         } catch (error) {

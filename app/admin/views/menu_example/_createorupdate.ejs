@@ -11,3 +11,20 @@
     </div>
   </div>
 </div>
+
+<% if(user.isAdmin){ %>
+  <div class="form-group row">
+    <div class="col-md-3">
+      <div class="label-wrapper">
+        <label class="col-form-label">Share</label>
+      </div>
+    </div>
+    <div class="col-md-9">
+      <div class="input-group">
+        <input type="checkbox" <%=menuExample.share == 1 ? 'checked' : ''%> name="share"/>
+      </div>
+    </div>
+  </div>
+  <% }else{ %>
+    <input type="hidden" value="<%=menuExample.share == 1 ? 'on' : ''%>" name="share"/>
+  <% } %>

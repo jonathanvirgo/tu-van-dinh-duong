@@ -98,7 +98,7 @@
           <button class="btn btn-primary box-btn w-100 text-uppercase" type="button" onclick="saveExamine(3)" title="Hoàn thành phiếu khám">
             <svg class="iconsvg-send-2 flex-shrink-0 fs-16px me-2">
               <use xlink:href="/public/content/images/sprite.svg#save"></use>
-            </svg>Hoàn thành
+            </svg><%= examine.status == 3 ? 'Lưu' : 'Hoàn thành'%>
           </button>
         </div>
       <% } %>

@@ -523,7 +523,7 @@
           <button class="btn btn-primary box-btn w-100 text-uppercase" type="button" onclick="saveExamine(1)" title="Tiếp nhận khám">
             <svg class="iconsvg-send-2 flex-shrink-0 fs-16px me-2">
               <use xlink:href="/public/content/images/sprite.svg#save"></use>
-            </svg>Tiếp nhận
+            </svg> <%= examine.status == 1 ? 'Tiếp nhận' : 'Lưu'%>
           </button>
         </div>
         <div class="col-6 col-md-auto">

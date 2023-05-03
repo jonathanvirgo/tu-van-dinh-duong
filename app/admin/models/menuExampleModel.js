@@ -22,8 +22,8 @@ let menuExampleService = {
         db.get().getConnection(function (err, connection) {
             try {
                 if (err) return callback(err);
-                var sql   = 'UPDATE menu_example SET name_menu = ? WHERE id=?';
-                var query = connection.query(sql, [parameter.name,parameter.id], function (err, results, fields) {
+                var sql   = 'UPDATE menu_example SET name_menu = ?, share = ? WHERE id=?';
+                var query = connection.query(sql, [parameter.name,parameter.share,parameter.id], function (err, results, fields) {
                     connection.release();
                     if (err) return callback(err);
                     callback(null, results, fields);

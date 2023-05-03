@@ -6,8 +6,8 @@ let diagnosticService = {
         db.get().getConnection(function (err, connection) {
             try {
                 if (err) return callback(err);
-                var sql   = "INSERT INTO diagnostic(name,detail,created_by,department_id,hospital_id,created_at) VALUES (?,?,?,?,?,CURRENT_TIMESTAMP)";
-                var query = connection.query(sql, [parameter.name,parameter.detail,parameter.created_by,parameter.department_id,parameter.hospital_id], function (err, results, fields) {
+                var sql   = "INSERT INTO diagnostic(name,detail,share,created_by,department_id,hospital_id,created_at) VALUES (?,?,?,?,?,?,CURRENT_TIMESTAMP)";
+                var query = connection.query(sql, [parameter.name,parameter.detail,parameter.share,parameter.created_by,parameter.department_id,parameter.hospital_id], function (err, results, fields) {
                     connection.release();
                     if (err) return callback(err);
                     callback(null, results, fields);
@@ -22,8 +22,8 @@ let diagnosticService = {
         db.get().getConnection(function (err, connection) {
             try {
                 if (err) return callback(err);
-                var sql   = 'UPDATE diagnostic SET name = ?, detail = ? WHERE id=?';
-                var query = connection.query(sql, [parameter.name,parameter.detail,parameter.id], function (err, results, fields) {
+                var sql   = 'UPDATE diagnostic SET name = ?, detail = ?, share = ? WHERE id=?';
+                var query = connection.query(sql, [parameter.name,parameter.detail,parameter.share,parameter.id], function (err, results, fields) {
                     connection.release();
                     if (err) return callback(err);
                     callback(null, results, fields);

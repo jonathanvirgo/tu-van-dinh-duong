@@ -144,6 +144,7 @@ function saveExamine(action){
         // action 1 tiếp nhận 2 đang khám 3 hoàn thành;
         if(action) dataExamine.examine['action'] = action;
         let status = parseInt($('#status_examine').val());
+        if(status == 2 && action == 1) dataExamine.examine['action'] = 2;
         if(status == 3) dataExamine.examine['action'] = 3;
         let url = '/examine/create';
         if(dataExamine.page == 'edit')  url = '/examine/edit/' + dataExamine.id_examine;

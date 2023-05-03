@@ -82,6 +82,7 @@ router.post('/create', function (req, res, next) {
             parameter  = {
                 name: req.body.diagnostic_name,
                 detail: req.body.diagnostic_detail ? req.body.diagnostic_detail : '',
+                share: req.body.share ? (req.body.share == 'on' ? 1 : 0) : 0,
                 created_by: req.user.id,
                 hospital_id: req.user.hospital_id,
                 department_id: req.user.department_id
@@ -134,7 +135,8 @@ router.post('/edit/:id', function (req, res, next) {
             parameter  = {
                 id: parseInt(req.params.id),
                 name: req.body.diagnostic_name,
-                detail: req.body.diagnostic_detail ? req.body.diagnostic_detail : ''
+                detail: req.body.diagnostic_detail ? req.body.diagnostic_detail : '',
+                share: req.body.share ? (req.body.share == 'on' ? 1 : 0) : 0,
             };
             
         if(parameter.name == ''){

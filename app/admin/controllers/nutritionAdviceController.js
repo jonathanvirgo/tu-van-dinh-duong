@@ -93,6 +93,7 @@ router.post('/create', function (req, res, next) {
                 vitamin_ck_should_use: req.body.vitamin_ck_should_use,
                 vitamin_ck_limited_use: req.body.vitamin_ck_limited_use,
                 vitamin_ck_should_not_use: req.body.vitamin_ck_should_not_use,
+                share: req.body.share ? (req.body.share == 'on' ? 1 : 0) : 0, 
                 department_id: req.user.department_id,
                 hospital_id: req.user.hospital_id,
                 created_by: req.user.id
@@ -154,6 +155,7 @@ router.post('/edit/:id', function (req, res, next) {
                 vitamin_ck_should_use: req.body.vitamin_ck_should_use,
                 vitamin_ck_limited_use: req.body.vitamin_ck_limited_use,
                 vitamin_ck_should_not_use: req.body.vitamin_ck_should_not_use,
+                share: req.body.share ? (req.body.share == 'on' ? 1 : 0) : 0, 
                 department_id: req.user.department_id,
                 hospital_id: req.user.hospital_id,
                 created_by: req.user.id

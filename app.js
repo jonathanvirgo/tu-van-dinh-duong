@@ -15,8 +15,9 @@ var user       = require('./app/web/controllers/userController');
 var mail       = require('./app/web/controllers/sendMailController');
 var examine    = require('./app/web/controllers/examineController');
 var exportDoc  = require('./app/web/controllers/exportDocController');
+var weather    = require('./app/web/controllers/weatherController');
 var test       = require('./app/web/controllers/testController');
-var api       = require('./app/web/controllers/apiController');
+var api        = require('./app/web/controllers/apiController');
 
 //Admin
 var admin          = require('./app/admin/controllers/adminController');
@@ -87,6 +88,7 @@ app.use('/user', user);
 app.use('/examine', examine);
 app.use('/mail', mail);
 app.use('/export', exportDoc);
+app.use('/weather', weather);
 app.use('/test', test);
 app.use('/api', api);
 

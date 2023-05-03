@@ -83,6 +83,7 @@ router.post('/create', function (req, res, next) {
                 name: req.body.name,
                 unit: req.body.unit,
                 description: req.body.description,
+                share: req.body.share ? (req.body.share == 'on' ? 1 : 0) : 0,
                 department_id: req.user.department_id,
                 hospital_id: req.user.hospital_id,
                 created_by: req.user.id
@@ -137,6 +138,7 @@ router.post('/edit/:id', function (req, res, next) {
                 name: req.body.name,
                 unit: req.body.unit,
                 description: req.body.description,
+                share: req.body.share ? (req.body.share == 'on' ? 1 : 0) : 0,
                 department_id: req.user.department_id,
                 hospital_id: req.user.hospital_id,
                 created_by: req.user.id

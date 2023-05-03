@@ -6,7 +6,7 @@ let medicalTestService = {
         db.get().getConnection(function (err, connection) {
             try {
                 if (err) return callback(err);
-                var sql   = "INSERT INTO medical_test (name,type,hospital_id,department_id,created_by) VALUES (?,?,?,?,?)";
+                var sql   = "INSERT INTO medical_test (name,type,share,hospital_id,department_id,created_by) VALUES (?,?,?,?,?,?)";
                 var query = connection.query(sql, [parameter.name,parameter.type,parameter.hospital_id,parameter.department_id,parameter.created_by], function (err, results, fields) {
                     connection.release();
                     if (err) return callback(err);
@@ -22,8 +22,8 @@ let medicalTestService = {
         db.get().getConnection(function (err, connection) {
             try {
                 if (err) return callback(err);
-                var sql   = 'UPDATE medical_test SET name = ?, type = ?, hospital_id = ?, department_id = ?, created_by = ? WHERE id=?';
-                var query = connection.query(sql, [parameter.name,parameter.type, parameter.hospital_id, parameter.department_id, parameter.created_by, parameter.id], function (err, results, fields) {
+                var sql   = 'UPDATE medical_test SET name = ?, type = ?, share = ?, hospital_id = ?, department_id = ?, created_by = ? WHERE id=?';
+                var query = connection.query(sql, [parameter.name,parameter.type,parameter.share,parameter.hospital_id, parameter.department_id, parameter.created_by, parameter.id], function (err, results, fields) {
                     connection.release();
                     if (err) return callback(err);
                     callback(null, results, fields);
