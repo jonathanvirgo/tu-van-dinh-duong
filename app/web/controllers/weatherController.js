@@ -3,7 +3,8 @@ var express         = require('express'),
     moment          = require('moment'),
     requestIp    = require('request-ip'),
     logService      = require('../../admin/models/logModel'),
-    webService      = require('./../models/webModel');
+    webService      = require('./../models/webModel'),
+    env             = require('dotenv').config();;
 
 router.get('/', async function(req, res) {
     try {
@@ -13,7 +14,7 @@ router.get('/', async function(req, res) {
         let dataIp = await webService.callApiAll(urlIp,{},{},'GET');
         let lat = '20.996070861816406';
         let lon = '105.80506134033203';
-        let apikey = '9dc59d40560634d2e2a5f0489ec0708d';
+        let apikey = env.parsed.OPENWEATHER;
         weather = {
             name: '',
             icon: '01d',
