@@ -13,6 +13,7 @@ router.get('/', async function(req, res) {
         let dataIp = await webService.callApiAll(urlIp,{},{},'GET');
         let lat = '20.996070861816406';
         let lon = '105.80506134033203';
+        let apikey = '9dc59d40560634d2e2a5f0489ec0708d';
         weather = {
             name: '',
             icon: '01d',
@@ -34,7 +35,7 @@ router.get('/', async function(req, res) {
                 lon = dataIp.data.longitude;
             }
         }
-        let urlWeather = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&units=metric&lang=vi&appid=9dc59d40560634d2e2a5f0489ec0708d`;
+        let urlWeather = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&units=metric&lang=vi&appid=${apikey}`;
         let dataCurrentWeather = await webService.callApiAll(urlWeather,{},{},'GET');
         if(dataCurrentWeather.success && dataCurrentWeather.success == true && dataCurrentWeather.data.cod && dataCurrentWeather.data.cod == 200){
             let currentWeather = dataCurrentWeather.data;
