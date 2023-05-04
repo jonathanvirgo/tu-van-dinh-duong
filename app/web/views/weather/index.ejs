@@ -4,87 +4,90 @@
     <title>Thời tiết hôm nay</title>
   </head>
   <body>
-    <div class="container">
-      <section class="vh-100">
-        <div class="container py-5 h-100">
-          <div
-            class="row d-flex justify-content-center align-items-center h-100"
-          >
-            <div class="col-md-8 col-lg-6 col-xl-4">
-              <h3 class="mb-4 pb-2 fw-normal">Thời tiết hôm nay</h3>
-
-              <div class="input-group rounded mb-3">
-                <input
-                  type="search"
-                  class="form-control rounded"
-                  placeholder="City"
-                  aria-label="Search"
-                  aria-describedby="search-addon"
-                />
-                <a href="#!" type="button">
-                  <span
-                    class="input-group-text border-0 fw-bold"
-                    id="search-addon"
-                  >
-                    Check!
-                  </span>
-                </a>
-              </div>
-
-              <div class="mb-4 pb-2">
-                <div class="form-check form-check-inline">
-                  <input
-                    class="form-check-input"
-                    type="radio"
-                    name="inlineRadioOptions"
-                    id="inlineRadio1"
-                    value="option1"
-                    checked
-                  />
-                  <label class="form-check-label" for="inlineRadio1"
-                    >Celsius</label
-                  >
-                </div>
-
-                <div class="form-check form-check-inline">
-                  <input
-                    class="form-check-input"
-                    type="radio"
-                    name="inlineRadioOptions"
-                    id="inlineRadio2"
-                    value="option2"
-                  />
-                  <label class="form-check-label" for="inlineRadio2"
-                    >Farenheit</label
-                  >
-                </div>
-              </div>
-
-              <div class="card shadow-0 border">
-                <div class="card-body p-4">
-                  <h4 class="mb-1 sfw-normal">New York, US</h4>
-                  <p class="mb-2">
-                    Current temperature: <strong>5.42°C</strong>
-                  </p>
-                  <p>Feels like: <strong>4.37°C</strong></p>
-                  <p>
-                    Max: <strong>6.11°C</strong>, Min:
-                    <strong>3.89°C</strong>
-                  </p>
-
-                  <div class="d-flex flex-row align-items-center">
-                    <p class="mb-0 me-4">Scattered Clouds</p>
-                    <i class="fas fa-cloud fa-3x" style="color: #eee"></i>
+    <section class="vh-100" style="background-color: #ebebeb">
+      <div class="container py-5 h-100">
+        <div class="row d-flex justify-content-center align-items-center">
+          <div class="col-md-10 col-lg-8 col-xl-6">
+            <div class="card cur-con-weather-card mb-3" style="color: #000; border-radius: 35px">
+              <div class="card-body p-4">
+                <div class="row">
+                  <div class="col">
+                    <div class="cur-con-weather-card__title spaced-content">
+                      <span><%=weather.name%></span> 
+                      <span id="timer"></span>
+                    </div>
+                    <div class="forecast-container">
+                      <div class="weather-icon" style="background-image: url('https://openweathermap.org/img/wn/<%=weather.icon%>@2x.png');"></div>
+                      <div>
+                        <div class="temp"><%=weather.temp%>°<span class="after-temp">C</span>
+                        </div>
+                        <div class="real-feel">RealFeel® <%=weather.feels_like%>°</div>
+                      </div>
+                    </div>
+                    <div class="spaced-content">
+                      <span class="phrase"><%=weather.description.charAt(0).toUpperCase() + weather.description.slice(1)%></span>
+                    </div>
+                    <div class="spaced-content detail">
+                      <span class="label">Mặt trời mọc</span>
+                      <span class="value"><%=moment.unix(weather.sunrise).format('HH:mm:ss')%></span>
+                    </div>
+                    <div class="spaced-content detail">
+                      <span class="label">Mặt trời lặn</span>
+                      <span class="value"><%=moment.unix(weather.sunset).format('HH:mm:ss')%></span>
+                    </div>
+                  </div>
+                  <div class="col">
+                    <div class="spaced-content detail">
+                      <span class="label">RealFeel Shade™</span>
+                      <span class="value"><%=weather.feels_like%>°</span>
+                    </div>
+                    <div class="spaced-content detail">
+                      <span class="label">Độ ẩm</span>
+                      <span class="value"><%=weather.humidity%>%</span>
+                    </div>
+                    <div class="spaced-content detail">
+                      <span class="label">Thấp nhất</span>
+                      <span class="value"><%=weather.temp_min%>°</span>
+                    </div>
+                    <div class="spaced-content detail">
+                      <span class="label">Cao nhất</span>
+                      <span class="value"><%=weather.temp_max%>°</span>
+                    </div>
+                    <div class="spaced-content detail">
+                      <span class="label">Tốc độ gió</span>
+                      <span class="value"><%=weather.wind_speed%> m/s</span>
+                    </div>
+                    <div class="spaced-content detail">
+                      <span class="label">Hướng gió</span>
+                      <span class="value"><%=weather.wind_deg%>°</span>
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
-      </section>
-    </div>
+      </div>
+    </section>
     <script>
-      $(document).ready(function () {});
+      function startTime() {
+        const today = new Date();
+        let h = today.getHours();
+        let m = today.getMinutes();
+        let s = today.getSeconds();
+        m = checkTime(m);
+        s = checkTime(s);
+        document.getElementById('timer').innerHTML =  h + ":" + m + ":" + s;
+        setTimeout(startTime, 1000);
+      }
+
+      function checkTime(i) {
+        if (i < 10) {i = "0" + i};  // add zero in front of numbers < 10
+        return i;
+      }
+      $(document).ready(function () {
+        startTime();
+      });
     </script>
   </body>
 </html>

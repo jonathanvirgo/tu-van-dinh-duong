@@ -966,6 +966,49 @@ let webService = {
         } catch (error) {
             
         }
+    },
+    callApiAll: function(linkUrl, parameter, headers, method) {
+        return new Promise(function(resolve, reject) {
+            try {
+                var options = {
+                    'method': method,
+                    'url': linkUrl,
+                    'headers': headers,
+                    formData: parameter
+                };
+                console.log("callApiAll", linkUrl);
+                request(options, function(error, response) {
+                    if (error) {
+                        resolve({
+                            success: false,
+                            message: JSON.stringify(error)
+                        });
+                    }
+                    if(response && response.statusCode){
+                        if (response.statusCode !== 200) {
+                            resolve({
+                                success: false,
+                                message: "Kết nối vừa bị gián đoạn. Vui lòng thử lại."
+                            });
+                        } else {
+                            var responseData = JSON.parse(response.body);
+                            resolve({
+                                success: true,
+                                data: responseData,
+                                message: "Success!"
+                            });
+                        } 
+                    } else {
+                        resolve({
+                            success: false,
+                            message: "Kết nối vừa bị gián đoạn. Vui lòng thử lại."
+                        });
+                    }
+                });
+            } catch (error) {
+                console.log("callApiAll error", error);
+            }
+        });
     }
 }
 
