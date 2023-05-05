@@ -35,7 +35,7 @@
     <div class="row g-2 align-items-center">
         <div class="col-12 col-md-6 d-flex">
             <label class="col-form-label col-md-auto fw-bold mt-2" for="menu_id">Chọn menu</label>
-            <div class="col-form-body col-md">
+            <div class="col-form-body col-md w-100">
                 <div class="form-control-has-addon">
                     <select class="form-select" id="menu_id" data-plugin="select2" data-placeholder="Chọn menu"></select>
                 </div>
@@ -44,7 +44,7 @@
         <% if(!(examine.status == 4 || (examine.status == 3 && isDetail == true))){ %>
             <div class="col-12 col-md-6 d-flex">
                 <label class="col-form-label col-md-auto fw-bold mt-2" for="menuTime_id">Chọn giờ ăn</label>
-                <div class="col-form-body col-md">
+                <div class="col-form-body col-md w-100">
                     <div class="form-control-has-addon">
                         <select class="form-select" id="menuTime_id" data-plugin="select2" data-placeholder="Chọn giờ ăn">
                             <option></option>
@@ -63,7 +63,7 @@
         <div class="row g-2 align-items-center">
             <div class="col-12 col-md-8 d-flex">
                 <label class="col-form-label col-md-auto fw-bold mt-2" for="food_name">Thực phẩm</label>
-                <div class="col-form-body col-md">
+                <div class="col-form-body col-md w-100">
                     <div class="form-control-has-addon">
                         <select class="form-select" id="food_name" data-plugin="select2" data-placeholder="Chọn thực phẩm">
                             
@@ -92,7 +92,7 @@
                         <span>Giờ ăn</span>
                     </td>
                     <td colspan="9">
-                        <input type="text" id="name_menu" <%= isDetail ? 'readonly' : '' %> class="form-control form-control-title p-1" style="text-align: center;">
+                        <input type="text" id="name_menu" <%=(examine.status == 4 || (examine.status == 3 && isDetail == true)) ? 'readonly' : '' %> class="form-control form-control-title p-1" style="text-align: center;">
                     </td>
                 </tr>
                 <tr>

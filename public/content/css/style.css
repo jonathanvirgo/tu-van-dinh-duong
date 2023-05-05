@@ -328,3 +328,11 @@
   font-size: 18px;
   font-weight: 500;
 }
+@media (max-width: 425.6px) {
+  #modal-chi-tiet-phieu-kham .modal-content{
+    padding: 0;
+  }
+  #modal-chi-tiet-phieu-kham .box-body{
+    padding: 0;
+  }
+}

@@ -1,7 +1,7 @@
 <form id="tuvandinhduong_form" class="form-horizontal">
     <h3 class="box-title-break">Khám dinh dưỡng</h3>
     <div class="row g-2 align-items-center">
-        <div class="col-6 col-md-3 d-flex">
+        <div class="col-12 col-md-3 d-flex">
             <label class="col-form-label col-md-auto fw-bold mt-2 form-label-large" for="cus_fat">Tỉ lệ mỡ</label>
             <div class="col-form-body col-md">
                 <% if(!(examine.status == 4 || (examine.status == 3 && isDetail == true))){ %>
@@ -18,7 +18,7 @@
                 <% } %>
             </div>
         </div>
-        <div class="col-6 col-md-3 d-flex">
+        <div class="col-12 col-md-3 d-flex">
             <label class="col-form-label col-md-auto fw-bold mt-2" for="cus_water">Tỉ lệ nước</label>
             <div class="col-form-body col-md">
                 <% if(!(examine.status == 4 || (examine.status == 3 && isDetail == true))){ %>
@@ -35,7 +35,7 @@
                 <% } %>
             </div>
         </div>
-        <div class="col-6 col-md-3 d-flex">
+        <div class="col-12 col-md-3 d-flex">
             <label class="col-form-label col-md-auto fw-bold mt-2" for="cus_visceral_fat">Mỡ nội tạng</label>
             <div class="col-form-body col-md">
                 <% if(!(examine.status == 4 || (examine.status == 3 && isDetail == true))){ %>
@@ -52,7 +52,7 @@
                 <% } %>
             </div>
         </div>
-        <div class="col-6 col-md-3 d-flex">
+        <div class="col-12 col-md-3 d-flex">
             <label class="col-form-label col-md-auto fw-bold mt-2" for="cus_bone_weight">Cân nặng xương</label>
             <div class="col-form-body col-md">
                 <% if(!(examine.status == 4 || (examine.status == 3 && isDetail == true))){ %>
@@ -71,7 +71,7 @@
         </div>
     </div>
     <div class="row g-2 align-items-center">
-        <div class="col-6 col-md-3 d-flex">
+        <div class="col-12 col-md-3 d-flex">
             <label class="col-form-label col-md-auto fw-bold mt-2 form-label-large" for="cus_chcb">CHCB (kcal)</label>
             <div class="col-form-body col-md">
                 <% if(!(examine.status == 4 || (examine.status == 3 && isDetail == true))){ %>
@@ -88,7 +88,7 @@
                 <% } %>
             </div>
         </div>
-        <div class="col-6 col-md-3 d-flex">
+        <div class="col-12 col-md-3 d-flex">
             <label class="col-form-label col-md-auto fw-bold mt-2" for="cus_waist">Vòng eo</label>
             <div class="col-form-body col-md">
                 <% if(!(examine.status == 4 || (examine.status == 3 && isDetail == true))){ %>
@@ -105,7 +105,7 @@
                 <% } %>
             </div>
         </div>
-        <div class="col-6 col-md-3 d-flex">
+        <div class="col-12 col-md-3 d-flex">
             <label class="col-form-label col-md-auto fw-bold mt-2" for="cus_butt">Vòng mông</label>
             <div class="col-form-body col-md">
                 <% if(!(examine.status == 4 || (examine.status == 3 && isDetail == true))){ %>
@@ -122,7 +122,7 @@
                 <% } %>
             </div>
         </div>
-        <div class="col-6 col-md-3 d-flex">
+        <div class="col-12 col-md-3 d-flex">
             <label class="col-form-label col-md-auto fw-bold mt-2" for="cus_cseomong">Cs eo/mông</label>
             <div class="col-form-body col-md">
                 <% if(!(examine.status == 4 || (examine.status == 3 && isDetail == true))){ %>
@@ -143,7 +143,7 @@
     <h3 class="box-title-break">Lời khuyên dinh dưỡng</h3>
     <% if(!(examine.status == 4 || (examine.status == 3 && isDetail == true))){ %>
         <div class="row g-2 align-items-center">
-            <div class="col-6 col-md-6 d-flex">
+            <div class="col-12 col-md-6 d-flex">
                 <label class="col-form-label col-md-auto fw-bold mt-2" for="cus_butt">Chọn mẫu</label>
                 <div class="col-form-body col-md">
                     <div class="form-control-has-addon">
@@ -168,22 +168,22 @@
             <div class="col-6 col-md-3 fw-bold p-2">TP không nên dùng</div>
         </div>
         <div class="row align-items-center">
-            <div class="col-6 col-md-2 fw-bold p-2">Nhóm glucid</div>
-            <div class="col-6 col-md-3 p-2">
+            <div class="col-12 col-md-2 fw-bold p-2">Nhóm glucid</div>
+            <div class="col-12 col-md-3 p-2">
                 <% if(!(examine.status == 4 || (examine.status == 3 && isDetail == true))){ %>
                     <textarea class="form-control" id="glucid_should_use" name="glucid_should_use"><%=examine.glucid_should_use%></textarea>
                 <% }else{ %>
                     <div class="form-control form-control-title"><%= examine.glucid_should_use%></div>
                 <% } %>
             </div>
-            <div class="col-6 col-md-3 p-2">
+            <div class="col-12 col-md-3 p-2">
                 <% if(!(examine.status == 4 || (examine.status == 3 && isDetail == true))){ %>
                     <textarea class="form-control" id="glucid_limited_use" name="glucid_limited_use"><%=examine.glucid_limited_use%></textarea>
                 <% }else{ %>
                     <div class="form-control form-control-title"><%= examine.glucid_limited_use%></div>
                 <% } %>
             </div>
-            <div class="col-6 col-md-3 p-2">
+            <div class="col-12 col-md-3 p-2">
                 <% if(!(examine.status == 4 || (examine.status == 3 && isDetail == true))){ %>
                     <textarea class="form-control" id="glucid_should_not_use" name="glucid_should_not_use"><%=examine.glucid_should_not_use%></textarea>
                 <% }else{ %>
@@ -192,22 +192,22 @@
             </div>
         </div>
         <div class="row align-items-center">
-            <div class="col-6 col-md-2 fw-bold p-2">Nhóm protein</div>
-            <div class="col-6 col-md-3 p-2">
+            <div class="col-12 col-md-2 fw-bold p-2">Nhóm protein</div>
+            <div class="col-12 col-md-3 p-2">
                 <% if(!(examine.status == 4 || (examine.status == 3 && isDetail == true))){ %>
                     <textarea class="form-control" name="protein_should_use" id="protein_should_use"><%=examine.protein_should_use%></textarea>
                 <% }else{ %>
                     <div class="form-control form-control-title"><%= examine.protein_should_use%></div>
                 <% } %>
             </div>
-            <div class="col-6 col-md-3 p-2">
+            <div class="col-12 col-md-3 p-2">
                 <% if(!(examine.status == 4 || (examine.status == 3 && isDetail == true))){ %>
                     <textarea class="form-control" name="protein_limited_use" id="protein_limited_use"><%=examine.protein_limited_use%></textarea>
                 <% }else{ %>
                     <div class="form-control form-control-title"><%= examine.protein_limited_use%></div>
                 <% } %>
             </div>
-            <div class="col-6 col-md-3 p-2">
+            <div class="col-12 col-md-3 p-2">
                 <% if(!(examine.status == 4 || (examine.status == 3 && isDetail == true))){ %>
                     <textarea class="form-control" name="protein_should_not_use" id="protein_should_not_use"><%=examine.protein_should_not_use%></textarea>
                 <% }else{ %>
@@ -216,22 +216,22 @@
             </div>
         </div>
         <div class="row align-items-center">
-            <div class="col-6 col-md-2 fw-bold p-2">Nhóm lipid</div>
-            <div class="col-6 col-md-3 p-2">
+            <div class="col-12 col-md-2 fw-bold p-2">Nhóm lipid</div>
+            <div class="col-12 col-md-3 p-2">
                 <% if(!(examine.status == 4 || (examine.status == 3 && isDetail == true))){ %>
                     <textarea class="form-control text-box single-line" name="lipid_should_use" id="lipid_should_use"><%=examine.lipid_should_use%></textarea>
                 <% }else{ %>
                     <div class="form-control form-control-title"><%= examine.lipid_should_use%></div>
                 <% } %>
             </div>
-            <div class="col-6 col-md-3 p-2">
+            <div class="col-12 col-md-3 p-2">
                 <% if(!(examine.status == 4 || (examine.status == 3 && isDetail == true))){ %>
                     <textarea class="form-control text-box single-line" name="lipid_limited_use" id="lipid_limited_use"><%=examine.lipid_limited_use%></textarea>
                 <% }else{ %>
                     <div class="form-control form-control-title"><%= examine.lipid_limited_use%></div>
                 <% } %>
             </div>
-            <div class="col-6 col-md-3 p-2">
+            <div class="col-12 col-md-3 p-2">
                 <% if(!(examine.status == 4 || (examine.status == 3 && isDetail == true))){ %>
                     <textarea class="form-control text-box single-line" name="lipid_should_not_use" id="lipid_should_not_use"><%=examine.lipid_should_not_use%></textarea>
                 <% }else{ %>
@@ -240,22 +240,22 @@
             </div>
         </div>
         <div class="row align-items-center">
-            <div class="col-6 col-md-2 fw-bold p-2">Nhóm VTM & CK</div>
-            <div class="col-6 col-md-3 p-2">
+            <div class="col-12 col-md-2 fw-bold p-2">Nhóm VTM & CK</div>
+            <div class="col-12 col-md-3 p-2">
                 <% if(!(examine.status == 4 || (examine.status == 3 && isDetail == true))){ %>
                     <textarea class="form-control text-box single-line" name="vitamin_ck_should_use" id="vitamin_ck_should_use"><%=examine.vitamin_ck_should_use%></textarea>
                 <% }else{ %>
                     <div class="form-control form-control-title"><%= examine.vitamin_ck_should_use%></div>
                 <% } %>
             </div>
-            <div class="col-6 col-md-3 p-2">
+            <div class="col-12 col-md-3 p-2">
                 <% if(!(examine.status == 4 || (examine.status == 3 && isDetail == true))){ %>
                     <textarea class="form-control text-box single-line" name="vitamin_ck_limited_use" id="vitamin_ck_limited_use"><%=examine.vitamin_ck_limited_use%></textarea>
                 <% }else{ %>
                     <div class="form-control form-control-title"><%= examine.vitamin_ck_limited_use%></div>
                 <% } %>
             </div>
-            <div class="col-6 col-md-3 p-2">
+            <div class="col-12 col-md-3 p-2">
                 <% if(!(examine.status == 4 || (examine.status == 3 && isDetail == true))){ %>
                     <textarea class="form-control text-box single-line" name="vitamin_ck_should_not_use" id="vitamin_ck_should_not_use"><%=examine.vitamin_ck_should_not_use%></textarea>
                 <% }else{ %>
@@ -267,7 +267,7 @@
     <h3 class="box-title-break">Chế độ vận động sinh hoạt</h3>
     <% if(!(examine.status == 4 || (examine.status == 3 && isDetail == true))){ %>
         <div class="row g-2 align-items-center">
-            <div class="col-6 col-md-6 d-flex">
+            <div class="col-12 col-md-6 d-flex">
                 <label class="col-form-label col-md-auto fw-bold mt-2" for="cus_butt">Chọn mẫu</label>
                 <div class="col-form-body col-md">
                     <div class="form-control-has-addon">
