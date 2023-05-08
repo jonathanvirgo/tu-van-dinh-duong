@@ -4,7 +4,7 @@ var express         = require('express'),
     requestIp    = require('request-ip'),
     logService      = require('../../admin/models/logModel'),
     webService      = require('./../models/webModel'),
-    env             = require('dotenv').config();;
+    env             = require('dotenv').config();
 
 router.get('/', async function(req, res) {
     try {
@@ -56,6 +56,7 @@ router.get('/', async function(req, res) {
             }
             console.log("currentWeather", currentWeather, weather, moment.unix(currentWeather.sys.sunset).format("hh:mm:ss"), moment.unix(currentWeather.sys.sunrise).format("hh:mm:ss"));
         }
+        // webService.getDataWeather();
         res.render('weather/index.ejs', {
             moment: moment,
             link:'weather',

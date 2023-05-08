@@ -435,7 +435,8 @@ router.post('/create', async function(req, res, next) {
             parameter    = {
                 department_id:          req.user.department_id,
                 hospital_id:            req.user.hospital_id,
-                created_by:             req.user.id
+                created_by:             req.user.id,
+                reportdate:             new Date().toLocaleDateString('fr-CA')
             },
             id_examine = '';
         
@@ -1192,5 +1193,36 @@ router.post('/list/department', function(req, res, next){
         });
     }
 });
+
+// router.get('/add-report-date', (req, res, next) =>{
+//     try {
+//         var resultData = {
+//             success: false,
+//             message: '',
+//             data: ''
+//         };
+//         let sqlListContent = 'SELECT id FROM examine';
+//         webService.getListTable(sqlListContent ,[]).then(async responseData =>{
+//             if(responseData.success && responseData.data && responseData.data.length > 0){
+//                 for(let item of responseData.data){
+//                     let sqlDetailContent = 'SELECT content FROM pr_article_content WHERE id = ?';
+//                     articleService.getListTable(sqlDetailContent, [item.id]).then(async responseData1 =>{
+//                         if(responseData1.success && responseData1.data && responseData1.data.length > 0){
+//                             let content = encodeURIComponent(responseData1.data[0].content);
+//                             articleService.updateRecordTable({content: content}, {id: item.id}, 'pr_article_content');
+//                         }
+//                     });
+                    
+//                 }
+//                 resultData.success = true;
+//             }else{
+//                 resultData.message = 'Lỗi lấy danh sách content';
+//             }
+//             res.json(resultData);
+//         });
+//     } catch (error) {
+        
+//     }
+// });
 
 module.exports = router;

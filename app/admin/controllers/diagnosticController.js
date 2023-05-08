@@ -77,6 +77,7 @@ router.post('/create', function (req, res, next) {
         if(!logService.authorizeAccess(req.user.role_id, 'diagnostic')){
             throw new Error(notice_admin);
         }
+        
         var str_error  = [],
             btn_action = req.body.save != undefined ? req.body.save : req.body.saveContinue,
             parameter  = {
@@ -87,7 +88,7 @@ router.post('/create', function (req, res, next) {
                 hospital_id: req.user.hospital_id,
                 department_id: req.user.department_id
             };
-            
+  
         if(parameter.name == ''){
             str_error.push("Thiếu tên chuẩn đoán!");
         }
@@ -138,9 +139,9 @@ router.post('/edit/:id', function (req, res, next) {
                 detail: req.body.diagnostic_detail ? req.body.diagnostic_detail : '',
                 share: req.body.share ? (req.body.share == 'on' ? 1 : 0) : 0,
             };
-            
+ 
         if(parameter.name == ''){
-            str_error.push("Thiếu tên bệnh viện!");
+            str_error.push("Thiếu tên chuẩn đoán!");
         }
         if(parameter.detail == ''){
             str_error.push("Thiếu chi tiết chuẩn đoán!");

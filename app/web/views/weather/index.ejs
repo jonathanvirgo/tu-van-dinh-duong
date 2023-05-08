@@ -1,66 +1,90 @@
 <html lang="en">
-  <head>
-    <%- include('../layout/head') %>
+
+<head>
+  <%- include('../layout/head') %>
     <title>Thời tiết hôm nay</title>
-  </head>
-  <body>
-    <section class="vh-100" style="background-color: #ebebeb">
-      <div class="container py-5 h-100">
-        <div class="row d-flex justify-content-center align-items-center">
-          <div class="col-md-10 col-lg-8 col-xl-6">
-            <div class="card cur-con-weather-card mb-3" style="color: #000; border-radius: 35px">
-              <div class="card-body p-4">
-                <div class="row">
-                  <div class="col">
-                    <div class="cur-con-weather-card__title spaced-content">
-                      <span><%=weather.name%></span> 
-                      <span id="timer"></span>
+</head>
+
+<body>
+  <section class="vh-100" style="background-color: #ebebeb">
+    <div class="container py-5 h-100">
+      <div class="row d-flex justify-content-center align-items-center">
+        <div class="col-md-10 col-lg-8 col-xl-6">
+          <div class="card cur-con-weather-card mb-3" style="color: #000; border-radius: 35px">
+            <div class="card-body p-4">
+              <div class="row">
+                <div class="col">
+                  <div class="cur-con-weather-card__title spaced-content">
+                    <span>
+                      <%=weather.name%>
+                    </span>
+                    <span id="timer"></span>
+                  </div>
+                  <div class="forecast-container">
+                    <div class="weather-icon"
+                      style="background-image: url('https://openweathermap.org/img/wn/<%=weather.icon%>@2x.png');">
                     </div>
-                    <div class="forecast-container">
-                      <div class="weather-icon" style="background-image: url('https://openweathermap.org/img/wn/<%=weather.icon%>@2x.png');"></div>
-                      <div>
-                        <div class="temp"><%=weather.temp%>°<span class="after-temp">C</span>
-                        </div>
-                        <div class="real-feel">RealFeel® <%=weather.feels_like%>°</div>
+                    <div>
+                      <div class="temp">
+                        <%=weather.temp%>°<span class="after-temp">C</span>
                       </div>
-                    </div>
-                    <div class="spaced-content">
-                      <span class="phrase"><%=weather.description.charAt(0).toUpperCase() + weather.description.slice(1)%></span>
-                    </div>
-                    <div class="spaced-content detail">
-                      <span class="label">Mặt trời mọc</span>
-                      <span class="value"><%=moment.unix(weather.sunrise).format('HH:mm:ss')%></span>
-                    </div>
-                    <div class="spaced-content detail">
-                      <span class="label">Mặt trời lặn</span>
-                      <span class="value"><%=moment.unix(weather.sunset).format('HH:mm:ss')%></span>
+                      <div class="real-feel">RealFeel® <%=weather.feels_like%>°</div>
                     </div>
                   </div>
-                  <div class="col">
-                    <div class="spaced-content detail">
-                      <span class="label">RealFeel Shade™</span>
-                      <span class="value"><%=weather.feels_like%>°</span>
-                    </div>
-                    <div class="spaced-content detail">
-                      <span class="label">Độ ẩm</span>
-                      <span class="value"><%=weather.humidity%>%</span>
-                    </div>
-                    <div class="spaced-content detail">
-                      <span class="label">Thấp nhất</span>
-                      <span class="value"><%=weather.temp_min%>°</span>
-                    </div>
-                    <div class="spaced-content detail">
-                      <span class="label">Cao nhất</span>
-                      <span class="value"><%=weather.temp_max%>°</span>
-                    </div>
-                    <div class="spaced-content detail">
-                      <span class="label">Tốc độ gió</span>
-                      <span class="value"><%=weather.wind_speed%> m/s</span>
-                    </div>
-                    <div class="spaced-content detail">
-                      <span class="label">Hướng gió</span>
-                      <span class="value"><%=weather.wind_deg%>°</span>
-                    </div>
+                  <div class="spaced-content">
+                    <span class="phrase">
+                      <%=weather.description.charAt(0).toUpperCase() + weather.description.slice(1)%>
+                    </span>
+                  </div>
+                  <div class="spaced-content detail">
+                    <span class="label">Mặt trời mọc</span>
+                    <span class="value">
+                      <%=moment.unix(weather.sunrise).format('HH:mm:ss')%>
+                    </span>
+                  </div>
+                  <div class="spaced-content detail">
+                    <span class="label">Mặt trời lặn</span>
+                    <span class="value">
+                      <%=moment.unix(weather.sunset).format('HH:mm:ss')%>
+                    </span>
+                  </div>
+                </div>
+                <div class="col">
+                  <div class="spaced-content detail">
+                    <span class="label">RealFeel Shade™</span>
+                    <span class="value">
+                      <%=weather.feels_like%>°
+                    </span>
+                  </div>
+                  <div class="spaced-content detail">
+                    <span class="label">Độ ẩm</span>
+                    <span class="value">
+                      <%=weather.humidity%>%
+                    </span>
+                  </div>
+                  <div class="spaced-content detail">
+                    <span class="label">Thấp nhất</span>
+                    <span class="value">
+                      <%=weather.temp_min%>°
+                    </span>
+                  </div>
+                  <div class="spaced-content detail">
+                    <span class="label">Cao nhất</span>
+                    <span class="value">
+                      <%=weather.temp_max%>°
+                    </span>
+                  </div>
+                  <div class="spaced-content detail">
+                    <span class="label">Tốc độ gió</span>
+                    <span class="value">
+                      <%=weather.wind_speed%> m/s
+                    </span>
+                  </div>
+                  <div class="spaced-content detail">
+                    <span class="label">Hướng gió</span>
+                    <span class="value">
+                      <%=weather.wind_deg%>°
+                    </span>
                   </div>
                 </div>
               </div>
@@ -68,26 +92,28 @@
           </div>
         </div>
       </div>
-    </section>
-    <script>
-      function startTime() {
-        const today = new Date();
-        let h = today.getHours();
-        let m = today.getMinutes();
-        let s = today.getSeconds();
-        m = checkTime(m);
-        s = checkTime(s);
-        document.getElementById('timer').innerHTML =  h + ":" + m + ":" + s;
-        setTimeout(startTime, 1000);
-      }
+    </div>
+  </section>
+  <script>
+    function startTime() {
+      const today = new Date();
+      let h = today.getHours();
+      let m = today.getMinutes();
+      let s = today.getSeconds();
+      m = checkTime(m);
+      s = checkTime(s);
+      document.getElementById('timer').innerHTML = h + ":" + m + ":" + s;
+      setTimeout(startTime, 1000);
+    }
 
-      function checkTime(i) {
-        if (i < 10) {i = "0" + i};  // add zero in front of numbers < 10
-        return i;
-      }
-      $(document).ready(function () {
-        startTime();
-      });
-    </script>
-  </body>
+    function checkTime(i) {
+      if (i < 10) { i = "0" + i };  // add zero in front of numbers < 10
+      return i;
+    }
+    $(document).ready(function () {
+      startTime();
+    });
+  </script>
+</body>
+
 </html>
