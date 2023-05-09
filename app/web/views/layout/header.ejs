@@ -58,7 +58,17 @@
       <%- include('../layout/notification') %>
       <div class="header-action-item header-acc">
         <a class="dropdown-toggle" href="#" data-bs-toggle="dropdown" data-bs-reference="parent" aria-expanded="false">
-          <img class="img-fluid header-acc-avatar" src="/public/content/images/ex/avatar.jpg" alt="">
+          <!-- <img class="img-fluid header-acc-avatar" src="/public/content/images/ex/avatar.jpg" alt=""> -->
+          <% if (user){ %>
+            <% if(user.gender == 1){ %>
+              <img class="img-fluid header-acc-avatar" src="/public/content/images/doctor-male.svg" alt="">
+            <% }else{ %>
+              <img class="img-fluid header-acc-avatar" src="/public/content/images/doctor-female.svg" alt="">
+            <% } %>
+          <% }else{ %>
+            <img class="img-fluid header-acc-avatar" src="/public/content/images/user-icon.svg" alt="">
+          <% } %>
+          
           <div class="ms-2 d-none d-xl-block">
             <% if (user){%>
             <div class="header-acc-name"><%= user.full_name ? user.full_name : user.email %></div>

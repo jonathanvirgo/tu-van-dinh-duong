@@ -53,8 +53,8 @@ let examineService = {
                         paraSQL.push(search.hospital_id);
                     }else if(search.role_ids.includes(4)){
                         //Nếu là bác sĩ load theo khoa
-                        sql += " AND examine.department_id = ?";
-                        paraSQL.push(search.department_id);
+                        sql += " AND examine.created_by = ?";
+                        paraSQL.push(search.created_by);
                     }else{
                         //Nếu là bệnh nhân load theo số điện thoại hoặc email
                         sql += " AND (examine.cus_phone = ? OR examine.cus_email = ?)";
@@ -162,8 +162,8 @@ let examineService = {
                         paraSQL.push(search.hospital_id);
                     }else if(search.role_ids.includes(4)){
                         //Nếu là bác sĩ load theo khoa
-                        sql += " AND examine.department_id = ?";
-                        paraSQL.push(search.department_id);
+                        sql += " AND examine.created_by = ?";
+                        paraSQL.push(search.created_by);
                     }else{
                         //Nếu là bệnh nhân load theo số điện thoại hoặc email
                         sql += " AND (examine.cus_phone = ? OR examine.cus_email = ?)";
@@ -255,7 +255,7 @@ let examineService = {
                 }else if(parameter.role_ids.includes(4)){
                     //Nếu là bác sĩ load theo khoa
                     sql += " AND examine.created_by = ?";
-                    paraSQL.push(parameter.department_id);
+                    paraSQL.push(parameter.created_by);
                 }else{
                     //Nếu là bệnh nhân load theo số điện thoại hoặc email
                     sql += " AND (examine.cus_phone = ? OR examine.cus_email = ?)";
@@ -296,6 +296,44 @@ let examineService = {
                         message: "Successful"
                     });
                 });
+            });
+        });
+    },
+    getAllArticleStatus: function(parameter, callback) {
+        db.get().getConnection(function(err, connection) {
+            if (err) return callback(err);
+            var paraSQL = [];
+            var sql     = `SELECT status FROM examine WHERE active = 1 `;
+
+            if(parameter.role_ids && parameter.role_ids.length == 0){
+                if (parameter.name !== "" && parameter.phone !== "") {
+                    sql += ` AND (examine.cus_name like ? AND examine.cus_phone like ?)`;
+                    paraSQL.push("%" + parameter.name + "%");
+                    paraSQL.push("%" + parameter.phone + "%");
+                }
+            }else{
+                //Không phải Administrator thì load các bản ghi theo khoa viện
+                if (!parameter.role_ids.includes(1) && !parameter.role_ids.includes(3)){
+                    //Nếu là quản lý load theo viện
+                    if(parameter.role_ids.includes(5)){
+                        sql += " AND examine.hospital_id = ?";
+                        paraSQL.push(parameter.hospital_id);
+                    }else if(parameter.role_ids.includes(4)){
+                        //Nếu là bác sĩ load theo khoa
+                        sql += " AND examine.created_by = ?";
+                        paraSQL.push(parameter.created_by);
+                    }else{
+                        //Nếu là bệnh nhân load theo số điện thoại hoặc email
+                        sql += " AND (examine.cus_phone = ? OR examine.cus_email = ?)";
+                        paraSQL.push(parameter.user_phone);
+                        paraSQL.push(parameter.user_mail);
+                    }
+                }
+            }
+            var query = connection.query(sql, paraSQL, function(err, results, fields) {
+                connection.release();
+                if (err) return callback(err);
+                callback(null, results, fields);
             });
         });
     }

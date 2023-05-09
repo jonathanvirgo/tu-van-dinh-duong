@@ -1,7 +1,7 @@
 <form action="/" method="get" id="dashboard_filter">
 <div class="statistic_body">
   <div class="box-body">
-    <div class="dashboard_search">
+    <!-- <div class="dashboard_search">
       <div class="row flex-grow-1">
         <div class="col-md-auto">
           <div id="website_filter">
@@ -33,7 +33,7 @@
           </form>
         </div>
       </div>
-    </div>
+    </div> -->
     <div class="row">
       <div class="col-xl-4">
         <div class="box box-stat">
@@ -110,6 +110,7 @@
               <div id="myChartByDate" class="chart--container"></div>
               <script type="text/javascript">
                 var pageview        = <%- JSON.stringify(chartNews) %>;
+                console.log("pageview", pageview);
                 let pageviewConfig  = {
                   type: 'mixed',
                   plot: {
@@ -139,14 +140,14 @@
                   },
                   scaleY: {
                     label: {
-                      text: 'Số lượng khám',
+                      text: 'Số lượt khám',
                       fontSize: '13px',
                       fontWeight: 'normal',
                       color: '#818181'
                     },
                     maxValue: pageview['max_news'],
                     minValue: 0,
-                    step: 10
+                    step: 1
                   },
                   crosshairX: {
                     lineColor: '#424242',
@@ -157,12 +158,20 @@
                     }
                   },
                   series: [
+                    // {
+                    //   type: 'bar',
+                    //   text: 'Số lượt khám',
+                    //   values: pageview['news'],
+                    //   lineColor: '#5BCD8F',
+                    //   backgroundColor: '#5BCD8F',
+                    //   scales: 'scale-x, scale-y'
+                    // },
                     {
-                      type: 'bar',
-                      text: 'Số lượng khám',
+                      type: 'line',
+                      text: 'Số lượt khám',
                       values: pageview['news'],
-                      lineColor: '#5BCD8F',
-                      backgroundColor: '#5BCD8F',
+                      lineColor: '#F2564C',
+                      backgroundColor: '#F2564C',
                       scales: 'scale-x, scale-y'
                     }
                   ]

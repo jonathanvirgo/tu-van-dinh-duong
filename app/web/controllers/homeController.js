@@ -60,8 +60,21 @@ router.get('/', function(req, res) {
                     if (result !== undefined) {
                         listExamine = result;
                     }
-                    if(listExamine.length > 0){
-                        for(let examine of listExamine){
+                    resolve();
+                });
+            }));
+
+            arrPromise.push(new Promise(function (resolve, reject) {
+                examineService.getAllArticleStatus(filter.search , function (err, result, fields) {
+                    if (err) {
+                        return logService.create(req, err).then(function(responseData){
+                            if(responseData.message) str_errors.push(responseData.message);
+                            else str_errors.push(err.sqlMessage);
+                            resolve();
+                        });
+                    }
+                    if(result && result.length > 0){
+                        for(let examine of result){
                             //1: Tiếp nhận, 2: Đang khám, 3: Hoàn thành, 4: Đã hủy
                             if(examine.status == 1){
                                 statsByStatus.post1 += 1;
