@@ -185,6 +185,8 @@ let webService = {
                         page: page,
                         fromdate: "",
                         todate: "",
+                        fromdate_statistic: "",
+                        todate_statistic: "",
                         keyword: query.keyword == undefined ? "" : query.keyword,
                         name: query.cus_name == undefined ? "" : query.cus_name.trim(),
                         phone: query.cus_phone == undefined ? "" : query.cus_phone.trim(),
@@ -240,6 +242,10 @@ let webService = {
                 }
                 listData.requestUri += "&status_ids=" + listData.search.status_ids;
             }
+            if(type == 0){
+                listData.search.fromdate_statistic = webService.addDays(-30);
+                listData.search.todate_statistic   = webService.parseDay(new Date());
+            }
 
             if (listData.search.book_date !== '') {
                 if(listData.search.book_date.indexOf(' - ') == -1){
@@ -255,6 +261,7 @@ let webService = {
             if (listData.search.order_by !== '') {
                 listData.requestUri += "&order_by=" + listData.search.order_by;
             }
+
             arrPromise.push(new Promise((resolve, reject) => {
                 webService.getListTable('SELECT id AS value, name AS label FROM hospital WHERE active = 1', []).then(responseData =>{
                     if(responseData.success){
@@ -2550,7 +2557,6 @@ let webService = {
                     };
                     numberDate++;
                 }else{
-                    console.log("date", date, moment.unix(item.dt).utc().format('D-M'), moment.unix(item.dt).utc().format('D-M HH:mm:ss'));
                     if(date == moment.unix(item.dt).utc().format('D-M')){
                         weatherDate.listTemp.push(item.main.temp);
                         weatherDate.listTempMin.push(item.main.temp_min);

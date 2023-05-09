@@ -791,8 +791,8 @@ router.get('/suggest/phone', function(req, res, next){
             res.json(resultData);
             return;
         }
-        let sqlPhone = 'SELECT * FROM customer WHERE cus_phone LIKE ?';
-        webService.getListTable(sqlPhone, ['%' + req.query.term + '%']).then(responseData =>{
+        let sqlPhone = 'SELECT * FROM customer WHERE cus_phone LIKE ? OR cus_name LIKE ?';
+        webService.getListTable(sqlPhone, ['%' + req.query.term + '%', '%' + req.query.term + '%']).then(responseData =>{
             if(responseData.success && responseData.data.length > 0){
                 resultData.message = "Thành công";
                 resultData.success = true;

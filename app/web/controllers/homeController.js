@@ -14,7 +14,7 @@ router.get('/', function(req, res) {
         }
         webService.createSideBarFilter(req, 0, 5).then(function(filter){
             var str_errors   = filter.error,
-                datesRange   = getDatesRangeArray(filter.search.fromdate, filter.search.todate),
+                datesRange   = getDatesRangeArray(filter.search.fromdate_statistic, filter.search.todate_statistic),
                 arrPromise   = [],
                 listExamine  = [],
                 countExamine = 0,
@@ -81,8 +81,51 @@ router.get('/', function(req, res) {
                 });
             }));
 
+            arrPromise.push(new Promise(function(resolve, reject) {
+                examineService.getExamineGroupByDate(filter.search, function (err, result, fields) {
+                    if (err) {
+                        return logService.create(req, err).then(function(){
+                            str_errors.push(err.sqlMessage);
+                            resolve();
+                        });
+                    }
+                    var daylist = datesRange.reverse().map((v)=>v.toISOString().slice(0,10)).reverse();
+                    if (result !== undefined && result.length > 0) {
+                        for (var i = 0; i < daylist.length; i++) {
+                            for (var j = 0; j < result.length; j++) {
+                                if(!chartNews.datetime.includes(daylist[i])){
+                                    var datetime = moment(result[j].reportdate).format("YYYY-MM-DD");
+                                    if(datetime == daylist[i]){
+                                        chartNews.label.push(moment(daylist[i]).format("DD-MM-YYYY"));
+                                        chartNews.datetime.push(daylist[i]);
+                                        chartNews.news.push(result[j].total);
+                                    }
+                                }
+                            }
+                            if(!chartNews.datetime.includes(daylist[i])){
+                                chartNews.label.push(moment(daylist[i]).format("DD-MM-YYYY"));
+                                chartNews.datetime.push(daylist[i]);
+                                chartNews.news.push(0);
+                            }
+                        }
+                        chartNews.max_news = Math.max.apply(null, chartNews.news);
+                        resolve();
+                    }
+                });
+            }));
+            
             return new Promise(function (resolve, reject) {
                 Promise.all(arrPromise).then(function () {
+                    if(chartNews.label.length > 60){
+                        //2 tháng < time range < 6 tháng ---> hiển thị weekly
+                        if(chartNews.label.length < 180){
+                            chartNews = generateRangeArray(chartNews, filter.search.fromdate, filter.search.todate, 7);
+                        } else {
+                            //nếu > 6 tháng ---> hiển thị monthly
+                            chartNews = generateRangeArray(chartNews, filter.search.fromdate, filter.search.todate, 30);
+                        }
+                    }
+                    
                     res.render('home/index.ejs', { 
                         user: req.user,
                         errors: str_errors,
@@ -100,7 +143,8 @@ router.get('/', function(req, res) {
                         user: req.user,
                         errors: [err],
                         filter: filter,
-                        link:'dashboard'
+                        link:'dashboard',
+                        moment: moment,
                     });
                 });
             });
@@ -110,7 +154,9 @@ router.get('/', function(req, res) {
             res.render("home/index.ejs", {
                 user: req.user,
                 errors: [e.message],
-                filter: dataFilter
+                filter: dataFilter,
+                link:'dashboard',
+                moment: moment,
             });
         })
     }
@@ -257,5 +303,46 @@ function getDatesRangeArray(startDate, endDate) {
         arr.push(new Date(dt));
     }
     return arr;
+}
+
+function generateRangeArray(chartNews, startDate, endDate, numberDay){
+    let arr       = [];
+    let from      = new Date(startDate.split("-").reverse().join("-")).getTime();
+    let to        = new Date(endDate.split("-").reverse().join("-")).getTime();
+    let day       = 86400000;
+    let week      = day * numberDay;
+    let current   = 0;
+    let weeks     = (to-from)/day/numberDay;
+    let chartData = {
+        datetime:[],
+        label: [],
+        news: [],
+        pageview: [],
+        max_news: 0,
+        max_pageview: 0
+    };
+    
+    for (i = 0; i < weeks; i++){
+      arr.push(moment(new Date(from += week)).format("YYYY-MM-DD"));
+    }
+
+    for (var j = 0; j < arr.length; j++) {
+        let prev_datetime = new Date(new Date(arr[j]).getTime() - week),
+            label_name    = moment(prev_datetime).format("DD-MM-YYYY") + '<br/>' + moment(arr[j]).format("DD-MM-YYYY");
+     
+        chartData.news[j]     = 0;
+        chartData.pageview[j] = 0;
+        for (var i = 0; i < chartNews.label.length; i++) {
+            if((new Date(chartNews.datetime[i]) < new Date(arr[j])) && (new Date(chartNews.datetime[i]) > prev_datetime)){
+                chartData.news[j]      += chartNews.news[i];
+                chartData.pageview[j]  += chartNews.pageview[i];
+            }
+        }
+        chartData.label.push(label_name);
+        chartData.datetime.push(arr[j]);
+    }
+    chartData.max_news     = Math.max(...chartData.news);
+    chartData.max_pageview = Math.max(...chartData.pageview);
+    return chartData;
 }
 module.exports = router;
