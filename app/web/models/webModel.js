@@ -631,20 +631,20 @@ let webService = {
                     });
                 }
             });
-            db.get().getConnection(function(err, connection) {
-                try {
-                    if(err){
+            // db.get().getConnection(function(err, connection) {
+            //     try {
+            //         if(err){
 
-                    }else{
-                        let sqlQueryLog = 'INSERT INTO log_info(type,examine_id,data) VALUES (?,?,?)';
-                        connection.query(sqlQueryLog, ['updateRecordTable: ' + table, table == 'examine' ? condition.id : null, JSON.stringify(param)], function(error, results, fields) {
-                            connection.release();
-                        });
-                    }
-                } catch (error) {
+            //         }else{
+            //             let sqlQueryLog = 'INSERT INTO log_info(type,examine_id,data) VALUES (?,?,?)';
+            //             connection.query(sqlQueryLog, ['updateRecordTable: ' + table, table == 'examine' ? condition.id : null, JSON.stringify(param)], function(error, results, fields) {
+            //                 connection.release();
+            //             });
+            //         }
+            //     } catch (error) {
                     
-                }
-            });
+            //     }
+            // });
         });
     },
     addRecordTable: function(param, table, isCreated_at = false){
@@ -695,20 +695,20 @@ let webService = {
                     }
                 });
             });
-            db.get().getConnection(function(err, connection) {
-                try {
-                    if(err){
+            // db.get().getConnection(function(err, connection) {
+            //     try {
+            //         if(err){
 
-                    }else{
-                        let sqlQueryLog = 'INSERT INTO log_info(type,examine_id,data) VALUES (?,?,?)';
-                        connection.query(sqlQueryLog, ['addRecordTable: ' + table, table == 'examine' ? results.insertId : null, JSON.stringify(param)], function(error, results, fields) {
-                            connection.release();
-                        });
-                    }
-                } catch (error) {
+            //         }else{
+            //             let sqlQueryLog = 'INSERT INTO log_info(type,examine_id,data) VALUES (?,?,?)';
+            //             connection.query(sqlQueryLog, ['addRecordTable: ' + table, table == 'examine' ? results.insertId : null, JSON.stringify(param)], function(error, results, fields) {
+            //                 connection.release();
+            //             });
+            //         }
+            //     } catch (error) {
                     
-                }
-            });
+            //     }
+            // });
         })
     },
     deleteRecordTable: function(condition, table){
