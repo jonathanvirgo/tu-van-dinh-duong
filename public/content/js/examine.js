@@ -1138,14 +1138,27 @@ function generateTableMenuSearch(id){
 
 function addTemplateListMenuTimeSearch(listMenuTime){
     try {
+        // if(listMenuTime.length > 0){
+        //     for(let item of listMenuTime){
+        //         let menuTime = addTemplateMenuTimeSearch(item);
+        //         $("#tb_menu").find('tbody').append(menuTime);
+        //         if(item.listFood.length > 0){
+        //             for(let food of item.listFood){
+        //                 let foodTemplate = addFoodTemplateSearch(food, item.id);
+        //                 $("#tb_menu").find('tbody').append(foodTemplate);
+        //             }
+        //         }
+        //     }
+        // }
         if(listMenuTime.length > 0){
             for(let item of listMenuTime){
-                let menuTime = addTemplateMenuTimeSearch(item);
-                $("#tb_menu").find('tbody').append(menuTime);
+                let menuTime = addTemplateMenuTimeSearch2(item);
+                $("#list_menu_example").append(menuTime);
                 if(item.listFood.length > 0){
                     for(let food of item.listFood){
-                        let foodTemplate = addFoodTemplateSearch(food, item.id);
-                        $("#tb_menu").find('tbody').append(foodTemplate);
+                        let foodTemplate = addFoodTemplateSearch2(food, item.name_course);
+                        $("#menu_time_food_" + item.id).append(foodTemplate.food);
+                        $("#menu_time_weight_" + item.id).append(foodTemplate.weight);
                     }
                 }
             }
@@ -1155,40 +1168,77 @@ function addTemplateListMenuTimeSearch(listMenuTime){
     }
 }
 
-function addTemplateMenuTimeSearch(menuTime){
+// function addTemplateMenuTimeSearch(menuTime){
+//     try {
+//         let rowspan = menuTime.listFood.length + 1;
+//         return menuTimeTemplate = $('<tr/>')
+//             .attr("id", "menu_time_"+ menuTime.id)
+//             .addClass("text-center")
+//             .append($("<td/>")
+//                 .css({"writing-mode": "vertical-rl"})
+//                 .attr("rowspan", rowspan)
+//                 .text(menuTime.name)
+//             )
+//             .append($("<td/>")
+//                 .text(menuTime.name_course)
+//                 .css({"text-align": "center"})
+//                 .attr("colspan", 2)
+//             );
+//     } catch (error) {
+        
+//     }
+// }
+
+// function addFoodTemplateSearch(food, menuTime_id){
+//     try {
+//         return $('<tr/>')
+//         .attr("id", "food_"+ menuTime_id + "_" + food.id)
+//         .append($("<td/>")
+//             .text(food.name)
+//             .css({"text-align": "center"})
+//         )
+//         .append($("<td/>")
+//             .attr("id", "food_"+ menuTime_id + "_" + food.id + "_weight")
+//             .text(food.weight)
+//             .css({"text-align": "center"})
+//         );
+//     } catch (error) {
+        
+//     }
+// }
+
+function addTemplateMenuTimeSearch2(menuTime){
     try {
-        let rowspan = menuTime.listFood.length + 1;
-        return menuTimeTemplate = $('<tr/>')
+        return menuTimeTemplate = $('<div/>')
             .attr("id", "menu_time_"+ menuTime.id)
-            .addClass("text-center")
-            .append($("<td/>")
-                .css({"writing-mode": "vertical-rl"})
-                .attr("rowspan", rowspan)
+            .addClass("row mt-0")
+            .append($("<div/>")
+                .addClass("col-2 px-2 py-2")
+                .css({"writing-mode": "vertical-rl", "display":"flex", "justify-content":"center","align-items":"center"})
                 .text(menuTime.name)
             )
-            .append($("<td/>")
-                .text(menuTime.name_course)
-                .css({"text-align": "center"})
-                .attr("colspan", 2)
+            .append($("<div/>")
+                .attr("id", "menu_time_food_"+ menuTime.id)
+                .addClass("col-7 text-center")
+            )
+            .append($("<div/>")
+                .attr("id", "menu_time_weight_"+ menuTime.id)
+                .addClass("col-3")
             );
     } catch (error) {
         
     }
 }
 
-function addFoodTemplateSearch(food, menuTime_id){
+function addFoodTemplateSearch2(food, name_course){
     try {
-        return $('<tr/>')
-        .attr("id", "food_"+ menuTime_id + "_" + food.id)
-        .append($("<td/>")
+        let temp_food = $('<div/>')
             .text(food.name)
-            .css({"text-align": "center"})
-        )
-        .append($("<td/>")
-            .attr("id", "food_"+ menuTime_id + "_" + food.id + "_weight")
+            .addClass("px-2 py-2");
+        let weight = $('<div/>')
             .text(food.weight)
-            .css({"text-align": "center"})
-        );
+            .addClass("px-2 py-2");
+        return {food: temp_food, weight: weight};
     } catch (error) {
         
     }

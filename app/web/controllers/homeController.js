@@ -122,8 +122,8 @@ router.get('/', function(req, res) {
                             }
                         }
                         chartNews.max_news = Math.max.apply(null, chartNews.news);
-                        resolve();
                     }
+                    resolve();
                 });
             }));
             
