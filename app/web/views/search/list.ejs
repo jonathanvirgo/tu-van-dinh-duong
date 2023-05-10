@@ -6,48 +6,31 @@
                 <%- include('../layout/pagination') %>
             </div>
         </div>
-        <div class="box-body box-table">
-            <div class="table-responsive-md table-responsive-flush">
-                <div class="table-responsive-inner">
-                    <table class="table-1 table table-pe-x-3 mb-0 align-middle">
-                    <thead>
-                        <tr>
-                            <td width="100px">Ngày khám</td>
-                            <td>Address</td>
-                            <td>Chẩn đoán</td>
-                            
-                            <td></td>
-                        </tr>
-                    </thead>
-                    <tbody>
-                    <% if (listExamine.length > 0){%>
-                        <% for (i = 0;i < listExamine.length;i++){%>
-                        <tr>
-                            <td class="fs-13px">
+        <div class="box-body p-2">
+            <div class="row ms-0 me-0">
+                <div class="col-3 col-md-2 fw-bold p-1">Ngày khám</div>
+                <div class="col-5 col-md-5 fw-bold p-1">Address</div>
+                <div class="col-4 col-md-5 fw-bold p-1">Chẩn đoán</div>
+            </div>
+            <% if (listExamine.length > 0){%>
+                <% for (i = 0;i < listExamine.length;i++){%>
+                    <div class="row ms-0 me-0">
+                        <div class="col-3 col-md-2 fs-13px p-1 text-primary">
+                            <a onclick="viewDetailExamine('<%=listExamine[i].id%>')" style="cursor: pointer;">
                                 <%=moment(listExamine[i].created_at).format("HH:mm:ss")%>
                                 <br>
                                 <small class="text-body-2">
                                     <%=moment(listExamine[i].created_at).format("DD/MM/YYYY")%>
                                 </small>
-                            </td>
-                            <td class="fs-13px text-primary"><%=listExamine[i].cus_address%></td>
-                            <td class="fs-13px"><%=listExamine[i].diagnostic%></td>
-                            <td>
-                                <a onclick="viewDetailExamine('<%=listExamine[i].id%>')" style="cursor: pointer;"><span class="text-primary fw-6 fs-13px">Xem</span></a>
-                            </td>
-                        </tr>
-                        <%}%>
-                    <%} else {%>
-                        <tr>
-                        <td colspan="5" style="text-align: center;">
-                            <b>Không có dữ liệu!</b>
-                        </td>
-                        </tr>
-                    <% } %>
-                    </tbody>
-                    </table>
-                </div>
-            </div>
+                            </a>
+                        </div>
+                        <div class="col-5 col-md-5 fs-13px p-1"><%=listExamine[i].cus_address%></div>
+                        <div class="col-4 col-md-5 fs-13px p-1"><%=listExamine[i].diagnostic%></div>
+                    </div>
+                <%}%>
+            <%} else {%>
+                <div class="col-12" style="text-align: center;"><b>Không có dữ liệu!</b></div>
+            <% } %>
             <div class="paginate fs-13px mx-auto">
                 <%- include('../layout/pagination') %>
             </div>

@@ -1,7 +1,7 @@
-<div class="form-horizontal">
+<div>
     <% if(menuExample.length > 0){ %>
-    <h3 class="box-title-break">Thực đơn mẫu</h3>
-    <div class="row g-2 align-items-center">
+    <h3 class="box-title-break mb-3">Thực đơn mẫu</h3>
+    <div class="row g-2 align-items-center mb-3">
         <div class="col-12 col-md-6 d-flex">
             <label class="col-form-label col-md-auto fw-bold mt-2" for="menu_id">Chọn menu</label>
             <div class="col-form-body col-md w-100">
@@ -15,30 +15,38 @@
             </div>
         </div>
     </div>
-    <div class="row g-2 align-items-center">
-        <div class="table-responsive-xl table-responsive-flush mb-4" id="tb_menu" style="width: 100%">
-          <div class="table-responsive-inner"></div>
-          <table class="table-2 table table-pe-x-3 mb-0 align-middle table-ds-booking table-bordered table-hover">
-              <thead class="text-center">
-                  <tr>
-                      <td>Giờ</td>
-                      <td>Thực phẩm</td>
-                      <td>Weight(g)</td>
-                  </tr>
-              </thead>
-              <tbody>
-                
-              </tbody>
-          </table>
-        </div>
+    <div class="row mt-0 mx-0 my-0" style="background-color: #f8fafc;border-bottom: 1px solid #e6ecf2;border-top: 1px solid #e6ecf2;font-size: 16px;">
+        <div class="col-1 px-2 py-2 text-center" style="font-weight: 700;">Giờ</div>
+        <div class="col-7 px-2 py-2 text-center" style="font-weight: 700;">Thực phẩm</div>
+        <div class="col-4 px-2 py-2 text-center" style="font-weight: 700;">Weight(g)</div>
     </div>
+    <div id="list_menu_example" style="font-size: 16px;" class="mb-3">
+
+    </div>
+    <!-- <div class="row g-2 align-items-center">
+        <div class="table-responsive-xl table-responsive-flush mb-4" id="tb_menu" style="width: 100%">
+            <div class="table-responsive-inner"></div>
+            <table class="table-2 table table-pe-x-3 mb-0 align-middle table-ds-booking table-bordered table-hover">
+                <thead class="text-center">
+                    <tr>
+                        <td>Giờ</td>
+                        <td>Thực phẩm</td>
+                        <td>Weight(g)</td>
+                    </tr>
+                </thead>
+                <tbody>
+                  
+                </tbody>
+            </table>
+          </div>
+    </div> -->
     <% } %>
-    <h3 class="box-title-break">Thực phẩm thay thế tương đương</h3>
+    <h3 class="box-title-break mb-3">Thực phẩm thay thế tương đương</h3>
     <div class="row g-2 align-items-center">
         <% if(dataAlternativeFood.length > 0){ %>
             <% for(let item of dataAlternativeFood){ %>
-                <div class="col-6"><%= item.food_main %></div>
-                <div class="col-6"><%= item.food_replace %></div>
+                <div class="col-6 ps-3"><%= item.food_main %></div>
+                <div class="col-6 ps-3"><%= item.food_replace %></div>
             <% } %>
         <% } %>
     </div>

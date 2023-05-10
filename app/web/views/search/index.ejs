@@ -11,7 +11,7 @@
                         <label class="col-form-label col-md-auto fw-bold mt-2" for="cus_name">Họ và tên
                             <span class="text-danger">*</span>
                         </label>
-                        <div class="col-form-body col-md">
+                        <div class="col-form-body col-md w-100">
                             <div class="form-control-has-addon">
                                 <input type="text" name="cus_name" class="form-control form-control-title" id="cus_name" placeholder="Họ và tên" value="<%= filter.search.name%>">
                                 <button class="btn form-control-addon btn-link p-0 min-h-auto" type="button" onclick="clearInput('#cus_name')">
@@ -26,7 +26,7 @@
                         <label class="col-form-label col-md-auto fw-bold mt-2" for="cus_phone" style="width: 100px">Số điện thoại
                             <span class="text-danger">*</span>
                         </label>
-                        <div class="col-form-body col-md" style="flex-grow: 1;">
+                        <div class="col-form-body col-md w-100" style="flex-grow: 1;">
                             <div class="form-control-has-addon input-group">
                                 <input type="text" name="cus_phone" class="form-control form-control-title" id="cus_phone" placeholder="Tìm kiếm theo số điện thoại" value="<%= filter.search.phone%>">
                                 <button class="btn form-control-addon btn-link p-0 min-h-auto" type="button" onclick="clearInput('#cus_phone')" style="position: absolute;right: 6rem;">
