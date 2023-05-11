@@ -45,10 +45,10 @@
     </div>
     <div class="col-md-9">
       <div class="input-group">
-        <input type="checkbox" <%=menuExample.share == 1 ? 'checked' : ''%> name="share"/>
+        <input type="checkbox" <%=medicine.share == 1 ? 'checked' : ''%> name="share"/>
       </div>
     </div>
   </div>
   <% }else{ %>
-    <input type="hidden" value="<%=menuExample.share == 1 ? 'on' : ''%>" name="share"/>
+    <input type="hidden" value="<%=medicine.share == 1 ? 'on' : ''%>" name="share"/>
   <% } %>
