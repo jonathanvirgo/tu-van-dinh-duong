@@ -420,7 +420,7 @@ function diff_years(dt2, dt1)
         return;
     }
     let medicine_total = $('#total_medinice').val();
-    if(!medicine_total || medicine_total == 0){
+    if(!medicine_total || medicine_total == 0 || isNaN(medicine_total)){
         displayError('Thiếu số lượng!');
         return;
     }
@@ -430,11 +430,27 @@ function diff_years(dt2, dt1)
         stt: dataExamine.id_prescription++,
         name: medicine_name,
         id: medicine_id,
-        total: medicine_total,
+        total: parseInt(medicine_total),
         unit: medicine_unit,
         note: medicine_note
     }
-    dataExamine.prescription.push(prescriptionItem);
+    if(dataExamine.prescription.length == 0){
+        dataExamine.prescription.push(prescriptionItem);
+    }else{
+        let isExist = false;
+        for(let item of dataExamine.prescription){
+            if(item.id == prescriptionItem.id){
+                isExist = true;
+                item.total = parseInt(item.total) + parseInt(prescriptionItem.total);
+                item.note = prescriptionItem.note;
+                break;
+            }
+        }
+        if(!isExist){
+            dataExamine.prescription.push(prescriptionItem);
+        }
+    }
+    
     if(dataExamine.prescription.length > 0){
         $("#tb_prescription").show();
     }else{
@@ -453,45 +469,67 @@ function diff_years(dt2, dt1)
     let td2  = document.createElement("td");
     let td3  = document.createElement("td");
     let td4  = document.createElement("td");
+
+    $(td3).addClass("min-w-150px")
+        .append($("<input/>")
+            .attr({"type":"text", "value": prescriptionItem.note, "readonly": isLockInput})
+            .addClass("form-control form-control-title p-1 fs-13px")
+            .data( "medicine_id",  prescriptionItem.id)
+            .change(function(){
+                let id = $(this).data('medicine_id');
+                let value = $(this).val();
+                changeMedicine(id, value, 'note');
+            })
+        );
+    
+    $(td4).append($("<input/>")
+            .attr({"type":"text", "value": prescriptionItem.total, "readonly": isLockInput})
+            .addClass("form-control form-control-title p-1 fw-14px text-red")
+            .data( "medicine_id",  prescriptionItem.id)
+            .change(function(){
+                let id = $(this).data('medicine_id');
+                let value = parseInt($(this).val());
+                if(isNaN(value)){
+                    displayErrorToastr('Số lượng thuốc không đúng định dạng!')
+                }else{
+                    changeMedicine(id, value, 'total');
+                }
+            })
+        );
+
     let td5  = document.createElement("td");
     let td6  = document.createElement("td");
 
     $(td2).attr({class:'min-w-150px fw-14px'});
-    $(td3).attr({class:'min-w-150px fs-13px'});
-    $(td4).attr({class:'fw-14px text-red'});
     $(td5).attr({class:'fs-13px text-primary'});
 
-    let button1 = document.createElement("button");
-    let button2 = document.createElement("button");
+    let button = document.createElement("button");
     let div = document.createElement("div");
     $(div).attr({class: 'flex-center-x gap-10px'});
-    var svgElem1 = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-    $(svgElem1).attr({class:'iconsvg-send'});
-	useElem1 = document.createElementNS('http://www.w3.org/2000/svg', 'use');
-    useElem1.setAttributeNS('http://www.w3.org/1999/xlink', 'xlink:href', '/public/content/images/sprite.svg#edit-2');
-    svgElem1.append(useElem1);
 
-    var svgElem2 = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-    $(svgElem2).attr({class:'iconsvg-trash'});
-	useElem2 = document.createElementNS('http://www.w3.org/2000/svg', 'use');
-    useElem2.setAttributeNS('http://www.w3.org/1999/xlink', 'xlink:href', '/public/content/images/sprite.svg#trash');
-    svgElem2.append(useElem2);
+    var svgElem = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    $(svgElem).attr({class:'iconsvg-trash'});
+	useElem = document.createElementNS('http://www.w3.org/2000/svg', 'use');
+    useElem.setAttributeNS('http://www.w3.org/1999/xlink', 'xlink:href', '/public/content/images/sprite.svg#trash');
+    svgElem.append(useElem);
 
-    button1.appendChild(svgElem1);
-    button2.appendChild(svgElem2);
+    button.appendChild(svgElem);
 
-    button1.dataset.id = prescriptionItem.id;
-    button2.dataset.id = prescriptionItem.id;
-    $(button1).attr({class:'btn btn-action btn-action-edit',type:'button'});
-    $(button2).attr({class:'btn btn-action btn-action-cancel',type:'button'});
-    
+    button.dataset.id = prescriptionItem.id;
+    button.dataset.name = prescriptionItem.name;
+
+    $(button).attr({class:'btn btn-action btn-action-cancel',type:'button'});
+    $(button).click(function() {
+        let id = $(this).data('id');
+        let name = $(this).data('name');
+        showConfirmDeleteMedicine(id, name);
+    });
+
     $(td1).text(prescriptionItem.stt);
     $(td2).text(prescriptionItem.name);
-    $(td3).text(prescriptionItem.note);
-    $(td4).text(prescriptionItem.total);
     $(td5).text(prescriptionItem.unit);
-    div.append(button1);
-    div.append(button2);
+
+    div.append(button);
     td6.append(div);
     tr.append(td1);
     tr.append(td2);
@@ -507,6 +545,59 @@ function diff_years(dt2, dt1)
     $('#tb_prescription table tbody').append(tr);
  }
 
+function showConfirmDeleteMedicine(id, name){
+    var confirmBox = `
+    <div class="modal fade" id="modal_cf_delete_medicine" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <button class="modal-btn-close btn-close" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
+          <h4 class="modal-title text-center mb-4">Bạn muốn xóa <span class="text-tra-lai">`+ name +`</span> khỏi danh sách không?</h4>
+          
+          <div class="row g-2 justify-content-center">
+            <div class="col-6">
+              <button class="btn btn-cancel box-btn w-100 text-uppercase" type="button" data-bs-dismiss="modal">Không</button>
+            </div>
+            <div class="col-6">
+              <button onclick="deleteMedicine(`+ id +`)" class="btn btn-primary box-btn w-100 text-uppercase" type="button" data-bs-dismiss="modal">
+                <svg class="iconsvg-confirm flex-shrink-0 fs-16px me-2">
+                  <use xlink:href="/public/content/images/sprite.svg#confirm"></use>
+                </svg>
+                Đồng ý
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>`;
+  $("#modal_confirm_box").html(confirmBox); 
+  $("#modal_cf_delete_medicine").modal('show');
+}
+
+function deleteMedicine(id){
+    try {
+        if(id){
+            $('#tr_' + id).remove();
+            removeItemArrayByIdObject(dataExamine.prescription, id);
+        }
+    } catch (error) {
+        
+    }
+}
+
+function changeMedicine(id, value, type){
+    try {
+        console.log("changeTotalMedicine", id, value);
+        if(id && value){
+            for(let item of dataExamine.prescription){
+                if(item.id == id){
+                    item[type] = value;
+                }
+            }
+        }
+    } catch (error) {
+        
+    }
+}
 // xóa phần từ trong mảng
 function removeItemArray(arr, val) {
     var j = 0;

@@ -529,7 +529,7 @@ function tableCNTC(data){
                                 size: 4505,
                                 type: WidthType.DXA,
                             },
-                            children: [new Paragraph({text: "CC chuẩn (cm): " + (data.cus_cctc ? data.cus_cctc : ''), style: "size14"})],
+                            children: [new Paragraph({text: "CC chuẩn (m): " + (data.cus_cctc ? data.cus_cctc : ''), style: "size14"})],
                         })
                     ],
                 }),
