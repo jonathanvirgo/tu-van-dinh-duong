@@ -174,6 +174,14 @@ router.get("/examine", async (req, res) => {
                             ],
                             style: "size14"
                         }),
+                        new Paragraph({
+                            children: [
+                                new TextRun({
+                                    text: "Khác: " + (data.exa_note ? data.exa_note : '')
+                                })
+                            ],
+                            style: "size14"
+                        }),
                         paramFollowerStyle("4. LỜI KHUYÊN DINH DƯỠNG", "title"),
                         tableNutritionAdvice(data),
                         paramFollowerStyle("5. CHẾ ĐỘ VẬN ĐỘNG, SINH HOẠT", "title"),

@@ -148,7 +148,7 @@
 	    </div>
 	</div>
     <div class="row g-2 align-items-center">
-        <div class="col-12 col-md-6 d-flex">
+        <div class="col-12 d-flex">
             <label class="col-form-label col-md-auto fw-bold" for="cus_anamnesis">Tiền sử bệnh</label>
             <div class="col-form-body col-md">
                 <% if(!(examine.status == 4 || (examine.status == 3 && isDetail == true))){ %>
@@ -165,7 +165,9 @@
                 <% } %>  
             </div>
         </div>
-        <div class="col-12 col-md-6 d-flex">
+    </div>
+    <div class="row g-2 align-items-center">
+        <div class="col-12 d-flex">
             <label class="col-form-label col-md-auto fw-bold w-25" for="cus_living_habits">Thói quen ăn uống sinh hoạt</label>
             <div class="col-form-body col-md">
                 <% if(!(examine.status == 4 || (examine.status == 3 && isDetail == true))){ %>
