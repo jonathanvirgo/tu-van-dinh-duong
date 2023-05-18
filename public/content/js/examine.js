@@ -146,9 +146,10 @@ function saveExamine(action){
             displayErrorToastr('Ngày sinh sai định dạng ngày-tháng-năm!');
             return;
         }
-        // action 1 tiếp nhận 2 đang khám 3 hoàn thành;
-        if(action) dataExamine.examine['action'] = action;
         let status = parseInt($('#status_examine').val());
+        // action 1 tiếp nhận 2 đang khám 3 hoàn thành 0 ko thay doi;
+        if(action) dataExamine.examine['action'] = action;
+        if(action == 0) dataExamine.examine['action'] = status;
         if(status == 2 && action == 1) dataExamine.examine['action'] = 2;
         if(status == 3) dataExamine.examine['action'] = 3;
         let url = '/examine/create';
