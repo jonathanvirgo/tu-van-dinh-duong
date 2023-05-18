@@ -141,6 +141,11 @@ function saveExamine(action){
                 return;
             } 
         }
+        let birthday = moment(dataExamine.examine.cus_birthday,"DD-MM-YYYY");
+        if(!birthday.isValid()){
+            displayErrorToastr('Ngày sinh sai định dạng ngày-tháng-năm!');
+            return;
+        }
         // action 1 tiếp nhận 2 đang khám 3 hoàn thành;
         if(action) dataExamine.examine['action'] = action;
         let status = parseInt($('#status_examine').val());
@@ -1471,6 +1476,7 @@ $(document).ready(function(){
     let cus_birthday = $("#cus_birthday").flatpickr({
         dateFormat: "d-m-Y",
         maxDate: "today",
+        allowInput: true,
         onChange: function(selectedDates, dateStr, instance) {
             caculateYearOld(selectedDates, dateStr, instance);
             checkStandardWeightHeight();
