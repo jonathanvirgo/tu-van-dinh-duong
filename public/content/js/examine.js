@@ -340,7 +340,7 @@ function diff_years(dt2, dt1)
         year_old = 5.5;
     }else{
         type_year_old = 0;
-        year_old = Math.round(Math.abs(diff/30.43));
+        year_old = Math.floor(Math.abs(diff/30.43));
     }
     if(type_year_old == 0){
         $('label[for="cus_age"]').text("Tháng");
