@@ -1,0 +1,52 @@
+
+<form class="form-mde" novalidate class="form-login" action="/test/captcha" method="POST">
+    <input type="hidden" id="g-recaptcha-response" name="g-recaptcha-response">
+    <input type="hidden" name="action" value="validate_captcha">
+    <div class="row g-2 align-items-center">
+        <div class="col-12 col-md-6 d-flex">
+            <label class="col-form-label col-md-auto fw-bold mt-2" for="cus_name">Họ và tên
+                <span class="text-danger">*</span>
+            </label>
+            <div class="col-form-body col-md">
+                <div class="form-control-has-addon">
+                    <input type="text" name="cus_name" class="form-control form-control-title" id="cus_name" placeholder="Họ và tên">
+                    <button class="btn form-control-addon btn-link p-0 min-h-auto" type="button" onclick="clearInput('#cus_name')">
+                        <svg class="iconsvg-close">
+                            <use xlink:href="/public/content/images/sprite.svg#close"></use>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row g-2 align-items-center">
+        <div class="col-12 col-md-6 d-flex">
+            <label class="col-form-label col-md-auto fw-bold mt-2" for="cus_phone">Phone
+                <span class="text-danger">*</span>
+            </label>
+            <div class="col-form-body col-md">
+                <div class="form-control-has-addon">
+                    <input type="text" name="cus_phone" class="form-control form-control-title" id="cus_phone" placeholder="Phone">
+                    <button class="btn form-control-addon btn-link p-0 min-h-auto" type="button" onclick="clearInput('#cus_name')">
+                        <svg class="iconsvg-close">
+                            <use xlink:href="/public/content/images/sprite.svg#close"></use>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <button class="btn login-btn btn-primary w-100 text-uppercase mb-4" type="submit" onclick="onClick()">Submit</button>
+</form>
+<script src="https://www.google.com/recaptcha/api.js?render=6LcO-x8mAAAAALx3abWp9h-VFEAs0686oqGZ9nON"></script>
+<script>
+    grecaptcha.ready(function() {
+    // do request for recaptcha token
+    // response is promise with passed token
+        grecaptcha.execute('6LcO-x8mAAAAALx3abWp9h-VFEAs0686oqGZ9nON', {action:'validate_captcha'})
+                  .then(function(token) {
+            // add token value to form
+            document.getElementById('g-recaptcha-response').value = token;
+        });
+    });
+</script>

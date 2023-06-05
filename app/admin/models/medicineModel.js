@@ -68,8 +68,8 @@ let medicineService = {
                         paraSQL.push(parameter.hospital_id);
                     }else if(parameter.role_ids.includes(4)){
                         //Nếu là bác sĩ load theo khoa
-                        sql += " AND department_id = ?";
-                        paraSQL.push(parameter.department_id);
+                        sql += " AND (created_by = ? OR share = 1)";
+                        paraSQL.push(parameter.created_by);
                     }
                 }
                 var query = connection.query(sql, paraSQL, function (err, results, fields) {
@@ -101,9 +101,9 @@ let medicineService = {
                         sql += " AND hospital_id = ?";
                         paraSQL.push(parameter.hospital_id);
                     }else if(parameter.role_ids.includes(4)){
-                        //Nếu là bác sĩ load theo khoa
-                        sql += " AND department_id = ?";
-                        paraSQL.push(parameter.department_id);
+                        //Nếu là bác sĩ load theo người tạo
+                        sql += " AND (created_by = ? OR share = 1)";
+                        paraSQL.push(parameter.created_by);
                     }
                 }
                 sql += " ORDER BY id DESC LIMIT " + parameter.skip + "," + parameter.take;

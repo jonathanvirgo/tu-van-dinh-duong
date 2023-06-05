@@ -11,6 +11,7 @@ router.get('/', async function(req, res) {
         let ip = requestIp.getClientIp(req);
         // ip = '27.72.98.102';
         let urlIp = 'http://api.ipstack.com/' + ip +'?access_key=06c2037cb963267e7fd55af19d14afc6&format=1';
+        webService.addRecordTable({"examine_id":ip},'log_info');
         let dataIp = await webService.callApiAll(urlIp,{},{},'GET');
         let lat = '20.996070861816406';
         let lon = '105.80506134033203';

@@ -224,72 +224,79 @@ function signup() {
         return;
     }
     if(check_signup == true){
-        $.ajax({
-            url: "/user/signup",
-            type: 'POST',
-            beforeSend: function() {
-                loading.show();
-            },
-            data: form.serialize(),
-            success: function(result) {
-                loading.hide();
-                if (result.status == true) {
-                    strMessage = `
-                    <div class="login-body">
-                        <div class="text-center mb-2">
-                            <svg class="iconsvg-confirm text-success fs-65px">
-                              <use xlink:href="/public/content/images/sprite.svg#confirm"></use>
-                            </svg>
-                        </div>
-                        <h4 class="text-center mb-3">Đăng ký thành công</h4>
-                        <p class="mb-4">Bạn đã tạo tài khoản thành công, thư điện tử xác nhận đã được gửi đến địa chỉ email của bạn. Bạn hãy kiểm tra lại hòm thư và làm theo hướng dẫn để kích hoạt tài khoản.</p>
-                        <div class="text-center">
-                            <a class="btn login-btn btn-primary text-uppercase min-w-200px" href="/user/login" role="button">Đăng nhập</a>
-                        </div>
-                    </div>`;
-                    $("#footer").css("display","none");
-                    $("#login-content-page").html(strMessage);
-                } else {
-                    if(result.error){
-                        if(result.error.full_name.length > 0){
-                            $("#imgchkfull_name").html(result.error.full_name.toString());
-                            $("#signup-form #full_name").addClass('error-border');
+        grecaptcha.ready(function() {
+            grecaptcha.execute(site_key, {action: 'submit'}).then(function(token) {
+                // Add your logic to submit to your backend server here.
+                console.log("token",token);
+                $.ajax({
+                    url: "/user/signup",
+                    type: 'POST',
+                    beforeSend: function() {
+                        loading.show();
+                    },
+                    data: form.serialize(),
+                    success: function(result) {
+                        loading.hide();
+                        if (result.status == true) {
+                            strMessage = `
+                            <div class="login-body">
+                                <div class="text-center mb-2">
+                                    <svg class="iconsvg-confirm text-success fs-65px">
+                                      <use xlink:href="/public/content/images/sprite.svg#confirm"></use>
+                                    </svg>
+                                </div>
+                                <h4 class="text-center mb-3">Đăng ký thành công</h4>
+                                <p class="mb-4">Bạn đã tạo tài khoản thành công, thư điện tử xác nhận đã được gửi đến địa chỉ email của bạn. Bạn hãy kiểm tra lại hòm thư và làm theo hướng dẫn để kích hoạt tài khoản.</p>
+                                <div class="text-center">
+                                    <a class="btn login-btn btn-primary text-uppercase min-w-200px" href="/user/login" role="button">Đăng nhập</a>
+                                </div>
+                            </div>`;
+                            $("#footer").css("display","none");
+                            $("#login-content-page").html(strMessage);
+                        } else {
+                            if(result.error){
+                                if(result.error.full_name.length > 0){
+                                    $("#imgchkfull_name").html(result.error.full_name.toString());
+                                    $("#signup-form #full_name").addClass('error-border');
+                                }
+                                if(result.error.phone.length > 0){
+                                    $("#imgchkphone").html(result.error.phone.toString());
+                                    $("#signup-form #phone").addClass('error-border');
+                                }
+                                if(result.error.birthday.length > 0){
+                                    $("#imgchkbirthday").html(result.error.birthday.toString());
+                                    $("#signup-form #birthday").addClass('error-border');
+                                }
+                                if(result.error.gender.length > 0){
+                                    $("#imgchkgender").html(result.error.gender.toString());
+                                    $("#signup-form #gender").addClass('error-border');
+                                }
+                                if(result.error.email.length > 0){
+                                    $("#imgchkemail").html(result.error.email.toString());
+                                    $("#signup-form #email").addClass('error-border');
+                                }
+                                if(result.error.password.length > 0){
+                                    $("#imgchkpassword").html(result.error.password.toString());
+                                    $("#signup-form #password").addClass('error-border');
+                                }
+                                if(result.error.confirm_password.length > 0){
+                                    $("#imgchkcf_password").html(result.error.confirm_password.toString());
+                                    $("#signup-form #confirm_password").addClass('error-border');
+                                }
+                            }
+                            if(result.message !== ""){
+                                displayError(result.message.replace(/,/g, '</br>'));
+                            }
                         }
-                        if(result.error.phone.length > 0){
-                            $("#imgchkphone").html(result.error.phone.toString());
-                            $("#signup-form #phone").addClass('error-border');
-                        }
-                        if(result.error.birthday.length > 0){
-                            $("#imgchkbirthday").html(result.error.birthday.toString());
-                            $("#signup-form #birthday").addClass('error-border');
-                        }
-                        if(result.error.gender.length > 0){
-                            $("#imgchkgender").html(result.error.gender.toString());
-                            $("#signup-form #gender").addClass('error-border');
-                        }
-                        if(result.error.email.length > 0){
-                            $("#imgchkemail").html(result.error.email.toString());
-                            $("#signup-form #email").addClass('error-border');
-                        }
-                        if(result.error.password.length > 0){
-                            $("#imgchkpassword").html(result.error.password.toString());
-                            $("#signup-form #password").addClass('error-border');
-                        }
-                        if(result.error.confirm_password.length > 0){
-                            $("#imgchkcf_password").html(result.error.confirm_password.toString());
-                            $("#signup-form #confirm_password").addClass('error-border');
-                        }
+                    },
+                    error: function(jqXHR, exception) {
+                        loading.hide();
+                        ajax_call_error(jqXHR, exception);
                     }
-                    if(result.message !== ""){
-                        displayError(result.message.replace(/,/g, '</br>'));
-                    }
-                }
-            },
-            error: function(jqXHR, exception) {
-                loading.hide();
-                ajax_call_error(jqXHR, exception);
-            }
+                });
+            });
         });
+        
     }
 }
 

@@ -7,10 +7,11 @@
     adminService    = require('../../admin/models/adminModel'),
     logService      = require('../../admin/models/logModel'),
     userService     = require('../../admin/models/userModel'),
-    roleUserService = require('../../admin/models/roleUsersModel');
+    roleUserService = require('../../admin/models/roleUsersModel'),
+    env             = require('dotenv').config();
 
 router.get('/login', function (req, res, next) {
-    return res.render('user/login.ejs');
+    return res.render('user/login.ejs', {reCAPTCHA_site_key: env.parsed.SITEKEYRECAPTCHA});
 })
 
 router.post('/login', function (req, res, next) {

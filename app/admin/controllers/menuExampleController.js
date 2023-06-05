@@ -207,7 +207,11 @@ router.post('/list', function (req, res, next) {
                 skip: isNaN(parseInt(req.body.start)) ? 0 : parseInt(req.body.start),
                 take: isNaN(parseInt(req.body.length)) ? 15 : parseInt(req.body.length),
                 search_name: req.body.search_name,
-                search_value: req.body.search_value
+                search_value: req.body.search_value,
+                department_id: req.user.department_id,
+                hospital_id: req.user.hospital_id,
+                created_by: req.user.id,
+                role_ids: req.user.role_id
             };
 
         resultMessage.draw = req.body.draw;
