@@ -38,12 +38,13 @@
     </div>
     <button class="btn login-btn btn-primary w-100 text-uppercase mb-4" type="submit" onclick="onClick()">Submit</button>
 </form>
-<script src="https://www.google.com/recaptcha/api.js?render=6LcO-x8mAAAAALx3abWp9h-VFEAs0686oqGZ9nON"></script>
+<script src="https://www.google.com/recaptcha/api.js?render=<%=site_key%>"></script>
 <script>
+    let site_key = '<%=site_key%>'
     grecaptcha.ready(function() {
     // do request for recaptcha token
     // response is promise with passed token
-        grecaptcha.execute('6LcO-x8mAAAAALx3abWp9h-VFEAs0686oqGZ9nON', {action:'validate_captcha'})
+        grecaptcha.execute(site_key, {action:'validate_captcha'})
                   .then(function(token) {
             // add token value to form
             document.getElementById('g-recaptcha-response').value = token;

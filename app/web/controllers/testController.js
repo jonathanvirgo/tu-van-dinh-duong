@@ -2,7 +2,8 @@ var express = require('express'),
     router = express.Router(),
     moment = require('moment'),
     logService = require('../../admin/models/logModel'),
-    webService = require('./../models/webModel');
+    webService = require('./../models/webModel'),
+    env             = require('dotenv').config();
 
 router.post('/', function (req, res) {
     try {
@@ -118,7 +119,8 @@ router.get('/captcha', function (req, res, next) {
                     errors: str_errors,
                     page: 'captcha',
                     filter: resultData.filter,
-                    link: 'test'
+                    link: 'test',
+                    site_key: env.parsed.SITEKEYRECAPTCHA
                 });
             });
         });
@@ -140,8 +142,8 @@ router.post('/captcha', (res, req, next) => {
         if (req.body['g-recaptcha-response'] === undefined || req.body['g-recaptcha-response'] === '' || req.body['g-recaptcha-response'] === null) {
             return res.json({ "responseError": "something goes to wrong" });
         }
-
-        const verificationURL = "https://www.google.com/recaptcha/api/siteverify?secret=" + '6LcO-x8mAAAAAPklWK1RXMSEA9_3DKS77hwTY7vV' + "&response=" + req.body['g-recaptcha-response'] + "&remoteip=" + req.connection.remoteAddress;
+        let secretKey = env.parsed.SECRETKEYRECAPTCHA;
+        const verificationURL = "https://www.google.com/recaptcha/api/siteverify?secret=" + secretKey + "&response=" + req.body['g-recaptcha-response'] + "&remoteip=" + req.connection.remoteAddress;
 
         request(verificationURL, function (error, response, body) {
             webService.addRecordTable({"data":response},'log_info');
