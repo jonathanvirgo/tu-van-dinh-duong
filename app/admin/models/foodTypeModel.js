@@ -68,7 +68,7 @@ let foodTypeService = {
                         paraSQL.push(parameter.hospital_id);
                     }else if(parameter.role_ids.includes(4)){
                         //Nếu là bác sĩ load theo khoa
-                        sql += " AND (created_by = ? OR share = 1)";
+                        sql += " AND (created_by = ?)";
                         paraSQL.push(parameter.created_by);
                     }
                 }
@@ -102,7 +102,7 @@ let foodTypeService = {
                         paraSQL.push(parameter.hospital_id);
                     }else if(parameter.role_ids.includes(4)){
                         //Nếu là bác sĩ load theo khoa
-                        sql += " AND (created_by = ? OR share = 1)";
+                        sql += " AND (created_by = ?)";
                         paraSQL.push(parameter.created_by);
                     }
                 }
