@@ -145,6 +145,14 @@ router.get("/examine", async (req, res) => {
                         new Paragraph({
                             children: [
                                 new TextRun({
+                                    text: "Điện thoại: " + (data.cus_phone ? data.cus_phone : '')
+                                }),
+                            ],
+                            style: "size14"
+                        }),
+                        new Paragraph({
+                            children: [
+                                new TextRun({
                                     text: "Địa chỉ: " + (data.cus_address ? data.cus_address : '')
                                 }),
                             ],
