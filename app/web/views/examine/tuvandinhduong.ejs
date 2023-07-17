@@ -1,8 +1,8 @@
 <form id="tuvandinhduong_form" class="form-horizontal">
     <h3 class="box-title-break">Khám dinh dưỡng</h3>
     <div class="row g-2 align-items-center">
-        <div class="col-12 col-md-3 d-flex">
-            <label class="col-form-label col-md-auto fw-bold mt-2 form-label-large" for="cus_fat">Tỉ lệ mỡ</label>
+        <div class="col-12 col-md-4 d-flex">
+            <label class="col-form-label col-md-auto fw-bold mt-2 form-label-large" for="cus_fat">Tỉ lệ mỡ(%)</label>
             <div class="col-form-body col-md">
                 <% if(!(examine.status == 4 || (examine.status == 3 && isDetail == true))){ %>
                     <div class="form-control-has-addon">
@@ -18,8 +18,8 @@
                 <% } %>
             </div>
         </div>
-        <div class="col-12 col-md-3 d-flex">
-            <label class="col-form-label col-md-auto fw-bold mt-2" for="cus_water">Tỉ lệ nước</label>
+        <div class="col-12 col-md-4 d-flex">
+            <label class="col-form-label col-md-auto fw-bold mt-2" for="cus_water">Tỉ lệ nước(%)</label>
             <div class="col-form-body col-md">
                 <% if(!(examine.status == 4 || (examine.status == 3 && isDetail == true))){ %>
                     <div class="form-control-has-addon">
@@ -35,7 +35,7 @@
                 <% } %>
             </div>
         </div>
-        <div class="col-12 col-md-3 d-flex">
+        <div class="col-12 col-md-4 d-flex">
             <label class="col-form-label col-md-auto fw-bold mt-2" for="cus_visceral_fat">Mỡ nội tạng</label>
             <div class="col-form-body col-md">
                 <% if(!(examine.status == 4 || (examine.status == 3 && isDetail == true))){ %>
@@ -52,26 +52,9 @@
                 <% } %>
             </div>
         </div>
-        <div class="col-12 col-md-3 d-flex">
-            <label class="col-form-label col-md-auto fw-bold mt-2" for="cus_bone_weight">Cân nặng xương</label>
-            <div class="col-form-body col-md">
-                <% if(!(examine.status == 4 || (examine.status == 3 && isDetail == true))){ %>
-                    <div class="form-control-has-addon">
-                        <input type="text" name="cus_bone_weight" class="form-control form-control-title" id="cus_bone_weight" placeholder="Cân nặng xương" value="<%= examine.cus_bone_weight%>">
-                        <button class="btn form-control-addon btn-link p-0 min-h-auto" type="button" onclick="clearInput('#cus_bone_weight')">
-                            <svg class="iconsvg-close">
-                                <use xlink:href="/public/content/images/sprite.svg#close"></use>
-                            </svg>
-                        </button>
-                    </div>
-                <% }else{ %>
-                    <div class="form-control form-control-title"><%= examine.cus_bone_weight%></div>
-                <% } %>
-            </div>
-        </div>
     </div>
     <div class="row g-2 align-items-center">
-        <div class="col-12 col-md-3 d-flex">
+        <div class="col-12 col-md-4 d-flex">
             <label class="col-form-label col-md-auto fw-bold mt-2 form-label-large" for="cus_chcb">CHCB (kcal)</label>
             <div class="col-form-body col-md">
                 <% if(!(examine.status == 4 || (examine.status == 3 && isDetail == true))){ %>
@@ -88,7 +71,24 @@
                 <% } %>
             </div>
         </div>
-        <div class="col-12 col-md-3 d-flex">
+        <div class="col-12 col-md-4 d-flex">
+            <label class="col-form-label col-md-auto fw-bold mt-2" for="cus_bone_weight">Cân nặng xương(Kg)</label>
+            <div class="col-form-body col-md">
+                <% if(!(examine.status == 4 || (examine.status == 3 && isDetail == true))){ %>
+                    <div class="form-control-has-addon">
+                        <input type="text" name="cus_bone_weight" class="form-control form-control-title" id="cus_bone_weight" placeholder="Cân nặng xương" value="<%= examine.cus_bone_weight%>">
+                        <button class="btn form-control-addon btn-link p-0 min-h-auto" type="button" onclick="clearInput('#cus_bone_weight')">
+                            <svg class="iconsvg-close">
+                                <use xlink:href="/public/content/images/sprite.svg#close"></use>
+                            </svg>
+                        </button>
+                    </div>
+                <% }else{ %>
+                    <div class="form-control form-control-title"><%= examine.cus_bone_weight%></div>
+                <% } %>
+            </div>
+        </div>
+        <!-- <div class="col-12 col-md-3 d-flex">
             <label class="col-form-label col-md-auto fw-bold mt-2" for="cus_waist">Vòng eo</label>
             <div class="col-form-body col-md">
                 <% if(!(examine.status == 4 || (examine.status == 3 && isDetail == true))){ %>
@@ -104,8 +104,8 @@
                     <div class="form-control form-control-title"><%= examine.cus_waist%></div>
                 <% } %>
             </div>
-        </div>
-        <div class="col-12 col-md-3 d-flex">
+        </div> -->
+        <!-- <div class="col-12 col-md-3 d-flex">
             <label class="col-form-label col-md-auto fw-bold mt-2" for="cus_butt">Vòng mông</label>
             <div class="col-form-body col-md">
                 <% if(!(examine.status == 4 || (examine.status == 3 && isDetail == true))){ %>
@@ -121,8 +121,8 @@
                     <div class="form-control form-control-title"><%= examine.cus_butt%></div>
                 <% } %>
             </div>
-        </div>
-        <div class="col-12 col-md-3 d-flex">
+        </div> -->
+        <!-- <div class="col-12 col-md-3 d-flex">
             <label class="col-form-label col-md-auto fw-bold mt-2" for="cus_cseomong">Cs eo/mông</label>
             <div class="col-form-body col-md">
                 <% if(!(examine.status == 4 || (examine.status == 3 && isDetail == true))){ %>
@@ -138,7 +138,7 @@
                     <div class="form-control form-control-title"><%= examine.cus_cseomong%></div>
                 <% } %>
             </div>
-        </div>
+        </div> -->
     </div>
     <h3 class="box-title-break">Lời khuyên dinh dưỡng</h3>
     <% if(!(examine.status == 4 || (examine.status == 3 && isDetail == true))){ %>

@@ -170,14 +170,16 @@ router.get("/examine", async (req, res) => {
                         tableCNTC(data),
                         paramFollowerStyle("2. KHÁM LÂM SÀNG", "title"),
                         paramFollowerStyle(data.clinical_examination ? data.clinical_examination : '', "size14"),
-                        paramFollowerStyle("3. KẾT QUẢ XÉT NGHIỆM", "title"),
+                        paramFollowerStyle("3. KHÁM DINH DƯỠNG", "title"),
+                        tableDinhduong(data),
+                        paramFollowerStyle("4. KẾT QUẢ XÉT NGHIỆM", "title"),
                         tableHongCau(data),
                         tableAlbumin(data),
                         tableAst(data),
                         new Paragraph({
                             children: [
                                 new TextRun({
-                                    text: "Bilirubin TP/TT: " + (data.cus_bilirubin ? data.cus_bilirubin : '')
+                                    text: "Bilirubin TP/TT(μmol/L): " + (data.cus_bilirubin ? data.cus_bilirubin : '')
                                 })
                             ],
                             style: "size14"
@@ -190,14 +192,14 @@ router.get("/examine", async (req, res) => {
                             ],
                             style: "size14"
                         }),
-                        paramFollowerStyle("4. LỜI KHUYÊN DINH DƯỠNG", "title"),
+                        paramFollowerStyle("5. LỜI KHUYÊN DINH DƯỠNG", "title"),
                         tableNutritionAdvice(data),
-                        paramFollowerStyle("5. CHẾ ĐỘ VẬN ĐỘNG, SINH HOẠT", "title"),
+                        paramFollowerStyle("6. CHẾ ĐỘ VẬN ĐỘNG, SINH HOẠT", "title"),
                         new Paragraph({
                             children: data.active_mode_of_living ? data.active_mode_of_living.split("\n").map(line=> textRunBreak(line)) : [],
                             style: "size14",
                         }),
-                        paramFollowerStyle("6. BỔ SUNG", "title"),
+                        paramFollowerStyle("7. BỔ SUNG", "title"),
                         ...medicine,
                         new Paragraph({
                             text: `Hà Nội, ngày ${String(now.date()).padStart(2, '0')} tháng ${String((now.month() + 1)).padStart(2, '0')} năm ${now.year()}`,
@@ -576,20 +578,7 @@ function tableHongCau(data){
                                 size: 3000,
                                 type: WidthType.DXA,
                             },
-                            children: [new Paragraph({text: "Hồng cầu: " + (data.erythrocytes ? data.erythrocytes : '') + " (T/L)", style: "size14"})]
-                        }),
-                        new TableCell({
-                            borders:{
-                                top: {style: BorderStyle.NONE, color: "FFFFFF"},
-                                bottom: {style: BorderStyle.NONE, color: "FFFFFF"},
-                                left: {style: BorderStyle.NONE, color: "FFFFFF"},
-                                right: {style: BorderStyle.NONE, color: "FFFFFF"},
-                            },
-                            width: {
-                                size: 3000,
-                                type: WidthType.DXA,
-                            },
-                            children: [new Paragraph({text: "Hemoglobin: " + (data.cus_bc ? data.cus_bc : '') + " (g/L)", style: "size14"})],
+                            children: [new Paragraph({text: "Hemoglobin(g/L): " + (data.erythrocytes ? data.erythrocytes : ''), style: "size14"})],
                         }),
                         new TableCell({
                             borders:{
@@ -602,7 +591,107 @@ function tableHongCau(data){
                                 size: 3010,
                                 type: WidthType.DXA,
                             },
-                            children: [new Paragraph({text: "BC: " + (data.cus_tc ? data.cus_tc : ''), style: "size14"})],
+                            children: [new Paragraph({text: "BC(G/L): " + (data.cus_bc ? data.cus_bc : ''), style: "size14"})],
+                        }),
+                        new TableCell({
+                            borders:{
+                                top: {style: BorderStyle.NONE, color: "FFFFFF"},
+                                bottom: {style: BorderStyle.NONE, color: "FFFFFF"},
+                                left: {style: BorderStyle.NONE, color: "FFFFFF"},
+                                right: {style: BorderStyle.NONE, color: "FFFFFF"},
+                            },
+                            width: {
+                                size: 3000,
+                                type: WidthType.DXA,
+                            },
+                            children: [new Paragraph({text: "Tiểu cầu(G/L): " + (data.cus_tc ? data.cus_tc : ''), style: "size14"})]
+                        })
+                    ],
+                }),
+            ]
+        });
+        return table;
+    } catch (error) {
+        webService.addToLogService(error.message, "Export Doc Controller tableHongCau");
+        return new Table();
+    }
+}
+
+function tableDinhduong(data){
+    try {
+        const table = new Table({
+            columnWidths: [3000, 3000, 3010],
+            rows: [
+                new TableRow({
+                    children: [
+                        new TableCell({
+                            borders:{
+                                top: {style: BorderStyle.NONE, color: "FFFFFF"},
+                                bottom: {style: BorderStyle.NONE, color: "FFFFFF"},
+                                left: {style: BorderStyle.NONE, color: "FFFFFF"},
+                                right: {style: BorderStyle.NONE, color: "FFFFFF"},
+                            },
+                            width: {
+                                size: 3000,
+                                type: WidthType.DXA,
+                            },
+                            children: [new Paragraph({text: "Tỉ lệ mỡ(%): " + (data.cus_fat ? data.cus_fat : ''), style: "size14"})]
+                        }),
+                        new TableCell({
+                            borders:{
+                                top: {style: BorderStyle.NONE, color: "FFFFFF"},
+                                bottom: {style: BorderStyle.NONE, color: "FFFFFF"},
+                                left: {style: BorderStyle.NONE, color: "FFFFFF"},
+                                right: {style: BorderStyle.NONE, color: "FFFFFF"},
+                            },
+                            width: {
+                                size: 3000,
+                                type: WidthType.DXA,
+                            },
+                            children: [new Paragraph({text: "Tỉ lệ nước(%): " + (data.cus_water ? data.cus_water : ''), style: "size14"})],
+                        }),
+                        new TableCell({
+                            borders:{
+                                top: {style: BorderStyle.NONE, color: "FFFFFF"},
+                                bottom: {style: BorderStyle.NONE, color: "FFFFFF"},
+                                left: {style: BorderStyle.NONE, color: "FFFFFF"},
+                                right: {style: BorderStyle.NONE, color: "FFFFFF"},
+                            },
+                            width: {
+                                size: 3010,
+                                type: WidthType.DXA,
+                            },
+                            children: [new Paragraph({text: "Mỡ nội tạng: " + (data.cus_visceral_fat ? data.cus_visceral_fat : ''), style: "size14"})],
+                        })
+                    ],
+                }),
+                new TableRow({
+                    children: [
+                        new TableCell({
+                            borders:{
+                                top: {style: BorderStyle.NONE, color: "FFFFFF"},
+                                bottom: {style: BorderStyle.NONE, color: "FFFFFF"},
+                                left: {style: BorderStyle.NONE, color: "FFFFFF"},
+                                right: {style: BorderStyle.NONE, color: "FFFFFF"},
+                            },
+                            width: {
+                                size: 3000,
+                                type: WidthType.DXA,
+                            },
+                            children: [new Paragraph({text: "CHCB(kcal): " + (data.cus_chcb ? data.cus_chcb : ''), style: "size14"})]
+                        }),
+                        new TableCell({
+                            borders:{
+                                top: {style: BorderStyle.NONE, color: "FFFFFF"},
+                                bottom: {style: BorderStyle.NONE, color: "FFFFFF"},
+                                left: {style: BorderStyle.NONE, color: "FFFFFF"},
+                                right: {style: BorderStyle.NONE, color: "FFFFFF"},
+                            },
+                            width: {
+                                size: 3000,
+                                type: WidthType.DXA,
+                            },
+                            children: [new Paragraph({text: "Cân nặng xương(Kg): " + (data.cus_bone_weight ? data.cus_bone_weight : ''), style: "size14"})],
                         })
                     ],
                 }),
@@ -633,7 +722,7 @@ function tableAlbumin(data){
                                 size: 4505,
                                 type: WidthType.DXA,
                             },
-                            children: [new Paragraph({text: "Albumin: " + (data.cus_albumin ? data.cus_albumin : '')  + " (g/L)", style: "size14"})]
+                            children: [new Paragraph({text: "Albumin(G/L): " + (data.cus_albumin ? data.cus_albumin : ''), style: "size14"})]
                         }),
                         new TableCell({
                             borders:{
@@ -868,7 +957,7 @@ router.get("/menu-example", async (req, res) =>{
                 sections: [{
                     children: [
                         new Table({
-                            columnWidths: [6000, 3010],
+                            columnWidths: [5000, 4010],
                             rows: [
                                 new TableRow({
                                     children: [
@@ -880,7 +969,7 @@ router.get("/menu-example", async (req, res) =>{
                                                 right: {style: BorderStyle.NONE, color: "FFFFFF"},
                                             },
                                             width: {
-                                                size: 6000,
+                                                size: 5000,
                                                 type: WidthType.DXA,
                                             },
                                             children: [
@@ -893,7 +982,7 @@ router.get("/menu-example", async (req, res) =>{
                                                     }
                                                 }),
                                                 new Table({
-                                                    columnWidths: [1000, 3500, 1500],
+                                                    columnWidths: [1000, 3000, 1000],
                                                     rows: [
                                                         new TableRow({
                                                             children: [
@@ -911,7 +1000,7 @@ router.get("/menu-example", async (req, res) =>{
                                                                         new Paragraph({text: "Thực phẩm", style: "table_heading"})
                                                                     ],
                                                                     width: {
-                                                                        size: 4000,
+                                                                        size: 3000,
                                                                         type: WidthType.DXA,
                                                                     },
                                                                 }),
@@ -928,6 +1017,87 @@ router.get("/menu-example", async (req, res) =>{
                                                         }),
                                                         ...menuExamineDetail
                                                     ]
+                                                }),
+                                                new Paragraph({
+                                                    text: "Tổng lượng thực phẩm / ngày",
+                                                    style: "title2"
+                                                }),
+                                                new Table({
+                                                    columnWidths: [3500, 1500],
+                                                    rows: [
+                                                        new TableRow({
+                                                            children: [
+                                                                new TableCell({
+                                                                    width: {
+                                                                        size: 4000,
+                                                                        type: WidthType.DXA,
+                                                                    },
+                                                                    children: [
+                                                                        new Paragraph({
+                                                                            text: "Thịt / cá (g)",
+                                                                            style: "size14",
+                                                                            alignment: AlignmentType.CENTER
+                                                                        }),
+                                                                    ]
+                                                                }),
+                                                                new TableCell({
+                                                                    width: {
+                                                                        size: 2000,
+                                                                        type: WidthType.DXA,
+                                                                    },
+                                                                    children: []
+                                                                })
+                                                            ]
+                                                        }),
+                                                        new TableRow({
+                                                            children: [
+                                                                new TableCell({
+                                                                    width: {
+                                                                        size: 4000,
+                                                                        type: WidthType.DXA,
+                                                                    },
+                                                                    children: [
+                                                                        new Paragraph({
+                                                                            text: "Rau (g)",
+                                                                            style: "size14",
+                                                                            alignment: AlignmentType.CENTER
+                                                                        }),
+                                                                    ]
+                                                                }),
+                                                                new TableCell({
+                                                                    width: {
+                                                                        size: 2000,
+                                                                        type: WidthType.DXA,
+                                                                    },
+                                                                    children: []
+                                                                })
+                                                            ]
+                                                        }),
+                                                        new TableRow({
+                                                            children: [
+                                                                new TableCell({
+                                                                    width: {
+                                                                        size: 4000,
+                                                                        type: WidthType.DXA,
+                                                                    },
+                                                                    children: [
+                                                                        new Paragraph({
+                                                                            text: "Quả chín (g)",
+                                                                            style: "size14",
+                                                                            alignment: AlignmentType.CENTER
+                                                                        }),
+                                                                    ]
+                                                                }),
+                                                                new TableCell({
+                                                                    width: {
+                                                                        size: 2000,
+                                                                        type: WidthType.DXA,
+                                                                    },
+                                                                    children: []
+                                                                })
+                                                            ]
+                                                        })
+                                                    ]
                                                 })
                                             ]
                                         }),
@@ -939,7 +1109,7 @@ router.get("/menu-example", async (req, res) =>{
                                                 right: {style: BorderStyle.NONE, color: "FFFFFF"},
                                             },
                                             width: {
-                                                size: 3010,
+                                                size: 4010,
                                                 type: WidthType.DXA,
                                             },
                                             children: [
@@ -956,87 +1126,6 @@ router.get("/menu-example", async (req, res) =>{
                                             margins: {
                                                 left: convertInchesToTwip(0.2)
                                             }
-                                        })
-                                    ]
-                                })
-                            ]
-                        }),
-                        new Paragraph({
-                            text: "Tổng lượng thực phẩm / ngày",
-                            style: "title2"
-                        }),
-                        new Table({
-                            columnWidths: [4000, 2000],
-                            rows: [
-                                new TableRow({
-                                    children: [
-                                        new TableCell({
-                                            width: {
-                                                size: 4000,
-                                                type: WidthType.DXA,
-                                            },
-                                            children: [
-                                                new Paragraph({
-                                                    text: "Thịt / cá (g)",
-                                                    style: "size14",
-                                                    alignment: AlignmentType.CENTER
-                                                }),
-                                            ]
-                                        }),
-                                        new TableCell({
-                                            width: {
-                                                size: 2000,
-                                                type: WidthType.DXA,
-                                            },
-                                            children: []
-                                        })
-                                    ]
-                                }),
-                                new TableRow({
-                                    children: [
-                                        new TableCell({
-                                            width: {
-                                                size: 4000,
-                                                type: WidthType.DXA,
-                                            },
-                                            children: [
-                                                new Paragraph({
-                                                    text: "Rau (g)",
-                                                    style: "size14",
-                                                    alignment: AlignmentType.CENTER
-                                                }),
-                                            ]
-                                        }),
-                                        new TableCell({
-                                            width: {
-                                                size: 2000,
-                                                type: WidthType.DXA,
-                                            },
-                                            children: []
-                                        })
-                                    ]
-                                }),
-                                new TableRow({
-                                    children: [
-                                        new TableCell({
-                                            width: {
-                                                size: 4000,
-                                                type: WidthType.DXA,
-                                            },
-                                            children: [
-                                                new Paragraph({
-                                                    text: "Quả chín (g)",
-                                                    style: "size14",
-                                                    alignment: AlignmentType.CENTER
-                                                }),
-                                            ]
-                                        }),
-                                        new TableCell({
-                                            width: {
-                                                size: 2000,
-                                                type: WidthType.DXA,
-                                            },
-                                            children: []
                                         })
                                     ]
                                 })

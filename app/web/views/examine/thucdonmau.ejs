@@ -127,6 +127,22 @@
       </div>
     </div>
 
+    <div class="row g-2 align-items-center">
+        <div class="col-12 d-flex">
+            <label class="col-form-label col-md-auto fw-bold mt-2" for="menu_example_note">Ghi chú</label>
+            <div class="col-form-body col-md w-100">
+                <div class="form-control-has-addon">
+                    <textarea class="form-control" id="menu_example_note" placeholder="Ghi chú"></textarea>
+                    <button class="btn form-control-addon btn-link p-0 min-h-auto" type="button" onclick="clearInput('#menu_example_note')">
+                        <svg class="iconsvg-close">
+                        <use xlink:href="/public/content/images/sprite.svg#close"></use>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="row g-2 justify-content-center mt-0">
         <% if(!(examine.status == 4 || (examine.status == 3 && isDetail == true))){ %>
             <div class="col-6 col-md-auto">

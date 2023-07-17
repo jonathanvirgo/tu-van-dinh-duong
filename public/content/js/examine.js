@@ -9,7 +9,7 @@ let dataExamine = {
     prescription: [],
     medicalTest: [],
     id_prescription: 1,
-    // listMenu: [{id:1, name:"Thực đơn 1","detail":[]},{id:2, name:"Thực đơn 2","detail":[]},{id:3, name:"Thực đơn 3","detail":[]}],
+    // listMenu: [{id:1, name:"Thực đơn 1","detail":[],note: ''},{id:2, name:"Thực đơn 2","detail":[],note: ''},{id:3, name:"Thực đơn 3","detail":[], note: ''}],
     foodNameListSearch: [],
     phoneListSearch: [],
     listMenuTime: [],
@@ -835,7 +835,8 @@ function addMenuList(){
     let menu = {
         id: id,
         name: "Thực đơn " + id,
-        detail: []
+        detail: [],
+        note: ''
     }
     for(let time of dataExamine.listMenuTime){
         menu.detail.push({
