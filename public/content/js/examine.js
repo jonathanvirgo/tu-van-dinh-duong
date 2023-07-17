@@ -823,7 +823,6 @@ function generateMenuExamine(){
         }
         let menu_id = parseInt($('#menu_id').val() ? $('#menu_id').val() : 0);
         generateTableMenu(menu_id);
-
     }
 }
 
@@ -857,6 +856,7 @@ function generateTableMenu(menu_id){
                 for(let menu of dataExamine.menuExamine){
                     if(menu.id == menu_id){
                         $('#name_menu').val(menu.name);
+                        $('#menu_example_note').val(menu.note);
                         addTemplateListMenuTime(menu.detail);
                         break;
                     }
@@ -892,15 +892,31 @@ function addTemplateListMenuTime(listMenuTime){
 
 function addMenu(){
     try {
+        //thêm menu trống
         let menuNew = addMenuList();
         dataExamine.menuExamine.push(menuNew);
+        //thêm select menu
         let newOption = new Option(menuNew.name, menuNew.id, false, false);
         $('#menu_id').append(newOption).trigger('change');
+        resetTemplateMenu();
+        //tạo template menu
         generateTableMenu(menuNew.id);
         $('#tb_menu').show();
     } catch (error) {
         
     }
+}
+
+function resetTemplateMenu(){
+    //Xóa template menu hiện tại
+    $('#tb_menu').find('tbody').empty();
+    $('#menu_example_note').val('');
+    $('#total_energy').text('');
+    $('#total_protein').text('');
+    $('#total_animal_protein').text('');
+    $('#total_lipid').text('');
+    $('#total_unanimal_lipid').text('');
+    $('#total_carbohydrate').text('');
 }
 
 function chooseMenuExample(){
@@ -1073,7 +1089,7 @@ function addFoodTemplate(food, menuTime_id){
             .text(food.carbohydrate)
         )
         .append($("<td/>")
-            .append($(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512">
+            .append($(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512" width=".8rem" heigh=".8rem">
                         <path d="M310.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L160 210.7 54.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L114.7 256 9.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L160 301.3 265.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L205.3 256 310.6 150.6z"/>
                     </svg>`)
                     .css({"display": isLockInput ? 'none' : 'block'}))
@@ -1718,6 +1734,14 @@ $(document).ready(function(){
         this.style.height = 'auto';
         this.style.height = (this.scrollHeight) + 'px';
     });
-
+    $('#menu_example_note').change(function(evt){
+        console.log('menu_example_note', evt, $('#menu_example_note').val());
+        let menu_id = parseInt($('#menu_id').val());
+        for(let menu of dataExamine.menuExamine){
+            if(menu_id == menu.id){
+                menu.note = $('#menu_example_note').val().trim();
+            }
+        }
+    })
 });
 

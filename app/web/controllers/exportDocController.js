@@ -1130,7 +1130,12 @@ router.get("/menu-example", async (req, res) =>{
                                     ]
                                 })
                             ]
-                        })
+                        }),
+                        new Paragraph({
+                            text: "Ghi chú",
+                            style: "title2"
+                        }),
+                        paramFollowerStyle(data.note ? data.note : '', "size14")
                     ]
                 }]
             });    
