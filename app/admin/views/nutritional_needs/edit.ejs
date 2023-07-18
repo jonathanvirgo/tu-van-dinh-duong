@@ -1,6 +1,6 @@
 ﻿<html lang="en">
 <head>
-    <title>Sửa chiều cao cân nặng tiêu chuẩn</title>
+    <title>Sửa nhu cầu dinh dưỡng</title>
   <%- include('../shared/head') %>
 </head>
 <body class="sidebar-mini layout-fixed control-sidebar-slide-open">
@@ -17,12 +17,12 @@
           </ul>
         </div>
         <%}%>
-      <form action="/admin/standard-weight-height/edit/<%=standard_wh.id%>" id="standard_weight_height-form" method="post" novalidate="novalidate">
+      <form action="/admin/nutritional-needs/edit/<%=nutritionalNeed.id%>" id="nutritional-needs-form" method="post" novalidate="novalidate">
         <div class="content-header clearfix">
-          <h1 class="float-left">Sửa CC - CN - <%= standard_wh.name %> 
+          <h1 class="float-left">Sửa NCDD - <%= nutritionalNeed.name %> 
             <small> 
               <i class="fas fa-arrow-circle-left"></i> 
-              <a href="/admin/standard-weight-height">Trở lại danh sách CC - CN</a> 
+              <a href="/admin/nutritional-needs">Trở lại danh sách NCDD</a> 
             </small>
           </h1>
           <div class="float-right">
@@ -43,7 +43,7 @@
               <div class="cards-group">
                 <div class="card card-default">
                   <div class="card-body">
-                    <%- include('../standard_weight_height/_createorupdate',{standard_wh:standard_wh}) %>
+                    <%- include('../nutritional_needs/_createorupdate',{nutritionalNeed:nutritionalNeed}) %>
                   </div>
                 </div>
               </div>
@@ -60,7 +60,7 @@
                 <span aria-hidden="true">×</span>
               </button>
             </div>
-            <form action="/admin/standard-weight-height/delete/<%=standard_wh.id%>" method="post">
+            <form action="/admin/nutritional-needs/delete/<%=nutritionalNeed.id%>" method="post">
               <div class="form-horizontal">
                 <div class="modal-body">Bạn có chắc chắn muốn xóa mục này không?</div>
                 <div class="modal-footer">

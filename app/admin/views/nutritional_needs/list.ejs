@@ -1,6 +1,6 @@
 <html lang="en">
   <head>
-    <title>Danh sách CC - CN tiêu chuẩn</title>
+    <title>Danh sách NCDD</title>
     <%- include('../shared/head') %>
   </head>
   <body class="hold-transition sidebar-mini layout-fixed control-sidebar-slide-open">
@@ -9,10 +9,10 @@
       <div class="content-wrapper">
         <div class="content-header clearfix">
           <h1 class="float-left">
-            Danh sách CC - CN tiêu chuẩn
+            Danh sách NCDD
           </h1>
           <div class="float-right">
-            <a href="/admin/standard-weight-height/create" class="btn btn-primary">
+            <a href="/admin/nutritional-needs/create" class="btn btn-primary">
                 <i class="fas fa-plus-square"></i> Thêm mới
             </a>
           </div>
@@ -55,16 +55,16 @@
                 </div>
                 <div class="card card-default">
                   <div class="card-body">
-                    <table class="table table-bordered table-hover table-striped dataTable" width=100% id="standard_weight_height-grid">
+                    <table class="table table-bordered table-hover table-striped dataTable" width=100% id="nutritional_needs-grid">
                     </table>
                     <script type="text/javascript">
                         $(document).ready(function() {
                             var loading = $("#loading-page");
-                            $("#standard_weight_height-grid").DataTable({
+                            $("#nutritional_needs-grid").DataTable({
                                 processing: !0,
                                 serverSide: !0,
                                 ajax: {
-                                    url: "/admin/standard-weight-height/list",
+                                    url: "/admin/nutritional-needs/list",
                                     type: "POST",
                                     dataType: "json",
                                     dataSrc: function(response){
@@ -117,28 +117,27 @@
                                     name: "refresh",
                                     text: '<i class="fas fa-sync-alt" style="padding-left: 5px"><\/i>',
                                     action: function() {
-                                        updateTable("#standard_weight_height-grid", !1)
+                                        updateTable("#nutritional_needs-grid", !1)
                                     }
                                 }],
                                 dom: "<'row'<'col-md-12't>><'row margin-t-5'<'col-lg-5 col-xs-12'<'float-lg-left'p>><'col-lg-3 col-xs-12'<'text-center'l>><'col-lg-3 col-xs-12'<'float-lg-right text-center'i>><'col-lg-1 col-xs-12'<'float-lg-right text-center data-tables-refresh'B>>>",
                                 columns: [{
-                                    title: "Tuổi",
+                                    title: "Age min",
                                     visible: !0,
                                     searchable: !1,
                                     render: function(n) {
                                         return escapeHtml(n)
                                     },
-                                    data: "year_old"
+                                    data: "age_min"
                                 }, 
                                 {
-                                    title: "Đơn vị",
+                                    title: "Age max",
                                     visible: !0,
                                     searchable: !1,
                                     render: function(n) {
-                                      let type = n == 1 ? 'Tuổi': 'Tháng';
-                                      return type;
+                                        return escapeHtml(n)
                                     },
-                                    data: "type_year_old"
+                                    data: "age_max"
                                 },
                                 {
                                     title: "Giới tính",
@@ -149,24 +148,15 @@
                                       return type;
                                     },
                                     data: "gender"
-                                }, 
-                                {
-                                    title: "Chiều cao",
-                                    visible: !0,
-                                    searchable: !1,
-                                    render: function(n) {
-                                      return escapeHtml(n)
-                                    },
-                                    data: "height"
                                 },
                                 {
-                                    title: "Cân nặng",
+                                    title: "Content",
                                     visible: !0,
                                     searchable: !1,
                                     render: function(n) {
                                       return escapeHtml(n)
                                     },
-                                    data: "weight"
+                                    data: "content"
                                 },
                                 {
                                     title: "Sửa",
@@ -175,15 +165,15 @@
                                     searchable: !1,
                                     className: "button-column",
                                     render: function(n, t, i, r) {
-                                        return '<a class="btn btn-default" href="/admin/standard-weight-height/edit/' + n + '"><i class="fas fa-pencil-alt"><\/i> Sửa<\/a>'
+                                        return '<a class="btn btn-default" href="/admin/nutritional-needs/edit/' + n + '"><i class="fas fa-pencil-alt"><\/i> Sửa<\/a>'
                                     },
                                     data: "id"
                                 }]
                             });
                             $("#search-button").click(function() {
-                                return $("#standard_weight_height-grid").DataTable().ajax.reload();
+                                return $("#nutritional_needs-grid").DataTable().ajax.reload();
                             });
-                            $("#standard_weight_height-grid").DataTable().columns.adjust();
+                            $("#nutritional_needs-grid").DataTable().columns.adjust();
                         })
                     </script>
                   </div>

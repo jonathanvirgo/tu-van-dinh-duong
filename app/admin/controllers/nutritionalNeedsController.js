@@ -2,19 +2,19 @@
     router          = express.Router(),
     path            = require('path'),
     {IncomingForm}  = require("formidable"),
-    returnUrl       = "/admin/standard-weight-height",
+    returnUrl       = "/admin/nutritional-needs",
     notice_admin    = "Tài khoản của bạn không có quyền truy cập!",
     logService      = require('../models/logModel'),
     adminService    = require('../models/adminModel'),
     webService      = require('../../web/models/webModel'),
-    modelService    = require('../models/standardWeightHeightModel'); 
+    modelService    = require('../models/nutritionalNeedsModel'); 
 
 router.get('/', function (req, res, next) {
     try {
         if (!req.user) {
             return res.redirect('/user/login');
         }
-        if(!logService.authorizeAccess(req.user.role_id, 'standard_weight_height')){
+        if(!logService.authorizeAccess(req.user.role_id, 'nutritional-needs')){
             throw new Error(notice_admin);
         }
         res.render(viewPage("list"), { 
@@ -30,12 +30,12 @@ router.get('/create', function (req, res, next) {
         if (!req.user) {
             return res.redirect('/user/login');
         }
-        if(!logService.authorizeAccess(req.user.role_id, 'standard_weight_height')){
+        if(!logService.authorizeAccess(req.user.role_id, 'nutritional-needs')){
             throw new Error(notice_admin);
         }
         res.render(viewPage("create"), {
             user: req.user,
-            standard_wh: [],
+            nutritionalNeed: [],
             errors: []
         });
     } catch (e) {
@@ -48,10 +48,10 @@ router.get('/edit/:id', function (req, res) {
         if (!req.user) {
             return res.redirect('/user/login');
         }
-        if(!logService.authorizeAccess(req.user.role_id, 'standard_weight_height')){
+        if(!logService.authorizeAccess(req.user.role_id, 'nutritional-needs')){
             throw new Error(notice_admin);
         }
-        modelService.getStandardWeightHeightById(req.params.id, function (err, result, fields) {
+        modelService.getnutritionalNeedsById(req.params.id, function (err, result, fields) {
             if (err) {
                 adminService.addToLog(req, res, err);
                 return;
@@ -62,7 +62,7 @@ router.get('/edit/:id', function (req, res) {
             }
             res.render(viewPage("edit"), {
                 user: req.user,
-                standard_wh: result[0],
+                nutritionalNeed: result[0],
                 errors: []
             });
         })
@@ -76,33 +76,27 @@ router.post('/create', function (req, res, next) {
         if (!req.user) {
             return res.redirect('/user/login');
         }
-        if(!logService.authorizeAccess(req.user.role_id, 'standard_weight_height')){
+        if(!logService.authorizeAccess(req.user.role_id, 'nutritional-needs')){
             throw new Error(notice_admin);
         }
         var str_error  = [],
             btn_action = req.body.save != undefined ? req.body.save : req.body.saveContinue,
             parameter  = {
-                year_old: isNaN(parseFloat(req.body.year_old)) ? '' : parseFloat(req.body.year_old).toFixed(2),
-                type_year_old: req.body.type_year_old ? req.body.type_year_old : null,
+                age_min: isNaN(parseFloat(req.body.age_min)) ? '' : parseFloat(req.body.age_min).toFixed(2),
+                age_max: isNaN(parseFloat(req.body.age_max)) ? '' : parseFloat(req.body.age_max).toFixed(2),
                 gender: req.body.gender ? req.body.gender : null,
-                weight: isNaN(parseFloat(req.body.weight)) ? '' : parseFloat(req.body.weight).toFixed(2),
-                height: isNaN(parseFloat(req.body.height)) ? '' : parseFloat(req.body.height).toFixed(2)
+                content: req.body.content ? req.body.content : '' 
+                
             };
-
-        if(parameter.year_old == ''){
-            str_error.push("Thiếu tuổi!");
-        }
-        if(!parameter.type_year_old){
-            str_error.push("Thiếu loại tuổi!");
+            
+        if(parameter.age_min == ''){
+            str_error.push("Thiếu age min!");
         }
         if(!parameter.gender){
             str_error.push("Thiếu giới tính!");
         }
-        if(!parameter.weight){
-            str_error.push("Thiếu cân nặng!");
-        }
-        if(!parameter.height){
-            str_error.push("Thiếu chiều cao!");
+        if(!parameter.content){
+            str_error.push("Thiếu content!");
         }
         if(str_error.length > 0){
             res.render(viewPage("create"), {
@@ -137,18 +131,18 @@ router.post('/edit/:id', function (req, res, next) {
         if (!req.user) {
             return res.redirect('/user/login');
         }
-        if(!logService.authorizeAccess(req.user.role_id, 'standard_weight_height')){
+        if(!logService.authorizeAccess(req.user.role_id, 'nutritional-needs')){
             throw new Error(notice_admin);
         }
         var str_error  = [],
             btn_action = req.body.save != undefined ? req.body.save : req.body.saveContinue,
             parameter  = {
                 id: parseInt(req.params.id),
-                year_old: isNaN(parseFloat(req.body.year_old)) ? '' : parseFloat(req.body.year_old).toFixed(2),
+                year_old: isNaN(parseFloat(req.user.year_old)) ? '' : parseFloat(req.user.year_old).toFixed(2),
                 type_year_old: req.body.type_year_old ? req.body.type_year_old : null,
-                gender: req.body.gender ? req.body.gender : null,
-                weight: isNaN(parseFloat(req.body.weight)) ? '' : parseFloat(req.body.weight).toFixed(2),
-                height: isNaN(parseFloat(req.body.height)) ? '' : parseFloat(req.body.height).toFixed(2)
+                gender: req.user.gender ? req.user.gender : null,
+                weight: isNaN(parseFloat(req.user.weight)) ? '' : parseFloat(req.user.weight).toFixed(2),
+                height: isNaN(parseFloat(req.user.height)) ? '' : parseFloat(req.user.height).toFixed(2)
             };
             
         if(parameter.year_old == ''){
@@ -199,7 +193,7 @@ router.post('/delete/:id', function (req, res, next) {
         if (!req.user) {
             return res.redirect('/user/login');
         }
-        if(!logService.authorizeAccess(req.user.role_id, 'standard_weight_height')){
+        if(!logService.authorizeAccess(req.user.role_id, 'nutritional-needs')){
             throw new Error(notice_admin);
         }
         var record_id = isNaN(parseInt(req.params.id)) ? 0 : parseInt(req.params.id);
@@ -232,7 +226,7 @@ router.post('/list', function (req, res, next) {
         if (!req.user) {
             return res.redirect('/user/login');
         }
-        if(!logService.authorizeAccess(req.user.role_id, 'standard_weight_height')){
+        if(!logService.authorizeAccess(req.user.role_id, 'nutritional-needs')){
             throw new Error(notice_admin);
         }
         var arrPromise = [],
@@ -249,7 +243,7 @@ router.post('/list', function (req, res, next) {
 
         resultMessage.draw = req.body.draw;
         arrPromise.push(new Promise(function (resolve, reject) {
-            modelService.countAllStandardWeightHeight(parameter, function (err, result, fields) {
+            modelService.countAllnutritionalNeeds(parameter, function (err, result, fields) {
                 if (err) {
                     return logService.create(req, err).then(function(responseData){
                         if(responseData.message) resultMessage.error = responseData.message;
@@ -266,7 +260,7 @@ router.post('/list', function (req, res, next) {
         }));
 
         arrPromise.push(new Promise(function (resolve, reject) {
-            modelService.getAllStandardWeightHeight(parameter, function (err, result, fields) {
+            modelService.getAllnutritionalNeeds(parameter, function (err, result, fields) {
                 if (err) {
                     return logService.create(req, err).then(function(responseData){
                         if(responseData.message) resultMessage.error = responseData.message;
@@ -294,51 +288,8 @@ router.post('/list', function (req, res, next) {
     }
 });
 
-router.post('/import-from-excel', function (req, res, next) {
-    var resultData = {
-        success: false,
-        message: "",
-        data: ''
-    };
-    try {
-        if (!req.user) {
-            return res.redirect('/user/login');
-        }
-        if(!logService.authorizeAccess(req.user.role_id, 'food-info')){
-            throw new Error(notice_admin);
-        }
-        var form    = new IncomingForm();
-        form.parse(req, function(err, fields, files) {
-            try {
-                let dataWeightHeight = JSON.parse(fields.data);
-                if(dataWeightHeight && dataWeightHeight.length > 0){
-                    for(let item of dataWeightHeight){
-                        let sqlWeightHeight = "SELECT * FROM standard_weight_height WHERE `year_old` =  ? AND type_year_old = ?";
-                        webService.getListTable(sqlWeightHeight, [item.year_old, item.type_year_old]).then(responseData =>{
-                            if(responseData.success && responseData.data.length == 0){
-                                webService.addRecordTable(item, 'standard_weight_height', true);
-                            }
-                        });
-                    }
-                    resultData.success = true;
-                }
-                res.json(resultData);
-            } catch (error) {
-                resultData.message = typeof(error) == 'object' ? JSON.stringify(error) : error;
-                res.json(resultData);
-            }
-        });
-        
-    } catch (e) {
-        logService.create(req, e.message).then(function(){
-            resultData.message = e.message;
-            res.send(resultData);
-        });
-    }
-});
-
 function viewPage(name) {
-    return path.resolve(__dirname, "../views/standard_weight_height/" + name + ".ejs");
+    return path.resolve(__dirname, "../views/nutritional_needs/" + name + ".ejs");
 }
 
 module.exports = router;
