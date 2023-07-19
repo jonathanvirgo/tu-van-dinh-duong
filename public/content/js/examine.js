@@ -263,6 +263,7 @@ function changeTabExamine(tab){
             dataExamine.examine['cus_cnht'] = $('#cus_cnht').val(); // cân nặng hiện tại
             dataExamine.examine['cus_cnbt'] = $('#cus_cnbt').val(); // cân nặng thường có
             dataExamine.examine['cus_bmi'] = $('#cus_bmi').val();
+            dataExamine.examine['cus_ncdd'] = $('#cus_ncdd').val();
             dataExamine.examine['clinical_examination'] = $('#clinical_examination').val();
             dataExamine.examine['erythrocytes'] = $('#erythrocytes').val();
             dataExamine.examine['cus_bc'] = $('#cus_bc').val();
@@ -368,13 +369,14 @@ function diff_years(dt2, dt1)
         let gender = parseInt($('#cus_gender').val());
         $('#cus_cctc').val('');
         $('#cus_cntc').val('');
-        if(type_year_old == 1 && parseInt(year_old) > 18){
+        if(type_year_old == 1 && parseInt(year_old) > 20){
             $('label[for="cus_cntc"]').text('CNKN (kg)');
             if($('#cus_length').val() && !isNaN(parseFloat($('#cus_length').val()))){
                 let ccht = parseFloat($('#cus_length').val());
                 let cnkn = ccht * ccht * 22;
                 $('#cus_cntc').val(parseInt(cnkn));
             }
+            $('#cus_ncdd').val('Theo công thức');
         }else{
             if((gender == 1 || gender == 0) && year_old){
                 let loading = $("#loading-page");
@@ -388,9 +390,14 @@ function diff_years(dt2, dt1)
                     },
                     success: function(result) {
                         loading.hide();
-                        if (result.success && result.data && result.data.length > 0) {
-                            if(result.data[0].height) $('#cus_cctc').val((parseFloat(result.data[0].height)/100));
-                            if(result.data[0].weight) $('#cus_cntc').val(result.data[0].weight);
+                        console.log('result', result);
+                        if (result.success && result.data) {
+                            if(result.data.height) $('#cus_cctc').val((parseFloat(result.data.height)/100));
+                            else $('#cus_cctc').val('');
+                            if(result.data.weight) $('#cus_cntc').val(result.data.weight);
+                            else $('#cus_cntc').val('');
+                            if(result.data.contentNCDD) $('#cus_ncdd').val(result.data.contentNCDD);
+                            else $('#cus_ncdd').val('');
                         }
                     },
                     error: function(jqXHR, exception) {

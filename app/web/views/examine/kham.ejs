@@ -308,6 +308,25 @@
             </div>
         </div>
     </div>
+    <div class="row g-2 align-items-center">
+        <div class="col-12 col-md-6 d-flex">
+            <label class="col-form-label col-md-auto fw-bold mt-2" for="cus_ncdd">NCDD</label>
+            <div class="col-form-body col-md">
+                <% if(!(examine.status == 4 || (examine.status == 3 && isDetail == true))){ %>
+                    <div class="form-control-has-addon">
+                        <input type="text" name="cus_ncdd" class="form-control form-control-title" id="cus_ncdd" placeholder="Nhu cầu dinh dưỡng khuyến nghị" value="<%= examine.cus_ncdd%>">
+                        <button class="btn form-control-addon btn-link p-0 min-h-auto" type="button" onclick="clearInput('#cus_ncdd')">
+                            <svg class="iconsvg-close">
+                                <use xlink:href="/public/content/images/sprite.svg#close"></use>
+                            </svg>
+                        </button>
+                    </div>
+                <% }else{ %>
+                    <div class="form-control form-control-title"><%= examine.cus_ncdd%></div>
+                <% } %> 
+            </div>
+        </div>
+    </div>
     <% if(!(examine.status == 4 || (examine.status == 3 && isDetail == true))){ %>
         <h3 class="box-title-break">Gợi ý chuẩn đoán</h3>
         <div class="row g-2 align-items-center">
