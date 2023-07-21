@@ -1,0 +1,59 @@
+﻿<html lang="en">
+<head>
+    <title>Thêm mới chiều cao theo cân nặng</title>
+  <%- include('../shared/head') %>
+</head>
+<body class="sidebar-mini layout-fixed control-sidebar-slide-open">
+  <div class="wrapper">
+    <%- include('../shared/menu',{user: user}) %>
+    <div class="content-wrapper">
+        <% if (errors.length >0){%>
+        <div class="alert alert-danger alert-dismissable">
+          <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+          <ul>
+          <% for (i = 0;i < errors.length;i++){%>
+            <li><%=errors[i]%></li>
+          <%}%>
+          </ul>
+        </div>
+        <%}%>
+        <form action="/admin/height-by-weight/create" id="height-by-weight-form" method="post" novalidate="novalidate">
+            <div class="content-header clearfix">
+              <h1 class="float-left">Thêm mới chiều cao theo cân nặng
+                <small> 
+                  <i class="fas fa-arrow-circle-left"></i> 
+                  <a href="/admin/height-by-weight">Trở lại danh sách CC - CN</a> 
+                </small>
+              </h1>
+              <div class="float-right">
+                <button type="submit" name="save" class="btn btn-primary" value="save"> 
+                  <i class="far fa-save"></i> Lưu 
+                </button>
+                <button type="button" name="saveContinue" class="btn btn-primary" value="saveContinue" onclick="importFileExcel('file_input_height_by_weight')"> 
+                  <i class="fas fa-file-import"></i> Import Excel 
+                </button>
+                <button type="submit" name="saveContinue" class="btn btn-primary" value="saveContinue"> 
+                  <i class="far fa-save"></i> Lưu và tiếp tục sửa 
+                </button>
+              </div>
+            </div>
+            <section class="content">
+              <div class="container-fluid">
+                <div class="form-horizontal">
+                  <div class="cards-group">
+                    <div class="card card-default">
+                      <div class="card-body">
+                        <%- include('../height_by_weight/_createorupdate',{height_bw:height_bw}) %>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </section>
+        </form>
+        <input accept=".xls,.xlsx" type="file" id="file_input_height_by_weight" style="width: 0px;height: 0px;overflow: hidden;" onchange="getFileHeightByWeight()"/>
+    </div>
+    <%- include('../shared/footer') %>
+  </div>
+</body>
+</html>

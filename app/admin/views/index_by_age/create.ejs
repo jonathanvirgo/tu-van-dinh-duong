@@ -1,0 +1,67 @@
+﻿<html lang="en">
+<head>
+    <title>Thêm mới chỉ số theo tuổi</title>
+  <%- include('../shared/head') %>
+</head>
+<body class="sidebar-mini layout-fixed control-sidebar-slide-open">
+  <div class="wrapper">
+    <%- include('../shared/menu',{user: user}) %>
+    <div class="content-wrapper">
+        <% if (errors.length >0){%>
+        <div class="alert alert-danger alert-dismissable">
+          <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+          <ul>
+          <% for (i = 0;i < errors.length;i++){%>
+            <li><%=errors[i]%></li>
+          <%}%>
+          </ul>
+        </div>
+        <%}%>
+        <form action="/admin/index-by-age/create" id="index_by_age-form" method="post" novalidate="novalidate">
+            <div class="content-header clearfix">
+              <h1 class="float-left">Thêm mới chỉ số theo tuổi
+                <small> 
+                  <i class="fas fa-arrow-circle-left"></i> 
+                  <a href="/admin/index-by-age">Trở lại danh sách CST</a> 
+                </small>
+              </h1>
+              <div class="float-right">
+                <button type="submit" name="save" class="btn btn-primary" value="save"> 
+                  <i class="far fa-save"></i> Lưu 
+                </button>
+                <button type="button" class="btn btn-primary" onclick="importFileExcel('file_input_weight')"> 
+                  <i class="fas fa-file-import"></i> Import Excel CN
+                </button>
+                <button type="button" class="btn btn-primary" onclick="importFileExcel('file_input_height')"> 
+                  <i class="fas fa-file-import"></i> Import Excel CC
+                </button>
+                <button type="button"  class="btn btn-primary"  onclick="importFileExcel('file_input_bmi')"> 
+                  <i class="fas fa-file-import"></i> Import Excel BMI
+                </button>
+                <button type="submit" name="saveContinue" class="btn btn-primary" value="saveContinue"> 
+                  <i class="far fa-save"></i> Lưu và tiếp tục sửa 
+                </button>
+              </div>
+            </div>
+            <section class="content">
+              <div class="container-fluid">
+                <div class="form-horizontal">
+                  <div class="cards-group">
+                    <div class="card card-default">
+                      <div class="card-body">
+                        <%- include('../index_by_age/_createorupdate',{index_ba:index_ba}) %>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </section>
+        </form>
+        <input accept=".xls,.xlsx" type="file" id="file_input_weight" style="width: 0px;height: 0px;overflow: hidden;" onchange="getFileWeightByAge()"/>
+        <input accept=".xls,.xlsx" type="file" id="file_input_height" style="width: 0px;height: 0px;overflow: hidden;" onchange="getFileHeightByAge()"/>
+        <input accept=".xls,.xlsx" type="file" id="file_input_bmi" style="width: 0px;height: 0px;overflow: hidden;" onchange="getFileBmiByAge()"/>
+    </div>
+    <%- include('../shared/footer') %>
+  </div>
+</body>
+</html>

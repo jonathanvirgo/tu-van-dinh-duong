@@ -41,6 +41,8 @@ var admin_diagnostic  = require('./app/admin/controllers/diagnosticController');
 var admin_standard_weight_height  = require('./app/admin/controllers/standardWeightHeightController');
 var admin_menu_example = require('./app/admin/controllers/menuExampleController');
 var admin_nutritional_needs = require('./app/admin/controllers/nutritionalNeedsController');
+var admin_index_by_age = require('./app/admin/controllers/indexByAgeController');
+var admin_height_by_weight = require('./app/admin/controllers/heightByWeightController');
 
 require('./app/config/passport')(passport);
 
@@ -115,6 +117,8 @@ app.use('/admin/diagnostic', admin_diagnostic);
 app.use('/admin/standard-weight-height', admin_standard_weight_height);
 app.use('/admin/menu-example', admin_menu_example);
 app.use('/admin/nutritional-needs', admin_nutritional_needs);
+app.use('/admin/index-by-age', admin_index_by_age);
+app.use('/admin/height-by-weight', admin_height_by_weight);
 
 app.get('/robots.txt', function (req, res) {
   res.type('text/plain');

@@ -455,7 +455,11 @@ router.post('/create', async function(req, res, next) {
         if(req.body.cus_cnht)               parameter['cus_cnht']               = req.body.cus_cnht;
         if(req.body.cus_cnbt)               parameter['cus_cnbt']               = req.body.cus_cnbt;
         if(req.body.cus_bmi)                parameter['cus_bmi']                = req.body.cus_bmi;
-        if(req.body.cus_ncdd)               parameter['cus_ncdd']                = req.body.cus_ncdd;
+        if(req.body.cus_ncdd)               parameter['cus_ncdd']               = req.body.cus_ncdd;
+        if(req.body.cus_height_by_age)      parameter['cus_height_by_age']      = req.body.cus_height_by_age;
+        if(req.body.cus_weight_by_age)      parameter['cus_weight_by_age']      = req.body.cus_weight_by_age;
+        if(req.body.cus_bmi_by_age)         parameter['cus_bmi_by_age']         = req.body.cus_bmi_by_age;
+        if(req.body.cus_height_by_weight)   parameter['cus_height_by_weight']   = req.body.cus_height_by_weight;
         if(req.body.clinical_examination)   parameter['clinical_examination']   = req.body.clinical_examination;
         if(req.body.erythrocytes)           parameter['erythrocytes']           = req.body.erythrocytes;
         if(req.body.cus_bc)                 parameter['cus_bc']                 = req.body.cus_bc;
@@ -622,6 +626,10 @@ router.post('/edit/:id', function(req, res, next) {
         if(req.body.cus_cnbt)               parameter['cus_cnbt']               = req.body.cus_cnbt;
         if(req.body.cus_bmi)                parameter['cus_bmi']                = req.body.cus_bmi;
         if(req.body.cus_ncdd)               parameter['cus_ncdd']                = req.body.cus_ncdd;
+        if(req.body.cus_height_by_age)      parameter['cus_height_by_age']      = req.body.cus_height_by_age;
+        if(req.body.cus_weight_by_age)      parameter['cus_weight_by_age']      = req.body.cus_weight_by_age;
+        if(req.body.cus_bmi_by_age)         parameter['cus_bmi_by_age']         = req.body.cus_bmi_by_age;
+        if(req.body.cus_height_by_weight)   parameter['cus_height_by_weight']   = req.body.cus_height_by_weight;
         if(req.body.clinical_examination)   parameter['clinical_examination']   = req.body.clinical_examination;
         if(req.body.erythrocytes)           parameter['erythrocytes']           = req.body.erythrocytes;
         if(req.body.cus_bc)                 parameter['cus_bc']                 = req.body.cus_bc;
@@ -1074,15 +1082,20 @@ router.post('/search/standard-weight-height', function(req, res, next){
         if(!req.body.year_old){
             str_error.push("Thiếu ngày sinh!");
         }
+        if(!req.body.gender || !['0', '1'].includes(param.gender)){
+            str_error.push("Thiếu giởi tính!");
+        }
+        if(!req.body.type_year_old){
+            str_error.push("Thiếu đơn vị tuổi!");
+        }
         if (str_error.length > 0) {
             resultData.message = str_error.toString();
             res.json(resultData);
             return;
         }
-        console.log('body', req.body);
         let arrPromise = [];
         param['age'] = param.type_year_old == '0' ? (parseInt(param.year_old) / 12) : parseInt(param.year_old);
-        console.log('param', param);
+        param['age_month'] = param.type_year_old == '1' ? (parseInt(param.year_old) * 12) : parseInt(param.year_old);
         if(param.age <= 18){
             arrPromise.push(new Promise((resolve, reject) => {
                 let sqlStandardWeightHeight = 'SELECT weight,height FROM standard_weight_height WHERE year_old = ? AND type_year_old = ? AND gender = ? ORDER BY id DESC LIMIT 1';
@@ -1104,7 +1117,6 @@ router.post('/search/standard-weight-height', function(req, res, next){
             arrPromise.push(new Promise((resolve, reject) => {
                 let sqlnutritionalNeeds = 'SELECT content FROM nutritional_needs WHERE gender = ? AND age_min <= ? AND age_max > ?';
                 webService.getListTable(sqlnutritionalNeeds, [param.gender,param.age, param.age]).then(responseData1 =>{
-                    console.log('respone', responseData1);
                     if(responseData1.success){
                         if(responseData1.data.length > 0){
                             resultData.data['contentNCDD'] = responseData1.data[0].content;
@@ -1116,12 +1128,46 @@ router.post('/search/standard-weight-height', function(req, res, next){
                 })
             }))
         }
-        // arrPromise.push(new Promise((resolve, reject) => {
-            
-        // }))
-        // arrPromise.push(new Promise((resolve, reject) => {
-            
-        // }))
+        if(param.age_month <= 227){
+            arrPromise.push(new Promise((resolve, reject) => {
+                let sqlIndexByAge = 'SELECT * FROM index_by_age WHERE gender = ? AND age = ?';
+                webService.getListTable(sqlIndexByAge, [param.gender,param.age_month]).then(responseData2 =>{
+                    if(responseData2.success){
+                        if(responseData2.data.length > 0){
+                            resultData.data['height_min'] = responseData2.data[0].height_min;
+                            resultData.data['height_max'] = responseData2.data[0].height_max;
+                            resultData.data['weight_min'] = responseData2.data[0].weight_min;
+                            resultData.data['weight_max'] = responseData2.data[0].weight_max;
+                            resultData.data['bmi_min'] = responseData2.data[0].bmi_min;
+                            resultData.data['bmi_max'] = responseData2.data[0].bmi_max;
+                        }
+                    }else{
+                        str_error.push(responseData2.message);
+                    }
+                    resolve();
+                })
+            }));
+        }
+        let cus_length = isNaN(parseFloat(req.body.cus_length)) ? null : parseFloat(req.body.cus_length).toFixed(3) * 100;
+        if(cus_length){
+            //Làm tròn chiều cao đến 0.5
+            cus_length = webService.roundStep(cus_length, 0.5);
+            arrPromise.push(new Promise((resolve, reject) => {
+                let sqlnutritionalNeeds = 'SELECT weight_min, weight_max FROM height_by_weight WHERE gender = ? AND height = ?';
+                webService.getListTable(sqlnutritionalNeeds, [param.gender, cus_length]).then(responseData3 =>{
+                    if(responseData3.success){
+                        if(responseData3.data.length > 0){
+                            resultData.data['weight_height_min'] = responseData3.data[0].weight_min;
+                            resultData.data['weight_height_max'] = responseData3.data[0].weight_max;
+                        }
+                    }else{
+                        str_error.push(responseData3.message);
+                    }
+                    resolve();
+                })
+            }));
+        }
+        
         Promise.all(arrPromise).then(()=>{
             if(str_error.length > 0){
                 resultData.message = str_error.toString();
@@ -1129,7 +1175,6 @@ router.post('/search/standard-weight-height', function(req, res, next){
                 resultData.message = "Thành công";
                 resultData.success = true;
             }
-            console.log('result', resultData);
             res.json(resultData);
         })
     } catch (error) {

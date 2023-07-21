@@ -309,7 +309,61 @@
         </div>
     </div>
     <div class="row g-2 align-items-center">
-        <div class="col-12 col-md-6 d-flex">
+        <div class="col-12 col-md-4 d-flex">
+            <label class="col-form-label col-md-auto fw-bold mt-2" for="cus_height_by_age">CC theo tuổi(Cm)</label>
+            <div class="col-form-body col-md">
+                <% if(!(examine.status == 4 || (examine.status == 3 && isDetail == true))){ %>
+                    <div class="form-control-has-addon">
+                        <input type="text" name="cus_height_by_age" class="form-control form-control-title" id="cus_height_by_age" placeholder="Chiều cao theo tuổi" value="<%= examine.cus_height_by_age%>">
+                        <button class="btn form-control-addon btn-link p-0 min-h-auto" type="button" onclick="clearInput('#cus_height_by_age')">
+                            <svg class="iconsvg-close">
+                                <use xlink:href="/public/content/images/sprite.svg#close"></use>
+                            </svg>
+                        </button>
+                    </div>
+                <% }else{ %>
+                    <div class="form-control form-control-title"><%= examine.cus_height_by_age%></div>
+                <% } %> 
+            </div>
+        </div>
+        <div class="col-12 col-md-4 d-flex">
+            <label class="col-form-label col-md-auto fw-bold mt-2" for="cus_weight_by_age">CN theo tuổi(Kg)</label>
+            <div class="col-form-body col-md">
+                <% if(!(examine.status == 4 || (examine.status == 3 && isDetail == true))){ %>
+                    <div class="form-control-has-addon">
+                        <input type="text" name="cus_weight_by_age" class="form-control form-control-title" id="cus_weight_by_age" placeholder="Cân nặng theo tuổi" value="<%= examine.cus_weight_by_age%>">
+                        <button class="btn form-control-addon btn-link p-0 min-h-auto" type="button" onclick="clearInput('#cus_weight_by_age')">
+                            <svg class="iconsvg-close">
+                                <use xlink:href="/public/content/images/sprite.svg#close"></use>
+                            </svg>
+                        </button>
+                    </div>
+                <% }else{ %>
+                    <div class="form-control form-control-title"><%= examine.cus_weight_by_age%></div>
+                <% } %> 
+            </div>
+        </div>
+        
+        <div class="col-12 col-md-4 d-flex">
+            <label class="col-form-label col-md-auto fw-bold mt-2" for="cus_bmi_by_age">BMI theo Tuổi</label>
+            <div class="col-form-body col-md">
+                <% if(!(examine.status == 4 || (examine.status == 3 && isDetail == true))){ %>
+                    <div class="form-control-has-addon">
+                        <input type="text" name="cus_bmi_by_age" class="form-control form-control-title" id="cus_bmi_by_age" placeholder="BMI theo tuổi" value="<%= examine.cus_bmi_by_age%>">
+                        <button class="btn form-control-addon btn-link p-0 min-h-auto" type="button" onclick="clearInput('#cus_bmi_by_age')">
+                            <svg class="iconsvg-close">
+                                <use xlink:href="/public/content/images/sprite.svg#close"></use>
+                            </svg>
+                        </button>
+                    </div>
+                <% }else{ %>
+                    <div class="form-control form-control-title"><%= examine.cus_bmi_by_age%></div>
+                <% } %> 
+            </div>
+        </div>
+    </div>
+    <div class="row g-2 align-items-center">
+        <div class="col-12 col-md-8 d-flex">
             <label class="col-form-label col-md-auto fw-bold mt-2" for="cus_ncdd">NCDD</label>
             <div class="col-form-body col-md">
                 <% if(!(examine.status == 4 || (examine.status == 3 && isDetail == true))){ %>
@@ -323,6 +377,23 @@
                     </div>
                 <% }else{ %>
                     <div class="form-control form-control-title"><%= examine.cus_ncdd%></div>
+                <% } %> 
+            </div>
+        </div>
+        <div class="col-12 col-md-4 d-flex">
+            <label class="col-form-label col-md-auto fw-bold mt-2" for="cus_height_by_weight">CN - CC(Kg)</label>
+            <div class="col-form-body col-md">
+                <% if(!(examine.status == 4 || (examine.status == 3 && isDetail == true))){ %>
+                    <div class="form-control-has-addon">
+                        <input type="text" name="cus_height_by_weight" class="form-control form-control-title" id="cus_height_by_weight" placeholder="Chiều cao theo cân nặng" value="<%= examine.cus_height_by_weight%>">
+                        <button class="btn form-control-addon btn-link p-0 min-h-auto" type="button" onclick="clearInput('#cus_height_by_weight')">
+                            <svg class="iconsvg-close">
+                                <use xlink:href="/public/content/images/sprite.svg#close"></use>
+                            </svg>
+                        </button>
+                    </div>
+                <% }else{ %>
+                    <div class="form-control form-control-title"><%= examine.cus_height_by_weight%></div>
                 <% } %> 
             </div>
         </div>

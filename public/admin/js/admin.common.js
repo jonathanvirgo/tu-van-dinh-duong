@@ -385,86 +385,86 @@ function renderArticleStatusHtml(status){
   return str_name;
 }
 
-function syncChannelPRBooking(){
-  var loading = $("#loading-page");
-  $.ajax({
-    url: '/admin/getAllChannelToolPR',
-    type: 'GET',
-    dataType: 'JSON',
-    beforeSend: function () {
-      loading.show();
-    },
-    success: function (result) {
-      loading.hide();
-      if(!result.status) {
-        displayError(result.message);
-      } else {
-        displayMessage(result.message);
-        window.setTimeout(function() { 
-          window.location.reload();
-        }, 1000);
-      }
-    },
-    error: function(jqXHR, exception){
-      loading.hide();
-      ajax_call_error(jqXHR, exception);
-    }
-  });
-}
+// function syncChannelPRBooking(){
+//   var loading = $("#loading-page");
+//   $.ajax({
+//     url: '/admin/getAllChannelToolPR',
+//     type: 'GET',
+//     dataType: 'JSON',
+//     beforeSend: function () {
+//       loading.show();
+//     },
+//     success: function (result) {
+//       loading.hide();
+//       if(!result.status) {
+//         displayError(result.message);
+//       } else {
+//         displayMessage(result.message);
+//         window.setTimeout(function() { 
+//           window.location.reload();
+//         }, 1000);
+//       }
+//     },
+//     error: function(jqXHR, exception){
+//       loading.hide();
+//       ajax_call_error(jqXHR, exception);
+//     }
+//   });
+// }
 
-function syncWebsitePRBooking(){
-  var loading = $("#loading-page");
-  $.ajax({
-    url: '/admin/getAllWebsiteToolPR',
-    type: 'GET',
-    dataType: 'JSON',
-    beforeSend: function () {
-      loading.show();
-    },
-    success: function (result) {
-      loading.hide();
-      if(!result.status) {
-        displayError(result.message);
-      } else {
-        displayMessage(result.message);
-        window.setTimeout(function() { 
-          window.location.reload();
-        }, 1000);
-      }
-    },
-    error: function(jqXHR, exception){
-      loading.hide();
-      ajax_call_error(jqXHR, exception);
-    }
-  });
-}
+// function syncWebsitePRBooking(){
+//   var loading = $("#loading-page");
+//   $.ajax({
+//     url: '/admin/getAllWebsiteToolPR',
+//     type: 'GET',
+//     dataType: 'JSON',
+//     beforeSend: function () {
+//       loading.show();
+//     },
+//     success: function (result) {
+//       loading.hide();
+//       if(!result.status) {
+//         displayError(result.message);
+//       } else {
+//         displayMessage(result.message);
+//         window.setTimeout(function() { 
+//           window.location.reload();
+//         }, 1000);
+//       }
+//     },
+//     error: function(jqXHR, exception){
+//       loading.hide();
+//       ajax_call_error(jqXHR, exception);
+//     }
+//   });
+// }
 
-function syncFormatPRBooking(){
-  var loading = $("#loading-page");
-  $.ajax({
-    url: '/admin/getAllFormatToolPR',
-    type: 'GET',
-    dataType: 'JSON',
-    beforeSend: function () {
-      loading.show();
-    },
-    success: function (result) {
-      loading.hide();
-      if(!result.status) {
-        displayError(result.message);
-      } else {
-        displayMessage(result.message);
-        window.setTimeout(function() { 
-          window.location.reload();
-        }, 1000);
-      }
-    },
-    error: function(jqXHR, exception){
-      loading.hide();
-      ajax_call_error(jqXHR, exception);
-    }
-  });
-}
+// function syncFormatPRBooking(){
+//   var loading = $("#loading-page");
+//   $.ajax({
+//     url: '/admin/getAllFormatToolPR',
+//     type: 'GET',
+//     dataType: 'JSON',
+//     beforeSend: function () {
+//       loading.show();
+//     },
+//     success: function (result) {
+//       loading.hide();
+//       if(!result.status) {
+//         displayError(result.message);
+//       } else {
+//         displayMessage(result.message);
+//         window.setTimeout(function() { 
+//           window.location.reload();
+//         }, 1000);
+//       }
+//     },
+//     error: function(jqXHR, exception){
+//       loading.hide();
+//       ajax_call_error(jqXHR, exception);
+//     }
+//   });
+// }
 
 function importFileExcel(id){
   try {
@@ -574,7 +574,7 @@ function getFileWeightHeight(){
       formData.append("data", JSON.stringify(dataWeightHeight))
       $.ajax({
         type: 'POST',
-        url: '/admin/standard_weight_height/import-from-excel',
+        url: '/admin/standard-weight-height/import-from-excel',
         processData: false,
         contentType: false,
         data: formData,
@@ -582,7 +582,7 @@ function getFileWeightHeight(){
             if (result.success) {
                 displayMessage('Lưu thành công');
                 setTimeout(()=>{
-                    window.location.href = "/admin/standard_weight_height"
+                    window.location.href = "/admin/standard-weight-height"
                 }, 500);
             } else {
                 displayError(result.message);
@@ -592,5 +592,217 @@ function getFileWeightHeight(){
     })
   } catch (error) {
     console.log("getFileStandardWeightHeight", error);
+  }
+}
+
+function getFileHeightByWeight(){
+  try {
+    let dataFile = $('#file_input_height_by_weight').prop('files');
+    let dataHeightByWeight = [];
+    let i = 0;
+    readXlsxFile(dataFile[0]).then(function(rows) {
+      console.log('readXlsxFile', rows);
+
+      for(let [index, item] of rows.entries()){
+        //Nếu item 0 là số và có đủ 5 trường
+        // 0 nữ 1 nam
+        if(typeof(item[0]) == "number" && item[1] && item[2] && item[3] && item[4]){
+          dataHeightByWeight.push({
+            height: item[0],
+            gender: 0,
+            weight_min: item[3],
+            weight_max: item[4]
+          },
+          {
+            height: item[0],
+            gender: 1,
+            weight_min: item[1],
+            weight_max: item[2]
+          }
+          );
+        }
+      }
+      console.log('dataHeightByWeight', dataHeightByWeight);
+      var formData        = new FormData();
+      formData.append("data", JSON.stringify(dataHeightByWeight))
+      $.ajax({
+        type: 'POST',
+        url: '/admin/height-by-weight/import-from-excel',
+        processData: false,
+        contentType: false,
+        data: formData,
+        success: function(result) {
+            if (result.success) {
+                displayMessage('Lưu thành công');
+                setTimeout(()=>{
+                    window.location.href = "/admin/height-by-weight"
+                }, 500);
+            } else {
+                displayError(result.message);
+            }
+        }
+      });
+    })
+  } catch (error) {
+    console.log("getFileHeightByWeight", error);
+  }
+}
+
+function getFileWeightByAge(){
+  try {
+    let dataFile = $('#file_input_weight').prop('files');
+    let dataWeightByAge = [];
+    let i = 0;
+    readXlsxFile(dataFile[0]).then(function(rows) {
+      console.log('readXlsxFile', rows);
+      // return
+      for(let [index, item] of rows.entries()){
+        //Nếu item 0 là số và có đủ 5 trường
+        // 0 nữ 1 nam
+        if(typeof(item[0]) == "number" && item[1] && item[2] && item[3] && item[4]){
+          dataWeightByAge.push({
+            age: item[0],
+            gender: 0,
+            weight_min: isNaN(parseFloat(item[3])) ? '' : parseFloat(item[3]).toFixed(1),
+            weight_max: isNaN(parseFloat(item[4])) ? '' : parseFloat(item[4]).toFixed(1)
+          },
+          {
+            age: item[0],
+            gender: 1,
+            weight_min: isNaN(parseFloat(item[1])) ? '' : parseFloat(item[1]).toFixed(1),
+            weight_max: isNaN(parseFloat(item[2])) ? '' : parseFloat(item[2]).toFixed(1),
+          }
+          );
+        }
+      }
+      console.log('dataHeightByWeight', dataWeightByAge);
+      var formData        = new FormData();
+      formData.append("data", JSON.stringify(dataWeightByAge))
+      $.ajax({
+        type: 'POST',
+        url: '/admin/index-by-age/import-from-excel-weight',
+        processData: false,
+        contentType: false,
+        data: formData,
+        success: function(result) {
+            if (result.success) {
+                displayMessage('Lưu thành công');
+                setTimeout(()=>{
+                    window.location.href = "/admin/index-by-age"
+                }, 500);
+            } else {
+                displayError(result.message);
+            }
+        }
+      });
+    })
+  } catch (error) {
+    console.log("getFileWeightByAge", error);
+  }
+}
+
+function getFileHeightByAge(){
+  try {
+    let dataFile = $('#file_input_height').prop('files');
+    let dataHeightByAge = [];
+    let i = 0;
+    readXlsxFile(dataFile[0]).then(function(rows) {
+      console.log('readXlsxFile', rows);
+      // return
+      for(let [index, item] of rows.entries()){
+        //Nếu item 0 là số và có đủ 5 trường
+        // 0 nữ 1 nam
+        if(typeof(item[0]) == "number" && item[1] && item[2] && item[3] && item[4]){
+          dataHeightByAge.push({
+            age: item[0],
+            gender: 0,
+            height_min: isNaN(parseFloat(item[3])) ? '' : parseFloat(item[3]).toFixed(1),
+            height_max: isNaN(parseFloat(item[4])) ? '' : parseFloat(item[4]).toFixed(1)
+          },
+          {
+            age: item[0],
+            gender: 1,
+            height_min: isNaN(parseFloat(item[1])) ? '' : parseFloat(item[1]).toFixed(1),
+            height_max: isNaN(parseFloat(item[2])) ? '' : parseFloat(item[2]).toFixed(1),
+          }
+          );
+        }
+      }
+      console.log('dataHeightByWeight', dataHeightByAge);
+      var formData        = new FormData();
+      formData.append("data", JSON.stringify(dataHeightByAge))
+      $.ajax({
+        type: 'POST',
+        url: '/admin/index-by-age/import-from-excel-height',
+        processData: false,
+        contentType: false,
+        data: formData,
+        success: function(result) {
+            if (result.success) {
+                displayMessage('Lưu thành công');
+                setTimeout(()=>{
+                    window.location.href = "/admin/index-by-age"
+                }, 500);
+            } else {
+                displayError(result.message);
+            }
+        }
+      });
+    })
+  } catch (error) {
+    console.log("getFileWeightByAge", error);
+  }
+}
+
+function getFileBmiByAge(){
+  try {
+    let dataFile = $('#file_input_bmi').prop('files');
+    let dataBmiByAge = [];
+    let i = 0;
+    readXlsxFile(dataFile[0]).then(function(rows) {
+      console.log('readXlsxFile', rows);
+      // return
+      for(let [index, item] of rows.entries()){
+        //Nếu item 1 là số và có đủ 5 trường
+        // 0 nữ 1 nam
+        if(typeof(item[1]) == "number" && item[2] && item[3] && item[4] && item[5]){
+          dataBmiByAge.push({
+            age: item[1],
+            gender: 0,
+            bmi_min: isNaN(parseFloat(item[4])) ? '' : parseFloat(item[4]).toFixed(1),
+            bmi_max: isNaN(parseFloat(item[5])) ? '' : parseFloat(item[5]).toFixed(1)
+          },
+          {
+            age: item[1],
+            gender: 1,
+            bmi_min: isNaN(parseFloat(item[2])) ? '' : parseFloat(item[2]).toFixed(1),
+            bmi_max: isNaN(parseFloat(item[3])) ? '' : parseFloat(item[3]).toFixed(1),
+          }
+          );
+        }
+      }
+      console.log('dataHeightByWeight', dataBmiByAge);
+      var formData        = new FormData();
+      formData.append("data", JSON.stringify(dataBmiByAge))
+      $.ajax({
+        type: 'POST',
+        url: '/admin/index-by-age/import-from-excel-bmi',
+        processData: false,
+        contentType: false,
+        data: formData,
+        success: function(result) {
+            if (result.success) {
+                displayMessage('Lưu thành công');
+                setTimeout(()=>{
+                    window.location.href = "/admin/index-by-age"
+                }, 500);
+            } else {
+                displayError(result.message);
+            }
+        }
+      });
+    })
+  } catch (error) {
+    console.log("getFileBmiByAge", error);
   }
 }

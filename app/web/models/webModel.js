@@ -2583,6 +2583,11 @@ let webService = {
         } catch (error) {
             console.log("getDataWeather error", error);   
         }
+    },
+    roundStep(value, step) {
+        step || (step = 1.0);
+        var inv = 1.0 / step;
+        return Math.round(value * inv) / inv;
     }
 }
 

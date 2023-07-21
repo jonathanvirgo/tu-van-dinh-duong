@@ -264,6 +264,10 @@ function changeTabExamine(tab){
             dataExamine.examine['cus_cnbt'] = $('#cus_cnbt').val(); // cân nặng thường có
             dataExamine.examine['cus_bmi'] = $('#cus_bmi').val();
             dataExamine.examine['cus_ncdd'] = $('#cus_ncdd').val();
+            dataExamine.examine['cus_height_by_age'] = $('#cus_height_by_age').val();
+            dataExamine.examine['cus_weight_by_age'] = $('#cus_weight_by_age').val();
+            dataExamine.examine['cus_bmi_by_age'] = $('#cus_bmi_by_age').val();
+            dataExamine.examine['cus_height_by_weight'] = $('#cus_height_by_weight').val();
             dataExamine.examine['clinical_examination'] = $('#clinical_examination').val();
             dataExamine.examine['erythrocytes'] = $('#erythrocytes').val();
             dataExamine.examine['cus_bc'] = $('#cus_bc').val();
@@ -367,15 +371,18 @@ function diff_years(dt2, dt1)
         let year_old = $('#cus_age').val();
         let type_year_old = $('label[for="cus_age"]').text() == 'Tuổi' ? 1 : 0;
         let gender = parseInt($('#cus_gender').val());
+        let cus_length = $('#cus_length').val();
         $('#cus_cctc').val('');
         $('#cus_cntc').val('');
-        if(type_year_old == 1 && parseInt(year_old) > 20){
+        if(type_year_old == 1 && parseInt(year_old) > 18){
             $('label[for="cus_cntc"]').text('CNKN (kg)');
             if($('#cus_length').val() && !isNaN(parseFloat($('#cus_length').val()))){
                 let ccht = parseFloat($('#cus_length').val());
                 let cnkn = ccht * ccht * 22;
                 $('#cus_cntc').val(parseInt(cnkn));
             }
+        }
+        if(type_year_old == 1 && parseInt(year_old) > 20){
             $('#cus_ncdd').val('Theo công thức');
         }else{
             if((gender == 1 || gender == 0) && year_old){
@@ -384,7 +391,7 @@ function diff_years(dt2, dt1)
                 $.ajax({
                     type: 'POST',
                     url: url,
-                    data: {year_old: year_old, type_year_old: type_year_old, gender: gender},
+                    data: {year_old: year_old, type_year_old: type_year_old, gender: gender, cus_length: cus_length},
                     beforeSend: function() {
                         loading.show();
                     },
@@ -398,6 +405,15 @@ function diff_years(dt2, dt1)
                             else $('#cus_cntc').val('');
                             if(result.data.contentNCDD) $('#cus_ncdd').val(result.data.contentNCDD);
                             else $('#cus_ncdd').val('');
+
+                            if(result.data.height_min && result.data.height_max) $('#cus_height_by_age').val(result.data.height_min + ' - ' + result.data.height_max);
+                            else $('#cus_height_by_age').val('');
+                            if(result.data.weight_min && result.data.weight_max) $('#cus_weight_by_age').val(result.data.weight_min + ' - ' + result.data.weight_max);
+                            else $('#cus_weight_by_age').val('');
+                            if(result.data.bmi_min && result.data.bmi_max) $('#cus_bmi_by_age').val(result.data.bmi_min + ' - ' + result.data.bmi_max);
+                            else $('#cus_bmi_by_age').val('');
+                            if(result.data.weight_height_min && result.data.weight_height_max) $('#cus_height_by_weight').val(result.data.weight_height_min + ' - ' + result.data.weight_height_max);
+                            else $('#cus_height_by_weight').val('');
                         }
                     },
                     error: function(jqXHR, exception) {
@@ -1690,9 +1706,9 @@ $(document).ready(function(){
     $('#cus_length').change(function(evt){
         let year_old = $('#cus_age').val();
         let type_year_old = $('label[for="cus_age"]').text() == 'Tuổi' ? 1 : 0;
-        if(type_year_old == 1 && parseInt(year_old) > 18){
+        // if(type_year_old == 1 && parseInt(year_old) > 18){
             checkStandardWeightHeight();
-        }
+        // }
     });
 
     $('#cus_length, #cus_cnht').change(function(evt){
