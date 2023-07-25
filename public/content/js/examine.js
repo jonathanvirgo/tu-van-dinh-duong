@@ -897,6 +897,7 @@ function generateTableMenu(menu_id){
 function addTemplateListMenuTime(listMenuTime){
     try {
         if(listMenuTime.length > 0){
+            let listFoodTotal = [];
             for(let item of listMenuTime){
                 let menuTime = addTemplateMenuTime(item);
                 $("#tb_menu").find('tbody').append(menuTime);
@@ -905,8 +906,10 @@ function addTemplateListMenuTime(listMenuTime){
                         let foodTemplate = addFoodTemplate(food, item.id);
                         $("#tb_menu").find('tbody').append(foodTemplate);
                     }
+                    listFoodTotal.push(...item.listFood);
                 }
             }
+            setTotalMenu(listFoodTotal);
         }
     } catch (error) {
         
@@ -940,6 +943,10 @@ function resetTemplateMenu(){
     $('#total_lipid').text('');
     $('#total_unanimal_lipid').text('');
     $('#total_carbohydrate').text('');
+
+    $('#total_protein_percent').text('');
+    $('#total_lipid_percent').text('');
+    $('#total_carbohydrate_percent').text('');
 }
 
 function chooseMenuExample(){
@@ -963,6 +970,7 @@ function chooseMenuExample(){
                     break;
                 }
             }
+            $('#tb_menu tbody').empty();
             $('#tb_menu').show();
             generateTableMenu(id);
         }else{
@@ -1162,12 +1170,20 @@ function setTotalMenu(listFood){
                 total_unanimal_lipid += food.unanimal_lipid;
                 total_carbohydrate += food.carbohydrate;
             }
+            let total_protein_percent = (total_protein * 400) / total_energy;
+            let total_lipid_percent = (total_lipid * 900) / total_energy;
+            let total_carbohydrate_percent = (total_carbohydrate * 400) / total_energy;
+
             $('#total_energy').text(String(total_energy));
             $('#total_protein').text(parseFloat(total_protein).toFixed(2));
             $('#total_animal_protein').text(parseFloat(total_animal_protein).toFixed(2));
             $('#total_lipid').text(parseFloat(total_lipid).toFixed(2));
             $('#total_unanimal_lipid').text(parseFloat(total_unanimal_lipid).toFixed(2));
             $('#total_carbohydrate').text(parseFloat(total_carbohydrate).toFixed(2));
+
+            $('#total_protein_percent').text(total_protein_percent.toFixed(2));
+            $('#total_lipid_percent').text(total_lipid_percent.toFixed(2));
+            $('#total_carbohydrate_percent').text(total_carbohydrate_percent.toFixed(2));
         }
     } catch (error) {
         
