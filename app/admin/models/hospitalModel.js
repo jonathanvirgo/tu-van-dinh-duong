@@ -6,8 +6,8 @@ let hospitaService = {
         db.get().getConnection(function (err, connection) {
             try {
                 if (err) return callback(err);
-                var sql   = "INSERT INTO hospital(name,phone,address) VALUES (?,?,?)";
-                var query = connection.query(sql, [parameter.name,parameter.phone,parameter.address], function (err, results, fields) {
+                var sql   = "INSERT INTO hospital(name,prefix,phone,address) VALUES (?,?,?,?)";
+                var query = connection.query(sql, [parameter.name,parameter.prefix,parameter.phone,parameter.address], function (err, results, fields) {
                     connection.release();
                     if (err) return callback(err);
                     callback(null, results, fields);
@@ -22,8 +22,8 @@ let hospitaService = {
         db.get().getConnection(function (err, connection) {
             try {
                 if (err) return callback(err);
-                var sql   = 'UPDATE hospital SET name = ?, address = ?, phone = ? WHERE id=?';
-                var query = connection.query(sql, [parameter.name,parameter.address,parameter.phone, parameter.id], function (err, results, fields) {
+                var sql   = 'UPDATE hospital SET name = ?, prefix = ?, address = ?, phone = ? WHERE id=?';
+                var query = connection.query(sql, [parameter.name,parameter.prefix,parameter.address,parameter.phone, parameter.id], function (err, results, fields) {
                     connection.release();
                     if (err) return callback(err);
                     callback(null, results, fields);
@@ -128,6 +128,22 @@ let hospitaService = {
             }
         });
     },
+    checkPrefix: function(prefix, callback){
+        db.get().getConnection(function (err, connection) {
+            try {
+                if (err) return callback(err);
+                var sql   = 'SELECT COUNT(id) AS total FROM hospital WHERE prefix = ?';
+                var query = connection.query(sql, [prefix], function (err, results, fields) {
+                    connection.release();
+                    if (err) return callback(err);
+                    callback(null, results, fields);
+                });
+            } catch (error) {
+                webService.addToLogService(error, 'hospitalModel update');
+                return callback(error);
+            }
+        });
+    }
 }
 
 module.exports = hospitaService;

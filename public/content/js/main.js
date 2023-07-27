@@ -163,7 +163,7 @@ ready(() => {
       dropboxWrapper: 'body',
       hideClearButton: true,
       showDropboxAsPopup: false,
-      search: false
+      search: true
     };
     let options = extend({}, defaults, JSON.parse(el.getAttribute('data-options')));
 

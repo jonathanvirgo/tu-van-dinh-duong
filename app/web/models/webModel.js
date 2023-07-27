@@ -849,41 +849,41 @@ let webService = {
             });
         });
     },
-    createCountId: function(hospital_id) {
-        return new Promise(function(resolve, reject) {
-            let date = moment().format('DDMMYY');
-            let id   = '';
-            let sqlIdCount = 'SELECT count_id FROM examine INNER JOIN department ON department.id = examine.department_id INNER JOIN hospital ON hospital.id = department.hospital_id WHERE hospital.id = ? ORDER BY examine.id DESC LIMIT 1';
-            webService.getListTable(sqlIdCount, [hospital_id]).then(success => {
-                if(success.success) {
-                    if (success.data.length == 0) {
-                        id = '001' + String(hospital_id).padStart(2, '0') + date;
-                    } else {
-                        if (success.data[0] && success.data[0].count_id) {
-                            let id_count = success.data[0].count_id;
-                            if (String(id_count).length >= 10) {
-                                checkDate = id_count.slice(-6);
-                                if (checkDate == date) {
-                                    let number = parseInt((id_count.slice(0, id_count.length - 8)));
-                                    number += 1;
-                                    id = String(number).padStart(3, '0') + String(hospital_id).padStart(2, '0') + date;
-                                } else {
-                                    id = '001' + String(hospital_id).padStart(2, '0') + date;
-                                }
-                            } else {
-                                id = '001' + String(hospital_id).padStart(2, '0') + date;
-                            }
-                        } else {
-                            id = '001' + String(hospital_id).padStart(2, '0') + date;
-                        }
-                    }
-                    resolve({success: true, id_count : id});
-                }else{
-                    resolve({success: false, message : success.message});
-                }
-            });
-        });
-    },
+    // createCountId: function(hospital_id) {
+    //     return new Promise(function(resolve, reject) {
+    //         let date = moment().format('DDMMYY');
+    //         let id   = '';
+    //         let sqlIdCount = 'SELECT count_id FROM examine INNER JOIN department ON department.id = examine.department_id INNER JOIN hospital ON hospital.id = department.hospital_id WHERE hospital.id = ? ORDER BY examine.id DESC LIMIT 1';
+    //         webService.getListTable(sqlIdCount, [hospital_id]).then(success => {
+    //             if(success.success) {
+    //                 if (success.data.length == 0) {
+    //                     id = '001' + String(hospital_id).padStart(2, '0') + date;
+    //                 } else {
+    //                     if (success.data[0] && success.data[0].count_id) {
+    //                         let id_count = success.data[0].count_id;
+    //                         if (String(id_count).length >= 10) {
+    //                             checkDate = id_count.slice(-6);
+    //                             if (checkDate == date) {
+    //                                 let number = parseInt((id_count.slice(0, id_count.length - 8)));
+    //                                 number += 1;
+    //                                 id = String(number).padStart(3, '0') + String(hospital_id).padStart(2, '0') + date;
+    //                             } else {
+    //                                 id = '001' + String(hospital_id).padStart(2, '0') + date;
+    //                             }
+    //                         } else {
+    //                             id = '001' + String(hospital_id).padStart(2, '0') + date;
+    //                         }
+    //                     } else {
+    //                         id = '001' + String(hospital_id).padStart(2, '0') + date;
+    //                     }
+    //                 }
+    //                 resolve({success: true, id_count : id});
+    //             }else{
+    //                 resolve({success: false, message : success.message});
+    //             }
+    //         });
+    //     });
+    // },
     sha512: function(password, salt){
         var hash = crypto.createHmac('sha512', salt);
         hash.update(password);

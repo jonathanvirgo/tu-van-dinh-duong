@@ -39,6 +39,7 @@ module.exports = function(passport) {
                     detailUser.department_name = resUser[0].department_name;
                     detailUser.hospital_id     = resUser[0].hospital_id;
                     detailUser.hospital_name   = resUser[0].hospital_name;
+                    detailUser.hospital_prefix = resUser[0].prefix;
                 }
                 resolve();
             });

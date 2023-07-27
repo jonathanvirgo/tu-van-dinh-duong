@@ -1,7 +1,9 @@
 var request         = require('request'),
     db              = require('./../../config/db'),
     moment          = require('moment'),
-    webService      = require('../models/webModel');
+    webService      = require('../models/webModel'),
+    idCountExamine  = 1,
+    dateCountExamine = '';
 
 let examineService = {
     countAllExamine: function(parameter, callback) {
@@ -109,7 +111,7 @@ let examineService = {
             var paraSQL     = [];
             var search      = parameter.search;
             var order_by    = "examine.created_at DESC";
-            var sql         = `SELECT examine.*, hospital.id AS hospital_id FROM examine
+            var sql         = `SELECT examine.*, hospital.id AS hospital_id, hospital.name AS hospital_name FROM examine
                                 LEFT JOIN department ON examine.department_id = department.id
                                 LEFT JOIN hospital ON examine.hospital_id = hospital.id WHERE examine.active = 1`;
 
@@ -336,6 +338,50 @@ let examineService = {
                 callback(null, results, fields);
             });
         });
+    },
+    getIdCountExamine: function(){
+        return {id: idCountExamine, strDate: dateCountExamine}
+    },
+    setIdCountExamine: function(id, strDate){
+        idCountExamine = id;
+        dateCountExamine = strDate;
+    },
+    getIdCount: async function(prefix){
+        try {
+            let id = 1;
+            let date = moment().format('MMYY');
+            //lấy id
+            let countExamine = examineService.getIdCountExamine();
+            // nếu ngày trùng tháng năm hiện tại thì lấy id
+            if(countExamine.strDate == date){
+                id += countExamine.idCountExamine;
+            }else{
+                // nếu không trùng tháng năm hiện tại thì lấy trong db
+                let sqlIdCount = 'SELECT count_id FROM examine ORDER BY id DESC LIMIT 1';
+                let data_id_examine = await webService.getListTable(sqlIdCount, []);
+                if(data_id_examine.success && data_id_examine.data && data_id_examine.data.length > 0){
+                    let id_examine = data_id_examine.data[0].count_id ? data_id_examine.data[0].count_id : '';
+                    if (id_examine) {
+                        //Check id cũ
+                        let pattern = /[a-z|A-Z]/g;
+                        if(pattern.test(id_examine)){
+                            //Nếu có chứa ký tự
+                            let numberInId = id_examine.replace(/[^0-9]/g, '');
+                            let checkDate = numberInId.slice(-4);
+                            if (checkDate == date) {
+                                id = parseInt(numberInId.slice(0, numberInId.length - 4));
+                                id += 1;
+                            }
+                        }
+                    }
+                }
+            }
+            //Set lại id count
+            examineService.setIdCountExamine(id, date);
+            return (String(id).padStart(3, '0') + date + prefix);
+        } catch (error) {
+            console.log('getIdCount', error);
+        }
     }
 }
 

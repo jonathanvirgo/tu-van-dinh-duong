@@ -26,7 +26,7 @@
             </div>
           </div>
           <div class="col-lg-auto">
-            <div class="flatpickr flatpickr-range" data-options='{"mode":"range"}' data-plugin="flatpickr" id="header-flatpickr" data-parent="#header-flatpickr">
+            <div class="flatpickr flatpickr-range" data-options='{"mode":"range","allowInput":"true"}' data-plugin="flatpickr" id="header-flatpickr" data-parent="#header-flatpickr">
               <% if (!filter.search.fromdate){%>
               <input class="form-control" id="sfilter_date" type="text" placeholder="Thời gian" value="" data-input="data-input" aria-label="Thời gian" name="book_date" />
               <%} else {%>
@@ -96,7 +96,7 @@
     options: <%- JSON.stringify(filter.hospitals) %>,
     dropboxWrapper: '#hospital_filter',
     placeholder: 'Bệnh viện',
-    search: false,
+    search: true,
     multiple: true,
     additionalClasses: 'vscomp-status website-status',
     showDropboxAsPopup: false,
@@ -115,7 +115,7 @@
     placeholder: 'Trạng thái',
     search: false,
     multiple: true,
-    additionalClasses: 'vscomp-status website-status',
+    additionalClasses: 'vscomp-status select-status',
     showDropboxAsPopup: false,
     selectAllText: 'Chọn tất cả',
     optionsSelectedText: 'Lựa chọn',

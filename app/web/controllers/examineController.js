@@ -516,27 +516,21 @@ router.post('/create', async function(req, res, next) {
             return;
         } else {
             parameter.cus_birthday = parameter.cus_birthday.split("-").reverse().join("-");
-            await webService.createCountId(req.user.hospital_id).then(async success =>{
-                if(success.success && success.id_count){
-                    parameter['count_id'] = success.id_count;
-                    await webService.addRecordTable( parameter, 'examine', true).then(responseData =>{
-                        if(!responseData.success){
-                            resultData.message = responseData.message;
-                            res.json(resultData);
-                            logService.create(req, responseData.message);
-                            return;
-                        }else{
-                            id_examine = responseData.data.insertId;
-                            resultData.success = true;
-                            resultData.message = "Lưu phiếu khám thành công!";
-                            res.json(resultData);
-                        }
-                    });
-                }else{
+            parameter['count_id'] = await examineService.getIdCount(req.user.hospital_prefix);
+            await webService.addRecordTable( parameter, 'examine', true).then(responseData =>{
+                if(!responseData.success){
+                    resultData.message = responseData.message;
                     res.json(resultData);
+                    logService.create(req, responseData.message);
                     return;
+                }else{
+                    id_examine = responseData.data.insertId;
+                    resultData.success = true;
+                    resultData.message = "Lưu phiếu khám thành công!";
+                    res.json(resultData);
                 }
             });
+            
             // Them khach hang vao database
             let paramCustomer = {
                 cus_name:      parameter.cus_name,

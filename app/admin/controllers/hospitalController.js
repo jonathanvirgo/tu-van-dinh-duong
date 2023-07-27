@@ -82,11 +82,15 @@ router.post('/create', function (req, res, next) {
             parameter  = {
                 name: req.body.hospital_name,
                 address: req.body.hospital_address ? req.body.hospital_address : '',
+                prefix: req.body.hospital_prefix ? req.body.hospital_prefix : '',
                 phone: req.body.hospital_phone ? req.body.hospital_phone : ''
             };
             
         if(parameter.name == ''){
             str_error.push("Thiếu tên bệnh viện!");
+        }
+        if(parameter.prefix && parameter.prefix.length > 4){
+            str_error.push("Tên ký hiệu phải nhỏ hơn 4 ký tự!");
         }
         if(str_error.length > 0){
             res.render(viewPage("create"), {
@@ -95,21 +99,36 @@ router.post('/create', function (req, res, next) {
                 errors: str_error
             });
         } else {
-            modelService.create(parameter, function (err, results, fields) {
-                if (err) {
-                    adminService.addToLog(req, res, err);
+            modelService.checkPrefix(parameter.prefix, function(err1, results1, fields1) {
+                if (err1) {
+                    adminService.addToLog(req, res, err1);
                     return;
                 }
-                if (results.insertId !== undefined) {
-                    if (btn_action == "save") {
-                        res.redirect(returnUrl);
-                    } else {
-                        res.redirect(returnUrl + '/edit/' + results.insertId);
-                    }
-                } else {
-                    adminService.addToLog(req, res, 'Dữ liệu trả về không xác định!');
+                if(results1[0].total == 0){
+                    modelService.create(parameter, function (err, results, fields) {
+                        if (err) {
+                            adminService.addToLog(req, res, err);
+                            return;
+                        }
+                        if (results.insertId !== undefined) {
+                            if (btn_action == "save") {
+                                res.redirect(returnUrl);
+                            } else {
+                                res.redirect(returnUrl + '/edit/' + results.insertId);
+                            }
+                        } else {
+                            adminService.addToLog(req, res, 'Dữ liệu trả về không xác định!');
+                        }
+                    })
+                }else{
+                    str_error.push('Ký hiệu đã tồn tại!');
+                    res.render(viewPage("create"), {
+                        user: req.user,
+                        hospital: parameter,
+                        errors: str_error
+                    });
                 }
-            })
+            });
         }
     } catch (e) {
         adminService.addToLog(req, res, e.message);
@@ -130,11 +149,15 @@ router.post('/edit/:id', function (req, res, next) {
                 id: parseInt(req.params.id),
                 name: req.body.hospital_name,
                 address: req.body.hospital_address ? req.body.hospital_address : '',
+                prefix: req.body.hospital_prefix ? req.body.hospital_prefix : '',
                 phone: req.body.hospital_phone ? req.body.hospital_phone : ''
             };
             
         if(parameter.name == ''){
             str_error.push("Thiếu tên bệnh viện!");
+        }
+        if(parameter.prefix && parameter.prefix.length > 4){
+            str_error.push("Tên ký hiệu phải nhỏ hơn 4 ký tự!");
         }
         if(str_error.length > 0){
             res.render(viewPage("edit"), {
@@ -143,20 +166,36 @@ router.post('/edit/:id', function (req, res, next) {
                 errors: str_error
             });
         } else {
-            modelService.update(parameter, function (err, results, fields) {
-                if (err) {
-                    adminService.addToLog(req, res, err);
+            modelService.checkPrefix(parameter.prefix, function(err1, results1, fields1) {
+                if (err1) {
+                    adminService.addToLog(req, res, err1);
                     return;
                 }
-                if (results !== undefined) {
-                    if (btn_action == "save") {
-                        res.redirect(returnUrl);
-                    } else {
-                        res.redirect(returnUrl + '/edit/' + parameter.id);
-                    }
-                } else {
-                    adminService.addToLog(req, res, 'Dữ liệu trả về không xác định!');
+                if(results1[0].total == 0){
+                    modelService.update(parameter, function (err, results, fields) {
+                        if (err) {
+                            adminService.addToLog(req, res, err);
+                            return;
+                        }
+                        if (results !== undefined) {
+                            if (btn_action == "save") {
+                                res.redirect(returnUrl);
+                            } else {
+                                res.redirect(returnUrl + '/edit/' + parameter.id);
+                            }
+                        } else {
+                            adminService.addToLog(req, res, 'Dữ liệu trả về không xác định!');
+                        }
+                    });
+                }else{
+                    str_error.push('Ký hiệu đã tồn tại!');
+                    res.render(viewPage("edit"), {
+                        user: req.user,
+                        hospital: parameter,
+                        errors: str_error
+                    });
                 }
+                
             });
         }
     } catch (e) {

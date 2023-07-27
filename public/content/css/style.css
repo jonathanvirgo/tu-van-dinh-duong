@@ -117,9 +117,12 @@
 }
 @media (min-width: 992px) {
   .website-status .vscomp-option {
+    width: 100%;
+  }
+  .select-status .vscomp-option {
     width: 50%;
   }
-  .vscomp-ele-wrapper.website-status {
+  .vscomp-ele-wrapper.website-status, .select-status .vscomp-option {
     width: 9rem;
   }
 }
