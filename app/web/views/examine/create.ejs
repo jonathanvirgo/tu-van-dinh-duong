@@ -127,6 +127,10 @@
                 generateFoodName("food_name");
                 generateMenuExamine();
               });
+              // Lưu tự động mỗi 5 phút
+              setInterval(()=>{
+                saveExamine(0, 1);
+              }, 300000)
               // VirtualSelect.init({
               //   ele: '#food_name',
               //   placeholder: 'Chọn thực phẩm',

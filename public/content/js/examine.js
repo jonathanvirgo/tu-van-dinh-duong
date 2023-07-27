@@ -119,33 +119,36 @@ function returnList() {
     window.location.href = '/examine';
 }
 
-function saveExamine(action){
+function saveExamine(action, autoSave = 0){
     try {
         let loading         = $("#loading-page");
         changeTabExamine(dataExamine.tab);
-        if(!dataExamine.examine.cus_name || !dataExamine.examine.cus_phone || !dataExamine.examine.cus_birthday || !dataExamine.examine.cus_gender){
-            if(!dataExamine.examine.cus_name){
-                displayErrorToastr('Vui lòng nhập họ tên!');
+        if(autoSave == 0){
+            if(!dataExamine.examine.cus_name || !dataExamine.examine.cus_phone || !dataExamine.examine.cus_birthday || !dataExamine.examine.cus_gender){
+                if(!dataExamine.examine.cus_name){
+                    displayErrorToastr('Vui lòng nhập họ tên!');
+                    return;
+                } 
+                if(!dataExamine.examine.cus_phone){
+                    displayErrorToastr('Vui lòng nhập số điện thoại!');
+                    return;
+                } 
+                if(!dataExamine.examine.cus_birthday){
+                    displayErrorToastr('Vui lòng nhập ngày sinh!');
+                    return;
+                } 
+                if(!dataExamine.examine.cus_gender){
+                    displayErrorToastr('Vui lòng nhập giới tính!');
+                    return;
+                } 
+            }
+            let birthday = moment(dataExamine.examine.cus_birthday,"DD-MM-YYYY");
+            if(!birthday.isValid()){
+                displayErrorToastr('Ngày sinh sai định dạng ngày-tháng-năm!');
                 return;
-            } 
-            if(!dataExamine.examine.cus_phone){
-                displayErrorToastr('Vui lòng nhập số điện thoại!');
-                return;
-            } 
-            if(!dataExamine.examine.cus_birthday){
-                displayErrorToastr('Vui lòng nhập ngày sinh!');
-                return;
-            } 
-            if(!dataExamine.examine.cus_gender){
-                displayErrorToastr('Vui lòng nhập giới tính!');
-                return;
-            } 
+            }
         }
-        let birthday = moment(dataExamine.examine.cus_birthday,"DD-MM-YYYY");
-        if(!birthday.isValid()){
-            displayErrorToastr('Ngày sinh sai định dạng ngày-tháng-năm!');
-            return;
-        }
+        
         let status = parseInt($('#status_examine').val());
         // action 1 tiếp nhận 2 đang khám 3 hoàn thành 0 ko thay doi;
         if(action) dataExamine.examine['action'] = action;
@@ -159,22 +162,34 @@ function saveExamine(action){
             url: url,
             data: dataExamine.examine,
             beforeSend: function() {
-                loading.show();
+                if(autoSave == 0){
+                    loading.show();
+                }else{
+                    $('#loadingAutoSave').removeAttr('style');
+                }
             },
             success: function(result) {
-                loading.hide();
-                if (result.success) {
-                    displayMessage('Lưu thành công');
-                    setTimeout(()=>{
-                        returnList();
-                    }, 500);
-                } else {
-                    displayError(result.message);
+                if(autoSave == 0){
+                    loading.hide();
+                    if (result.success) {
+                        displayMessage('Lưu thành công');
+                        setTimeout(()=>{
+                            returnList();
+                        }, 500);
+                    } else {
+                        displayError(result.message);
+                    }
+                }else{
+                    setTimeout(() =>{
+                        $('#loadingAutoSave').css('display','none');
+                    }, 1000);
                 }
             },
             error: function(jqXHR, exception) {
-                loading.hide();
-                ajax_call_error(jqXHR, exception);
+                if(autoSave == 0){
+                    loading.hide();
+                    ajax_call_error(jqXHR, exception);
+                }
             }
         });
     } catch (error) {
@@ -952,6 +967,10 @@ function resetTemplateMenu(){
 function chooseMenuExample(){
     try {
         let id = 1;
+        // let isGenerate = true;
+        // if($('#menu_id').val()){
+        //     isGenerate = false;
+        // }
         if(dataExamine.menuExamine.length > 0){
             id = dataExamine.menuExamine[dataExamine.menuExamine.length - 1].id + 1;
         }
@@ -965,14 +984,16 @@ function chooseMenuExample(){
                         detail: JSON.parse(menu.detail)
                     };
                     dataExamine.menuExamine.push(menuNew);
-                    let newOption = new Option(menuNew.name, menuNew.id, false, false);
+                    let newOption = new Option(menuNew.name, menuNew.id, false, true);
                     $('#menu_id').append(newOption).trigger('change');
                     break;
                 }
             }
-            $('#tb_menu tbody').empty();
-            $('#tb_menu').show();
-            generateTableMenu(id);
+            // if(isGenerate){
+                $('#tb_menu tbody').empty();
+                $('#tb_menu').show();
+                generateTableMenu(id);
+            // }
         }else{
             displayError("Vui lòng chọn mẫu!");
         }
@@ -1529,6 +1550,66 @@ function showModalCancelExamine(id, status){
     }
 }
 
+function showModalDeleteMenuExample(val){
+    try {
+        var confirmBox = `
+        <div class="modal fade" id="modal_cf_delete_example" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <button class="modal-btn-close btn-close" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
+                <div class="text-center mb-2">
+                <svg class="iconsvg-trash-lg text-tra-lai fs-65px">
+                    <use xlink:href="/public/content/images/sprite.svg#trash-lg"></use>
+                </svg>
+                </div>
+                <h4 class="modal-title text-center text-tra-lai mb-4">Bỏ thực đơn mẫu</h4>
+                <p class="text-body-2 fw-5 text-center mb-4">Bạn muốn bỏ thực đơn mẫu này khỏi phiếu khám không?</p>
+                <div class="row g-2 justify-content-center">
+                <div class="col-6">
+                    <button class="btn btn-cancel box-btn w-100 text-uppercase" type="button" data-bs-dismiss="modal">Không</button>
+                </div>
+                <div class="col-6">
+                    <button onclick="deleteMenuExample(`+ val +`)" class="btn btn-primary box-btn w-100 text-uppercase" type="button" data-bs-dismiss="modal">
+                    <svg class="iconsvg-confirm flex-shrink-0 fs-16px me-2">
+                        <use xlink:href="/public/content/images/sprite.svg#confirm"></use>
+                    </svg>
+                    Đồng ý
+                    </button>
+                </div>
+                </div>
+            </div>
+            </div>
+        </div>`;
+        $("#modal_confirm_box").html(confirmBox); 
+        $("#modal_cf_delete_example").modal('show');
+    } catch (error) {
+        
+    }
+}
+
+function deleteMenuExample(id){
+    try {
+        // Xóa thực đơn khỏi list
+        removeItemArrayByIdObject(dataExamine.menuExamine, id);
+        // Xóa menu template
+        if ($('#menu_id').find("option[value='" + id + "']").length) {
+            $('#menu_id').find("option[value='" + id + "']").remove();
+        }
+        // nếu có menu trong danh sách thì thêm vào template
+        if(dataExamine.menuExamine.length > 0){
+            $('#tb_menu tbody').empty();
+            $('#tb_menu').show();
+            generateTableMenu(dataExamine.menuExamine[0].id);
+        }else{
+            $('#tb_menu tbody').empty();
+            $('#tb_menu').hide();
+            $('#menu_id').trigger('change');
+        }
+    } catch (error) {
+        
+    }
+}
+
 $(document).ready(function(){
     let cus_birthday = $("#cus_birthday").flatpickr({
         dateFormat: "d-m-Y",
@@ -1620,8 +1701,12 @@ $(document).ready(function(){
     $("#menu_id").on('select2:select', function(evt) {
         $("tbody tr").remove();
         generateTableMenu(evt.params.data.id);
-    }).on('select2:unselect', function(e){
-
+    }).on('select2:unselecting', function(e){
+        e.preventDefault();
+        $('#menu_id').select2('close');
+        let id_menu_example = parseInt(e.params.args.data.id);
+        console.log('bỏ chọn menu', id_menu_example);
+        showModalDeleteMenuExample(id_menu_example);
     });
 
     $("#diagnostic_id").on('select2:select', function(evt) {

@@ -96,7 +96,7 @@
       <% if(!(examine.status == 4 || (examine.status == 3 && isDetail == true))){ %>
         <% if(examine.status !== 3){ %>
           <div class="col-6 col-md-auto">
-            <button class="btn btn-success box-btn w-100 text-uppercase" type="button" onclick="saveExamine(0)" title="Hoàn thành phiếu khám">
+            <button class="btn btn-success box-btn w-100 text-uppercase" type="button" onclick="saveExamine(0, 0)" title="Hoàn thành phiếu khám">
               <svg class="iconsvg-send-2 flex-shrink-0 fs-16px me-2">
                 <use xlink:href="/public/content/images/sprite.svg#save"></use>
               </svg>Lưu
@@ -104,7 +104,7 @@
           </div>
         <% } %>
         <div class="col-6 col-md-auto">
-          <button class="btn btn-primary box-btn w-100 text-uppercase" type="button" onclick="saveExamine(3)" title="Hoàn thành phiếu khám">
+          <button class="btn btn-primary box-btn w-100 text-uppercase" type="button" onclick="saveExamine(3, 0)" title="Hoàn thành phiếu khám">
             <svg class="iconsvg-send-2 flex-shrink-0 fs-16px me-2">
               <use xlink:href="/public/content/images/sprite.svg#save"></use>
             </svg><%= examine.status == 3 ? 'Lưu' : 'Hoàn thành'%>

@@ -36,7 +36,7 @@ router.post('/login', function (req, res, next) {
         }
 
         let passwordData  = webService.saltHashPassword(password);
-        let sqlGetListRequest = 'SELECT * FROM user WHERE active = 1 AND ( phone = ? OR email = ?) AND password = ?';
+        let sqlGetListRequest = 'SELECT * FROM user WHERE ( phone = ? OR email = ?) AND password = ?';
         webService.getListTable(sqlGetListRequest ,[username, username, passwordData]).then(responseData =>{
             if(!responseData.success){
                 resultData.message = "Tên đăng nhập chưa được đăng ký"; 
@@ -44,22 +44,28 @@ router.post('/login', function (req, res, next) {
                 return;
             }
             if(responseData.data && responseData.data.length > 0){
-                req.logIn(responseData.data[0], function (err) {
-                    if (err) {
-                        logService.create(req, err).then(function(responseData){
-                            if(responseData.message) resultData.message = responseData.message;
-                            else resultData.message = err.sqlMessage;
-                            res.send(resultData);
-                        });
+                if(responseData.data[0].active == 1){
+                    req.logIn(responseData.data[0], function (err) {
+                        if (err) {
+                            logService.create(req, err).then(function(responseData){
+                                if(responseData.message) resultData.message = responseData.message;
+                                else resultData.message = err.sqlMessage;
+                                res.send(resultData);
+                            });
+                            return;
+                        }
+                        resultData.status  = true;
+                        resultData.message = "Đăng nhập thành công!";
+                        res.send(resultData);
                         return;
-                    }
-                    resultData.status  = true;
-                    resultData.message = "Đăng nhập thành công!";
+                    });
+                }else{
+                    resultData.message = "Tài khoản chưa được kích hoạt! Vui lòng kiểm tra email kích hoạt tài khoản!";
                     res.send(resultData);
                     return;
-                });
+                }
             }else{
-                resultData.message = "Đăng nhập không thành công! Vui lòng kiểm tra username, mật khẩu hoặc mail kích hoạt tài khoản"; 
+                resultData.message = "Đăng nhập không thành công! Sai email, số điện thoại hoặc mật khẩu"; 
                 res.send(resultData);
                 return;
             }
