@@ -354,7 +354,7 @@ let examineService = {
             let countExamine = examineService.getIdCountExamine();
             // nếu ngày trùng tháng năm hiện tại thì lấy id
             if(countExamine.strDate == date){
-                id += countExamine.idCountExamine;
+                id += countExamine.id;
             }else{
                 // nếu không trùng tháng năm hiện tại thì lấy trong db
                 let sqlIdCount = 'SELECT count_id FROM examine ORDER BY id DESC LIMIT 1';
