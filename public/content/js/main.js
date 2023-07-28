@@ -105,8 +105,6 @@ $(document).ready(function() {
   const elSwiper = document.querySelectorAll('[data-plugin="select2"]');
   Array.prototype.forEach.call(elSwiper, (el) => {
     let defaults = {
-      minimumResultsForSearch: Infinity,
-      // searchInputPlaceholder: 'Tìm kiếm',
       allowClear: true,
       dropdownParent: document.querySelector(el.dataset.parent),
       matcher: function (params, data) {
@@ -118,15 +116,15 @@ $(document).ready(function() {
           return data;
         }
         return null;
-        }
+      }
     };
     let options = extend({}, defaults, JSON.parse(el.getAttribute('data-options')));
     $(el).select2(options);
   });
 
-  $(document).on('select2:open', () => {
-    document.querySelector('input.select2-search__field').focus();
-  });
+  // $(document).on('select2:open', () => {
+  //   document.querySelector('input.select2-search__field').focus();
+  // });
 });
 
 (function($) {
@@ -147,6 +145,7 @@ $(document).ready(function() {
   };
 
 })(window.jQuery);
+
 
 
 // --------------------------

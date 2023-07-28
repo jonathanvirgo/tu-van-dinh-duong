@@ -1,9 +1,9 @@
 <div class="box">
   <div class="box-header">
-    <h2 class="box-title">Danh sách phiếu khám <small class="text-icon fw-6">(<%=paginator.totalItem%>)</small>
+    <h2 class="box-title">Danh sách phiếu khám <small class="text-icon fw-6">(<%=paginatorExamine.totalItem%>)</small>
     </h2>
     <div class="paginate fs-13px ms-auto d-none d-md-flex">
-      <%- include('../layout/pagination') %>
+      <%- include('../component/paginator_examine') %>
     </div>
   </div>
   <div class="box-body box-table">
@@ -12,29 +12,95 @@
       <table class="table-1 table table-pe-x-3 mb-0 align-middle table-ds-booking">
         <thead>
           <tr>
-            <td>Id</td>
-            <td class="table-sort">
-              <span>Tên bệnh nhân</span>
+            <td id="td_id_count">
+              <div class="dropdown table-sort">
+                <span class="table-sort-icon">
+                  <button class="btn" type="button" title="Tăng dần" onclick="getDataSort(1, 'id_count', 1)"></button>
+                  <button class="btn" type="button" title="Giảm dần" onclick="getDataSort(0, 'id_count', 1)"></button>
+                </span>
+                <a class="flex-center-y dropdown-toggle" href="#" data-bs-toggle="dropdown" data-bs-offset="0, 20" data-bs-auto-close="outside" aria-expanded="false">Mã phiếu</a>
+                <div class="dropdown-menu">
+                  <input class="form-control" id="search_id_count" type="text" placeholder="Nhập từ khoá tìm kiếm" onkeyup="getDataSearch(1, 'id_count')"/>
+                </div>
+              </div>
             </td>
-            <td class="table-sort">
-              <span>Phone</span>
+            <td id="td_cus_name">
+              <div class="dropdown table-sort">
+                <a class="flex-center-y dropdown-toggle" href="#" data-bs-toggle="dropdown" data-bs-offset="0, 20" data-bs-auto-close="outside" aria-expanded="false">Tên bệnh nhân</a>
+                <div class="dropdown-menu">
+                  <input class="form-control" id="search_cus_name" type="text" placeholder="Nhập từ khoá tìm kiếm" onkeyup="getDataSearch(1, 'cus_name')"/>
+                </div>
+              </div>
             </td>
-            <td>
-              <span>Address</span>
+            <td id="td_cus_phone">
+              <div class="dropdown table-sort">
+                <span class="table-sort-icon">
+                  <button class="btn" type="button" title="Tăng dần" onclick="getDataSort(1, 'cus_phone', 1)"></button>
+                  <button class="btn" type="button" title="Giảm dần" onclick="getDataSort(0, 'cus_phone', 1)"></button>
+                </span>
+                <a class="flex-center-y dropdown-toggle" href="#" data-bs-toggle="dropdown" data-bs-offset="0, 20" data-bs-auto-close="outside" aria-expanded="false">Điện thoại</a>
+                <div class="dropdown-menu">
+                  <input class="form-control" id="search_cus_phone" type="text" placeholder="Nhập từ khoá tìm kiếm" onkeyup="getDataSearch(1, 'cus_phone')"/>
+                </div>
+              </div>
             </td>
-            <td class="table-sort">
-              <span>Chuẩn đoán</span>
+            <td id="td_cus_address">
+              <div class="dropdown table-sort">
+                <a class="flex-center-y dropdown-toggle" href="#" data-bs-toggle="dropdown" data-bs-offset="0, 20" data-bs-auto-close="outside" aria-expanded="false">Địa chỉ</a>
+                <div class="dropdown-menu">
+                  <input class="form-control" id="search_cus_address" type="text" placeholder="Nhập từ khoá tìm kiếm" onkeyup="getDataSearch(1, 'cus_address')"/>
+                </div>
+              </div>
             </td>
-            <td class="table-sort">
-              <span>Thời gian</span>
+            <td id="id_diagnostic">
+              <div class="dropdown table-sort">
+                <a class="flex-center-y dropdown-toggle" href="#" data-bs-toggle="dropdown" data-bs-offset="0, 20" data-bs-auto-close="outside" aria-expanded="false">Chuẩn đoán</a>
+                <div class="dropdown-menu">
+                  <input class="form-control" id="search_diagnostic" type="text" placeholder="Nhập từ khoá tìm kiếm" onkeyup="getDataSearch(1, 'diagnostic')"/>
+                </div>
+              </div>
             </td>
-            <td class="table-sort w-1">
-              <span>Trạng thái</span>
+            <td id="td_time_examine">
+              <div class="table-sort">
+                <span class="table-sort-icon">
+                  <button class="btn" type="button" title="Tăng dần" onclick="getDataSort(1, 'time_examine', 1)"></button>
+                  <button class="btn" type="button" title="Giảm dần" onclick="getDataSort(0, 'time_examine', 1)"></button>
+                </span>
+                <div id="search_time_examine" class="flatpickr flatpickr-hide-input" data-plugin="flatpickr" data-options='{"mode":"range"}'>
+                  <input class="form-control invisible" type="text" placeholder="dd-mm-yyyy" value="" data-input="data-input" aria-label="dd-mm-yyyy" />
+                  <span class="cursor-pointer" data-toggle="data-toggle">Thời gian</span>
+                </div>
+              </div>
             </td>
-            <td class="table-sort w-1">Hành động</td>
+            <td class="w-1">
+              <div class="dropdown">
+                <a class="flex-center-y dropdown-toggle" href="#" data-bs-toggle="dropdown" data-bs-offset="0, 20" data-bs-auto-close="outside" aria-expanded="false">Trạng thái</a>
+                <div class="dropdown-menu" id="status_examine_dropdown">
+                  <div class="tag_selected mb-2">
+                    <div class="tag-body"></div>
+                    <button class="btn tag-clear btn-link p-0 flex-shrink-0" type="button" style="visibility: hidden;" id="status_examine_dropdown_clear_all" onclick="deleteAllTagCheckBoxSearch('status_examine')">
+                      <svg class="iconsvg-close">
+                        <use xlink:href="/public/content/images/sprite.svg#close"></use>
+                      </svg>
+                    </button>
+                  </div>
+                  <div class="scroll-y">
+                    <%if(listStatus.data.length > 0){%>
+                      <%for(let itemStt of listStatus.data){%>
+                        <label class="dropdown-item dropdown-item-checkbox">
+                          <input class="form-check-input fs-16px mt-1" type="checkbox" aria-label="" value="<%=itemStt.value %>" id="status_examine_check_<%=itemStt.value%>" onchange="getValueSearchCheckBox('#status_examine_check_<%=itemStt.value%>', 'status_examine', '<%=itemStt.label%>', 1)"/>
+                          <%-itemStt.label%>
+                        </label>
+                      <%}%>
+                    <%}%>
+                  </div>
+                </div>
+              </div>
+            </td>
+            <td class="w-1">Hành động</td>
           </tr>
         </thead>
-        <tbody>
+        <tbody id="table-tbody-examine">
           <% if (listExamine.length > 0){%>
             <% for (i = 0;i < listExamine.length;i++){%>
               <tr id="examine_<%=listExamine[i].id%>">
@@ -86,7 +152,7 @@
       </table>
     </div>
     <div class="paginate fs-13px mx-auto">
-      <%- include('../layout/pagination') %>
+      <%- include('../component/paginator_examine') %>
     </div>
   </div>
 </div>

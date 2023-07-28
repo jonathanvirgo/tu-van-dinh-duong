@@ -22,9 +22,29 @@ let examineService = {
                     paraSQL.push("%" + search.keyword + "%");
                     paraSQL.push(search.keyword);
                 }
-                if (search.status_ids !== '') {
+                if(search.id_count && search.id_count.length > 0){
+                    sql += ` AND examine.count_id LIKE ?`;
+                    paraSQL.push("%" + search.id_count + "%");
+                }
+                if(search.cus_name && search.cus_name.length > 0){
+                    sql += ` AND UPPER(examine.cus_name) LIKE ?`;
+                    paraSQL.push("%" + search.cus_name.toUpperCase() + "%");
+                }
+                if(search.cus_phone && search.cus_phone.length > 0){
+                    sql += ` AND examine.cus_phone LIKE ?`;
+                    paraSQL.push("%" + search.cus_phone + "%");
+                }
+                if(search.cus_address && search.cus_address.length > 0){
+                    sql += ` AND UPPER(examine.cus_address) LIKE ?`;
+                    paraSQL.push("%" + search.cus_address.toUpperCase() + "%");
+                }
+                if(search.diagnostic && search.diagnostic.length > 0){
+                    sql += ` AND UPPER(examine.diagnostic) LIKE ?`;
+                    paraSQL.push("%" + search.diagnostic.toUpperCase() + "%");
+                }
+                if (search.status_examine_ids.length !== 0) {
                     sql += " AND examine.status in (?)";
-                    paraSQL.push(search.status_ids.split(','));
+                    paraSQL.push(search.status_examine_ids);
                 }
                 if(search.hospital_ids !== ''){
                     sql += " AND examine.hospital_id in (?)";
@@ -115,13 +135,8 @@ let examineService = {
                                 LEFT JOIN department ON examine.department_id = department.id
                                 LEFT JOIN hospital ON examine.hospital_id = hospital.id WHERE examine.active = 1`;
 
-            if (search.order_by == 0) {
-                
-            } else if (search.order_by == 1) {
-
-            } else {
-
-            }
+            let sortText = webService.getSortString(parameter.search.sort, 'examine');
+            if(sortText.length > 0) order_by = sortText;
             
             if(parameter.filter){
                 if (search.keyword !== "") {
@@ -130,9 +145,29 @@ let examineService = {
                     paraSQL.push("%" + search.keyword + "%");
                     paraSQL.push(search.keyword);
                 }
-                if (search.status_ids !== '') {
+                if(search.id_count && search.id_count.length > 0){
+                    sql += ` AND UPPER(examine.count_id) LIKE ?`;
+                    paraSQL.push("%" + search.id_count.toUpperCase() + "%");
+                }
+                if(search.cus_name && search.cus_name.length > 0){
+                    sql += ` AND UPPER(examine.cus_name) LIKE ?`;
+                    paraSQL.push("%" + search.cus_name.toUpperCase() + "%");
+                }
+                if(search.cus_phone && search.cus_phone.length > 0){
+                    sql += ` AND examine.cus_phone LIKE ?`;
+                    paraSQL.push("%" + search.cus_phone + "%");
+                }
+                if(search.cus_address && search.cus_address.length > 0){
+                    sql += ` AND UPPER(examine.cus_address) LIKE ?`;
+                    paraSQL.push("%" + search.cus_address.toUpperCase() + "%");
+                }
+                if(search.diagnostic && search.diagnostic.length > 0){
+                    sql += ` AND UPPER(examine.diagnostic) LIKE ?`;
+                    paraSQL.push("%" + search.diagnostic.toUpperCase() + "%");
+                }
+                if (search.status_examine_ids.length !== 0) {
                     sql += " AND examine.status in (?)";
-                    paraSQL.push(search.status_ids.split(','));
+                    paraSQL.push(search.status_examine_ids);
                 }
                 if(search.hospital_ids !== ''){
                     sql += " AND examine.hospital_id in (?)";
@@ -184,6 +219,7 @@ let examineService = {
                 if (err) return callback(err);
                 callback(null, results, fields);
             });
+            console.log('query', query.sql);
         });
     },
     getAllExamine2: function(parameter, callback) {
@@ -244,7 +280,7 @@ let examineService = {
                 paraSQL.push(parameter.fromdate_statistic.split("-").reverse().join("-"));
                 paraSQL.push(parameter.todate_statistic.split("-").reverse().join("-"));
             } else if (parameter.fromdate_statistic !== "") {
-                sql += " AND pr_article.examine >= ? AND pr_article.examine <= ?";
+                sql += " AND examine.examine >= ? AND examine.examine <= ?";
                 paraSQL.push(parameter.fromdate_statistic.split("-").reverse().join("-") + " 00:00:00");
                 paraSQL.push(parameter.fromdate_statistic.split("-").reverse().join("-") + " 23:59:59");
             }

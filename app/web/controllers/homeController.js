@@ -249,7 +249,8 @@ router.get('/search', function(req, res) {
                         moment: moment,
                         webService: webService,
                         filter: filter,
-                        paginator: paginator,
+                        paginatorExamine: paginator,
+                        listStatus: webService.getExamineStatusOption(2),
                         link:'examine'
                     });
                 }).catch(err => {

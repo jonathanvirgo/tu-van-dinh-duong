@@ -1,0 +1,41 @@
+<% for (i = 0;i < listExamine.length;i++){%>
+  <tr id="examine_<%=listExamine[i].id%>">
+    <td>
+      <a target="_blank" href="/examine/edit/<%=listExamine[i].id%>?detail=true">
+        <span class="text-primary fw-6 fs-13px"><%=listExamine[i].count_id%></span>
+      </a>
+    </td>
+    <td class="min-w-150px">
+      <div class="flex-center-y fs-13px">
+        <img class="img-fluid me-2" src="/public/content/images/user.svg" alt="" />
+        <%=listExamine[i].cus_name%>
+      </div>
+    </td>
+    <td class="fw-14px text-red"><%=listExamine[i].cus_phone%></td>
+    <td class="fs-13px text-primary"><%=listExamine[i].cus_address%></td>
+    <td class="fs-13px"><%=listExamine[i].diagnostic%></td>
+    <td class="fs-13px"><%=moment(listExamine[i].created_at).format("HH:mm:ss")%>
+      <br>
+      <small class="text-body-2"><%=moment(listExamine[i].created_at).format("DD/MM/YYYY")%></small>
+    </td>
+    <td>
+      <span class="badge badge-<%=webService.examineStatusClass(listExamine[i].status).name%>">
+        <%=webService.examineStatusClass(listExamine[i].status).value%>
+      </span>
+    </td>
+    <td>
+      <div class="flex-center-x gap-10px" style="position: relative;">
+        <a title="Sửa" class="btn btn-action btn-action-edit" target="_blank" href="/examine/edit/<%=listExamine[i].id%>">
+          <svg class="iconsvg-edit-2">
+             <use xlink:href="/public/content/images/sprite.svg#edit-2"></use>
+          </svg>
+        </a>
+        <button class="btn btn-action btn-action-cancel" title="Huỷ phiếu khám" type="button" onclick="showModalCancelExamine('<%=listExamine[i].id%>','<%=listExamine[i].status%>')">
+          <svg class="iconsvg-close-circle">
+             <use xlink:href="/public/content/images/sprite.svg#trash"></use>
+          </svg>
+       </button>
+      </div>
+    </td>
+  </tr>
+<%}%>

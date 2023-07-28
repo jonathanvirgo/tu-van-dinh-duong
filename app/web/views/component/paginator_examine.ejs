@@ -1,0 +1,30 @@
+<% if(!paginatorExamine.hasPrevPage) { %>
+  <button disabled class="btn btn-outline-primary paginate-btn-prev" type="button">
+    <svg class="iconsvg-chevron-right rotate-180">
+      <use xlink:href="/public/content/images/sprite.svg#chevron-right"></use>
+    </svg>
+  </button>
+<% } else { %>
+  <a class="btn btn-outline-primary paginate-btn-prev" onclick="getDataSort(0,'page', 1 ,'<%=(paginatorExamine.page - 1)%>')">
+    <svg class="iconsvg-chevron-right rotate-180">
+      <use xlink:href="/public/content/images/sprite.svg#chevron-right"></use>
+    </svg>
+  </a>
+<% } %>
+<div class="paginate-text">
+  <span class="fw-6"><%=(paginatorExamine.perPage * paginatorExamine.page) - (paginatorExamine.perPage -1)%>-<%=(paginatorExamine.perPage * paginatorExamine.page) > paginatorExamine.totalItem ? paginatorExamine.totalItem : (paginatorExamine.perPage * paginatorExamine.page)%></span>
+  <span class="text-icon">/ <%=paginatorExamine.totalItem%></span>
+</div>
+<% if(!paginatorExamine.hasNextPage) { %> 
+<button disabled class="btn btn-outline-primary paginate-btn-next" type="button">
+  <svg class="iconsvg-chevron-right">
+    <use xlink:href="/public/content/images/sprite.svg#chevron-right"></use>
+  </svg>
+</button>
+<% } else { %>
+<a class="btn btn-outline-primary paginate-btn-next" onclick="getDataSort(1,'page', 1,'<%=(paginatorExamine.page + 1)%>')">
+  <svg class="iconsvg-chevron-right">
+    <use xlink:href="/public/content/images/sprite.svg#chevron-right"></use>
+  </svg>
+</a>
+<% } %>

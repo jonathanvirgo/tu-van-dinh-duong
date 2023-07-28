@@ -175,6 +175,7 @@ let webService = {
     },
     createSideBarFilter: function(req, type, perPage = 10) {
         try {
+            console.log('createSideBarFilter', req.query);
             var query       = url.parse(req.url, true).query,
                 page        = isNaN(parseInt(query.page)) ? 1 : (parseInt(query.page) < 1 ? 1 : parseInt(query.page)),
                 arrPromise  = [],
@@ -192,14 +193,25 @@ let webService = {
                         phone: query.cus_phone == undefined ? "" : query.cus_phone.trim(),
                         status_ids: query.status_ids == undefined ? "" : query.status_ids,
                         hospital_ids: query.hospital_ids == undefined ? "" : query.hospital_ids,
-                        order_by: query.order_by == undefined ? 1 : parseInt(query.order_by),
                         book_date: query.book_date == undefined ? "" : query.book_date,
                         created_by: 0,
                         role_ids: [],
                         department_id: req.user ? req.user.department_id : null,
                         hospital_id: req.user ? req.user.hospital_id : null,
                         user_mail: req.user ? req.user.email : '',
-                        user_phone: req.user ? req.user.phone : ''
+                        user_phone: req.user ? req.user.phone : '',
+                        sort: {
+                            id_count: query.sort_id_count == undefined ? "" : query.sort_id_count,
+                            cus_phone: query.sort_cus_phone == undefined ? "" : query.sort_cus_phone,
+                            time_examine: query.sort_time_examine == undefined ? "" : query.sort_time_examine
+                        },
+                        id_count: query.search_id_count == undefined ? "" : query.search_id_count,
+                        cus_name: query.search_cus_name == undefined ? "" : query.search_cus_name,
+                        cus_phone: query.search_cus_phone == undefined ? "" : query.search_cus_phone,
+                        cus_address: query.search_cus_address == undefined ? "" : query.search_cus_address,
+                        diagnostic: query.search_diagnostic == undefined ? "" : query.search_diagnostic,
+                        time_examine: query.search_time_examine == undefined ? "" : query.search_time_examine,
+                        status_examine_ids: req.query.status_examine_ids == undefined ? [] : req.query.status_examine_ids
                     },
                     requestUri: "",
                     hospitalIds: [],
@@ -233,18 +245,19 @@ let webService = {
                 listData.requestUri += "&hospital_ids=" + listData.search.hospital_ids;
             }
 
-            if (listData.search.status_ids !== '') {
-                var arr_status = listData.search.status_ids.split(",");
-                for (var i = 0; i < arr_status.length; i++) {
-                    if(!isNaN(parseInt(arr_status[i]))){
-                        listData.statusIds.push(parseInt(arr_status[i]));
+            if (listData.search.status_examine_ids.length > 0) {
+                for (var i = 0; i < listData.search.status_examine_ids.length; i++) {
+                    if(!isNaN(parseInt(listData.search.status_examine_ids[i]))){
+                        listData.statusIds.push(parseInt(listData.search.status_examine_ids[i]));
                     }
                 }
-                listData.requestUri += "&status_ids=" + listData.search.status_ids;
+                listData.requestUri += "&status_examine_ids=" + JSON.stringify(listData.search.status_examine_ids);
             }
-            if(type == 0){
-                listData.search.fromdate_statistic = webService.addDays(-30);
-                listData.search.todate_statistic   = webService.parseDay(new Date());
+
+            for(let sort in listData.search.sort){
+                if(listData.search.sort[sort] !== ''){
+                    listData.requestUri += `&sort_${sort}=` + listData.search.sort[sort];
+                }
             }
 
             if (listData.search.book_date !== '') {
@@ -258,8 +271,17 @@ let webService = {
                 listData.requestUri += "&book_date=" + listData.search.book_date;
             }
 
-            if (listData.search.order_by !== '') {
-                listData.requestUri += "&order_by=" + listData.search.order_by;
+            if(type == 1){
+                if (listData.search.time_examine !== '') {
+                    if(listData.search.time_examine.indexOf(' - ') == -1){
+                        listData.search.fromdate = listData.search.time_examine;
+                    } else {
+                        var time = listData.search.time_examine.split(' - ');
+                        listData.search.fromdate = time[0];
+                        listData.search.todate   = time[1];
+                    }
+                    listData.requestUri += "&search_time_examine=" + listData.search.time_examine;
+                }
             }
 
             arrPromise.push(new Promise((resolve, reject) => {
@@ -631,20 +653,6 @@ let webService = {
                     });
                 }
             });
-            // db.get().getConnection(function(err, connection) {
-            //     try {
-            //         if(err){
-
-            //         }else{
-            //             let sqlQueryLog = 'INSERT INTO log_info(type,examine_id,data) VALUES (?,?,?)';
-            //             connection.query(sqlQueryLog, ['updateRecordTable: ' + table, table == 'examine' ? condition.id : null, JSON.stringify(param)], function(error, results, fields) {
-            //                 connection.release();
-            //             });
-            //         }
-            //     } catch (error) {
-                    
-            //     }
-            // });
         });
     },
     addRecordTable: function(param, table, isCreated_at = false){
@@ -849,41 +857,6 @@ let webService = {
             });
         });
     },
-    // createCountId: function(hospital_id) {
-    //     return new Promise(function(resolve, reject) {
-    //         let date = moment().format('DDMMYY');
-    //         let id   = '';
-    //         let sqlIdCount = 'SELECT count_id FROM examine INNER JOIN department ON department.id = examine.department_id INNER JOIN hospital ON hospital.id = department.hospital_id WHERE hospital.id = ? ORDER BY examine.id DESC LIMIT 1';
-    //         webService.getListTable(sqlIdCount, [hospital_id]).then(success => {
-    //             if(success.success) {
-    //                 if (success.data.length == 0) {
-    //                     id = '001' + String(hospital_id).padStart(2, '0') + date;
-    //                 } else {
-    //                     if (success.data[0] && success.data[0].count_id) {
-    //                         let id_count = success.data[0].count_id;
-    //                         if (String(id_count).length >= 10) {
-    //                             checkDate = id_count.slice(-6);
-    //                             if (checkDate == date) {
-    //                                 let number = parseInt((id_count.slice(0, id_count.length - 8)));
-    //                                 number += 1;
-    //                                 id = String(number).padStart(3, '0') + String(hospital_id).padStart(2, '0') + date;
-    //                             } else {
-    //                                 id = '001' + String(hospital_id).padStart(2, '0') + date;
-    //                             }
-    //                         } else {
-    //                             id = '001' + String(hospital_id).padStart(2, '0') + date;
-    //                         }
-    //                     } else {
-    //                         id = '001' + String(hospital_id).padStart(2, '0') + date;
-    //                     }
-    //                 }
-    //                 resolve({success: true, id_count : id});
-    //             }else{
-    //                 resolve({success: false, message : success.message});
-    //             }
-    //         });
-    //     });
-    // },
     sha512: function(password, salt){
         var hash = crypto.createHmac('sha512', salt);
         hash.update(password);
@@ -2588,6 +2561,58 @@ let webService = {
         step || (step = 1.0);
         var inv = 1.0 / step;
         return Math.round(value * inv) / inv;
+    },
+    getSortString: function(sort, table){
+        try {
+            let sql = '';
+            if(sort){
+                for(let item in sort){
+                    switch(item){
+                        case 'id_count' :
+                            if(table == 'examine'){
+                                if(sort[item] == '0'){
+                                    sql += table + '.count_id DESC';
+                                }else if(sort[item] == '1'){
+                                    sql += table + '.count_id';
+                                }else{
+                                    sql += '';
+                                }
+                            }
+                            break;
+                        case 'cus_phone' :
+                            if(table == 'examine'){
+                                if(sort[item] == '0'){
+                                    if(sql.length > 0) sql += ',' + table + '.cus_phone DESC';
+                                    else sql += table + '.cus_phone DESC';
+                                }else if(sort[item] == '1'){
+                                    if(sql.length > 0) sql += ',' + table + '.cus_phone';
+                                    else sql += table + '.cus_phone';
+                                }else{
+                                    sql += '';
+                                }
+                            }
+                            break;
+                        case 'time_examine' :
+                            if(table == 'examine'){
+                                if(sort[item] == '0'){
+                                    if(sql.length > 0) sql += ',examine.created_at DESC';
+                                    else sql += 'examine.created_at DESC';
+                                }else if(sort[item] == '1'){
+                                    if(sql.length > 0) sql += ',examine.created_at';
+                                    else sql += 'examine.created_at';
+                                }else{
+                                    sql += '';
+                                }
+                            }
+                            break;
+                        default: break
+                    }
+                }
+            }
+            return sql;
+        } catch (error) {
+            console.log("error", error);
+        }
     }
 }
 

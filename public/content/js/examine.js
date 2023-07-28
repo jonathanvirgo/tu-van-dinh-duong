@@ -19,6 +19,20 @@ let dataExamine = {
     isDetail: false
 };
 
+let dataFilter = {
+    sort_id_count: '',
+    sort_cus_phone: '',
+    sort_time_examine: '',
+    page: 1,
+    search_id_count: '',
+    search_cus_name: '',
+    search_cus_phone: '',
+    search_cus_address: '',
+    search_diagnostic: '',
+    search_time_examine: '',
+    status_examine_ids: []
+};
+
 const numberFormat = new Intl.NumberFormat();
 
 toastr.options = {
@@ -336,6 +350,7 @@ function changeTabExamine(tab){
             $('#medical_test_type').trigger('change');
         }
     }
+    expandTextarea();
 }
 
 function diff_years(dt2, dt1) 
@@ -1610,6 +1625,238 @@ function deleteMenuExample(id){
     }
 }
 
+function getDataSort(isAscending, field, type, page = 0){
+    try {
+        //type 1 examine
+        
+        // 1 Ascending
+        // 0 Descending
+        let currentState = $('#td_' + field + ' > div').hasClass('ascending') ? 1 : ($('#td_' + field + ' > div').hasClass('descending') ? 0 : -1);
+        //reset data Sort
+        if(page == 0) resetDataFilterSort(field);
+        let status_sort = '';
+        // Nếu sắp xếp giảm dần
+        if(isAscending == 0){
+            if(currentState !== 0){
+                // Thêm class descending
+                $('#td_' + field + ' > div').addClass('descending');
+                status_sort = '0';
+            }
+        }else if(isAscending == 1){
+            // Nếu sắp xếp tăng dần
+            if(currentState !== 1){
+                // Thêm class ascending
+                $('#td_' + field + ' > div').addClass('ascending');
+                status_sort = '1';
+            }
+        }
+        
+        dataFilter['sort_' + field] = status_sort;
+        if(page !== 0){
+            dataFilter['page'] = page;
+        }else{
+            dataFilter['page'] = 1;
+        }
+        getListSortSearch(type)
+    } catch (error) {
+        
+    }
+}
+
+let timeOutOnchange = 0;
+function getDataSearch(type, field, dateStr = ''){
+    try {
+        let checkChange = false;
+        let val = $('#search_' + field).val();
+        if(field == 'time_examine'){
+            val = dateStr;
+        }
+        if(dataFilter['search_' + field] !== val.trim()){
+            dataFilter['search_' + field] = val.trim();
+            checkChange = true;
+        }
+        if(checkChange){
+            dataFilter['page'] = 1;
+            if(timeOutOnchange !== 0){
+                clearTimeout(timeOutOnchange);
+            }
+            timeOutOnchange = setTimeout(()=>{
+                getListSortSearch(type);
+            },1000);
+        }
+    } catch (error) {
+        
+    }
+}
+
+function getListSortSearch(type){
+    try {
+        timeOutOnchange = 0;
+        let loading = $("#loading-page");
+        let url     = '';
+        switch(type){
+            case 1 : url = "/examine/list-html";break;
+            default: break
+        }
+        // Lấy từ khóa tìm kiếm và param url
+        let keyword     = $('#sfilter_keyword').val();
+        const urlParams = new URLSearchParams(window.location.search);
+        let hospital_ids = urlParams.get('hospital_ids');
+        if(hospital_ids) dataFilter['hospital_ids'] = hospital_ids;
+        if(keyword) dataFilter['keyword'] = keyword;
+
+        $.ajax({
+            type: "GET",
+            data: dataFilter,
+            url: url,
+            success: function(result) {
+                if (result.success == true) {
+                    // set template table
+                    if(type == 1){
+                        $('#table-tbody-examine').html(result.table_html);
+                    }
+                    // set template paginate
+                    $('.page-main > .container > .box > .box-header > .paginate').html(result.paginator_html);
+                    $('.page-main > .container > .box > .box-body > .paginate').html(result.paginator_html);
+                    $('.page-main > .container > .box > .box-header > .box-title > small').html('(' + result.totalItem + ')');
+                    
+                } else {
+                    displayErrorToast(result.message, result);
+                    
+                }
+            },
+            error: function(jqXHR, exception) {
+                loading.hide();
+                ajax_call_error(jqXHR, exception);
+            }
+        });
+    } catch (error) {
+        
+    }
+}
+
+function deleteAllTagCheckBoxSearch(field){
+    if(field && field.length > 0){
+        //Xóa html
+        $('#' + field + '_dropdown > .tag_selected').removeClass('tag');
+        $('#' + field + '_dropdown > .tag_selected > .tag-body').empty();
+        //Ẩn nút xóa
+        $('#' + field + '_dropdown_clear_all').css('visibility', 'hidden');
+        if(dataFilter[field + '_ids'].length > 0){
+            for(let item of dataFilter[field + '_ids']){
+                // Bỏ check all dropdown
+                $('#' + field + '_check_' + item).prop('checked', false);
+            }
+        }
+        dataFilter[field + '_ids'] = [];
+        dataFilter[field + '_ids'].length = 0;
+    }
+    getListSortSearch(1);
+}
+
+function getValueSearchCheckBox(id, field, text_check_box, type){
+    if(id){
+        var isChecked    = $(id).is(':checked'),
+            val          = isNaN(parseInt($(id).val())) ? 0 : parseInt($(id).val()),
+            fieldObj     = field + '_ids';
+        
+        $('#' + field + '_dropdown > .tag_selected').addClass('tag');
+        if(isChecked){
+            //Tích checkbox
+            if(!dataFilter[fieldObj].includes(val)){
+                dataFilter[fieldObj].push(val);
+                switch(field){
+                    case 'status_examine':
+                        $('#' + field + '_dropdown > .tag_selected > .tag-body').append(
+                            $( text_check_box )
+                            .attr('id',field + '_span_' + val)
+                            .append(
+                                $('<button/>')
+                                .addClass('btn tag-item-close btn-link p-0 ms-2 flex-grow-1')
+                                .attr('type','button')
+                                .data( "field",  field)
+                                .data('valField', val)
+                                .click(function(){
+                                    let nameField = $(this).data('field');
+                                    let valField = $(this).data('valField');
+                                    deleteTagItemDropdown(nameField, valField);
+                                })
+                                .append(
+                                    $(`<svg class="iconsvg-close">
+                                    <use xlink:href="/public/content/images/sprite.svg#close"></use>
+                                  </svg>`)
+                                )
+                            )
+                        );            
+                        break;
+                    default: break;
+                }
+                
+                if(dataFilter[fieldObj].length > 0){
+                    $('#' + field + '_dropdown_clear_all').css('visibility', 'visible');
+                }
+            };
+        } else {
+            //Bỏ tích
+            if(dataFilter[fieldObj].includes(val)){
+                removeItemArray(dataFilter[fieldObj], val);
+                $('#' + field + '_span_' + val).remove();
+                if(dataFilter[fieldObj].length == 0){
+                    $('#' + field + '_dropdown > .tag_selected').removeClass('tag');
+                    $('#' + field + '_dropdown_clear_all').css('visibility', 'hidden');
+                }
+            };
+        }
+        dataFilter['page'] = 1;
+
+        if(timeOutOnchange !== 0){
+            clearTimeout(timeOutOnchange);
+        }
+        timeOutOnchange = setTimeout(()=>{
+            getListSortSearch(type);
+        },1000);
+    }
+}
+
+function resetDataFilterSort(){
+    dataFilter.sort_id_count = '';
+    dataFilter.sort_cus_phone = '';
+    dataFilter.sort_time_examine = '';
+    $('td > div').removeClass('descending');
+    $('td > div').removeClass('ascending');
+}
+
+function deleteTagItemDropdown(nameField, itemId){
+    $('#' + nameField + '_span_' + itemId).remove();
+    $('#' + nameField + '_check_' + itemId).prop('checked', false);
+    if(dataFilter[nameField + '_ids'].includes(itemId)){
+        removeItemArray(dataFilter[nameField + '_ids'], itemId);
+    }
+    if(dataFilter[nameField + '_ids'].length == 0){
+        //Ẩn nút xóa
+        $('#' + nameField + '_dropdown_clear_all').css('visibility', 'hidden');
+    }
+    if(timeOutOnchange !== 0){
+        clearTimeout(timeOutOnchange);
+    }
+    timeOutOnchange = setTimeout(()=>{
+        getListSortSearch(1);
+    },1000);
+}
+
+function expandTextarea(){
+    $('textarea').each(function () {
+        if(this.scrollHeight !== 0){
+            this.setAttribute('style', 'height:' + (this.scrollHeight) + 'px;overflow-y:hidden;');
+        }else{
+            this.setAttribute('style', 'height:auto;');
+        }
+    }).on('input', function () {
+        this.style.height = 'auto';
+        this.style.height = (this.scrollHeight) + 'px';
+    });
+}
+
 $(document).ready(function(){
     let cus_birthday = $("#cus_birthday").flatpickr({
         dateFormat: "d-m-Y",
@@ -1624,6 +1871,13 @@ $(document).ready(function(){
             checkStandardWeightHeight();
         }
     });
+
+    if(document.querySelector("#search_time_examine")){
+        const search_time_art = document.querySelector("#search_time_examine")._flatpickr;
+        search_time_art.config.onChange.push(function(selectedDates, dateStr, instance){
+            getDataSearch(1, 'time_examine', dateStr)
+        });
+    }
 
     $("#nutrition_advice_id").on('select2:select', function(evt) {
         if(dataExamine.nutritionAdviceList.length > 0){
@@ -1654,6 +1908,7 @@ $(document).ready(function(){
                     break;
                 }
             }
+            expandTextarea();
         }
     });
 
@@ -1662,6 +1917,7 @@ $(document).ready(function(){
             for(let item of dataExamine.activeModeOfLivingList){
                 if(evt.params.data.id == item.id){      
                     $("#active_mode_of_living").text(item.detail);
+                    expandTextarea();
                     break;
                 }
             }
@@ -1714,6 +1970,7 @@ $(document).ready(function(){
             for(let item of dataExamine.diagnostic){
                 if(evt.params.data.id == item.id){      
                     $("#diagnostic_suggest").text(item.detail);
+                    expandTextarea();
                     break;
                 }
             }
@@ -1805,8 +2062,8 @@ $(document).ready(function(){
     });
 
     $('#cus_length').change(function(evt){
-        let year_old = $('#cus_age').val();
-        let type_year_old = $('label[for="cus_age"]').text() == 'Tuổi' ? 1 : 0;
+        // let year_old = $('#cus_age').val();
+        // let type_year_old = $('label[for="cus_age"]').text() == 'Tuổi' ? 1 : 0;
         // if(type_year_old == 1 && parseInt(year_old) > 18){
             checkStandardWeightHeight();
         // }
@@ -1848,16 +2105,8 @@ $(document).ready(function(){
         }
     });
 
-    $('textarea').each(function () {
-        if(this.scrollHeight !== 0){
-            this.setAttribute('style', 'height:' + (this.scrollHeight) + 'px;overflow-y:hidden;');
-        }else{
-            this.setAttribute('style', 'height:auto;');
-        }
-    }).on('input', function () {
-        this.style.height = 'auto';
-        this.style.height = (this.scrollHeight) + 'px';
-    });
+    expandTextarea();
+
     $('#menu_example_note').change(function(evt){
         console.log('menu_example_note', evt, $('#menu_example_note').val());
         let menu_id = parseInt($('#menu_id').val());

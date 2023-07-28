@@ -83,7 +83,8 @@ router.get('/', function(req, res) {
                         moment: moment,
                         webService: webService,
                         filter: filter,
-                        paginator: paginator,
+                        paginatorExamine: paginator,
+                        listStatus: webService.getExamineStatusOption(2),
                         link:'examine'
                     });
                 }).catch(err => {
@@ -1321,5 +1322,115 @@ router.post('/list/department', function(req, res, next){
         
 //     }
 // });
+
+router.get('/list-html', (req, res, next) =>{
+    var resultData = {
+        success: false,
+        message: "",
+        table_html: '',
+        paginator_html: '',
+        totalItem: 0,
+        log_type: "examineController-list-html"
+    };
+    try {
+        console.log('list-html', req.body);
+        webService.createSideBarFilter(req, 1).then(function(filter){
+            var str_errors  = filter.error,
+                arrPromise  = [],
+                listExamine = [],
+                paginator   = {
+                    perPage: 0,
+                    page: 0,
+                    totalItem: 0,
+                    totalPage: 0,
+                    hasPrevPage: false,
+                    hasNextPage: false,
+                    nextPage: '',
+                    prevPage: '',
+                    currentPage: '',
+                };
+
+            arrPromise.push(new Promise(function (resolve, reject) {
+                examineService.countAllExamine({search: filter.search, filter: true}, function (err, result, fields) {
+                    if (err) {
+                        return logService.create(req, err).then(function(responseData){
+                            if(responseData.message) str_errors.push(responseData.message);
+                            else str_errors.push(err.sqlMessage);
+                            resolve();
+                        });
+                    }
+                    if (result !== undefined) {
+                        paginator.totalItem = result[0].count;
+                    }
+                    resolve();
+                });
+            }));
+
+            arrPromise.push(new Promise(function (resolve, reject) {
+                examineService.getAllExamine({search: filter.search, filter: true}, function (err, result, fields) {
+                    if (err) {
+                        return logService.create(req, err).then(function(responseData){
+                            if(responseData.message) str_errors.push(responseData.message);
+                            else str_errors.push(err.sqlMessage);
+                            resolve();
+                        });
+                    }
+                    if (result !== undefined) {
+                        listExamine = result;
+                    }
+                    resolve();
+                });
+            }));
+
+            return new Promise(function (resolve, reject) {
+                Promise.all(arrPromise).then(function () {
+                    paginator.page        = filter.search.page;
+                    paginator.perPage     = filter.search.take;
+                    paginator.currentPage = filter.requestUri;
+                    paginator.totalPage   = Math.ceil(paginator.totalItem / paginator.perPage);
+                    if(paginator.totalPage > paginator.page){
+                        paginator.hasNextPage = true;
+                        paginator.nextPage    = filter.requestUri + '&page=' + (paginator.page + 1);
+                    }
+                    if(paginator.page >= 2){
+                        paginator.hasPrevPage = true;
+                        paginator.prevPage    = filter.requestUri + '&page=' + (paginator.page - 1);
+                    }
+                    express().render(path.resolve(__dirname, "../views/component/table_body_list_examine.ejs"), { 
+                        user: req.user,
+                        listExamine: listExamine,
+                        moment: moment,
+                        webService: webService,
+                        paginatorExamine: paginator
+                    }, (err, html) => {
+                        if(err){
+                            resultData.message = 'Lỗi lấy dữ liệu danh sách bài!';
+                        }else{
+                            resultData.message = 'Success!';
+                            resultData.success = true;
+                            resultData.table_html = html;
+                        }
+                    });
+                    express().render(path.resolve(__dirname, "../views/component/paginator_examine.ejs"), {paginatorExamine: paginator},(err, html) => {
+                        if(err){
+                            resultData.message = 'Lỗi lấy dữ liệu phân trang bài!';
+                        }else{
+                            resultData.message = 'Success!';
+                            resultData.paginator_html = html;
+                        }
+                    });
+                    resultData.totalItem = paginator.totalItem;
+                    res.json(resultData);
+                })
+            });
+
+        });
+    } catch (error) {
+        logService.create(req, error.message).then(function() {
+            resultData.message = error.message;
+            res.json(resultData);
+        });
+    }
+});
 
 module.exports = router;
