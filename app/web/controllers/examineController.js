@@ -526,6 +526,7 @@ router.post('/create', async function(req, res, next) {
                     return;
                 }else{
                     id_examine = responseData.data.insertId;
+                    resultData['id_examine'] = id_examine;
                     resultData.success = true;
                     resultData.message = "Lưu phiếu khám thành công!";
                     res.json(resultData);

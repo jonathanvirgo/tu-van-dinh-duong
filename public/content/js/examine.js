@@ -194,6 +194,10 @@ function saveExamine(action, autoSave = 0){
                         displayError(result.message);
                     }
                 }else{
+                    if(result.success && result.id_examine){
+                        dataExamine.page = "edit";
+                        dataExamine.id_examine = result.id_examine;
+                    }
                     setTimeout(() =>{
                         $('#loadingAutoSave').css('display','none');
                     }, 1000);
