@@ -270,6 +270,11 @@ let webService = {
                 }
                 listData.requestUri += "&book_date=" + listData.search.book_date;
             }
+            
+            if(type == 0){
+                listData.search.fromdate_statistic = webService.addDays(-30);
+                listData.search.todate_statistic   = webService.parseDay(new Date());
+            }
 
             if(type == 1){
                 if (listData.search.time_examine !== '') {
