@@ -143,6 +143,12 @@
                      <!-- Bác sĩ -->
                      <% if (user.role_id.includes(4) || user.role_id.includes(5) || user.role_id.includes(1) || user.role_id.includes(3)){%>
                         <li class="nav-item">
+                           <a href="/admin/medicine-type" class="nav-link">
+                              <i class="fas fa-capsules"></i>
+                              <p>Phân loại thuốc</p>
+                           </a>
+                        </li>
+                        <li class="nav-item">
                            <a href="/admin/medicine" class="nav-link">
                               <i class="fas fa-capsules"></i>
                               <p>Quản lý thuốc</p>

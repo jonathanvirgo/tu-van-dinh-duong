@@ -6,8 +6,8 @@ let medicineService = {
         db.get().getConnection(function (err, connection) {
             try {
                 if (err) return callback(err);
-                var sql   = "INSERT INTO medicine (name,unit,description,share,hospital_id,department_id,created_by) VALUES (?,?,?,?,?,?,?)";
-                var query = connection.query(sql, [parameter.name,parameter.unit,parameter.description,parameter.share,parameter.hospital_id,parameter.department_id,parameter.created_by], function (err, results, fields) {
+                var sql   = "INSERT INTO medicine (name,unit,description,share,hospital_id,department_id,created_by,type) VALUES (?,?,?,?,?,?,?,?)";
+                var query = connection.query(sql, [parameter.name,parameter.unit,parameter.description,parameter.share,parameter.hospital_id,parameter.department_id,parameter.created_by,parameter.type], function (err, results, fields) {
                     connection.release();
                     if (err) return callback(err);
                     callback(null, results, fields);
@@ -22,8 +22,8 @@ let medicineService = {
         db.get().getConnection(function (err, connection) {
             try {
                 if (err) return callback(err);
-                var sql   = 'UPDATE medicine SET name = ?, unit = ?, description = ?,share = ?, hospital_id = ?, department_id = ?, created_by = ? WHERE id=?';
-                var query = connection.query(sql, [parameter.name,parameter.unit,parameter.description,parameter.share,parameter.hospital_id, parameter.department_id, parameter.created_by,  parameter.id], function (err, results, fields) {
+                var sql   = 'UPDATE medicine SET name = ?, unit = ?, description = ?,share = ?, hospital_id = ?, department_id = ?, created_by = ?, type = ? WHERE id=?';
+                var query = connection.query(sql, [parameter.name,parameter.unit,parameter.description,parameter.share,parameter.hospital_id, parameter.department_id, parameter.created_by, parameter.type, parameter.id], function (err, results, fields) {
                     connection.release();
                     if (err) return callback(err);
                     callback(null, results, fields);

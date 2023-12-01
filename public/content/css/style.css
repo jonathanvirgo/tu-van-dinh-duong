@@ -348,3 +348,7 @@
   white-space: nowrap;
   overflow: hidden;
 }
+
+.sidebar-nav .nav-link.active {
+  border: none;
+}

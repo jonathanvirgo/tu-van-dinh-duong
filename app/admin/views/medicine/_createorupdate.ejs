@@ -35,6 +35,33 @@
     </div>
   </div>
 </div>
+<div class="form-group row">
+  <div class="col-md-3">
+    <div class="label-wrapper flex-center">
+      <label class="col-form-label">Phân loại</label>
+    </div>
+  </div>
+  <div class="col-md-9">
+    <div class="input-group-append input-group-required">
+      <div class="input-group">
+        <select id="type_id" name="type_id" <%=(medicine.type == 0) ? 'selected' : ''%>>
+          <option value="0" >Chưa phân loại</option>
+          <% if (medicineType.length > 0){%>
+            <% for (i = 0;i < medicineType.length;i++){%>
+              <option <%=(medicineType[i].id == medicine.type) ? 'selected' : ''%> value="<%=medicineType[i].id%>"><%=medicineType[i].name%></option>
+            <%}%>
+          <%}%>
+        </select>
+        <script>
+          $("#type_id").kendoDropDownList({
+            enable: true
+          });
+          </script>
+      </div>
+      <div class="input-group-btn"><span class="required">*</span></div>
+    </div>
+  </div>
+</div>
 
 <% if(user.isAdmin){ %>
   <div class="form-group row">

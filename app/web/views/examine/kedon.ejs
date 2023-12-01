@@ -2,24 +2,32 @@
     <h3 class="box-title-break">Tư vấn thực phẩm bổ xung</h3>
     <% if(!(examine.status == 4 || (examine.status == 3 && isDetail == true))){ %>
       <div class="row g-2 align-items-center">
-        <div class="col-12 col-md-6 d-flex">
-          <label class="col-form-label col-md-auto fw-bold mt-2" for="medicine_id">Tên thuốc
-              <span class="text-danger">*</span>
-          </label>
+        <div class="col-12 col-md-6 col-xl-4 d-flex">
+          <label class="col-form-label col-md-auto fw-bold mt-2" for="medicine_type_id">Phân loại</label>
           <div class="col-form-body col-md w-100">
             <div class="form-control-has-addon">
-              <select class="form-select" id="medicine_id" data-plugin="select2" data-placeholder="Chọn loại thuốc">
-                <option></option>
-                <% if(medicine.length > 0){ %>
-                  <% for (let me of medicine){ %>
-                    <option value="<%= me.id %>"><%= me.name %></option>
+              <select class="form-select" id="medicine_type_id" data-plugin="select2" data-placeholder="Chọn phân loại">
+                <option value="0">Chưa phân loại</option>
+                <% if(medicineType.length > 0){ %>
+                  <% for (let metype of medicineType){ %>
+                    <option value="<%= metype.id %>"><%= metype.name %></option>
                   <%}%>   
                 <%}%>
               </select>
             </div>
           </div>
         </div>
-        <div class="col-12 col-md-3 d-flex">
+        <div class="col-12 col-md-6 col-xl-4 d-flex">
+          <label class="col-form-label col-md-auto fw-bold mt-2" for="medicine_id">Tên thuốc
+              <span class="text-danger">*</span>
+          </label>
+          <div class="col-form-body col-md w-100">
+            <div class="form-control-has-addon">
+              <select class="form-select" id="medicine_id" data-plugin="select2" data-placeholder="Chọn thuốc"></select>
+            </div>
+          </div>
+        </div>
+        <div class="col-12 col-md-6 col-xl-2 d-flex">
           <label class="col-form-label col-md-auto fw-bold mt-2" for="total_medinice">Số lượng
               <span class="text-danger">*</span>
           </label>
@@ -34,7 +42,7 @@
             </div>
           </div>
         </div>
-        <div class="col-12 col-md-3 d-flex">
+        <div class="col-12 col-md-6 col-xl-2 d-flex">
           <label class="col-form-label col-md-auto fw-bold mt-2" for="unit_medinice">ĐVT
             <span class="text-danger">*</span>
           </label>

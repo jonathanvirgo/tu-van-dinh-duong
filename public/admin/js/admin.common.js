@@ -659,25 +659,28 @@ function getFileWeightByAge(){
       for(let [index, item] of rows.entries()){
         //Nếu item 0 là số và có đủ 5 trường
         // 0 nữ 1 nam
-        if(typeof(item[0]) == "number" && item[1] && item[2] && item[3] && item[4]){
+        if(item[0] && item[4] && item[5] && item[6] && item[7] && typeof(item[4]) == 'number'){
+          let arrYear = typeof(item[0]) == 'number' ? (item[0] + '').split('.') : item[0].split(':');
+          let year = isNaN(parseInt(arrYear[0])) ? 0 : parseInt(arrYear[0]);
+          let month = isNaN(parseInt(arrYear[1])) ? 0 : parseInt(arrYear[1]);
+          console.log('index: ' + index, year , month);
+          let age = year * 12 + month;
           dataWeightByAge.push({
-            age: item[0],
-            gender: 0,
-            weight_min: isNaN(parseFloat(item[3])) ? '' : parseFloat(item[3]).toFixed(1),
-            weight_max: isNaN(parseFloat(item[4])) ? '' : parseFloat(item[4]).toFixed(1)
-          },
-          {
-            age: item[0],
+            age: age,
             gender: 1,
-            weight_min: isNaN(parseFloat(item[1])) ? '' : parseFloat(item[1]).toFixed(1),
-            weight_max: isNaN(parseFloat(item[2])) ? '' : parseFloat(item[2]).toFixed(1),
-          }
-          );
+            weight_min: isNaN(parseFloat(item[2])) ? '' : parseFloat(item[2]).toFixed(1),
+            weight_max: isNaN(parseFloat(item[3])) ? '' : parseFloat(item[3]).toFixed(1),
+            height_min: isNaN(parseFloat(item[4])) ? '' : parseFloat(item[4]).toFixed(1),
+            height_max: isNaN(parseFloat(item[5])) ? '' : parseFloat(item[5]).toFixed(1),
+            bmi_min: isNaN(parseFloat(item[6])) ? '' : parseFloat(item[6]).toFixed(1),
+            bmi_max: isNaN(parseFloat(item[7])) ? '' : parseFloat(item[7]).toFixed(1)
+          });
         }
       }
       console.log('dataHeightByWeight', dataWeightByAge);
       var formData        = new FormData();
-      formData.append("data", JSON.stringify(dataWeightByAge))
+      formData.append("data", JSON.stringify(dataWeightByAge));
+      // return;
       $.ajax({
         type: 'POST',
         url: '/admin/index-by-age/import-from-excel-weight',

@@ -348,6 +348,9 @@ function changeTabExamine(tab){
         default: break;
     }
     dataExamine.tab = tab;
+    if(tab == 4 && dataExamine.medicineList.length == 0){
+        $('#medicine_type_id').trigger('change');
+    }
     if(tab == 5){
         if(dataExamine.isGetListMedicalTest == 0){
             dataExamine.isGetListMedicalTest = 1;
@@ -1926,6 +1929,36 @@ $(document).ready(function(){
                 }
             }
         }
+    });
+
+    $("#medicine_type_id").on('change', function(evt) {
+        console.log('medicine_type_id select',evt);
+        let id = $("#medicine_type_id").val() ? $("#medicine_type_id").val() : '';
+        if(!id){
+            displayErrorToastr('Thiếu Id phân loại');
+            return
+        }
+        $('#medicine_id').html('');
+        //get data medicine
+        $.ajax({
+            type: "GET",
+            data: {type: id},
+            url: "/examine/get-list-medicine",
+            success: function (result) {
+                if(result.success){
+                    if(result.data && result.data.length > 0){
+                        for(let [index, item] of result.data.entries()){
+                            $('#medicine_id').prepend(new Option(item.name, item.id, false, false));
+                        }
+                        $('#medicine_id').val('').trigger('change');
+                        dataExamine.medicineList = result.data;
+                    }
+                }
+            },
+            error: function (jqXHR, exception) {
+    
+            }
+        })
     });
 
     $("#medicine_id").on('select2:select', function(evt) {

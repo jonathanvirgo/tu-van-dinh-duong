@@ -5,7 +5,8 @@
     notice_admin    = "Tài khoản của bạn không có quyền truy cập!",
     logService      = require('../models/logModel'),
     adminService    = require('../models/adminModel'),
-    modelService    = require('../models/medicineModel');
+    modelService    = require('../models/medicineModel'),
+    webService      = require('../../web/models/webModel');
 
 router.get('/', function (req, res, next) {
     try {
@@ -31,10 +32,25 @@ router.get('/create', function (req, res, next) {
         if(!logService.authorizeAccess(req.user.role_id, 'medicine')){
             throw new Error(notice_admin);
         }
-        res.render(viewPage("create"), {
-            user: req.user,
-            medicine: [],
-            errors: []
+        // Phân loại thuốc
+        let sqlmedicineTypeList = 'SELECT * FROM medicine_type WHERE id > 0';
+        let sqlmedicineTypePermit = webService.addPermitTable(sqlmedicineTypeList, req.user);
+        webService.getListTable(sqlmedicineTypePermit.sqlQuery, sqlmedicineTypePermit.paramSql).then(responseData6 =>{
+            let medicineType = [];
+            let errors = [];
+            if(responseData6.success){
+                if(responseData6.data && responseData6.data.length > 0){
+                    medicineType = responseData6.data;
+                }
+            }else{
+                errors.push(responseData6.message);
+            }
+            res.render(viewPage("create"), {
+                user: req.user,
+                medicine: [],
+                errors: errors,
+                medicineType: medicineType
+            });
         });
     } catch (e) {
         adminService.addToLog(req, res, e.message);
@@ -49,21 +65,50 @@ router.get('/edit/:id', function (req, res) {
         if(!logService.authorizeAccess(req.user.role_id, 'medicine')){
             throw new Error(notice_admin);
         }
-        modelService.getMedicineById(req.params.id, function (err, result, fields) {
-            if (err) {
-                adminService.addToLog(req, res, err);
-                return;
+        let arrPromise = [];
+        let errors = [];
+        let medicine = {};
+        let medicineType = [];
+        arrPromise.push(
+            new Promise((resolve, reject) => {
+                modelService.getMedicineById(req.params.id, function (err, result, fields) {
+                    if (err) {
+                        return logService.create(req, err).then(function(responseData){
+                            if(responseData.message) errors.push(responseData.message);
+                            else errors.push(err.sqlMessage);
+                            resolve();
+                        });
+                    }
+                    if(result[0] !== undefined){
+                        medicine = result[0];
+                    }
+                    resolve();
+            })
+        }));
+        // Phân loại thuốc
+        let sqlmedicineTypeList = 'SELECT * FROM medicine_type WHERE id > 0';
+        let sqlmedicineTypePermit = webService.addPermitTable(sqlmedicineTypeList, req.user);
+        arrPromise.push(webService.getListTable(sqlmedicineTypePermit.sqlQuery, sqlmedicineTypePermit.paramSql).then(responseData6 =>{
+            if(responseData6.success){
+                if(responseData6.data && responseData6.data.length > 0){
+                    medicineType = responseData6.data;
+                }
+            }else{
+                errors.push(responseData6.message);
             }
-            if(result[0] == undefined){
+        }));
+        Promise.all(arrPromise).then(function(){
+            if(medicine){
+                res.render(viewPage("edit"), {
+                    user: req.user,
+                    medicine: medicine,
+                    errors: errors,
+                    medicineType: medicineType
+                });
+            }else{
                 adminService.addToLog(req, res, 'Không tìm thấy thuốc nào có id=' + req.params.id);
-                return;
             }
-            res.render(viewPage("edit"), {
-                user: req.user,
-                medicine: result[0],
-                errors: []
-            });
-        })
+        });
     } catch (e) {
         adminService.addToLog(req, res, e.message);
     }
@@ -84,6 +129,7 @@ router.post('/create', function (req, res, next) {
                 unit: req.body.unit,
                 description: req.body.description,
                 share: req.body.share ? (req.body.share == 'on' ? 1 : 0) : 0,
+                type: isNaN(parseInt(req.body.type_id)) ? 0 : parseInt(req.body.type_id),
                 department_id: req.user.department_id,
                 hospital_id: req.user.hospital_id,
                 created_by: req.user.id
@@ -139,6 +185,7 @@ router.post('/edit/:id', function (req, res, next) {
                 unit: req.body.unit,
                 description: req.body.description,
                 share: req.body.share ? (req.body.share == 'on' ? 1 : 0) : 0,
+                type: isNaN(parseInt(req.body.type_id)) ? 0 : parseInt(req.body.type_id),
                 department_id: req.user.department_id,
                 hospital_id: req.user.hospital_id,
                 created_by: req.user.id

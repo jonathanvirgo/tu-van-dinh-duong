@@ -120,12 +120,12 @@ router.get('/edit/:id', function(req, res, next) {
                 detailExamine: {},
                 nutritionAdvice: [],
                 activeModeOfLiving: [],
-                medicine: [],
                 // medicalTest: [],
                 medicalTestType: [],
                 menuTime: [],
                 menuExample: [],
-                diagnostic: []
+                diagnostic: [],
+                medicineType: []
             },
             isDetail = req.query.detail && req.query.detail == 'true' ? true : false;
 
@@ -179,16 +179,6 @@ router.get('/edit/:id', function(req, res, next) {
                 str_errors = str_errors.push(detailExamine.message);
             }
         }));
-        // danh sách thuốc
-        let sqlMedicine = 'SELECT * FROM medicine WHERE id > 0';
-        let sqlMedicinePermit = webService.addPermitTable(sqlMedicine, req.user);
-        arrPromise.push(webService.getListTable(sqlMedicinePermit.sqlQuery, sqlMedicinePermit.paramSql).then(responseData2 =>{
-            if(responseData2.success){
-                resultData.medicine = responseData2.data;
-            }else{
-                str_errors.push(responseData2.message);
-            }
-        }));
         // chỉ định xét nghiệm
         let sqlMedicalTestType = 'SELECT * FROM medical_test_type';
         arrPromise.push(webService.getListTable(sqlMedicalTestType, []).then(responseData6 =>{
@@ -228,7 +218,16 @@ router.get('/edit/:id', function(req, res, next) {
                 str_errors.push(responseData5.message);
             }
         }));
-
+        // Phân loại thuốc
+        let sqlmedicineTypeList = 'SELECT * FROM medicine_type WHERE id > 0';
+        let sqlmedicineTypePermit = webService.addPermitTable(sqlmedicineTypeList, req.user);
+        arrPromise.push(webService.getListTable(sqlmedicineTypePermit.sqlQuery, sqlmedicineTypePermit.paramSql).then(responseData6 =>{
+            if(responseData6.success){
+                resultData.medicineType = responseData6.data;
+            }else{
+                str_errors.push(responseData6.message);
+            }
+        }));
         return new Promise(function(resolve, reject) {
             Promise.all(arrPromise).then(function() {
                 res.render("examine/create.ejs", {
@@ -239,7 +238,6 @@ router.get('/edit/:id', function(req, res, next) {
                     examine: resultData.detailExamine,
                     activeModeOfLiving: resultData.activeModeOfLiving,
                     nutritionAdvice: resultData.nutritionAdvice,
-                    medicine: resultData.medicine,
                     isDetail: isDetail,
                     medicalTestType: resultData.medicalTestType,
                     medicalTestExamine: JSON.parse(resultData.detailExamine.medical_test ? resultData.detailExamine.medical_test : '[]'),
@@ -249,7 +247,8 @@ router.get('/edit/:id', function(req, res, next) {
                     page:'edit',
                     menuTime: resultData.menuTime,
                     link:'examine-page',
-                    diagnostic: resultData.diagnostic
+                    diagnostic: resultData.diagnostic,
+                    medicineType: resultData.medicineType
                 });
             });
         });
@@ -271,7 +270,8 @@ router.get('/edit/:id', function(req, res, next) {
                 page:'edit',
                 menuTime:[],
                 link:'examine-page',
-                diagnostic: []
+                diagnostic: [],
+                medicineType: []
             });
         })
     }
@@ -288,12 +288,12 @@ router.get('/create', function(req, res, next) {
                 filter: [],
                 nutritionAdvice: [],
                 activeModeOfLiving: [],
-                medicine: [],
                 // medicalTest: [],
                 medicalTestType: [],
                 menuTime: [],
                 menuExample: [],
-                diagnostic: []
+                diagnostic: [],
+                medicineType: []
             };
 
         arrPromise.push(webService.createSideBarFilter(req, 1).then(function(dataFilter) {
@@ -332,16 +332,6 @@ router.get('/create', function(req, res, next) {
             }
         }));
 
-        let sqlMedicine = 'SELECT * FROM medicine WHERE id > 0';
-        let sqlMedicinePermit = webService.addPermitTable(sqlMedicine, req.user);
-        arrPromise.push(webService.getListTable(sqlMedicinePermit.sqlQuery, sqlMedicinePermit.paramSql).then(responseData2 =>{
-            if(responseData2.success){
-                resultData.medicine = responseData2.data;
-            }else{
-                str_errors.push(responseData2.message);
-            }
-        }));
-
         let sqlMedicalTestType = 'SELECT * FROM medical_test_type';
         arrPromise.push(webService.getListTable(sqlMedicalTestType, []).then(responseData6 =>{
             if(responseData6.success){
@@ -370,6 +360,16 @@ router.get('/create', function(req, res, next) {
                 str_errors.push(responseData5.message);
             }
         }));
+
+        let sqlmedicineTypeList = 'SELECT * FROM medicine_type WHERE id > 0';
+        let sqlmedicineTypePermit = webService.addPermitTable(sqlmedicineTypeList, req.user);
+        arrPromise.push(webService.getListTable(sqlmedicineTypePermit.sqlQuery, sqlmedicineTypePermit.paramSql).then(responseData6 =>{
+            if(responseData6.success){
+                resultData.medicineType = responseData6.data;
+            }else{
+                str_errors.push(responseData6.message);
+            }
+        }));
         
         return new Promise(function(resolve, reject) {
             Promise.all(arrPromise).then(function() {
@@ -382,7 +382,6 @@ router.get('/create', function(req, res, next) {
                     examine:{status: 1},
                     activeModeOfLiving: resultData.activeModeOfLiving,
                     nutritionAdvice: resultData.nutritionAdvice,
-                    medicine: resultData.medicine,
                     isDetail: false,
                     medicalTestType: resultData.medicalTestType,
                     medicalTestExamine: [],
@@ -391,7 +390,8 @@ router.get('/create', function(req, res, next) {
                     menuExample: resultData.menuExample,
                     menuTime:resultData.menuTime,
                     link:'examine-page',
-                    diagnostic: resultData.diagnostic
+                    diagnostic: resultData.diagnostic,
+                    medicineType: resultData.medicineType
                 });
             });
         });
@@ -414,7 +414,8 @@ router.get('/create', function(req, res, next) {
                 menuExamine: [],
                 menuExample: [],
                 link:'examine-page',
-                diagnostic: []
+                diagnostic: [],
+                medicineType: []
             });
         })
     }
@@ -981,6 +982,48 @@ router.get('/search', (req, res, next) =>{
         });
     }
 });
+
+router.get('/get-list-medicine', function(req, res, next){
+    var resultData = {
+        success: false,
+        message: "",
+        data: []
+    };
+    try {
+        if (!req.user) {
+            resultData.message = "Vui lòng đăng nhập lại để thực hiện chức năng này!";
+            res.json(resultData);
+            return;
+        }
+        let id_type = req.query.type ? req.query.type : '';
+        if(!id_type){
+            resultData.message = "Thiếu id phân loại!";
+            res.json(resultData);
+            return;
+        }
+        let sqlString = 'SELECT * FROM medicine WHERE `type` = ?';
+        let paramSql = [id_type];
+        let sqlStringPermit = webService.addPermitTable(sqlString, req.user);
+        paramSql.push(sqlStringPermit.paramSql);
+        webService.getListTable(sqlStringPermit.sqlQuery, paramSql).then(responseData =>{
+            if(responseData.success){
+                resultData.success = true;
+                resultData.message = 'Done';
+                if(responseData.data && responseData.data.length > 0){
+                    resultData.data = responseData.data;
+                }
+            }else{
+                resultData.message = responseData.message;
+            }
+            res.json(resultData);
+        })
+    }catch(err){
+        logService.create(req, e.message).then(function() {
+            resultData.message = e.message;
+            res.json(resultData);
+        });
+    }
+})
 
 router.post('/detail-examine', (req, res, next) =>{
     try {
