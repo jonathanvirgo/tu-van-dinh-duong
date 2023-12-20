@@ -413,15 +413,8 @@ function diff_years(dt2, dt1)
         $('#cus_cntc').val('');
         if(type_year_old == 1 && parseInt(year_old) > 18){
             $('label[for="cus_cntc"]').text('CNKN (kg)');
-            if($('#cus_length').val() && !isNaN(parseFloat($('#cus_length').val()))){
-                let ccht = parseFloat($('#cus_length').val());
-                let cnkn = ccht * ccht * 22;
-                $('#cus_cntc').val(parseInt(cnkn));
-            }
         }
-        if(type_year_old == 1 && parseInt(year_old) > 20){
-            $('#cus_ncdd').val('Theo công thức');
-        }else{
+        // else{
             if((gender == 1 || gender == 0) && year_old){
                 let loading = $("#loading-page");
                 let url = '/examine/search/standard-weight-height';
@@ -452,6 +445,16 @@ function diff_years(dt2, dt1)
                             if(result.data.weight_height_min && result.data.weight_height_max) $('#cus_height_by_weight').val(result.data.weight_height_min + ' - ' + result.data.weight_height_max);
                             else $('#cus_height_by_weight').val('');
                         }
+                        if(type_year_old == 1 && parseInt(year_old) > 18){
+                            if($('#cus_length').val() && !isNaN(parseFloat($('#cus_length').val()))){
+                                let ccht = parseFloat($('#cus_length').val());
+                                let cnkn = ccht * ccht * 22;
+                                $('#cus_cntc').val(parseInt(cnkn));
+                            }
+                        }
+                        if(type_year_old == 1 && parseInt(year_old) > 20){
+                            $('#cus_ncdd').val('Theo công thức');
+                        }
                     },
                     error: function(jqXHR, exception) {
                         loading.hide();
@@ -459,7 +462,7 @@ function diff_years(dt2, dt1)
                     }
                 });
             }
-        }
+        // }
     } catch (error) {
         
     }
@@ -1870,6 +1873,7 @@ $(document).ready(function(){
         maxDate: "today",
         allowInput: true,
         onChange: function(selectedDates, dateStr, instance) {
+            console.log('change', dateStr);
             caculateYearOld(selectedDates, dateStr, instance);
             checkStandardWeightHeight();
         },
