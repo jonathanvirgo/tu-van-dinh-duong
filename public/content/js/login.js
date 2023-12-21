@@ -225,16 +225,16 @@ function signup() {
     }
     if(check_signup == true){
         grecaptcha.ready(function() {
-            grecaptcha.execute(site_key, {action: 'submit'}).then(function(token) {
-                // Add your logic to submit to your backend server here.
-                console.log("token",token);
+            grecaptcha.execute(site_key, {action: 'signup'}).then(function(token) {
+                let data = form.serialize();
+                data += '&token=' + token;
                 $.ajax({
                     url: "/user/signup",
                     type: 'POST',
                     beforeSend: function() {
                         loading.show();
                     },
-                    data: form.serialize(),
+                    data: data,
                     success: function(result) {
                         loading.hide();
                         if (result.status == true) {
@@ -308,55 +308,60 @@ $('#signup-form #phone').keypress(function (event) {
 $(document).ready(function () {
 	$('#login-form').submit(function (e) {
         e.preventDefault();
-        var form 	 = $("#login-form"),
-            loading  = $("#loading-page"),
-			username = $("#login-form #login_username").val(),
-			password = $("#login-form #login_password").val();
+        grecaptcha.ready(function() {
+            grecaptcha.execute(site_key, {action: 'login'}).then(async function(token) {
+                var form 	 = $("#login-form"),
+                    loading  = $("#loading-page"),
+                    username = $("#login-form #login_username").val(),
+                    password = $("#login-form #login_password").val();
 
-        $("#ercf_username").html("");
-        $("#ercf_password").html("");
-
-	  	if (username == "") {
-	    	$("#ercf_username").html("Tên truy cập không được để trống!");
-	    	return false;
-	  	}
-	  	if (password == "") {
-		    $("#ercf_password").html("Mật khẩu không được để trống!");
-		    return false;
-		}
-
-        $.ajax({
-            url: "/user/login",
-            type: 'POST',
-            beforeSend: function () {
-                loading.show();
                 $("#ercf_username").html("");
                 $("#ercf_password").html("");
-            },
-            data: form.serialize(),
-            success: function (result) {
-            	loading.hide();
-            	if (result.status == true) {
-                    window.location.href = '/';
-            	} else {
-                    if(result.message !== ""){
-                        if(result.message == "INVALID_USERNAME"){
-                            $("#ercf_username").html("Tên đăng nhập không chính xác!");
-                        } else if(result.message == "INVALID_USERNAME_OR_PASSWORD"){
-                            $("#ercf_password").html("Tên đăng nhập hoặc mật khẩu không chính xác!");
-                        } else if(result.message == "INACTIVE_USER"){
-                            $("#ercf_username").html("Tài khoản chưa được kích hoạt!");
+
+                if (username == "") {
+                    $("#ercf_username").html("Tên truy cập không được để trống!");
+                    return false;
+                }
+                if (password == "") {
+                    $("#ercf_password").html("Mật khẩu không được để trống!");
+                    return false;
+                }
+                let data = form.serialize();
+                data += '&token=' + token;
+                $.ajax({
+                    url: "/user/login",
+                    type: 'POST',
+                    beforeSend: function () {
+                        loading.show();
+                        $("#ercf_username").html("");
+                        $("#ercf_password").html("");
+                    },
+                    data: data,
+                    success: function (result) {
+                        loading.hide();
+                        if (result.status == true) {
+                            window.location.href = '/';
                         } else {
-                            $("#ercf_password").html(result.message);
+                            if(result.message !== ""){
+                                if(result.message == "INVALID_USERNAME"){
+                                    $("#ercf_username").html("Tên đăng nhập không chính xác!");
+                                } else if(result.message == "INVALID_USERNAME_OR_PASSWORD"){
+                                    $("#ercf_password").html("Tên đăng nhập hoặc mật khẩu không chính xác!");
+                                } else if(result.message == "INACTIVE_USER"){
+                                    $("#ercf_username").html("Tài khoản chưa được kích hoạt!");
+                                } else {
+                                    $("#ercf_password").html(result.message);
+                                }
+                            }
                         }
+                    },
+                    error: function(jqXHR, exception){
+                        loading.hide();
+                        ajax_call_error(jqXHR, exception);
                     }
-            	}
-            },
-            error: function(jqXHR, exception){
-                loading.hide();
-                ajax_call_error(jqXHR, exception);
-            }
-        });
+                });
+            });
+          });
     });
     
     $("#birthday").flatpickr({

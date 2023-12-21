@@ -11,14 +11,19 @@
     env             = require('dotenv').config();
 
 router.get('/login', function (req, res, next) {
-    return res.render('user/login.ejs', {reCAPTCHA_site_key: env.parsed.SITEKEYRECAPTCHA});
+    if (!req.user) {
+        return res.render('user/login.ejs', {reCAPTCHA_site_key: env.parsed.SITEKEYRECAPTCHA});
+    }else{
+        return res.redirect('/');
+    }
 })
 
-router.post('/login', function (req, res, next) {
+router.post('/login', async function (req, res, next) {
     try {
         var str_error       = [];
         var username   = req.body.username,
             password   = req.body.password,
+            token      = req.body.token
             resultData = {
                 "status": false,
                 "message": ""
@@ -34,43 +39,58 @@ router.post('/login', function (req, res, next) {
             res.send(resultData);
             return;
         }
-
-        let passwordData  = webService.saltHashPassword(password);
-        let sqlGetListRequest = 'SELECT * FROM user WHERE ( phone = ? OR email = ?) AND password = ?';
-        webService.getListTable(sqlGetListRequest ,[username, username, passwordData]).then(responseData =>{
-            if(!responseData.success){
-                resultData.message = "Tên đăng nhập chưa được đăng ký"; 
-                res.send(resultData);
-                return;
-            }
-            if(responseData.data && responseData.data.length > 0){
-                if(responseData.data[0].active == 1){
-                    req.logIn(responseData.data[0], function (err) {
-                        if (err) {
-                            logService.create(req, err).then(function(responseData){
-                                if(responseData.message) resultData.message = responseData.message;
-                                else resultData.message = err.sqlMessage;
-                                res.send(resultData);
-                            });
-                            return;
-                        }
-                        resultData.status  = true;
-                        resultData.message = "Đăng nhập thành công!";
+        let dataRecaptcha = {
+            secret: env.parsed.SECRETKEYRECAPTCHA,
+            response: token
+        };
+        let dataCaptcha = await webService.callApiAll('https://www.google.com/recaptcha/api/siteverify',dataRecaptcha,{},'POST');
+        if(dataCaptcha.success){
+            if(dataCaptcha.score >= 0.5){
+                let passwordData  = webService.saltHashPassword(password);
+                let sqlGetListRequest = 'SELECT * FROM user WHERE ( phone = ? OR email = ?) AND password = ?';
+                webService.getListTable(sqlGetListRequest ,[username, username, passwordData]).then(responseData =>{
+                    if(!responseData.success){
+                        resultData.message = "Tên đăng nhập chưa được đăng ký"; 
                         res.send(resultData);
                         return;
-                    });
-                }else{
-                    resultData.message = "Tài khoản chưa được kích hoạt! Vui lòng kiểm tra email kích hoạt tài khoản!";
-                    res.send(resultData);
-                    return;
-                }
+                    }
+                    if(responseData.data && responseData.data.length > 0){
+                        if(responseData.data[0].active == 1){
+                            req.logIn(responseData.data[0], function (err) {
+                                if (err) {
+                                    logService.create(req, err).then(function(responseData){
+                                        if(responseData.message) resultData.message = responseData.message;
+                                        else resultData.message = err.sqlMessage;
+                                        res.send(resultData);
+                                    });
+                                    return;
+                                }
+                                resultData.status  = true;
+                                resultData.message = "Đăng nhập thành công!";
+                                res.send(resultData);
+                                return;
+                            });
+                        }else{
+                            resultData.message = "Tài khoản chưa được kích hoạt! Vui lòng kiểm tra email kích hoạt tài khoản!";
+                            res.send(resultData);
+                            return;
+                        }
+                    }else{
+                        resultData.message = "Đăng nhập không thành công! Sai email, số điện thoại hoặc mật khẩu"; 
+                        res.send(resultData);
+                        return;
+                    }
+                });
             }else{
-                resultData.message = "Đăng nhập không thành công! Sai email, số điện thoại hoặc mật khẩu"; 
+                resultData.message = "Đăng nhập không thành công! Bạn bị phát hiện là robot"; 
                 res.send(resultData);
                 return;
             }
-        });
-
+        }else{
+            resultData.message = "Đăng nhập không thành công! Lỗi kết nối"; 
+            res.send(resultData);
+            return;
+        }
     } catch (error) {
         logService.create(req, error.message).then(function(responseData) {
             resultData.message = error.message;
@@ -94,7 +114,7 @@ router.get('/logout', function (req, res, next) {
 router.post('/signup', function (req, res, next) {
     var str_error       = [];
 
-    return new Promise(function (resolve, reject) {
+    return new Promise(async function (resolve, reject) {
         try {
             var parameter = {
                 full_name: req.body.full_name,
@@ -120,7 +140,8 @@ router.post('/signup', function (req, res, next) {
                     username: [],
                     password: [],
                     confirm_password: []
-                };
+                },
+                token = req.body.token;
 
             if(parameter.email == ""){
                 list_error.email.push("Email được yêu cầu!");
@@ -171,8 +192,22 @@ router.post('/signup', function (req, res, next) {
                 res.send(resultData);
                 return;
             }
-
-            createUser(resultData, list_error, parameter, req, res);
+            let dataRecaptcha = {
+                secret: env.parsed.SECRETKEYRECAPTCHA,
+                response: token
+            };
+            let dataCaptcha = await webService.callApiAll('https://www.google.com/recaptcha/api/siteverify',dataRecaptcha,{},'POST');
+            if(dataCaptcha.success){
+                if(dataCaptcha.score >= 0.5){
+                    createUser(resultData, list_error, parameter, req, res);
+                }else{
+                    resultData.message = 'Đăng ký không thành công. Bạn bị nhận diện là robot!';
+                    res.send(resultData);
+                }
+            }else{
+                resultData.message = 'Đăng ký không thành công. Lỗi kết nối!';
+                res.send(resultData);
+            }
         } catch (error) {
             logService.create(req, error.message).then(function(responseData) {
                 resultData.message = error.message;

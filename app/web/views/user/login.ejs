@@ -51,10 +51,7 @@
                       <span id="ercf_password" class="ver-middle form-text fst-italic text-danger mt-1"></span>
                     </div>
   
-                    <button class="btn login-btn btn-primary w-100 text-uppercase mb-4 g-recaptcha" type="submit"
-                      data-sitekey="<%=reCAPTCHA_site_key%>" 
-                      data-callback='onSubmit' 
-                      data-action='submit'>Đăng nhập</button>
+                    <button class="btn login-btn btn-primary w-100 text-uppercase mb-4" type="submit">Đăng nhập</button>
                     <div class="text-end">
                       <a class="link-primary" href="">Quên mật khẩu?</a>
                     </div>
@@ -160,10 +157,8 @@
       </div>
     </div>
     <%- include('../layout/footer', { footer_class: "footer-dark"}) %>
-    <script>
-      function onSubmit(token) {
-        document.getElementById("login-form").submit();
-      }
+    <script type="text/javascript">
+      let site_key = '<%=reCAPTCHA_site_key%>';
     </script>
     <script src="https://www.google.com/recaptcha/api.js?render=<%=reCAPTCHA_site_key%>"></script>
     <script src="/public/content/js/vendor/jquery.min.js"></script>

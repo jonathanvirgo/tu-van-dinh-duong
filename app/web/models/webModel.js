@@ -2618,7 +2618,14 @@ let webService = {
         } catch (error) {
             console.log("error", error);
         }
-    }
+    },
+    // groupArrBy: function (arr, property) {
+    //     return arr.reduce(function (memo, x) {
+    //         if (!memo[x[property]]) { memo[x[property]] = []; }
+    //         memo[x[property]].push(x);
+    //         return memo;
+    //     }, {});
+    // }
 }
 
 module.exports = webService;
