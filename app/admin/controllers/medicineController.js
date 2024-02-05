@@ -48,6 +48,7 @@ router.get('/create', function (req, res, next) {
             res.render(viewPage("create"), {
                 user: req.user,
                 medicine: [],
+                type_ids: [],
                 errors: errors,
                 medicineType: medicineType
             });
@@ -69,6 +70,7 @@ router.get('/edit/:id', function (req, res) {
         let errors = [];
         let medicine = {};
         let medicineType = [];
+        let type_ids = [];
         arrPromise.push(
             new Promise((resolve, reject) => {
                 modelService.getMedicineById(req.params.id, function (err, result, fields) {
@@ -81,6 +83,7 @@ router.get('/edit/:id', function (req, res) {
                     }
                     if(result[0] !== undefined){
                         medicine = result[0];
+                        type_ids = webService.isJSON(result[0].type) ? JSON.parse(result[0].type) : [];
                     }
                     resolve();
             })
@@ -102,6 +105,7 @@ router.get('/edit/:id', function (req, res) {
                 res.render(viewPage("edit"), {
                     user: req.user,
                     medicine: medicine,
+                    type_ids: type_ids,
                     errors: errors,
                     medicineType: medicineType
                 });
@@ -129,7 +133,7 @@ router.post('/create', function (req, res, next) {
                 unit: req.body.unit,
                 description: req.body.description,
                 share: req.body.share ? (req.body.share == 'on' ? 1 : 0) : 0,
-                type: isNaN(parseInt(req.body.type_id)) ? 0 : parseInt(req.body.type_id),
+                type:req.body.type_ids ? typeof(req.body.type_ids) == 'object' ? JSON.stringify(req.body.type_ids) : JSON.stringify([req.body.type_ids]) : '',
                 department_id: req.user.department_id,
                 hospital_id: req.user.hospital_id,
                 created_by: req.user.id
@@ -185,7 +189,7 @@ router.post('/edit/:id', function (req, res, next) {
                 unit: req.body.unit,
                 description: req.body.description,
                 share: req.body.share ? (req.body.share == 'on' ? 1 : 0) : 0,
-                type: isNaN(parseInt(req.body.type_id)) ? 0 : parseInt(req.body.type_id),
+                type:req.body.type_ids ? typeof(req.body.type_ids) == 'object' ? JSON.stringify(req.body.type_ids) : JSON.stringify([req.body.type_ids]) : '',
                 department_id: req.user.department_id,
                 hospital_id: req.user.hospital_id,
                 created_by: req.user.id
@@ -201,6 +205,7 @@ router.post('/edit/:id', function (req, res, next) {
             res.render(viewPage("edit"), {
                 user: req.user,
                 medicine: parameter,
+                type_ids: webService.isJSON(parameter.type) ? JSON.parse(parameter.type) : [],
                 errors: str_error
             });
         } else {

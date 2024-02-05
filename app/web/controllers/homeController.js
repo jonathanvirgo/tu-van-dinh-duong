@@ -163,6 +163,7 @@ router.get('/', function(req, res) {
             });
         });
     } catch (e) {
+        logService.create(req, e.message);
         webService.createSideBarFilter(req, 0).then(function(dataFilter) {
             res.render("home/index.ejs", {
                 user: req.user,
@@ -264,6 +265,7 @@ router.get('/search', function(req, res) {
             });
         });
     } catch (e) {
+        logService.create(req, e.message);
         webService.createSideBarFilter(req, 0).then(function(dataFilter) {
             res.render("examine/index.ejs", {
                 user: req.user,
@@ -300,6 +302,7 @@ router.get('/lien-he', function(req, res) {
             });
         });
     } catch (e) {
+        logService.create(req, e.message);
         webService.createSideBarFilter(req, 1).then(function(dataFilter) {
             res.render("pages/contact.ejs", {
                 user: req.user,
@@ -359,4 +362,32 @@ function generateRangeArray(chartNews, startDate, endDate, numberDay){
     chartData.max_pageview = Math.max(...chartData.pageview);
     return chartData;
 }
+
+router.get('/update-type-medicine', function(req, res){
+    let result = {success: false, message : ''};
+    try{
+        webService.getListTable('SELECT id, `type` FROM medicine', []).then(responseData =>{
+            if(responseData.success){
+                if(responseData.data && responseData.data.length > 0){
+                    result.success = true;
+                    result.message = "Done";
+                    for(let item of responseData.data){
+                        let type = JSON.stringify([item.type]);
+                        webService.updateRecordTable({type: type}, {id: item.id}, 'medicine');
+                    }
+                }else{
+                    result.message = 'Không có medicine!';
+                }
+            }else{
+                result.message = responseData.message;
+            }
+            res.json(result);
+        })
+    }catch(err){
+        logService.create(req, err.message).then(responseData =>{
+            result.message = err.message;
+            res.json(result);
+        });
+    }
+})
 module.exports = router;

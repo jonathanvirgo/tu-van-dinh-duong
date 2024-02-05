@@ -1936,7 +1936,6 @@ $(document).ready(function(){
     });
 
     $("#medicine_type_id").on('change', function(evt) {
-        console.log('medicine_type_id select',evt);
         let id = $("#medicine_type_id").val() ? $("#medicine_type_id").val() : '';
         if(!id){
             displayErrorToastr('Thiếu Id phân loại');

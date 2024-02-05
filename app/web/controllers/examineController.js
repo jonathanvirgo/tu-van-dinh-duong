@@ -98,6 +98,7 @@ router.get('/', function(req, res) {
             });
         });
     } catch (e) {
+        logService.create(req, e.message);
         webService.createSideBarFilter(req, 1).then(function(dataFilter) {
             res.render("examine/index.ejs", {
                 user: req.user,
@@ -253,6 +254,7 @@ router.get('/edit/:id', function(req, res, next) {
             });
         });
     } catch (e) {
+        logService.create(req, e.message);
         webService.createSideBarFilter(req, 1).then(function(dataFilter) {
             res.render("examine/create.ejs", {
                 user: req.user,
@@ -396,6 +398,7 @@ router.get('/create', function(req, res, next) {
             });
         });
     } catch (e) {
+        logService.create(req, e.message);
         webService.createSideBarFilter(req, 2).then(function(dataFilter) {
             res.render("examine/create.ejs", {
                 user: req.user,
@@ -1001,8 +1004,8 @@ router.get('/get-list-medicine', function(req, res, next){
             res.json(resultData);
             return;
         }
-        let sqlString = 'SELECT * FROM medicine WHERE `type` = ?';
-        let paramSql = [id_type];
+        let sqlString = 'SELECT * FROM medicine WHERE `type` LIKE ?';
+        let paramSql = ['%"' + id_type + '"%'];
         let sqlStringPermit = webService.addPermitTable(sqlString, req.user);
         paramSql.push(sqlStringPermit.paramSql);
         webService.getListTable(sqlStringPermit.sqlQuery, paramSql).then(responseData =>{
@@ -1217,7 +1220,6 @@ router.post('/search/standard-weight-height', function(req, res, next){
             res.json(resultData);
         })
     } catch (error) {
-        console.log('error', error);
         logService.create(req, e.message).then(function() {
             resultData.message = e.message;
             res.json(resultData);
@@ -1305,7 +1307,10 @@ router.post('/cancel', async function(req, res, next){
             res.json(resultData);
         }
     } catch (error) {
-        
+        logService.create(req, error.message).then(responseData =>{
+            resultData.message = error.message;
+            res.json(resultData);
+        });
     }
 });
 
@@ -1335,37 +1340,6 @@ router.post('/list/department', function(req, res, next){
         });
     }
 });
-
-// router.get('/add-report-date', (req, res, next) =>{
-//     try {
-//         var resultData = {
-//             success: false,
-//             message: '',
-//             data: ''
-//         };
-//         let sqlListContent = 'SELECT id FROM examine';
-//         webService.getListTable(sqlListContent ,[]).then(async responseData =>{
-//             if(responseData.success && responseData.data && responseData.data.length > 0){
-//                 for(let item of responseData.data){
-//                     let sqlDetailContent = 'SELECT content FROM pr_article_content WHERE id = ?';
-//                     articleService.getListTable(sqlDetailContent, [item.id]).then(async responseData1 =>{
-//                         if(responseData1.success && responseData1.data && responseData1.data.length > 0){
-//                             let content = encodeURIComponent(responseData1.data[0].content);
-//                             articleService.updateRecordTable({content: content}, {id: item.id}, 'pr_article_content');
-//                         }
-//                     });
-                    
-//                 }
-//                 resultData.success = true;
-//             }else{
-//                 resultData.message = 'Lỗi lấy danh sách content';
-//             }
-//             res.json(resultData);
-//         });
-//     } catch (error) {
-        
-//     }
-// });
 
 router.get('/list-html', (req, res, next) =>{
     var resultData = {
