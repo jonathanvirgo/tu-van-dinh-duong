@@ -45,7 +45,7 @@ router.post('/login', async function (req, res, next) {
         };
         let dataCaptcha = await webService.callApiAll('https://www.google.com/recaptcha/api/siteverify',dataRecaptcha,{},'POST');
         if(dataCaptcha.success){
-            if(dataCaptcha.score >= 0.5){
+            if(dataCaptcha.data && dataCaptcha.data.score && dataCaptcha.data.score >= 0.5){
                 let passwordData  = webService.saltHashPassword(password);
                 let sqlGetListRequest = 'SELECT * FROM user WHERE ( phone = ? OR email = ?) AND password = ?';
                 webService.getListTable(sqlGetListRequest ,[username, username, passwordData]).then(responseData =>{
@@ -198,7 +198,7 @@ router.post('/signup', function (req, res, next) {
             };
             let dataCaptcha = await webService.callApiAll('https://www.google.com/recaptcha/api/siteverify',dataRecaptcha,{},'POST');
             if(dataCaptcha.success){
-                if(dataCaptcha.score >= 0.5){
+                if(dataCaptcha.data && dataCaptcha.data.score && dataCaptcha.data.score >= 0.5){
                     createUser(resultData, list_error, parameter, req, res);
                 }else{
                     resultData.message = 'Đăng ký không thành công. Bạn bị nhận diện là robot!';
