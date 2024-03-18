@@ -104,7 +104,7 @@
       <% if(!(examine.status == 4 || (examine.status == 3 && isDetail == true))){ %>
         <% if(examine.status !== 3){ %>
           <div class="col-6 col-md-auto">
-            <button class="btn btn-success box-btn w-100 text-uppercase" type="button" onclick="saveExamine(0, 0)" title="Hoàn thành phiếu khám">
+            <button class="btn btn-success box-btn w-100 text-uppercase" type="button" onclick="saveExamine(0, 0, {})" title="Hoàn thành phiếu khám">
               <svg class="iconsvg-send-2 flex-shrink-0 fs-16px me-2">
                 <use xlink:href="/public/content/images/sprite.svg#save"></use>
               </svg>Lưu
@@ -112,7 +112,7 @@
           </div>
         <% } %>
         <div class="col-6 col-md-auto">
-          <button class="btn btn-primary box-btn w-100 text-uppercase" type="button" onclick="saveExamine(3, 0)" title="Hoàn thành phiếu khám">
+          <button class="btn btn-primary box-btn w-100 text-uppercase" type="button" onclick="saveExamine(3, 0, {})" title="Hoàn thành phiếu khám">
             <svg class="iconsvg-send-2 flex-shrink-0 fs-16px me-2">
               <use xlink:href="/public/content/images/sprite.svg#save"></use>
             </svg><%= examine.status == 3 ? 'Lưu' : 'Hoàn thành'%>
@@ -120,14 +120,14 @@
         </div>
       <% } %>
       <div class="col-6 col-md-auto">
-        <button class="btn btn-action-edit box-btn w-100 text-uppercase" type="button" onclick="exportExamine()" title="Tải phiếu khám">
+        <button class="btn btn-action-edit box-btn w-100 text-uppercase" type="button" onclick="saveExamine(0,0,{isExport:true, linkExport:'examine'})" title="Tải phiếu khám">
           <svg class="iconsvg-send-2 flex-shrink-0 fs-16px me-2">
             <use xlink:href="/public/content/images/sprite.svg#download"></use>
           </svg>Phiếu khám
         </button>
       </div>
       <div class="col-6 col-md-auto">
-        <button class="btn btn-action-send box-btn w-100 text-uppercase" type="button" onclick="exportPrescription()" title="Tải phiếu tư vấn">
+        <button class="btn btn-action-send box-btn w-100 text-uppercase" type="button" onclick="saveExamine(0,0,{isExport:true, linkExport:'prescription'})" title="Tải phiếu tư vấn">
           <svg class="iconsvg-send-2 flex-shrink-0 fs-16px me-2">
             <use xlink:href="/public/content/images/sprite.svg#download"></use>
           </svg>Phiếu tư vấn

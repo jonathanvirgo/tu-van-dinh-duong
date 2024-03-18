@@ -7,7 +7,7 @@ var express         = require('express'),
 const docx = require("docx");
 const { AlignmentType, Document, TextDirection, Packer, Paragraph, TextRun, VerticalAlign, Table, TableCell, TableRow, WidthType, BorderStyle, convertInchesToTwip} = docx;
 
-router.get("/examine", async (req, res) => {
+router.get("/examine", (req, res) => {
     try {
         if (!req.user) {
             let message = "Vui lòng đăng nhập lại để thực hiện chức năng này!";
@@ -15,211 +15,223 @@ router.get("/examine", async (req, res) => {
             return;
         }
         let now = moment();
-        let data = JSON.parse(req.query.data);
-        if(data){
-            let yearOld = webService.caculateYearOld(data.cus_birthday);
-            let medicine = getMedicine(data.prescription ? JSON.parse(data.prescription) : []);
-            const doc = new Document({
-                creator: "dinhduonghotro.com",
-                title: "Phiếu khám ${req.user.full_name ? req.user.full_name : req.user.name}",
-                description: "Phiếu khám ${req.user.full_name ? req.user.full_name : req.user.name}",
-                styles: {
-                    paragraphStyles: [
-                        {
-                            id: "hospital",
-                            basedOn: "Normal",
-                            next: "Normal",
-                            quickFormat: true,
-                            run: {
-                                size: 28,
-                                bold: true,
-                                allCaps: true
-                            }
-                        },
-                        {
-                            id: "department",
-                            basedOn: "Normal",
-                            next: "Normal",
-                            quickFormat: true,
-                            run: {
-                                size: 26,
-                                allCaps: true
+        let examine_id = req.query.examine_id;
+        let data = {};
+        if(examine_id){
+            webService.getListTable('SELECT * FROM examine WHERE id = ?', [examine_id]).then(async responseData =>{
+                if(responseData.success){
+                    if(responseData.data && responseData.data.length > 0){
+                        data = responseData.data[0];
+                        let yearOld = webService.caculateYearOld(moment(data.cus_birthday).format("YYYY-MM-DD"));
+                        let medicine = getMedicine(data.prescription ? JSON.parse(data.prescription) : []);
+                        const doc = new Document({
+                            creator: "dinhduonghotro.com",
+                            title: "Phiếu khám ${data.cus_name ? data.cus_name : ''}",
+                            description: "Phiếu khám ${data.cus_name ? data.cus_name : ''}",
+                            styles: {
+                                paragraphStyles: [
+                                    {
+                                        id: "hospital",
+                                        basedOn: "Normal",
+                                        next: "Normal",
+                                        quickFormat: true,
+                                        run: {
+                                            size: 28,
+                                            bold: true,
+                                            allCaps: true
+                                        }
+                                    },
+                                    {
+                                        id: "department",
+                                        basedOn: "Normal",
+                                        next: "Normal",
+                                        quickFormat: true,
+                                        run: {
+                                            size: 26,
+                                            allCaps: true
+                                        },
+                                        paragraph: {
+                                            spacing: {
+                                                before: 60,
+                                                after: 480
+                                            },
+                                        },
+                                    },
+                                    {
+                                        id: "title",
+                                        basedOn: "Normal",
+                                        next: "Normal",
+                                        quickFormat: true,
+                                        run: {
+                                            size: 26,
+                                            bold: true
+                                        },
+                                        paragraph: {
+                                            spacing: {
+                                                before: 120,
+                                                after: 120
+                                            }
+                                        }
+                                    },
+                                    {
+                                        id: "size14",
+                                        basedOn: "Normal",
+                                        next: "Normal",
+                                        quickFormat: true,
+                                        run: {
+                                            size: 28
+                                        },
+                                        paragraph: {
+                                            spacing: {
+                                                before: 60
+                                            }
+                                        }
+                                    },
+                                    {
+                                        id: "size14-bold",
+                                        basedOn: "size14",
+                                        next: "Normal",
+                                        quickFormat: true,
+                                        run: {
+                                            bold: true
+                                        }
+                                    },
+                                    {
+                                        id: "table_heading",
+                                        basedOn: "size14",
+                                        next: "Normal",
+                                        quickFormat: true,
+                                        run: {
+                                            bold: true
+                                        },
+                                        paragraph: {
+                                            alignment: AlignmentType.CENTER,
+                                            spacing: {
+                                                before: 80,
+                                                after: 80
+                                            },
+                                        }
+                                    },
+                                    {
+                                        id: "table_cell",
+                                        basedOn: "size14",
+                                        next: "Normal",
+                                        quickFormat: true,
+                                        paragraph: {
+                                            alignment: AlignmentType.CENTER,
+                                            spacing: {
+                                                before: 80,
+                                                after: 80
+                                            },
+                                        }
+                                    }
+                                ],
                             },
-                            paragraph: {
-                                spacing: {
-                                    before: 60,
-                                    after: 480
-                                },
-                            },
-                        },
-                        {
-                            id: "title",
-                            basedOn: "Normal",
-                            next: "Normal",
-                            quickFormat: true,
-                            run: {
-                                size: 26,
-                                bold: true
-                            },
-                            paragraph: {
-                                spacing: {
-                                    before: 120,
-                                    after: 120
-                                }
-                            }
-                        },
-                        {
-                            id: "size14",
-                            basedOn: "Normal",
-                            next: "Normal",
-                            quickFormat: true,
-                            run: {
-                                size: 28
-                            },
-                            paragraph: {
-                                spacing: {
-                                    before: 60
-                                }
-                            }
-                        },
-                        {
-                            id: "size14-bold",
-                            basedOn: "size14",
-                            next: "Normal",
-                            quickFormat: true,
-                            run: {
-                                bold: true
-                            }
-                        },
-                        {
-                            id: "table_heading",
-                            basedOn: "size14",
-                            next: "Normal",
-                            quickFormat: true,
-                            run: {
-                                bold: true
-                            },
-                            paragraph: {
-                                alignment: AlignmentType.CENTER,
-                                spacing: {
-                                    before: 80,
-                                    after: 80
-                                },
-                            }
-                        },
-                        {
-                            id: "table_cell",
-                            basedOn: "size14",
-                            next: "Normal",
-                            quickFormat: true,
-                            paragraph: {
-                                alignment: AlignmentType.CENTER,
-                                spacing: {
-                                    before: 80,
-                                    after: 80
-                                },
-                            }
-                        }
-                    ],
-                },
-                sections: [{
-                    children: [
-                        paramFollowerStyle(req.user.hospital_name ? req.user.hospital_name : '', "hospital"),
-                        new Paragraph({
-                            text: req.user.department_name ? req.user.department_name : '',
-                            style: "department",
-                            indent: {
-                                left: 1208
-                            }
-                        }),
-                        new Paragraph({
-                            text: "PHIẾU TƯ VẤN DINH DƯỠNG",
-                            alignment: AlignmentType.CENTER,
-                            style: "hospital",
-                            spacing:{
-                                after: 480
-                            }
-                        }),
-                        paramFollowerStyle("1. THÔNG TIN CHUNG", "title"),
-                        tableName(data, yearOld),
-                        new Paragraph({
-                            children: [
-                                new TextRun({
-                                    text: "Điện thoại: " + (data.cus_phone ? data.cus_phone : '')
-                                }),
-                            ],
-                            style: "size14"
-                        }),
-                        new Paragraph({
-                            children: [
-                                new TextRun({
-                                    text: "Địa chỉ: " + (data.cus_address ? data.cus_address : '')
-                                }),
-                            ],
-                            style: "size14"
-                        }),
-                        new Paragraph({
-                            children: [
-                                new TextRun({
-                                    text: "Chuẩn đoán: " + (data.diagnostic ? data.diagnostic : '')
-                                }),
-                            ],
-                            style: "size14"
-                        }),
-                        tableLength(data),
-                        tableCNTC(data),
-                        paramFollowerStyle("2. KHÁM LÂM SÀNG", "title"),
-                        paramFollowerStyle(data.clinical_examination ? data.clinical_examination : '', "size14"),
-                        paramFollowerStyle("3. KHÁM DINH DƯỠNG", "title"),
-                        tableDinhduong(data),
-                        paramFollowerStyle("4. KẾT QUẢ XÉT NGHIỆM", "title"),
-                        tableHongCau(data),
-                        tableAlbumin(data),
-                        tableAst(data),
-                        new Paragraph({
-                            children: [
-                                new TextRun({
-                                    text: "Bilirubin TP/TT(μmol/L): " + (data.cus_bilirubin ? data.cus_bilirubin : '')
-                                })
-                            ],
-                            style: "size14"
-                        }),
-                        new Paragraph({
-                            children: [
-                                new TextRun({
-                                    text: "Khác: " + (data.exa_note ? data.exa_note : '')
-                                })
-                            ],
-                            style: "size14"
-                        }),
-                        paramFollowerStyle("5. LỜI KHUYÊN DINH DƯỠNG", "title"),
-                        tableNutritionAdvice(data),
-                        paramFollowerStyle("6. CHẾ ĐỘ VẬN ĐỘNG, SINH HOẠT", "title"),
-                        new Paragraph({
-                            children: data.active_mode_of_living ? data.active_mode_of_living.split("\n").map(line=> textRunBreak(line)) : [],
-                            style: "size14",
-                        }),
-                        paramFollowerStyle("7. BỔ SUNG", "title"),
-                        ...medicine,
-                        new Paragraph({
-                            text: `Hà Nội, ngày ${String(now.date()).padStart(2, '0')} tháng ${String((now.month() + 1)).padStart(2, '0')} năm ${now.year()}`,
-                            alignment: AlignmentType.RIGHT,
-                            style: "size14"
-                        }),
-                        new Paragraph({
-                            text: "CÁN BỘ TƯ VẤN",
-                            alignment: AlignmentType.RIGHT,
-                            style: "size14-bold"
-                        })
-                    ],
-                }],
-            });    
-            const b64string = await Packer.toBase64String(doc);
-            let filename = "Phieu_kham_" + webService.removeVietnameseTones(req.user.full_name ? req.user.full_name : req.user.name).replaceAll(" ", "_") + "_" + String(now.date()).padStart(2, '0') + "_" + String((now.month() + 1)).padStart(2, '0') + "_" + now.year(); 
-            res.setHeader('Content-Disposition', 'attachment; filename=' + filename + '.docx');
-            res.send(Buffer.from(b64string, 'base64')); 
+                            sections: [{
+                                children: [
+                                    paramFollowerStyle(req.user.hospital_name ? req.user.hospital_name : '', "hospital"),
+                                    new Paragraph({
+                                        text: req.user.department_name ? req.user.department_name : '',
+                                        style: "department",
+                                        indent: {
+                                            left: 1208
+                                        }
+                                    }),
+                                    new Paragraph({
+                                        text: "PHIẾU TƯ VẤN DINH DƯỠNG",
+                                        alignment: AlignmentType.CENTER,
+                                        style: "hospital",
+                                        spacing:{
+                                            after: 480
+                                        }
+                                    }),
+                                    paramFollowerStyle("1. THÔNG TIN CHUNG", "title"),
+                                    tableName(data, yearOld),
+                                    new Paragraph({
+                                        children: [
+                                            new TextRun({
+                                                text: "Điện thoại: " + (data.cus_phone ? data.cus_phone : '')
+                                            }),
+                                        ],
+                                        style: "size14"
+                                    }),
+                                    new Paragraph({
+                                        children: [
+                                            new TextRun({
+                                                text: "Địa chỉ: " + (data.cus_address ? data.cus_address : '')
+                                            }),
+                                        ],
+                                        style: "size14"
+                                    }),
+                                    new Paragraph({
+                                        children: [
+                                            new TextRun({
+                                                text: "Chuẩn đoán: " + (data.diagnostic ? data.diagnostic : '')
+                                            }),
+                                        ],
+                                        style: "size14"
+                                    }),
+                                    tableLength(data),
+                                    tableCNTC(data),
+                                    paramFollowerStyle("2. KHÁM LÂM SÀNG", "title"),
+                                    paramFollowerStyle(data.clinical_examination ? data.clinical_examination : '', "size14"),
+                                    paramFollowerStyle("3. KHÁM DINH DƯỠNG", "title"),
+                                    tableDinhduong(data),
+                                    paramFollowerStyle("4. KẾT QUẢ XÉT NGHIỆM", "title"),
+                                    tableHongCau(data),
+                                    tableAlbumin(data),
+                                    tableAst(data),
+                                    new Paragraph({
+                                        children: [
+                                            new TextRun({
+                                                text: "Bilirubin TP/TT(μmol/L): " + (data.cus_bilirubin ? data.cus_bilirubin : '')
+                                            })
+                                        ],
+                                        style: "size14"
+                                    }),
+                                    new Paragraph({
+                                        children: [
+                                            new TextRun({
+                                                text: "Khác: " + (data.exa_note ? data.exa_note : '')
+                                            })
+                                        ],
+                                        style: "size14"
+                                    }),
+                                    paramFollowerStyle("5. LỜI KHUYÊN DINH DƯỠNG", "title"),
+                                    tableNutritionAdvice(data),
+                                    paramFollowerStyle("6. CHẾ ĐỘ VẬN ĐỘNG, SINH HOẠT", "title"),
+                                    new Paragraph({
+                                        children: data.active_mode_of_living ? data.active_mode_of_living.split("\n").map(line=> textRunBreak(line)) : [],
+                                        style: "size14",
+                                    }),
+                                    paramFollowerStyle("7. BỔ SUNG", "title"),
+                                    ...medicine,
+                                    new Paragraph({
+                                        text: `Hà Nội, ngày ${String(now.date()).padStart(2, '0')} tháng ${String((now.month() + 1)).padStart(2, '0')} năm ${now.year()}`,
+                                        alignment: AlignmentType.RIGHT,
+                                        style: "size14"
+                                    }),
+                                    new Paragraph({
+                                        text: "CÁN BỘ TƯ VẤN",
+                                        alignment: AlignmentType.RIGHT,
+                                        style: "size14-bold"
+                                    })
+                                ],
+                            }],
+                        });    
+                        const b64string = await Packer.toBase64String(doc);
+                        let filename = "Phieu_kham_" + webService.removeVietnameseTones(data.cus_name).replaceAll(" ", "_") + "_" + String(now.date()).padStart(2, '0') + "_" + String((now.month() + 1)).padStart(2, '0') + "_" + now.year(); 
+                        res.setHeader('Content-Disposition', 'attachment; filename=' + filename + '.docx');
+                        res.send(Buffer.from(b64string, 'base64')); 
+                    }else{
+                        return res.json('Không có dữ liệu');
+                    }
+                }else{
+                    return res.json(responseData.message);
+                }
+            })
         }else{
-            return res.json("Thiếu dữ liệu!");
+            return res.json('Thiếu Id phiếu khám');
         }
     } catch (error) {
         logService.create(req, error.message).then(function() {
@@ -852,299 +864,329 @@ router.get("/menu-example", async (req, res) =>{
             return;
         }
         let now = moment();
-        let data = JSON.parse(req.query.data);
-        if(data){
-            let sqlGetAlternativeFood = 'SELECT food_main, food_replace FROM alternative_food';
-            let dataAlternativeFood = await webService.getListTable(sqlGetAlternativeFood);
-            let menuExamineDetail = menuExapleList(data);
-            let listAlternativeFood = getRowAlternativeFood(dataAlternativeFood);
-            const doc = new Document({
-                creator: "dinhduonghotro.com",
-                title: "Thực đơn mẫu cho ${req.user.full_name ? req.user.full_name : req.user.name}",
-                description: "Thực đơn mẫu cho ${req.user.full_name ? req.user.full_name : req.user.name}",
-                styles: {
-                    paragraphStyles: [
-                        {
-                            id: "hospital",
-                            basedOn: "Normal",
-                            next: "Normal",
-                            quickFormat: true,
-                            run: {
-                                size: 28,
-                                bold: true,
-                                allCaps: true
-                            }
-                        },
-                        {
-                            id: "title",
-                            basedOn: "Normal",
-                            next: "Normal",
-                            quickFormat: true,
-                            run: {
-                                size: 26,
-                                bold: true
-                            },
-                            paragraph: {
-                                spacing: {
-                                    after: 120
+        let examine_id = req.query.examine_id;
+        let menu_id = req.query.menu_id;
+        let data = {};
+        let examine = {};
+        if(examine_id){
+            webService.getListTable('SELECT * FROM examine WHERE id = ?', [examine_id]).then(async responseData =>{
+                if(responseData.success){
+                    if(responseData.data && responseData.data.length > 0){
+                        examine = responseData.data[0];
+                        let menuExampleText = examine.menu_example
+                        let menuExampleList = menuExampleText && webService.isJSON(menuExampleText) ? JSON.parse(menuExampleText) : [];
+                        if(menuExampleList.length > 0){
+                            for(let item of menuExampleList){
+                                if(item.id == parseInt(menu_id)){
+                                    data = item;
+                                    break;
                                 }
                             }
-                        },
-                        {
-                            id: "title2",
-                            basedOn: "title",
-                            next: "Normal",
-                            quickFormat: true,
-                            paragraph: {
-                                spacing: {
-                                    before: 360
-                                }
-                            }
-                        },
-                        {
-                            id: "size14",
-                            basedOn: "Normal",
-                            next: "Normal",
-                            quickFormat: true,
-                            run: {
-                                size: 28
-                            },
-                            paragraph: {
-                                spacing: {
-                                    before: 60
-                                }
-                            }
-                        },
-                        {
-                            id: "size14-bold",
-                            basedOn: "size14",
-                            next: "Normal",
-                            quickFormat: true,
-                            run: {
-                                bold: true
-                            }
-                        },
-                        {
-                            id: "table_heading",
-                            basedOn: "size14",
-                            next: "Normal",
-                            quickFormat: true,
-                            run: {
-                                bold: true
-                            },
-                            paragraph: {
-                                alignment: AlignmentType.CENTER,
-                                spacing: {
-                                    before: 80,
-                                    after: 80
-                                },
-                            }
-                        },
-                        {
-                            id: "table_cell",
-                            basedOn: "size14",
-                            next: "Normal",
-                            quickFormat: true,
-                            paragraph: {
-                                spacing: {
-                                    before: 80,
-                                    after: 80
-                                },
-                            }
-                        }
-                    ],
-                },
-                sections: [{
-                    children: [
-                        new Table({
-                            columnWidths: [5000, 4010],
-                            rows: [
-                                new TableRow({
-                                    children: [
-                                        new TableCell({
-                                            borders:{
-                                                top: {style: BorderStyle.NONE, color: "FFFFFF"},
-                                                bottom: {style: BorderStyle.NONE, color: "FFFFFF"},
-                                                left: {style: BorderStyle.NONE, color: "FFFFFF"},
-                                                right: {style: BorderStyle.NONE, color: "FFFFFF"},
+                            if(data){
+                                let sqlGetAlternativeFood = 'SELECT food_main, food_replace FROM alternative_food';
+                                let dataAlternativeFood = await webService.getListTable(sqlGetAlternativeFood);
+                                let menuExamineDetail = menuExapleList(data);
+                                let listAlternativeFood = getRowAlternativeFood(dataAlternativeFood);
+                                const doc = new Document({
+                                    creator: "dinhduonghotro.com",
+                                    title: "Thực đơn mẫu cho ${examine.cus_name ? examine.cus_name : ''}",
+                                    description: "Thực đơn mẫu cho ${examine.cus_name ? examine.cus_name : ''}",
+                                    styles: {
+                                        paragraphStyles: [
+                                            {
+                                                id: "hospital",
+                                                basedOn: "Normal",
+                                                next: "Normal",
+                                                quickFormat: true,
+                                                run: {
+                                                    size: 28,
+                                                    bold: true,
+                                                    allCaps: true
+                                                }
                                             },
-                                            width: {
-                                                size: 5000,
-                                                type: WidthType.DXA,
-                                            },
-                                            children: [
-                                                new Paragraph({
-                                                    text: "THỰC ĐƠN MẪU",
-                                                    alignment: AlignmentType.CENTER,
-                                                    style: "hospital",
-                                                    spacing:{
-                                                        after: 480
+                                            {
+                                                id: "title",
+                                                basedOn: "Normal",
+                                                next: "Normal",
+                                                quickFormat: true,
+                                                run: {
+                                                    size: 26,
+                                                    bold: true
+                                                },
+                                                paragraph: {
+                                                    spacing: {
+                                                        after: 120
                                                     }
-                                                }),
-                                                new Table({
-                                                    columnWidths: [1000, 3000, 1000],
-                                                    rows: [
-                                                        new TableRow({
-                                                            children: [
-                                                                new TableCell({
-                                                                    children: [
-                                                                        new Paragraph({text: "Giờ", style: "table_heading"})
-                                                                    ],
-                                                                    width: {
-                                                                        size: 1000,
-                                                                        type: WidthType.DXA,
-                                                                    },
-                                                                }),
-                                                                new TableCell({
-                                                                    children: [
-                                                                        new Paragraph({text: "Thực phẩm", style: "table_heading"})
-                                                                    ],
-                                                                    width: {
-                                                                        size: 3000,
-                                                                        type: WidthType.DXA,
-                                                                    },
-                                                                }),
-                                                                new TableCell({
-                                                                    children: [
-                                                                        new Paragraph({text: "gam", style: "table_heading"})
-                                                                    ],
-                                                                    width: {
-                                                                        size: 1000,
-                                                                        type: WidthType.DXA,
-                                                                    },
-                                                                })
-                                                            ]
-                                                        }),
-                                                        ...menuExamineDetail
-                                                    ]
-                                                }),
-                                                new Paragraph({
-                                                    text: "Tổng lượng thực phẩm / ngày",
-                                                    style: "title2"
-                                                }),
-                                                new Table({
-                                                    columnWidths: [3500, 1500],
-                                                    rows: [
-                                                        new TableRow({
-                                                            children: [
-                                                                new TableCell({
-                                                                    width: {
-                                                                        size: 4000,
-                                                                        type: WidthType.DXA,
-                                                                    },
-                                                                    children: [
-                                                                        new Paragraph({
-                                                                            text: "Thịt / cá (g)",
-                                                                            style: "size14",
-                                                                            alignment: AlignmentType.CENTER
-                                                                        }),
-                                                                    ]
-                                                                }),
-                                                                new TableCell({
-                                                                    width: {
-                                                                        size: 2000,
-                                                                        type: WidthType.DXA,
-                                                                    },
-                                                                    children: []
-                                                                })
-                                                            ]
-                                                        }),
-                                                        new TableRow({
-                                                            children: [
-                                                                new TableCell({
-                                                                    width: {
-                                                                        size: 4000,
-                                                                        type: WidthType.DXA,
-                                                                    },
-                                                                    children: [
-                                                                        new Paragraph({
-                                                                            text: "Rau (g)",
-                                                                            style: "size14",
-                                                                            alignment: AlignmentType.CENTER
-                                                                        }),
-                                                                    ]
-                                                                }),
-                                                                new TableCell({
-                                                                    width: {
-                                                                        size: 2000,
-                                                                        type: WidthType.DXA,
-                                                                    },
-                                                                    children: []
-                                                                })
-                                                            ]
-                                                        }),
-                                                        new TableRow({
-                                                            children: [
-                                                                new TableCell({
-                                                                    width: {
-                                                                        size: 4000,
-                                                                        type: WidthType.DXA,
-                                                                    },
-                                                                    children: [
-                                                                        new Paragraph({
-                                                                            text: "Quả chín (g)",
-                                                                            style: "size14",
-                                                                            alignment: AlignmentType.CENTER
-                                                                        }),
-                                                                    ]
-                                                                }),
-                                                                new TableCell({
-                                                                    width: {
-                                                                        size: 2000,
-                                                                        type: WidthType.DXA,
-                                                                    },
-                                                                    children: []
-                                                                })
-                                                            ]
-                                                        })
-                                                    ]
-                                                })
-                                            ]
-                                        }),
-                                        new TableCell({
-                                            borders:{
-                                                top: {style: BorderStyle.NONE, color: "FFFFFF"},
-                                                bottom: {style: BorderStyle.NONE, color: "FFFFFF"},
-                                                left: {style: BorderStyle.NONE, color: "FFFFFF"},
-                                                right: {style: BorderStyle.NONE, color: "FFFFFF"},
+                                                }
                                             },
-                                            width: {
-                                                size: 4010,
-                                                type: WidthType.DXA,
+                                            {
+                                                id: "title2",
+                                                basedOn: "title",
+                                                next: "Normal",
+                                                quickFormat: true,
+                                                paragraph: {
+                                                    spacing: {
+                                                        before: 360
+                                                    }
+                                                }
                                             },
-                                            children: [
-                                                new Paragraph({
-                                                    text: "Thực phẩm thay thế tương đương",
-                                                    style: "title"
-                                                }),
-                                                new Table({
-                                                    rows: [
-                                                        ...listAlternativeFood
-                                                    ]
-                                                }),
-                                            ],
-                                            margins: {
-                                                left: convertInchesToTwip(0.2)
+                                            {
+                                                id: "size14",
+                                                basedOn: "Normal",
+                                                next: "Normal",
+                                                quickFormat: true,
+                                                run: {
+                                                    size: 28
+                                                },
+                                                paragraph: {
+                                                    spacing: {
+                                                        before: 60
+                                                    }
+                                                }
+                                            },
+                                            {
+                                                id: "size14-bold",
+                                                basedOn: "size14",
+                                                next: "Normal",
+                                                quickFormat: true,
+                                                run: {
+                                                    bold: true
+                                                }
+                                            },
+                                            {
+                                                id: "table_heading",
+                                                basedOn: "size14",
+                                                next: "Normal",
+                                                quickFormat: true,
+                                                run: {
+                                                    bold: true
+                                                },
+                                                paragraph: {
+                                                    alignment: AlignmentType.CENTER,
+                                                    spacing: {
+                                                        before: 80,
+                                                        after: 80
+                                                    },
+                                                }
+                                            },
+                                            {
+                                                id: "table_cell",
+                                                basedOn: "size14",
+                                                next: "Normal",
+                                                quickFormat: true,
+                                                paragraph: {
+                                                    spacing: {
+                                                        before: 80,
+                                                        after: 80
+                                                    },
+                                                }
                                             }
-                                        })
-                                    ]
-                                })
-                            ]
-                        }),
-                        new Paragraph({
-                            text: "Ghi chú",
-                            style: "title2"
-                        }),
-                        paramFollowerStyle(data.note ? data.note : '', "size14")
-                    ]
-                }]
-            });    
-            const b64string = await Packer.toBase64String(doc);
-            let filename = "Thuc_don_mau_" + webService.removeVietnameseTones(req.user.full_name ? req.user.full_name : req.user.name).replaceAll(" ", "_") + "_" + String(now.date()).padStart(2, '0') + "_" + String(now.month()).padStart(2, '0') + "_" + now.year(); 
-            res.setHeader('Content-Disposition', 'attachment; filename=' + filename + '.docx');
-            res.send(Buffer.from(b64string, 'base64')); 
+                                        ],
+                                    },
+                                    sections: [{
+                                        children: [
+                                            new Table({
+                                                columnWidths: [5000, 4010],
+                                                rows: [
+                                                    new TableRow({
+                                                        children: [
+                                                            new TableCell({
+                                                                borders:{
+                                                                    top: {style: BorderStyle.NONE, color: "FFFFFF"},
+                                                                    bottom: {style: BorderStyle.NONE, color: "FFFFFF"},
+                                                                    left: {style: BorderStyle.NONE, color: "FFFFFF"},
+                                                                    right: {style: BorderStyle.NONE, color: "FFFFFF"},
+                                                                },
+                                                                width: {
+                                                                    size: 5000,
+                                                                    type: WidthType.DXA,
+                                                                },
+                                                                children: [
+                                                                    new Paragraph({
+                                                                        text: "THỰC ĐƠN MẪU",
+                                                                        alignment: AlignmentType.CENTER,
+                                                                        style: "hospital",
+                                                                        spacing:{
+                                                                            after: 480
+                                                                        }
+                                                                    }),
+                                                                    new Table({
+                                                                        columnWidths: [1000, 3000, 1000],
+                                                                        rows: [
+                                                                            new TableRow({
+                                                                                children: [
+                                                                                    new TableCell({
+                                                                                        children: [
+                                                                                            new Paragraph({text: "Giờ", style: "table_heading"})
+                                                                                        ],
+                                                                                        width: {
+                                                                                            size: 1000,
+                                                                                            type: WidthType.DXA,
+                                                                                        },
+                                                                                    }),
+                                                                                    new TableCell({
+                                                                                        children: [
+                                                                                            new Paragraph({text: "Thực phẩm", style: "table_heading"})
+                                                                                        ],
+                                                                                        width: {
+                                                                                            size: 3000,
+                                                                                            type: WidthType.DXA,
+                                                                                        },
+                                                                                    }),
+                                                                                    new TableCell({
+                                                                                        children: [
+                                                                                            new Paragraph({text: "gam", style: "table_heading"})
+                                                                                        ],
+                                                                                        width: {
+                                                                                            size: 1000,
+                                                                                            type: WidthType.DXA,
+                                                                                        },
+                                                                                    })
+                                                                                ]
+                                                                            }),
+                                                                            ...menuExamineDetail
+                                                                        ]
+                                                                    }),
+                                                                    new Paragraph({
+                                                                        text: "Tổng lượng thực phẩm / ngày",
+                                                                        style: "title2"
+                                                                    }),
+                                                                    new Table({
+                                                                        columnWidths: [3500, 1500],
+                                                                        rows: [
+                                                                            new TableRow({
+                                                                                children: [
+                                                                                    new TableCell({
+                                                                                        width: {
+                                                                                            size: 4000,
+                                                                                            type: WidthType.DXA,
+                                                                                        },
+                                                                                        children: [
+                                                                                            new Paragraph({
+                                                                                                text: "Thịt / cá (g)",
+                                                                                                style: "size14",
+                                                                                                alignment: AlignmentType.CENTER
+                                                                                            }),
+                                                                                        ]
+                                                                                    }),
+                                                                                    new TableCell({
+                                                                                        width: {
+                                                                                            size: 2000,
+                                                                                            type: WidthType.DXA,
+                                                                                        },
+                                                                                        children: []
+                                                                                    })
+                                                                                ]
+                                                                            }),
+                                                                            new TableRow({
+                                                                                children: [
+                                                                                    new TableCell({
+                                                                                        width: {
+                                                                                            size: 4000,
+                                                                                            type: WidthType.DXA,
+                                                                                        },
+                                                                                        children: [
+                                                                                            new Paragraph({
+                                                                                                text: "Rau (g)",
+                                                                                                style: "size14",
+                                                                                                alignment: AlignmentType.CENTER
+                                                                                            }),
+                                                                                        ]
+                                                                                    }),
+                                                                                    new TableCell({
+                                                                                        width: {
+                                                                                            size: 2000,
+                                                                                            type: WidthType.DXA,
+                                                                                        },
+                                                                                        children: []
+                                                                                    })
+                                                                                ]
+                                                                            }),
+                                                                            new TableRow({
+                                                                                children: [
+                                                                                    new TableCell({
+                                                                                        width: {
+                                                                                            size: 4000,
+                                                                                            type: WidthType.DXA,
+                                                                                        },
+                                                                                        children: [
+                                                                                            new Paragraph({
+                                                                                                text: "Quả chín (g)",
+                                                                                                style: "size14",
+                                                                                                alignment: AlignmentType.CENTER
+                                                                                            }),
+                                                                                        ]
+                                                                                    }),
+                                                                                    new TableCell({
+                                                                                        width: {
+                                                                                            size: 2000,
+                                                                                            type: WidthType.DXA,
+                                                                                        },
+                                                                                        children: []
+                                                                                    })
+                                                                                ]
+                                                                            })
+                                                                        ]
+                                                                    })
+                                                                ]
+                                                            }),
+                                                            new TableCell({
+                                                                borders:{
+                                                                    top: {style: BorderStyle.NONE, color: "FFFFFF"},
+                                                                    bottom: {style: BorderStyle.NONE, color: "FFFFFF"},
+                                                                    left: {style: BorderStyle.NONE, color: "FFFFFF"},
+                                                                    right: {style: BorderStyle.NONE, color: "FFFFFF"},
+                                                                },
+                                                                width: {
+                                                                    size: 4010,
+                                                                    type: WidthType.DXA,
+                                                                },
+                                                                children: [
+                                                                    new Paragraph({
+                                                                        text: "Thực phẩm thay thế tương đương",
+                                                                        style: "title"
+                                                                    }),
+                                                                    new Table({
+                                                                        rows: [
+                                                                            ...listAlternativeFood
+                                                                        ]
+                                                                    }),
+                                                                ],
+                                                                margins: {
+                                                                    left: convertInchesToTwip(0.2)
+                                                                }
+                                                            })
+                                                        ]
+                                                    })
+                                                ]
+                                            }),
+                                            new Paragraph({
+                                                text: "Ghi chú",
+                                                style: "title2"
+                                            }),
+                                            paramFollowerStyle(data.note ? data.note : '', "size14")
+                                        ]
+                                    }]
+                                });    
+                                const b64string = await Packer.toBase64String(doc);
+                                let filename = "Thuc_don_mau_" + webService.removeVietnameseTones(examine.cus_name).replaceAll(" ", "_") + "_" + String(now.date()).padStart(2, '0') + "_" + String(now.month()).padStart(2, '0') + "_" + now.year(); 
+                                res.setHeader('Content-Disposition', 'attachment; filename=' + filename + '.docx');
+                                res.send(Buffer.from(b64string, 'base64')); 
+                            }else{
+                                return res.json("Thiếu dữ liệu!");
+                            }
+                        }else{
+                            return res.json('Không tìm thấy thực đơn');
+                        }
+                    }else{
+                        return res.json('Không có dữ liệu');
+                    }
+                }else{
+                    return res.json(responseData.message);
+                }
+            })
         }else{
-            return res.json("Thiếu dữ liệu!");
+            return res.json('Thiếu Id phiếu khám');
         }
     } catch (error) {
         logService.create(req, error.message).then(function() {
@@ -1260,123 +1302,135 @@ router.get("/prescription", async (req, res) =>{
             return;
         }
         let now = moment();
-        let data = JSON.parse(req.query.data);
-        if(data){
-            let yearOld = webService.caculateYearOld(data.cus_birthday);
-            let medicine = getMedicine(data.prescription ? JSON.parse(data.prescription) : []);
-            const doc = new Document({
-                creator: "dinhduonghotro.com",
-                title: "Phiếu tư vấn ${req.user.full_name ? req.user.full_name : req.user.name}",
-                description: "Phiếu tư vấn ${req.user.full_name ? req.user.full_name : req.user.name}",
-                styles: {
-                    paragraphStyles: [
-                        {
-                            id: "hospital",
-                            basedOn: "Normal",
-                            next: "Normal",
-                            quickFormat: true,
-                            run: {
-                                size: 28,
-                                bold: true,
-                                allCaps: true
-                            }
-                        },
-                        
-                        {
-                            id: "title",
-                            basedOn: "Normal",
-                            next: "Normal",
-                            quickFormat: true,
-                            run: {
-                                size: 26,
-                                bold: true
+        let examine_id = req.query.examine_id;
+        let data = {};
+        if(examine_id){
+            webService.getListTable('SELECT * FROM examine WHERE id = ?', [examine_id]).then(async responseData =>{
+                if(responseData.success){
+                    if(responseData.data && responseData.data.length > 0){
+                        data = responseData.data[0];
+                        let yearOld = webService.caculateYearOld(moment(data.cus_birthday).format("YYYY-MM-DD"));
+                        let medicine = getMedicine(data.prescription ? JSON.parse(data.prescription) : []);
+                        const doc = new Document({
+                            creator: "dinhduonghotro.com",
+                            title: "Phiếu tư vấn ${data.cus_name ? data.cus_name : ''}",
+                            description: "Phiếu tư vấn ${data.cus_name ? data.cus_name : ''}",
+                            styles: {
+                                paragraphStyles: [
+                                    {
+                                        id: "hospital",
+                                        basedOn: "Normal",
+                                        next: "Normal",
+                                        quickFormat: true,
+                                        run: {
+                                            size: 28,
+                                            bold: true,
+                                            allCaps: true
+                                        }
+                                    },
+                                    
+                                    {
+                                        id: "title",
+                                        basedOn: "Normal",
+                                        next: "Normal",
+                                        quickFormat: true,
+                                        run: {
+                                            size: 26,
+                                            bold: true
+                                        },
+                                        paragraph: {
+                                            spacing: {
+                                                before: 120,
+                                                after: 120
+                                            }
+                                        }
+                                    },
+                                    {
+                                        id: "size14",
+                                        basedOn: "Normal",
+                                        next: "Normal",
+                                        quickFormat: true,
+                                        run: {
+                                            size: 28
+                                        },
+                                        paragraph: {
+                                            spacing: {
+                                                before: 60
+                                            }
+                                        }
+                                    },
+                                    {
+                                        id: "size14-bold",
+                                        basedOn: "size14",
+                                        next: "Normal",
+                                        quickFormat: true,
+                                        run: {
+                                            bold: true
+                                        }
+                                    }
+                                ],
                             },
-                            paragraph: {
-                                spacing: {
-                                    before: 120,
-                                    after: 120
-                                }
-                            }
-                        },
-                        {
-                            id: "size14",
-                            basedOn: "Normal",
-                            next: "Normal",
-                            quickFormat: true,
-                            run: {
-                                size: 28
-                            },
-                            paragraph: {
-                                spacing: {
-                                    before: 60
-                                }
-                            }
-                        },
-                        {
-                            id: "size14-bold",
-                            basedOn: "size14",
-                            next: "Normal",
-                            quickFormat: true,
-                            run: {
-                                bold: true
-                            }
-                        }
-                    ],
-                },
-                sections: [{
-                    children: [
-                        new Paragraph({
-                            text: "PHIẾU TƯ VẤN",
-                            alignment: AlignmentType.CENTER,
-                            style: "hospital",
-                            spacing:{
-                                after: 480
-                            }
-                        }),
-                        paramFollowerStyle("1. THÔNG TIN CHUNG", "title"),
-                        tableName(data, yearOld),
-                        new Paragraph({
-                            children: [
-                                new TextRun({
-                                    text: "Địa chỉ: " + (data.cus_address ? data.cus_address : '')
-                                }),
-                            ],
-                            style: "size14"
-                        }),
-                        new Paragraph({
-                            children: [
-                                new TextRun({
-                                    text: "Chuẩn đoán: " + (data.diagnostic ? data.diagnostic : '')
-                                }),
-                            ],
-                            style: "size14",
-                            spacing:{
-                                after: 240
-                            }
-                        }),
-                        ...medicine,
-                        new Paragraph({
-                            text: `Hà Nội, ngày ${String(now.date()).padStart(2, '0')} tháng ${String((now.month() + 1)).padStart(2, '0')} năm ${now.year()}`,
-                            alignment: AlignmentType.RIGHT,
-                            style: "size14",
-                            spacing:{
-                                before: 240
-                            }
-                        }),
-                        new Paragraph({
-                            text: "CÁN BỘ TƯ VẤN",
-                            alignment: AlignmentType.RIGHT,
-                            style: "size14-bold"
-                        })
-                    ],
-                }],
-            });    
-            const b64string = await Packer.toBase64String(doc);
-            let filename = "Phieu_tu_van_" + webService.removeVietnameseTones(req.user.full_name ? req.user.full_name : req.user.name).replaceAll(" ", "_") + "_" + String(now.date()).padStart(2, '0') + "_" + String((now.month() + 1)).padStart(2, '0') + "_" + now.year(); 
-            res.setHeader('Content-Disposition', 'attachment; filename=' + filename + '.docx');
-            res.send(Buffer.from(b64string, 'base64')); 
+                            sections: [{
+                                children: [
+                                    new Paragraph({
+                                        text: "PHIẾU TƯ VẤN",
+                                        alignment: AlignmentType.CENTER,
+                                        style: "hospital",
+                                        spacing:{
+                                            after: 480
+                                        }
+                                    }),
+                                    paramFollowerStyle("1. THÔNG TIN CHUNG", "title"),
+                                    tableName(data, yearOld),
+                                    new Paragraph({
+                                        children: [
+                                            new TextRun({
+                                                text: "Địa chỉ: " + (data.cus_address ? data.cus_address : '')
+                                            }),
+                                        ],
+                                        style: "size14"
+                                    }),
+                                    new Paragraph({
+                                        children: [
+                                            new TextRun({
+                                                text: "Chuẩn đoán: " + (data.diagnostic ? data.diagnostic : '')
+                                            }),
+                                        ],
+                                        style: "size14",
+                                        spacing:{
+                                            after: 240
+                                        }
+                                    }),
+                                    ...medicine,
+                                    new Paragraph({
+                                        text: `Hà Nội, ngày ${String(now.date()).padStart(2, '0')} tháng ${String((now.month() + 1)).padStart(2, '0')} năm ${now.year()}`,
+                                        alignment: AlignmentType.RIGHT,
+                                        style: "size14",
+                                        spacing:{
+                                            before: 240
+                                        }
+                                    }),
+                                    new Paragraph({
+                                        text: "CÁN BỘ TƯ VẤN",
+                                        alignment: AlignmentType.RIGHT,
+                                        style: "size14-bold"
+                                    })
+                                ],
+                            }],
+                        });    
+                        const b64string = await Packer.toBase64String(doc);
+                        let filename = "Phieu_tu_van_" + webService.removeVietnameseTones(data.cus_name).replaceAll(" ", "_") + "_" + String(now.date()).padStart(2, '0') + "_" + String((now.month() + 1)).padStart(2, '0') + "_" + now.year(); 
+                        res.setHeader('Content-Disposition', 'attachment; filename=' + filename + '.docx');
+                        res.send(Buffer.from(b64string, 'base64')); 
+                    }else{
+                        return res.json('Không có dữ liệu');
+                    }
+                }else{
+                    return res.json(responseData.message);
+                }
+            })
         }else{
-            return res.json("Thiếu dữ liệu!");
+            return res.json('Thiếu Id phiếu khám');
         }
     } catch (error) {
         logService.create(req, error.message).then(function() {

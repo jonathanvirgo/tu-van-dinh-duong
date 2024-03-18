@@ -52,77 +52,111 @@
     </div>
     <h3 class="box-title-break">Kết quả xét nghiệm</h3>
     <div class="row g-2 align-items-center">
-        <div class="col-12 col-md-4 d-flex">
-            <label class="col-form-label col-md-auto fw-bold mt-2 form-label-large" for="erythrocytes">Hồng cầu (T/L)</label>
-            <div class="col-form-body col-md w-100">
-                <div class="form-control-has-addon">
-                    <div class="form-control form-control-title"><%= examine.erythrocytes%></div>
+        <%if(examine.erythrocytes){%>
+            <div class="col-12 col-md-4 d-flex">
+                <label class="col-form-label col-md-auto fw-bold mt-2 form-label-large" for="erythrocytes">Hồng cầu (T/L)</label>
+                <div class="col-form-body col-md w-100">
+                    <div class="form-control-has-addon">
+                        <div class="form-control form-control-title"><%= examine.erythrocytes%></div>
+                    </div>
                 </div>
             </div>
-        </div>
-        <div class="col-12 col-md-4 d-flex">
-            <label class="col-form-label col-md-auto fw-bold mt-2" for="cus_bc">BC (G/L)</label>
-            <div class="col-form-body col-md w-100">
-                <div class="form-control-has-addon">
-                    <div class="form-control form-control-title"><%= examine.cus_bc%></div>
+        <%}%>
+        
+        <%if(examine.cus_bc){%>
+            <div class="col-12 col-md-4 d-flex">
+                <label class="col-form-label col-md-auto fw-bold mt-2" for="cus_bc">BC (G/L)</label>
+                <div class="col-form-body col-md w-100">
+                    <div class="form-control-has-addon">
+                        <div class="form-control form-control-title"><%= examine.cus_bc%></div>
+                    </div>
                 </div>
             </div>
-        </div>
-        <div class="col-12 col-md-4 d-flex">
-            <label class="col-form-label col-md-auto fw-bold mt-2" for="cus_tc">TC (T/L)</label>
-            <div class="col-form-body col-md w-100">
-                <div class="form-control-has-addon">
-                    <div class="form-control form-control-title"><%= examine.cus_tc%></div>
+        <%}%>
+        
+        <%if(examine.cus_tc){%>
+            <div class="col-12 col-md-4 d-flex">
+                <label class="col-form-label col-md-auto fw-bold mt-2" for="cus_tc">TC (T/L)</label>
+                <div class="col-form-body col-md w-100">
+                    <div class="form-control-has-addon">
+                        <div class="form-control form-control-title"><%= examine.cus_tc%></div>
+                    </div>
                 </div>
             </div>
-        </div>
+        <%}%>
+        
     </div>
     <div class="row g-2 align-items-center">
-        <div class="col-12 col-md-6 d-flex">
-            <label class="col-form-label col-md-auto fw-bold mt-2 form-label-large" for="cus_albumin">Albumin (G/L)</label>
-            <div class="col-form-body col-md w-100">
-                <div class="form-control-has-addon">
-                    <div class="form-control form-control-title"><%= examine.cus_albumin%></div>
+        <%if(examine.cus_albumin){%>
+            <div class="col-12 col-md-6 d-flex">
+                <label class="col-form-label col-md-auto fw-bold mt-2 form-label-large" for="cus_albumin">Albumin (G/L)</label>
+                <div class="col-form-body col-md w-100">
+                    <div class="form-control-has-addon">
+                        <div class="form-control form-control-title"><%= examine.cus_albumin%></div>
+                    </div>
                 </div>
             </div>
-        </div>
-        <div class="col-12 col-md-6 d-flex">
-            <label class="col-form-label col-md-auto fw-bold mt-2" for="cus_nakcl">Na+/K+/Cl-</label>
-            <div class="col-form-body col-md w-100">
-                <div class="form-control-has-addon">
-                    <div class="form-control form-control-title"><%= examine.cus_nakcl%></div>
+        <%}%>
+        
+        <%if(examine.cus_nakcl){%>
+            <div class="col-12 col-md-6 d-flex">
+                <label class="col-form-label col-md-auto fw-bold mt-2" for="cus_nakcl">Na+/K+/Cl-</label>
+                <div class="col-form-body col-md w-100">
+                    <div class="form-control-has-addon">
+                        <div class="form-control form-control-title"><%= examine.cus_nakcl%></div>
+                    </div>
                 </div>
             </div>
-        </div>
+        <%}%>
+        
     </div>
     <div class="row g-2 align-items-center">
-        <div class="col-12 col-md-6 d-flex">
-            <label class="col-form-label col-md-auto fw-bold mt-2 form-label-large" for="cus_astaltggt">AST/ALT/GGT (U/L)</label>
-            <div class="col-form-body col-md w-100">
-                <div class="form-control-has-addon">
-                    <div class="form-control form-control-title"><%= examine.cus_astaltggt%></div>
+        <%if(examine.cus_astaltggt){%>
+            <div class="col-12 col-md-6 d-flex">
+                <label class="col-form-label col-md-auto fw-bold mt-2 form-label-large" for="cus_astaltggt">AST/ALT/GGT (U/L)</label>
+                <div class="col-form-body col-md w-100">
+                    <div class="form-control-has-addon">
+                        <div class="form-control form-control-title"><%= examine.cus_astaltggt%></div>
+                    </div>
                 </div>
             </div>
-        </div>
-        <div class="col-12 col-md-6 d-flex">
-            <label class="col-form-label col-md-auto fw-bold mt-2" for="cus_urecreatinin">Ure/Creatinin</label>
-            <div class="col-form-body col-md w-100">
-                <div class="form-control-has-addon">
-                    <div class="form-control form-control-title"><%= examine.cus_urecreatinin%></div>
+        <%}%>
+        
+        <%if(examine.cus_urecreatinin){%>
+            <div class="col-12 col-md-6 d-flex">
+                <label class="col-form-label col-md-auto fw-bold mt-2" for="cus_urecreatinin">Ure/Creatinin</label>
+                <div class="col-form-body col-md w-100">
+                    <div class="form-control-has-addon">
+                        <div class="form-control form-control-title"><%= examine.cus_urecreatinin%></div>
+                    </div>
                 </div>
             </div>
-        </div>
+        <%}%>
     </div>
-    <div class="row g-2 align-items-center">
-        <div class="col-12 col-md-6 d-flex">
-            <label class="col-form-label col-md-auto fw-bold mt-2 form-label-large" for="cus_bilirubin">Bilirubin TP/TT</label>
-            <div class="col-form-body col-md w-100">
-                <div class="form-control-has-addon">
-                    <div class="form-control form-control-title"><%= examine.cus_bilirubin%></div>
+    <%if(examine.cus_bilirubin){%>
+        <div class="row g-2 align-items-center">
+            <div class="col-12 col-md-6 d-flex">
+                <label class="col-form-label col-md-auto fw-bold mt-2 form-label-large" for="cus_bilirubin">Bilirubin TP/TT</label>
+                <div class="col-form-body col-md w-100">
+                    <div class="form-control-has-addon">
+                        <div class="form-control form-control-title"><%= examine.cus_bilirubin%></div>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
+    <%}%>
+
+    <%if(examine.exa_note){%>
+        <div class="row g-2 align-items-center">
+            <label class="col-form-label col-md-auto fw-bold" for="diagnostic">Ghi chú</label>
+            <div class="col-form-body col-md">
+                <div class="form-control-has-addon">
+                    <div class="form-control form-control-title"><%= examine.exa_note%></div>
+                </div>
+            </div>
+        </div>
+    <%}%>
+    
     <h3 class="box-title-break">Lời khuyên dinh dưỡng</h3>
     <div class="row g-2 align-items-center">
         <div class="row align-items-center">

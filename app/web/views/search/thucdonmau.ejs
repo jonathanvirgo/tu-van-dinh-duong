@@ -23,24 +23,17 @@
     <div id="list_menu_example" style="font-size: 16px;" class="mb-3">
 
     </div>
-    <!-- <div class="row g-2 align-items-center">
-        <div class="table-responsive-xl table-responsive-flush mb-4" id="tb_menu" style="width: 100%">
-            <div class="table-responsive-inner"></div>
-            <table class="table-2 table table-pe-x-3 mb-0 align-middle table-ds-booking table-bordered table-hover">
-                <thead class="text-center">
-                    <tr>
-                        <td>Giờ</td>
-                        <td>Thực phẩm</td>
-                        <td>Weight(g)</td>
-                    </tr>
-                </thead>
-                <tbody>
-                  
-                </tbody>
-            </table>
-          </div>
-    </div> -->
     <% } %>
+    <div class="row g-2 align-items-center mb-4">
+        <div class="col-12 d-flex">
+            <label class="col-form-label col-md-auto fw-bold mt-2" for="menu_example_note">Ghi chú</label>
+            <div class="col-form-body col-md w-100">
+                <div class="form-control-has-addon">
+                    <div class="form-control form-control-title" id="menu_example_note"><%= examine.cus_bc%></div>
+                </div>
+            </div>
+        </div>
+    </div>
     <h3 class="box-title-break mb-3">Thực phẩm thay thế tương đương</h3>
     <div class="row g-2 align-items-center">
         <% if(dataAlternativeFood.length > 0){ %>

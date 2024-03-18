@@ -132,9 +132,22 @@ function clearInput(id){
 function returnList() {
     window.location.href = '/examine';
 }
-
-function saveExamine(action, autoSave = 0){
+// Lưu phiếu tư vấn
+function saveExamine(action, autoSave = 0, data = {}){
     try {
+        let status = parseInt($('#status_examine').val());
+        console.log('status', status);
+        if(status == 3 && data.hasOwnProperty('isExport') && data.isExport){
+            if(!dataExamine.id_examine && result.success && result.id_examine){
+                dataExamine.page = "edit";
+                dataExamine.id_examine = result.id_examine;
+            }
+            let link = document.createElement('a');
+            link.href = '/export/' + data.linkExport + ('?examine_id=' + dataExamine.id_examine) + (data.menu_id ? '&menu_id=' + data.menu_id : '');
+            link.click();
+            link.remove();
+            return;
+        }
         let loading         = $("#loading-page");
         changeTabExamine(dataExamine.tab);
         if(autoSave == 0){
@@ -162,8 +175,6 @@ function saveExamine(action, autoSave = 0){
                 return;
             }
         }
-        
-        let status = parseInt($('#status_examine').val());
         // action 1 tiếp nhận 2 đang khám 3 hoàn thành 0 ko thay doi;
         if(action) dataExamine.examine['action'] = action;
         if(action == 0) dataExamine.examine['action'] = status;
@@ -186,15 +197,26 @@ function saveExamine(action, autoSave = 0){
                 if(autoSave == 0){
                     loading.hide();
                     if (result.success) {
-                        displayMessage('Lưu thành công');
-                        setTimeout(()=>{
-                            returnList();
-                        }, 500);
+                        if(data.hasOwnProperty('isExport') && data.isExport){
+                            if(!dataExamine.id_examine && result.success && result.id_examine){
+                                dataExamine.page = "edit";
+                                dataExamine.id_examine = result.id_examine;
+                            }
+                            let link = document.createElement('a');
+                            link.href = '/export/' + data.linkExport + ('?examine_id=' + dataExamine.id_examine) + (data.menu_id ? '&menu_id=' + data.menu_id : '');
+                            link.click();
+                            link.remove();
+                        }else{
+                            displayMessage('Lưu thành công');
+                            setTimeout(()=>{
+                                returnList();
+                            }, 500);
+                        }
                     } else {
                         displayError(result.message);
                     }
                 }else{
-                    if(result.success && result.id_examine){
+                    if(result.success && result.id_examine && !dataExamine.id_examine){
                         dataExamine.page = "edit";
                         dataExamine.id_examine = result.id_examine;
                     }
@@ -215,66 +237,18 @@ function saveExamine(action, autoSave = 0){
     }
 }
 
-function exportExamine(){
-    try {
-        let tab = dataExamine.tab;
-        changeTabExamine(1);
-        changeTabExamine(2);
-        changeTabExamine(4);
-        changeTabExamine(tab);
-        var link = document.createElement('a');
-        link.href = '/export/examine?data=' + encodeURIComponent(JSON.stringify(dataExamine.examine));
-        link.click();
-        link.remove();
-    } catch (error) {
-
-    }
-}
-
+// Xuất thực đơn mẫu
 function exportMenuExample(){
     try {
         let menu_id = $('#menu_id').val();
         if(menu_id && !isNaN(parseInt(menu_id))){
-            let data = {};
-            if(dataExamine.menuExamine && dataExamine.menuExamine.length > 0){
-                for(let item of dataExamine.menuExamine){
-                    if(item.id == parseInt(menu_id)){
-                        data = item;
-                        break;
-                    }
-                }
-                if(data){
-                    var link = document.createElement('a');
-                    link.href = '/export/menu-example?data=' + encodeURIComponent(JSON.stringify(data));
-                    link.click();
-                    link.remove();
-                }else{
-                    displayMessage('Không tìm thấy thực đơn!');
-                }
-            }else{
-                displayMessage('Chưa có dữ liệu thực đơn!');
-            }
+            saveExamine(0,0,{isExport:true, linkExport:'menu-example', menu_id: menu_id});
         }else{
             displayMessage('Vui lòng chọn thực đơn!');
         }
         
     } catch (error) {
         
-    }
-}
-
-function exportPrescription(){
-    try {
-        let tab = dataExamine.tab;
-        changeTabExamine(1);
-        changeTabExamine(4);
-        changeTabExamine(tab);
-        var link = document.createElement('a');
-        link.href = '/export/prescription?data=' + encodeURIComponent(JSON.stringify(dataExamine.examine));
-        link.click();
-        link.remove();
-    } catch (error) {
-
     }
 }
 
@@ -988,7 +962,7 @@ function resetTemplateMenu(){
     $('#total_lipid_percent').text('');
     $('#total_carbohydrate_percent').text('');
 }
-
+// Chọn thực đơn mẫu trong list
 function chooseMenuExample(){
     try {
         let id = 1;
@@ -1026,7 +1000,7 @@ function chooseMenuExample(){
         
     }
 }
-
+// Thêm thực phẩm vào thực đơn
 function addFoodToMenu(){
     try {
         let menu_id = parseInt($('#menu_id').val());
@@ -1325,6 +1299,7 @@ function generateTableMenuSearch(id){
         if(dataExamine.menuExamine.length > 0){
             for(let menu of dataExamine.menuExamine){
                 if(id == menu.id){
+                    $('#menu_example_note').html(menu.note);
                     addTemplateListMenuTimeSearch(menu.detail);
                     break;
                 }
@@ -2148,7 +2123,6 @@ $(document).ready(function(){
     expandTextarea();
 
     $('#menu_example_note').change(function(evt){
-        console.log('menu_example_note', evt, $('#menu_example_note').val());
         let menu_id = parseInt($('#menu_id').val());
         for(let menu of dataExamine.menuExamine){
             if(menu_id == menu.id){
