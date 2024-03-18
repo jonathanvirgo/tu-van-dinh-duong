@@ -2129,6 +2129,13 @@ $(document).ready(function(){
                 menu.note = $('#menu_example_note').val().trim();
             }
         }
-    })
+    });
+    // Input chỉ nhận số
+    $('input[data-type="number"]').on('input', evt =>{
+        let name = evt.target.attributes.name.value;
+        let value = $('input[name="' + name + '"]').val();
+        let value2 = value.replace(/[^0-9\.\s\/\-]/g,'');
+        $('input[name="' + name + '"]').val(value2);
+      });
 });
 

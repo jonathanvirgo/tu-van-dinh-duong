@@ -49,7 +49,7 @@
             <div class="col-form-body col-md">
                 <div class="form-control-has-addon">
                     <% if(!(examine.status == 4 || (examine.status == 3 && isDetail == true))){ %>
-                        <input type="text" name="cus_phone" class="form-control form-control-title" id="cus_phone" placeholder="Tìm kiếm theo số điện thoại" value="<%= examine.cus_phone%>">
+                        <input type="text" name="cus_phone" data-type="number" class="form-control form-control-title" id="cus_phone" placeholder="Tìm kiếm theo số điện thoại" value="<%= examine.cus_phone%>">
                         <button class="btn form-control-addon btn-link p-0 min-h-auto" type="button" onclick="clearInput('#cus_phone')">
                             <svg class="iconsvg-close">
                                 <use xlink:href="/public/content/images/sprite.svg#close"></use>
@@ -210,7 +210,7 @@
             <div class="col-form-body col-md">
                 <% if(!(examine.status == 4 || (examine.status == 3 && isDetail == true))){ %>
                     <div class="form-control-has-addon">
-                        <input type="text" name="cus_cctc" class="form-control form-control-title" id="cus_cctc" placeholder="Chiều cao tiêu chuẩn" value="<%= examine.cus_cctc%>">
+                        <input type="text" data-type="number" name="cus_cctc" class="form-control form-control-title" id="cus_cctc" placeholder="Chiều cao tiêu chuẩn" value="<%= examine.cus_cctc%>">
                         <button class="btn form-control-addon btn-link p-0 min-h-auto" type="button" onclick="clearInput('#cus_cctc')">
                             <svg class="iconsvg-close">
                                 <use xlink:href="/public/content/images/sprite.svg#close"></use>
@@ -227,7 +227,7 @@
             <div class="col-form-body col-md">
                 <% if(!(examine.status == 4 || (examine.status == 3 && isDetail == true))){ %>
                     <div class="form-control-has-addon">
-                        <input type="text" name="cus_cntc" class="form-control form-control-title" id="cus_cntc" placeholder="Cân nặng tiêu chuẩn" value="<%= examine.cus_cntc%>">
+                        <input type="text" data-type="number" name="cus_cntc" class="form-control form-control-title" id="cus_cntc" placeholder="Cân nặng tiêu chuẩn" value="<%= examine.cus_cntc%>">
                         <button class="btn form-control-addon btn-link p-0 min-h-auto" type="button" onclick="clearInput('#cus_cntc')">
                             <svg class="iconsvg-close">
                                 <use xlink:href="/public/content/images/sprite.svg#close"></use>
@@ -244,7 +244,7 @@
             <div class="col-form-body col-md">
                 <% if(!(examine.status == 4 || (examine.status == 3 && isDetail == true))){ %>
                     <div class="form-control-has-addon">
-                        <input type="text" name="cus_cnbt" class="form-control form-control-title" id="cus_cnbt" placeholder="Cân nặng thường có" value="<%= examine.cus_cnbt%>">
+                        <input type="text" data-type="number" name="cus_cnbt" class="form-control form-control-title" id="cus_cnbt" placeholder="Cân nặng thường có" value="<%= examine.cus_cnbt%>">
                         <button class="btn form-control-addon btn-link p-0 min-h-auto" type="button" onclick="clearInput('#cus_cnbt')">
                             <svg class="iconsvg-close">
                                 <use xlink:href="/public/content/images/sprite.svg#close"></use>
@@ -261,7 +261,7 @@
             <div class="col-form-body col-md">
                 <% if(!(examine.status == 4 || (examine.status == 3 && isDetail == true))){ %>
                     <div class="form-control-has-addon">
-                        <input type="text" name="cus_length" class="form-control form-control-title" id="cus_length" placeholder="Chiều cao" value="<%= examine.cus_length%>">
+                        <input type="text" data-type="number" name="cus_length" class="form-control form-control-title" id="cus_length" placeholder="Chiều cao" value="<%= examine.cus_length%>">
                         <button class="btn form-control-addon btn-link p-0 min-h-auto" type="button" onclick="clearInput('#cus_length')">
                             <svg class="iconsvg-close">
                                 <use xlink:href="/public/content/images/sprite.svg#close"></use>
@@ -278,7 +278,7 @@
             <div class="col-form-body col-md">
                 <% if(!(examine.status == 4 || (examine.status == 3 && isDetail == true))){ %>
                     <div class="form-control-has-addon">
-                        <input type="text" name="cus_cnht" class="form-control form-control-title" id="cus_cnht" placeholder="Cân nặng hiện tại" value="<%= examine.cus_cnht%>">
+                        <input type="text" data-type="number" name="cus_cnht" class="form-control form-control-title" id="cus_cnht" placeholder="Cân nặng hiện tại" value="<%= examine.cus_cnht%>">
                         <button class="btn form-control-addon btn-link p-0 min-h-auto" type="button" onclick="clearInput('#cus_cnht')">
                             <svg class="iconsvg-close">
                                 <use xlink:href="/public/content/images/sprite.svg#close"></use>
@@ -295,7 +295,7 @@
             <div class="col-form-body col-md">
                 <% if(!(examine.status == 4 || (examine.status == 3 && isDetail == true))){ %>
                     <div class="form-control-has-addon">
-                        <input type="text" name="cus_bmi" class="form-control form-control-title" id="cus_bmi" placeholder="BMI" value="<%= examine.cus_bmi%>">
+                        <input type="text" data-type="number" name="cus_bmi" class="form-control form-control-title" id="cus_bmi" placeholder="BMI" value="<%= examine.cus_bmi%>">
                         <button class="btn form-control-addon btn-link p-0 min-h-auto" type="button" onclick="clearInput('#cus_bmi')">
                             <svg class="iconsvg-close">
                                 <use xlink:href="/public/content/images/sprite.svg#close"></use>
@@ -314,7 +314,7 @@
             <div class="col-form-body col-md">
                 <% if(!(examine.status == 4 || (examine.status == 3 && isDetail == true))){ %>
                     <div class="form-control-has-addon">
-                        <input type="text" name="cus_height_by_age" class="form-control form-control-title" id="cus_height_by_age" placeholder="Chiều cao theo tuổi" value="<%= examine.cus_height_by_age%>">
+                        <input type="text" data-type="number" name="cus_height_by_age" class="form-control form-control-title" id="cus_height_by_age" placeholder="Chiều cao theo tuổi" value="<%= examine.cus_height_by_age%>">
                         <button class="btn form-control-addon btn-link p-0 min-h-auto" type="button" onclick="clearInput('#cus_height_by_age')">
                             <svg class="iconsvg-close">
                                 <use xlink:href="/public/content/images/sprite.svg#close"></use>
@@ -331,7 +331,7 @@
             <div class="col-form-body col-md">
                 <% if(!(examine.status == 4 || (examine.status == 3 && isDetail == true))){ %>
                     <div class="form-control-has-addon">
-                        <input type="text" name="cus_weight_by_age" class="form-control form-control-title" id="cus_weight_by_age" placeholder="Cân nặng theo tuổi" value="<%= examine.cus_weight_by_age%>">
+                        <input type="text" data-type="number" name="cus_weight_by_age" class="form-control form-control-title" id="cus_weight_by_age" placeholder="Cân nặng theo tuổi" value="<%= examine.cus_weight_by_age%>">
                         <button class="btn form-control-addon btn-link p-0 min-h-auto" type="button" onclick="clearInput('#cus_weight_by_age')">
                             <svg class="iconsvg-close">
                                 <use xlink:href="/public/content/images/sprite.svg#close"></use>
@@ -349,7 +349,7 @@
             <div class="col-form-body col-md">
                 <% if(!(examine.status == 4 || (examine.status == 3 && isDetail == true))){ %>
                     <div class="form-control-has-addon">
-                        <input type="text" name="cus_bmi_by_age" class="form-control form-control-title" id="cus_bmi_by_age" placeholder="BMI theo tuổi" value="<%= examine.cus_bmi_by_age%>">
+                        <input type="text" data-type="number" name="cus_bmi_by_age" class="form-control form-control-title" id="cus_bmi_by_age" placeholder="BMI theo tuổi" value="<%= examine.cus_bmi_by_age%>">
                         <button class="btn form-control-addon btn-link p-0 min-h-auto" type="button" onclick="clearInput('#cus_bmi_by_age')">
                             <svg class="iconsvg-close">
                                 <use xlink:href="/public/content/images/sprite.svg#close"></use>
@@ -385,7 +385,7 @@
             <div class="col-form-body col-md">
                 <% if(!(examine.status == 4 || (examine.status == 3 && isDetail == true))){ %>
                     <div class="form-control-has-addon">
-                        <input type="text" name="cus_height_by_weight" class="form-control form-control-title" id="cus_height_by_weight" placeholder="Chiều cao theo cân nặng" value="<%= examine.cus_height_by_weight%>">
+                        <input type="text" data-type="number" name="cus_height_by_weight" class="form-control form-control-title" id="cus_height_by_weight" placeholder="Chiều cao theo cân nặng" value="<%= examine.cus_height_by_weight%>">
                         <button class="btn form-control-addon btn-link p-0 min-h-auto" type="button" onclick="clearInput('#cus_height_by_weight')">
                             <svg class="iconsvg-close">
                                 <use xlink:href="/public/content/images/sprite.svg#close"></use>
@@ -454,7 +454,7 @@
             <div class="col-form-body col-md">
                 <% if(!(examine.status == 4 || (examine.status == 3 && isDetail == true))){ %>
                     <div class="form-control-has-addon">
-                        <input type="text" name="erythrocytes" class="form-control form-control-title" id="erythrocytes" placeholder="Hồng cầu" value="<%= examine.erythrocytes%>">
+                        <input type="text" data-type="number" name="erythrocytes" class="form-control form-control-title" id="erythrocytes" placeholder="Hồng cầu" value="<%= examine.erythrocytes%>">
                         <button class="btn form-control-addon btn-link p-0 min-h-auto" type="button" onclick="clearInput('#erythrocytes')">
                             <svg class="iconsvg-close">
                                 <use xlink:href="/public/content/images/sprite.svg#close"></use>
@@ -471,7 +471,7 @@
             <div class="col-form-body col-md">
                 <% if(!(examine.status == 4 || (examine.status == 3 && isDetail == true))){ %>
                     <div class="form-control-has-addon">
-                        <input type="text" name="cus_bc" class="form-control form-control-title" id="cus_bc" placeholder="BC (G/L)" value="<%= examine.cus_bc%>">
+                        <input type="text" data-type="number" name="cus_bc" class="form-control form-control-title" id="cus_bc" placeholder="BC (G/L)" value="<%= examine.cus_bc%>">
                         <button class="btn form-control-addon btn-link p-0 min-h-auto" type="button" onclick="clearInput('#cus_bc')">
                             <svg class="iconsvg-close">
                                 <use xlink:href="/public/content/images/sprite.svg#close"></use>
@@ -488,7 +488,7 @@
             <div class="col-form-body col-md">
                 <% if(!(examine.status == 4 || (examine.status == 3 && isDetail == true))){ %>
                     <div class="form-control-has-addon">
-                        <input type="text" name="cus_tc" class="form-control form-control-title" id="cus_tc" placeholder="TC (T/L)" value="<%= examine.cus_tc%>">
+                        <input type="text" data-type="number" name="cus_tc" class="form-control form-control-title" id="cus_tc" placeholder="TC (T/L)" value="<%= examine.cus_tc%>">
                         <button class="btn form-control-addon btn-link p-0 min-h-auto" type="button" onclick="clearInput('#cus_tc')">
                             <svg class="iconsvg-close">
                                 <use xlink:href="/public/content/images/sprite.svg#close"></use>
@@ -507,7 +507,7 @@
             <div class="col-form-body col-md">
                 <% if(!(examine.status == 4 || (examine.status == 3 && isDetail == true))){ %>
                     <div class="form-control-has-addon">
-                        <input type="text" name="cus_albumin" class="form-control form-control-title" id="cus_albumin" placeholder="Albumin (G/L)" value="<%= examine.cus_albumin%>">
+                        <input type="text" data-type="number" name="cus_albumin" class="form-control form-control-title" id="cus_albumin" placeholder="Albumin (G/L)" value="<%= examine.cus_albumin%>">
                         <button class="btn form-control-addon btn-link p-0 min-h-auto" type="button" onclick="clearInput('#cus_albumin')">
                             <svg class="iconsvg-close">
                                 <use xlink:href="/public/content/images/sprite.svg#close"></use>
@@ -524,7 +524,7 @@
             <div class="col-form-body col-md">
                 <% if(!(examine.status == 4 || (examine.status == 3 && isDetail == true))){ %>
                     <div class="form-control-has-addon">
-                        <input type="text" name="cus_nakcl" class="form-control form-control-title" id="cus_nakcl" placeholder="Na+/K+/Cl-" value="<%= examine.cus_nakcl%>">
+                        <input type="text" data-type="number" name="cus_nakcl" class="form-control form-control-title" id="cus_nakcl" placeholder="Na+/K+/Cl-" value="<%= examine.cus_nakcl%>">
                         <button class="btn form-control-addon btn-link p-0 min-h-auto" type="button" onclick="clearInput('#cus_nakcl')">
                             <svg class="iconsvg-close">
                                 <use xlink:href="/public/content/images/sprite.svg#close"></use>
@@ -543,7 +543,7 @@
             <div class="col-form-body col-md">
                 <% if(!(examine.status == 4 || (examine.status == 3 && isDetail == true))){ %>
                     <div class="form-control-has-addon">
-                        <input type="text" name="cus_astaltggt" class="form-control form-control-title" id="cus_astaltggt" placeholder="AST/ALT/GGT" value="<%= examine.cus_astaltggt%>">
+                        <input type="text" data-type="number" name="cus_astaltggt" class="form-control form-control-title" id="cus_astaltggt" placeholder="AST/ALT/GGT" value="<%= examine.cus_astaltggt%>">
                         <button class="btn form-control-addon btn-link p-0 min-h-auto" type="button" onclick="clearInput('#cus_astaltggt')">
                             <svg class="iconsvg-close">
                                 <use xlink:href="/public/content/images/sprite.svg#close"></use>
@@ -560,7 +560,7 @@
             <div class="col-form-body col-md">
                 <% if(!(examine.status == 4 || (examine.status == 3 && isDetail == true))){ %>
                     <div class="form-control-has-addon">
-                        <input type="text" name="cus_urecreatinin" class="form-control form-control-title" id="cus_urecreatinin" placeholder="Ure/Creatinin" value="<%= examine.cus_urecreatinin%>">
+                        <input type="text" data-type="number" name="cus_urecreatinin" class="form-control form-control-title" id="cus_urecreatinin" placeholder="Ure/Creatinin" value="<%= examine.cus_urecreatinin%>">
                         <button class="btn form-control-addon btn-link p-0 min-h-auto" type="button" onclick="clearInput('#cus_urecreatinin')">
                             <svg class="iconsvg-close">
                                 <use xlink:href="/public/content/images/sprite.svg#close"></use>
@@ -579,7 +579,7 @@
             <div class="col-form-body col-md">
                 <% if(!(examine.status == 4 || (examine.status == 3 && isDetail == true))){ %>
                     <div class="form-control-has-addon">
-                        <input type="text" name="cus_bilirubin" class="form-control form-control-title" id="cus_bilirubin" placeholder="Bilirubin TP/TT" value="<%= examine.cus_bilirubin%>">
+                        <input type="text" data-type="number" name="cus_bilirubin" class="form-control form-control-title" id="cus_bilirubin" placeholder="Bilirubin TP/TT" value="<%= examine.cus_bilirubin%>">
                         <button class="btn form-control-addon btn-link p-0 min-h-auto" type="button" onclick="clearInput('#cus_bilirubin')">
                             <svg class="iconsvg-close">
                                 <use xlink:href="/public/content/images/sprite.svg#close"></use>
